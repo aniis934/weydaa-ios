@@ -7,7 +7,11 @@
 Parité avec l'app Android v1 : 24 routes, 61 endpoints, 537 chaînes + 5 pluriels × 3 langues, 206 tests.
 Fluide, rendu iOS 26/27 (Liquid Glass via les composants natifs) et compatible iOS 16 (iPhone 8 / X et plus).
 
-## Phases (une à la fois : fermée, testée, commitée ; checkpoint à la fin de chacune)
+## Mode d'exécution (2026-10-03)
+**Autonome jusqu'au bout** : toutes les phases s'enchaînent dans la même session ; ce qui dépend du
+propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous : `docs/PROMPT-REPRISE.md`.
+
+## Phases (une à la fois : fermée, testée, commitée ; galerie à la fin de chacune)
 | # | Phase | Contenu | Compte Apple ? | État |
 |---|---|---|---|---|
 | 0 | Fondations | dépôt public, projet XcodeGen, CI `ios-ci` + `ios-screens`, tokens de design, W et icône 1024, icônes Lucide, chaînes converties (+ parité), coquille 5 onglets, lancement animé, socle d'API simulée | non | ✅ close le 2026-10-03 |

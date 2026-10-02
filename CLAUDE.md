@@ -16,6 +16,10 @@ ponctuel) · iOS 16.0 minimum · iPhone seul, portrait · Xcode 26.6 (runner `ma
 - Chaînes : `android/app/src/main/res/values{,-ar,-en}/strings.xml` → converties par script (voir plus bas).
 - Plan iOS validé et lots serveur : hors dépôt (voir la mémoire du projet) ; suivi ici : `docs/PLAN.md`.
 
+## Mode en cours : AUTONOME jusqu'au bout
+Toutes les phases s'enchaînent ; un blocage (compte, clé, feu vert, décision) → `docs/EN-ATTENTE.md`, puis on
+continue ailleurs. Règles complètes : `docs/PROMPT-REPRISE.md`.
+
 ## Boucle de travail (pas de Mac)
 1. Écrire un lot de code relu (conventions anti-erreurs ci-dessous).
 2. `git push` → `gh run watch` (ios-ci : 5 à 15 min) → échec : `gh run view <id> --log-failed`.
