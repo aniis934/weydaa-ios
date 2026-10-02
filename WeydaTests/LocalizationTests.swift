@@ -58,7 +58,11 @@ final class LocalizationTests: XCTestCase {
     func testArabicUsesLatinDigits() {
         let arabic = WeydaLocale.latinDigits(language: "ar", region: "DZ")
         XCTAssertEqual(String(format: "%lld", locale: arabic, 1234), "1234")
-        XCTAssertEqual(1234.formatted(.number.grouping(.never).locale(arabic)), "1234")
+        // FormatStyle groupe les milliers (« 1.234 » en ar_DZ) : on vérifie les CHIFFRES, pas le séparateur.
+        let formatted = 1_234_567.formatted(.number.locale(arabic))
+        let arabicIndic = formatted.unicodeScalars.filter { (0x0660...0x0669).contains($0.value) || (0x06F0...0x06F9).contains($0.value) }
+        XCTAssertTrue(arabicIndic.isEmpty, "chiffres arabes-indiens dans « \(formatted) »")
+        XCTAssertEqual(formatted.filter(\.isASCII).filter(\.isNumber), "1234567")
     }
 
     func testGeneratedAccessorsResolve() {
