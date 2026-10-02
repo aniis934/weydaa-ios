@@ -55,14 +55,19 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(String(format: format, locale: WeydaLocale.latinDigits(language: "fr", region: "DZ"), "12 500"), "12 500 DA")
     }
 
+    /// iOS groupe les milliers selon la locale, y compris dans `String(format:)` (« 1.234 » en ar_DZ,
+    /// constaté sur iOS 26) : on vérifie les CHIFFRES (latins), pas le séparateur.
     func testArabicUsesLatinDigits() {
         let arabic = WeydaLocale.latinDigits(language: "ar", region: "DZ")
-        XCTAssertEqual(String(format: "%lld", locale: arabic, 1234), "1234")
-        // FormatStyle groupe les milliers (« 1.234 » en ar_DZ) : on vérifie les CHIFFRES, pas le séparateur.
-        let formatted = 1_234_567.formatted(.number.locale(arabic))
-        let arabicIndic = formatted.unicodeScalars.filter { (0x0660...0x0669).contains($0.value) || (0x06F0...0x06F9).contains($0.value) }
-        XCTAssertTrue(arabicIndic.isEmpty, "chiffres arabes-indiens dans « \(formatted) »")
-        XCTAssertEqual(formatted.filter(\.isASCII).filter(\.isNumber), "1234567")
+        assertLatinDigits(String(format: "%lld", locale: arabic, 1234), "1234")
+        assertLatinDigits(1_234_567.formatted(.number.locale(arabic)), "1234567")
+        assertLatinDigits(L10n.resultsCount(25), "25")
+    }
+
+    private func assertLatinDigits(_ text: String, _ digits: String, file: StaticString = #filePath, line: UInt = #line) {
+        let arabicIndic = text.unicodeScalars.filter { (0x0660...0x0669).contains($0.value) || (0x06F0...0x06F9).contains($0.value) }
+        XCTAssertTrue(arabicIndic.isEmpty, "chiffres arabes-indiens dans « \(text) »", file: file, line: line)
+        XCTAssertEqual(String(text.filter { $0.isASCII && $0.isNumber }), digits, file: file, line: line)
     }
 
     func testGeneratedAccessorsResolve() {
