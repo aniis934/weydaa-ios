@@ -57,6 +57,8 @@ scripts/                 conversions (.mjs), scripts/ci/ (install-xcodegen, gene
   Showcase (Debug) affiche des noms de tokens en `Text(verbatim:)`. Libellés serveur via `nameFr/nameAr/nameEn`.
 - **Langue** : réglage « langue de l'app » d'iOS (pas de sélecteur maison) ; `WeydaLocale.language`.
   Chiffres latins partout (`WeydaLocale.formatting`, posée sur l'environnement par RootView).
+  `L10n.tr` groupe les milliers selon la locale (« 1 234 annonces ») : voulu ; un identifiant ou une année
+  passe en `%@` (chaîne déjà formatée), jamais en `%lld`.
 - **RTL** : `leading`/`trailing`, jamais gauche/droite. Le logo, l'extrusion et le mot « Weydaa » sont forcés
   en LTR. L'arabe est relu dans chaque tour de captures.
 - **Architecture** : `XxxView` (possède le ViewModel `final class XxxViewModel: ObservableObject`, `@Published`)

@@ -10,7 +10,7 @@ Fluide, rendu iOS 26/27 (Liquid Glass via les composants natifs) et compatible i
 ## Phases (une à la fois : fermée, testée, commitée ; checkpoint à la fin de chacune)
 | # | Phase | Contenu | Compte Apple ? | État |
 |---|---|---|---|---|
-| 0 | Fondations | dépôt public, projet XcodeGen, CI `ios-ci` + `ios-screens`, tokens de design, W et icône 1024, icônes Lucide, chaînes converties (+ parité), coquille 5 onglets, lancement animé, socle d'API simulée | non | 🟡 en cours |
+| 0 | Fondations | dépôt public, projet XcodeGen, CI `ios-ci` + `ios-screens`, tokens de design, W et icône 1024, icônes Lucide, chaînes converties (+ parité), coquille 5 onglets, lancement animé, socle d'API simulée | non | ✅ close le 2026-10-03 |
 | 1 | Données et réseau | modèles, DTO tolérants, client HTTP, erreurs (~65 codes), session + trousseau + refresh, hors ligne, images, formats (DA, dates, chiffres latins), validations, pagination, suggestions, règles d'offre, protocole Phoenix — tests portés d'Android | non | ⏳ |
 | 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ⏳ |
 | 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ⏳ |
@@ -48,9 +48,20 @@ XcodeGen n'est pas préinstallé : version épinglée téléchargée depuis sa r
 - [x] Socle d'API simulée (Debug) + écran de démonstration du design (Debug)
 - [x] Tests : parité des chaînes, pluriels arabes (6 formes), chiffres latins, W, courbes, icônes, config, API simulée
 - [x] Workflows `ios-ci` et `ios-screens` écrits
-- [ ] Workflows poussés (scope `workflow` du jeton gh requis), `ios-ci` vert
-- [ ] `ios-screens` : captures et vidéo relues (fr/ar/en, clair/sombre, 2 tailles)
-- [ ] Clôture : PR `phase-0` → `main`, checkpoint
+- [x] Workflows poussés, `ios-ci` vert : 17 tests sur 17, 0 avertissement de compilation, ≈ 4 min (2026-10-02)
+- [x] `ios-screens` vert (26 min) : 132 captures (fr/ar/en × clair/sombre × 17 Pro Max + 17e) et 2 vidéos relues —
+      RTL inversé correctement, pluriel arabe « إعلانان », « 12 500 دج », barre Liquid Glass, rien ne déborde
+- [x] Clôture : PR `phase-0` → `main`, checkpoint
+
+## À vérifier sur un vrai iPhone (premier TestFlight, fin de phase 2)
+- Démarrage : sur le simulateur de CI (build Debug lancé par XCUITest), le W fantôme reste ≈ 2 s avant le tracé
+  (démarrage à froid du simulateur). Sur appareil, en Release, il doit s'enchaîner sans attente visible.
+
+## Constats de la CI (phase 0)
+- Compilé sans erreur ni avertissement du premier coup grâce aux conventions de `CLAUDE.md`.
+- `String(format:locale:)` groupe les milliers selon la locale (« 1.234 » en ar_DZ, « 1 234 » en fr) : les
+  compteurs du catalogue (`%lld`) s'affichent groupés, en chiffres latins. Voulu, et testé.
+- Durées : `ios-ci` 4 à 8 min (13 min avec file d'attente des Mac) ; `ios-screens` ≈ 26 min.
 
 ## Décisions techniques (iOS)
 - Pluriels : variations du catalogue `.xcstrings` (résolues par le système, six formes de l'arabe).

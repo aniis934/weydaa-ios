@@ -77,7 +77,7 @@ final class TourTests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["screen.showcase"].waitForExistence(timeout: 20))
         pause()
         capture("90-showcase-1")
-        for page in 2...4 {
+        for page in 2...3 {
             app.swipeUp()
             pause(0.8)
             capture("90-showcase-\(page)")
