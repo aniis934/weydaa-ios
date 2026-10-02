@@ -42,6 +42,8 @@ struct RootView: View {
             NavigationStack { DesignShowcaseView() }
         } else if LaunchOptions.screen == "components" {
             NavigationStack { DesignShowcaseView(componentsOnly: true) }
+        } else if LaunchOptions.screen == "data" {
+            NavigationStack { DataShowcaseView() }
         } else {
             MainTabView()
         }

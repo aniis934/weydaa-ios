@@ -4,6 +4,7 @@ import SwiftUI
 struct WeydaApp: App {
     @StateObject private var container = AppContainer()
     @StateObject private var router = AppRouter()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
@@ -18,6 +19,10 @@ struct WeydaApp: App {
                     guard let target = DeepLinks.resolve(url) else { return }
                     router.open(target)
                 }
+        }
+        // Premier plan / arrière-plan : socket temps réel ouverte ou fermée, pastilles relues au retour.
+        .onChange(of: scenePhase) { phase in
+            container.scenePhaseChanged(phase)
         }
     }
 }
