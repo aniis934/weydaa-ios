@@ -2,27 +2,37 @@
 import SwiftUI
 
 /// Démonstration du système de design (Debug seulement) : marque, couleurs, typographie, icônes,
-/// rayons, contrôles. Sert à relire les tokens dans les captures automatiques, en clair / sombre et
-/// dans les trois langues. Les libellés techniques (noms de tokens) sont en `verbatim` : cet écran
-/// n'existe pas dans l'app publiée.
+/// rayons, contrôles, puis les composants communs (`ComponentsShowcase`). Sert à relire les tokens et
+/// les composants dans les captures automatiques, en clair / sombre et dans les trois langues. Les
+/// libellés techniques (noms de tokens) sont en `verbatim` : cet écran n'existe pas dans l'app publiée.
 struct DesignShowcaseView: View {
+    /// `-WeydaScreen components` : la section « Composants » seule (captures `92-components-*`).
+    private let componentsOnly: Bool
+
+    init(componentsOnly: Bool = false) {
+        self.componentsOnly = componentsOnly
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: WeydaSpace.section) {
-                brand
-                colors
-                typography
-                icons
-                radii
-                controls
+                if !componentsOnly {
+                    brand
+                    colors
+                    typography
+                    icons
+                    radii
+                    controls
+                }
+                components
             }
             .padding(.horizontal, WeydaSpace.screen)
             .padding(.vertical, WeydaSpace.lg)
         }
         .background(WeydaColor.background)
-        .navigationTitle(Text(verbatim: "Design system"))
+        .navigationTitle(Text(verbatim: componentsOnly ? "Components" : "Design system"))
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("screen.showcase")
+        .accessibilityIdentifier(componentsOnly ? "screen.components" : "screen.showcase")
     }
 
     // MARK: Sections
@@ -134,11 +144,19 @@ struct DesignShowcaseView: View {
         }
     }
 
+    private var components: some View {
+        ShowcaseSection(title: "Composants") {
+            ComponentsShowcase()
+        }
+    }
+
     private var controls: some View {
         ShowcaseSection(title: "Contrôles") {
             Button {} label: {
+                // onPrimary : en sombre, le vert clair porte un texte foncé (le blanc par défaut y passe sous 3:1).
                 Text(L10n.retry)
                     .weydaText(.labelLarge)
+                    .foregroundStyle(WeydaColor.onPrimary)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)

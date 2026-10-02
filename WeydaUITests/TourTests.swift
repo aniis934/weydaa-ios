@@ -1,38 +1,8 @@
 import XCTest
 
-/// Tour automatique de l'app en API simulée : une capture par écran, relue à chaque phase.
-/// Lancé par `scripts/ci/screens.sh` pour chaque langue × apparence × appareil.
-///   WEYDA_LANG  fr | ar | en   (transmis par xcodebuild via TEST_RUNNER_WEYDA_LANG)
-///   WEYDA_SLOW  1 = pauses entre les écrans (la vidéo du parcours reste lisible)
-final class TourTests: XCTestCase {
-    private var environment: [String: String] { ProcessInfo.processInfo.environment }
-
-    @MainActor
-    private func makeApp(_ extra: [String] = []) -> XCUIApplication {
-        let app = XCUIApplication()
-        var arguments = ["-WeydaMockAPI", "YES"]
-        if let language = environment["WEYDA_LANG"], !language.isEmpty {
-            arguments += ["-AppleLanguages", "(\(language))", "-AppleLocale", "\(language)_DZ"]
-        }
-        app.launchArguments = arguments + extra
-        return app
-    }
-
-    @MainActor
-    private func capture(_ name: String) {
-        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-        attachment.name = name
-        attachment.lifetime = .keepAlways
-        add(attachment)
-    }
-
-    @MainActor
-    private func pause(_ seconds: TimeInterval = 1.2) {
-        if environment["WEYDA_SLOW"] == "1" {
-            Thread.sleep(forTimeInterval: seconds)
-        }
-    }
-
+/// Tour de la coquille, en API simulée : lancement, onglets, démonstrations (Debug), À propos et écran
+/// d'attente. Socle commun (lancement, attente, captures) : `TourSupport.swift`.
+final class TourTests: TourTestCase {
     /// Image figée de l'animation de lancement (le W à moitié écrit, puis le mot posé).
     @MainActor
     func test01LaunchFrames() {
@@ -82,5 +52,18 @@ final class TourTests: XCTestCase {
             pause(0.8)
             capture("90-showcase-\(page)")
         }
+    }
+
+    /// Les composants communs seuls (cartes, lignes, puces, états, squelettes figés), de haut en bas.
+    @MainActor
+    func test04Components() {
+        captureLaunch(["-WeydaScreen", "components"], name: "92-components", scrolls: 8, screen: "components")
+    }
+
+    /// « À propos et informations légales » (poussé sur l'onglet Profil), puis un écran d'attente (phase 3).
+    @MainActor
+    func test80About() {
+        captureRoute("about", name: "80-about")
+        captureRoute("favorites", name: "81-comingSoon")
     }
 }
