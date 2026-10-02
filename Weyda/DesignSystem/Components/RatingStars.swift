@@ -22,7 +22,7 @@ struct RatingStars: View {
         }
         .foregroundStyle(WeydaColor.tertiary)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(L10n.reviewStar(RatingStarSymbols.spokenStars(rating)))
+        .accessibilityLabel(RatingStarSymbols.spokenLabel(rating))
     }
 }
 
@@ -37,6 +37,13 @@ nonisolated enum RatingStarSymbols {
         if index < full { return "star.fill" }
         if index == full && halves % 2 == 1 { return "star.leadinghalf.filled" }
         return "star"
+    }
+
+    /// Annonce VoiceOver : « 4 étoiles sur 5 » pour une note entière, « 4,5 sur 5 » pour une moyenne (chiffres latins).
+    static func spokenLabel(_ rating: Double) -> String {
+        let tenths = (min(max(rating, 0), Double(maxStars)) * 10).rounded() / 10
+        if tenths == tenths.rounded() { return L10n.reviewStar(Int(tenths)) }
+        return L10n.ratingOutOfFive(tenths.formatted(.number.precision(.fractionLength(1)).locale(WeydaLocale.formatting)))
     }
 
     /// Étoiles annoncées (le catalogue n'a qu'un pluriel entier) : la note arrondie à l'entier le plus proche.

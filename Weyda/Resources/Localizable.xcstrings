@@ -10172,6 +10172,29 @@
         }
       }
     },
+    "rating_out_of_five" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ من 5"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ out of 5"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sur 5"
+          }
+        }
+      }
+    },
     "report_action" : {
       "extractionState" : "manual",
       "localizations" : {

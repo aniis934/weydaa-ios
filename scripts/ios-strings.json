@@ -1,6 +1,12 @@
 {
   "_lisezmoi": "Chaînes propres à iOS, fusionnées par scripts/convert-strings.mjs avec les strings.xml d'Android. 'add' = nouvelle clé (fr/ar/en obligatoires ; pluriel = objet {one, other…}) ; 'override' = remplace le texte Android d'une clé existante (ex. une phrase qui parle d'Android) ; 'exclude' = clé Android sans usage sur iOS. Placeholders au format Android (%1$s, %1$d) : le script les convertit.",
-  "add": {},
+  "add": {
+    "rating_out_of_five": {
+      "fr": "%1$s sur 5",
+      "ar": "%1$s من 5",
+      "en": "%1$s out of 5"
+    }
+  },
   "override": {},
   "exclude": []
 }

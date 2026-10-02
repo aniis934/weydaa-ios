@@ -879,6 +879,8 @@ nonisolated enum L10n {
     static var pushChannelOffers: String { tr("push_channel_offers") }
     /// Offres reçues, acceptées, refusées ou contre-offres
     static var pushChannelOffersDesc: String { tr("push_channel_offers_desc") }
+    /// %1$s sur 5
+    static func ratingOutOfFive(_ p1: String) -> String { tr("rating_out_of_five", p1) }
     /// Signaler
     static var reportAction: String { tr("report_action") }
     /// Détails (optionnel)
@@ -1529,6 +1531,7 @@ nonisolated enum L10n {
         "push_channel_messages_desc",
         "push_channel_offers",
         "push_channel_offers_desc",
+        "rating_out_of_five",
         "report_action",
         "report_details",
         "report_details_placeholder",
