@@ -1,0 +1,116 @@
+name: ios-compat
+
+# Compatibilité iOS 16 : Xcode 26 + simulateur iOS 16.4 téléchargé chez Apple (l'image du runner n'a
+# que des simulateurs iOS 26), petit iPhone (SE 3e génération, sinon iPhone 8), compilation, tests
+# unitaires et tour de captures en API simulée (aucun appel à la prod). À la demande (phase 6, avant
+# une publication) : `gh workflow run ios-compat.yml --ref <branche>` (le workflow doit être sur main),
+# puis `gh run download <id> -n ios-compat-16.4`. Durées mesurées et limites : docs/RELEASE.md.
+on:
+  # TEMPORAIRE (essai sur la branche prep/release, avant d'être sur main) : retiré après l'essai.
+  push:
+    tags: ["compat-*"]
+  workflow_dispatch:
+    inputs:
+      ios_version:
+        description: Version du simulateur iOS (téléchargé chez Apple)
+        default: "16.4"
+      device:
+        description: Appareil (vide = iPhone SE (3rd generation), sinon iPhone 8, sinon SE 2e génération)
+        default: ""
+      languages:
+        description: Langues du tour (séparées par des espaces)
+        default: fr
+      appearances:
+        description: Apparences (light, dark)
+        default: light
+      video:
+        description: Filmer le premier tour
+        type: boolean
+        default: false
+      cache:
+        description: Garder le simulateur téléchargé dans le cache GitHub (plusieurs Go)
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+env:
+  XCODEGEN_VERSION: "2.46.0"
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+  IOS_VERSION: ${{ inputs.ios_version || '16.4' }}
+  USE_CACHE: ${{ github.event_name != 'workflow_dispatch' || inputs.cache }}
+
+jobs:
+  compat:
+    name: iOS ${{ inputs.ios_version || '16.4' }} · petit iPhone
+    runs-on: macos-26
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: XcodeGen en cache
+        id: xcodegen
+        uses: actions/cache@v6
+        with:
+          path: ~/.xcodegen-dist
+          key: xcodegen-${{ env.XCODEGEN_VERSION }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Installer XcodeGen
+        if: steps.xcodegen.outputs.cache-hit != 'true'
+        run: bash scripts/ci/install-xcodegen.sh
+
+      - name: Générer le projet Xcode
+        run: bash scripts/ci/generate.sh
+
+      - name: Simulateur iOS en cache
+        id: runtime-cache
+        if: env.USE_CACHE == 'true'
+        uses: actions/cache/restore@v6
+        with:
+          path: ~/.weyda-runtimes
+          key: ios-sim-runtime-${{ env.IOS_VERSION }}-universal-${{ runner.arch }}-v1
+
+      - name: Télécharger le simulateur iOS
+        id: runtime
+        run: bash scripts/ci/compat.sh download
+
+      # Sauvegardé AVANT l'installation (qui supprime l'image pour libérer le disque) et indépendamment
+      # du résultat des tests : un échec d'iOS 16 ne fait pas re-télécharger plusieurs Go la fois suivante.
+      - name: Mettre le simulateur en cache
+        if: env.USE_CACHE == 'true' && steps.runtime-cache.outputs.cache-hit != 'true' && steps.runtime.outputs.downloaded == 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ~/.weyda-runtimes
+          key: ios-sim-runtime-${{ env.IOS_VERSION }}-universal-${{ runner.arch }}-v1
+
+      - name: Installer le simulateur iOS
+        run: bash scripts/ci/compat.sh install
+
+      - name: Compiler, tester et capturer
+        env:
+          LANGS: ${{ inputs.languages || 'fr' }}
+          APPEARANCES: ${{ inputs.appearances || 'light' }}
+          DEVICE: ${{ inputs.device }}
+          VIDEO: ${{ inputs.video && '1' || '0' }}
+        run: bash scripts/ci/compat.sh run
+
+      - name: Publier les captures
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-compat-${{ env.IOS_VERSION }}
+          path: screens/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Résultats bruts (échec)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-compat-results
+          path: |
+            build/logs/
+            build/results/
+          retention-days: 7
+          if-no-files-found: ignore
