@@ -138,8 +138,14 @@ final class FakeWeydaAPI: WeydaAPI {
 
     init() {}
 
+    // Les méthodes de `WeydaAPI` ci-dessous héritent de l'isolation du protocole (`nonisolated`) : elles
+    // rejoignent le MainActor par `await` pour enregistrer l'appel.
     private func record(_ endpoint: String) {
         calls.append(endpoint)
+    }
+
+    private func recordSearch(_ call: SearchCall) {
+        searchCalls.append(call)
     }
 
     /// Nombre d'appels d'une route.
@@ -166,339 +172,339 @@ final class FakeWeydaAPI: WeydaAPI {
         withFacets: Int?,
         attrs: [String: String]
     ) async throws -> AnnoncesPageDTO {
-        record("getAnnonces")
+        await record("getAnnonces")
         let call = SearchCall(
             q: q, category: category, subcategory: subcategory, wilaya: wilaya, commune: commune, priceType: priceType,
             priceMin: priceMin, priceMax: priceMax, sort: sort, featured: featured, page: page, limit: limit,
             locale: locale, withFacets: withFacets, attrs: attrs
         )
-        searchCalls.append(call)
+        await recordSearch(call)
         return try await onGetAnnonces(call)
     }
 
     func getAnnonce(idOrSlug: String) async throws -> AnnonceDTO {
-        record("getAnnonce")
+        await record("getAnnonce")
         return try await onGetAnnonce(idOrSlug)
     }
 
     func getCategories() async throws -> [CategoryDTO] {
-        record("getCategories")
+        await record("getCategories")
         return try await onGetCategories()
     }
 
     func getWilayas() async throws -> [WilayaDTO] {
-        record("getWilayas")
+        await record("getWilayas")
         return try await onGetWilayas()
     }
 
     func getCommunes(wilayaId: Int) async throws -> [CommuneDTO] {
-        record("getCommunes")
+        await record("getCommunes")
         return try await onGetCommunes(wilayaId)
     }
 
     func getTopWilayas(top: Int) async throws -> [WilayaDTO] {
-        record("getTopWilayas")
+        await record("getTopWilayas")
         return try await onGetTopWilayas(top)
     }
 
     func getAttributes(slug: String, subcategory: String?, locale: String, context: [String: String]) async throws -> AttributesResponseDTO {
-        record("getAttributes")
+        await record("getAttributes")
         return try await onGetAttributes(slug, subcategory, locale, context)
     }
 
     func publicProfile(id: String) async throws -> UserRefDTO {
-        record("publicProfile")
+        await record("publicProfile")
         return try await onPublicProfile(id)
     }
 
     func publicAnnonces(id: String, page: Int, limit: Int) async throws -> AnnoncesPageDTO {
-        record("publicAnnonces")
+        await record("publicAnnonces")
         return try await onPublicAnnonces(id, page, limit)
     }
 
     func getReviews(targetId: String, page: Int, limit: Int) async throws -> ReviewsDTO {
-        record("getReviews")
+        await record("getReviews")
         return try await onGetReviews(targetId, page, limit)
     }
 
     func report(_ body: ReportRequestDTO) async throws -> ReportDTO {
-        record("report")
+        await record("report")
         return try await onReport(body)
     }
 
     func contact(_ body: ContactRequestDTO) async throws -> SimpleResponseDTO {
-        record("contact")
+        await record("contact")
         return try await onContact(body)
     }
 
     func registerFcmToken(_ body: FcmTokenRequestDTO) async throws -> SimpleResponseDTO {
-        record("registerFcmToken")
+        await record("registerFcmToken")
         return try await onRegisterFcmToken(body)
     }
 
     func getTrending(limit: Int) async throws -> AnnonceListDTO {
-        record("getTrending")
+        await record("getTrending")
         return try await onGetTrending(limit)
     }
 
     func getRecommendations() async throws -> AnnonceListDTO {
-        record("getRecommendations")
+        await record("getRecommendations")
         return try await onGetRecommendations()
     }
 
     func didYouMean(q: String) async throws -> DidYouMeanDTO {
-        record("didYouMean")
+        await record("didYouMean")
         return try await onDidYouMean(q)
     }
 
     func updateLocale(_ body: LocaleUpdateRequestDTO) async throws -> MeDTO {
-        record("updateLocale")
+        await record("updateLocale")
         return try await onUpdateLocale(body)
     }
 
     func countView(id: String) async throws -> ViewCountDTO {
-        record("countView")
+        await record("countView")
         return try await onCountView(id)
     }
 
     func reviewEligibility(targetId: String) async throws -> ReviewEligibilityDTO {
-        record("reviewEligibility")
+        await record("reviewEligibility")
         return try await onReviewEligibility(targetId)
     }
 
     func submitReview(_ body: ReviewCreateRequestDTO) async throws -> ReviewDTO {
-        record("submitReview")
+        await record("submitReview")
         return try await onSubmitReview(body)
     }
 
     func getSuggestions(q: String, locale: String) async throws -> SuggestionsDTO {
-        record("getSuggestions")
+        await record("getSuggestions")
         return try await onGetSuggestions(q, locale)
     }
 
     func login(_ body: LoginRequestDTO) async throws -> TokenResponseDTO {
-        record("login")
+        await record("login")
         return try await onLogin(body)
     }
 
     func refresh(_ body: RefreshRequestDTO) async throws -> TokenResponseDTO {
-        record("refresh")
+        await record("refresh")
         return try await onRefresh(body)
     }
 
     func loginWithGoogle(_ body: GoogleLoginRequestDTO) async throws -> TokenResponseDTO {
-        record("loginWithGoogle")
+        await record("loginWithGoogle")
         return try await onLoginWithGoogle(body)
     }
 
     func loginWithApple(_ body: AppleLoginRequestDTO) async throws -> TokenResponseDTO {
-        record("loginWithApple")
+        await record("loginWithApple")
         return try await onLoginWithApple(body)
     }
 
     func register(_ body: RegisterRequestDTO) async throws -> RegisterResponseDTO {
-        record("register")
+        await record("register")
         return try await onRegister(body)
     }
 
     func forgotPassword(_ body: ForgotPasswordRequestDTO) async throws -> SimpleResponseDTO {
-        record("forgotPassword")
+        await record("forgotPassword")
         return try await onForgotPassword(body)
     }
 
     func resetPassword(_ body: ResetPasswordRequestDTO) async throws -> SimpleResponseDTO {
-        record("resetPassword")
+        await record("resetPassword")
         return try await onResetPassword(body)
     }
 
     func resendVerificationCode() async throws -> SimpleResponseDTO {
-        record("resendVerificationCode")
+        await record("resendVerificationCode")
         return try await onResend()
     }
 
     func confirmEmail(_ body: CodeRequestDTO) async throws -> SimpleResponseDTO {
-        record("confirmEmail")
+        await record("confirmEmail")
         return try await onConfirm(body)
     }
 
     func me() async throws -> MeDTO {
-        record("me")
+        await record("me")
         return try await onMe()
     }
 
     func updateMe(_ body: UpdateProfileRequestDTO) async throws -> MeDTO {
-        record("updateMe")
+        await record("updateMe")
         return try await onUpdateMe(body)
     }
 
     func changePassword(_ body: ChangePasswordRequestDTO) async throws -> SimpleResponseDTO {
-        record("changePassword")
+        await record("changePassword")
         return try await onChangePassword(body)
     }
 
     func myStats() async throws -> UserStatsDTO {
-        record("myStats")
+        await record("myStats")
         return try await onMyStats()
     }
 
     func exportData(to destination: URL?) async throws -> URL {
-        record("exportData")
+        await record("exportData")
         return try await onExportData(destination)
     }
 
     func deleteAccount(_ body: DeleteAccountRequestDTO) async throws -> SimpleResponseDTO {
-        record("deleteAccount")
+        await record("deleteAccount")
         return try await onDeleteAccount(body)
     }
 
     func createAnnonce(_ body: CreateAnnonceRequestDTO) async throws -> AnnonceDTO {
-        record("createAnnonce")
+        await record("createAnnonce")
         return try await onCreateAnnonce(body)
     }
 
     func updateAnnonce(id: String, _ body: UpdateAnnonceRequestDTO) async throws -> AnnonceDTO {
-        record("updateAnnonce")
+        await record("updateAnnonce")
         return try await onUpdateAnnonce(id, body)
     }
 
     func editAnnonce(id: String, body: Data) async throws -> AnnonceDTO {
-        record("editAnnonce")
+        await record("editAnnonce")
         let json = (try? JSONDecoder().decode(JSONValue.self, from: body)) ?? .null
         return try await onEditAnnonce(id, json)
     }
 
     func deleteAnnonce(id: String) async throws -> SimpleResponseDTO {
-        record("deleteAnnonce")
+        await record("deleteAnnonce")
         return try await onDeleteAnnonce(id)
     }
 
     func patchAnnonce(id: String, _ body: PatchAnnonceRequestDTO) async throws -> RenewResponseDTO {
-        record("patchAnnonce")
+        await record("patchAnnonce")
         return try await onPatchAnnonce(id, body)
     }
 
     func getSavedSearches() async throws -> SavedSearchesDTO {
-        record("getSavedSearches")
+        await record("getSavedSearches")
         return try await onGetSavedSearches()
     }
 
     func createSavedSearch(_ body: SavedSearchCreateRequestDTO) async throws -> SavedSearchCreatedDTO {
-        record("createSavedSearch")
+        await record("createSavedSearch")
         return try await onCreateSavedSearch(body)
     }
 
     func deleteSavedSearch(id: String) async throws -> SimpleResponseDTO {
-        record("deleteSavedSearch")
+        await record("deleteSavedSearch")
         return try await onDeleteSavedSearch(id)
     }
 
     func getFavorites() async throws -> [AnnonceDTO] {
-        record("getFavorites")
+        await record("getFavorites")
         return try await onGetFavorites()
     }
 
     func addFavorite(_ body: FavoriteRequestDTO) async throws -> FavoriteDTO {
-        record("addFavorite")
+        await record("addFavorite")
         return try await onAddFavorite(body)
     }
 
     func removeFavorite(annonceId: String) async throws -> SimpleResponseDTO {
-        record("removeFavorite")
+        await record("removeFavorite")
         return try await onRemoveFavorite(annonceId)
     }
 
     func isFavorite(annonceId: String) async throws -> IsFavoriteDTO {
-        record("isFavorite")
+        await record("isFavorite")
         return try await onIsFavorite(annonceId)
     }
 
     func upload(_ file: MultipartFile) async throws -> UploadResponseDTO {
-        record("upload")
+        await record("upload")
         return try await onUpload(file)
     }
 
     func myAnnonces(status: String?, page: Int, limit: Int) async throws -> AnnoncesPageDTO {
-        record("myAnnonces")
+        await record("myAnnonces")
         return try await onMyAnnonces(status, page, limit)
     }
 
     func getConversations(cursor: String?, limit: Int, archived: Bool?) async throws -> ConversationsPageDTO {
-        record("getConversations")
+        await record("getConversations")
         return try await onGetConversations(cursor, limit, archived)
     }
 
     func createConversation(_ body: CreateConversationRequestDTO) async throws -> ConversationCreatedDTO {
-        record("createConversation")
+        await record("createConversation")
         return try await onCreateConversation(body)
     }
 
     func getConversation(id: String, cursor: String?, limit: Int) async throws -> ConversationDetailDTO {
-        record("getConversation")
+        await record("getConversation")
         return try await onGetConversation(id, cursor, limit)
     }
 
     func sendMessage(id: String, _ body: SendMessageRequestDTO) async throws -> MessageDTO {
-        record("sendMessage")
+        await record("sendMessage")
         return try await onSendMessage(id, body)
     }
 
     func deleteMessage(id: String, messageId: String) async throws -> SimpleResponseDTO {
-        record("deleteMessage")
+        await record("deleteMessage")
         return try await onDeleteMessage(id, messageId)
     }
 
     func archiveConversation(id: String) async throws -> SimpleResponseDTO {
-        record("archiveConversation")
+        await record("archiveConversation")
         return try await onArchiveConversation(id)
     }
 
     func unarchiveConversation(id: String) async throws -> SimpleResponseDTO {
-        record("unarchiveConversation")
+        await record("unarchiveConversation")
         return try await onUnarchiveConversation(id)
     }
 
     func postOfferAction(id: String, _ body: OfferActionRequestDTO) async throws -> MessageDTO {
-        record("postOfferAction")
+        await record("postOfferAction")
         return try await onPostOfferAction(id, body)
     }
 
     func initiateOffer(id: String, _ body: OfferInitiateRequestDTO) async throws -> ConversationCreatedDTO {
-        record("initiateOffer")
+        await record("initiateOffer")
         return try await onInitiateOffer(id, body)
     }
 
     func getContactPhone(id: String) async throws -> ContactPhoneDTO {
-        record("getContactPhone")
+        await record("getContactPhone")
         return try await onGetContactPhone(id)
     }
 
     func blockUser(id: String) async throws -> SimpleResponseDTO {
-        record("blockUser")
+        await record("blockUser")
         return try await onBlockUser(id)
     }
 
     func unblockUser(id: String) async throws -> SimpleResponseDTO {
-        record("unblockUser")
+        await record("unblockUser")
         return try await onUnblockUser(id)
     }
 
     func getNotifications(page: Int, limit: Int) async throws -> NotificationsPageDTO {
-        record("getNotifications")
+        await record("getNotifications")
         return try await onGetNotifications(page, limit)
     }
 
     func markAllNotificationsRead() async throws -> MarkAllReadDTO {
-        record("markAllNotificationsRead")
+        await record("markAllNotificationsRead")
         return try await onMarkAllNotificationsRead()
     }
 
     func markNotificationRead(id: String) async throws -> SimpleResponseDTO {
-        record("markNotificationRead")
+        await record("markNotificationRead")
         return try await onMarkNotificationRead(id)
     }
 
     func deleteNotification(id: String) async throws -> SimpleResponseDTO {
-        record("deleteNotification")
+        await record("deleteNotification")
         return try await onDeleteNotification(id)
     }
 
