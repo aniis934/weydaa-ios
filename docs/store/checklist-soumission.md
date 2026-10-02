@@ -44,7 +44,7 @@
     `app-privacy.md` → **Publier**.
 13. **Prix et disponibilité** : gratuit ; pays selon la décision en attente (Algérie seule, ou aussi la
     France / l'UE). Si un pays de l'UE est coché : déclarer le statut de **commerçant** (Digital Services
-    Act, Affaires → conformité) ; adresse et téléphone publics exigés pour un commerçant.
+    Act, rubrique dédiée d'App Store Connect) ; adresse et téléphone publics exigés pour un commerçant.
 14. **Page de la version 1.0.0** (chaque langue) :
     - captures 6,9" dans l'ordre de `screenshots.md` ;
     - texte promotionnel, description, mots-clés, URL d'assistance et URL marketing (fiches) ;

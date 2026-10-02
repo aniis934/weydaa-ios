@@ -1,7 +1,8 @@
 # Captures App Store — plan (iPhone 6,9 pouces)
 
 > Une seule taille est exigée pour un iPhone seul : **6,9 pouces**, portrait, **1320 × 2868** (iPhone 17
-> Pro Max ; Apple accepte aussi 1290 × 2796 et 1260 × 2736 et réduit lui-même pour les autres écrans).
+> Pro Max ; Apple accepte aussi des tailles voisines comme 1290 × 2796 et réduit lui-même pour les autres
+> écrans).
 > 1 à 10 captures par langue ; on en prévoit 8, dans l'ordre ci-dessous, en fr, ar et en. Pas d'iPad
 > (app iPhone seule). Vidéo d'aperçu facultative (plus tard).
 
