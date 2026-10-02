@@ -1,0 +1,36 @@
+# Projet Xcode GÉNÉRÉ par XcodeGen (project.yml) — jamais commité
+*.xcodeproj/
+*.xcworkspace/
+!*.xcodeproj/project.xcworkspace/
+xcuserdata/
+DerivedData/
+build/
+*.xcresult
+.swiftpm/
+.build/
+
+# Secrets et fichiers Apple / Google — JAMAIS dans ce dépôt public
+*.p8
+*.p12
+*.cer
+*.certSigningRequest
+*.mobileprovision
+*.provisionprofile
+*.jks
+*.keystore
+GoogleService-Info.plist
+Config/Secrets.xcconfig
+AuthKey_*.p8
+.env
+.env.*
+
+# Sorties locales des scripts
+scripts/out/
+screens/
+*.mp4
+
+# Systèmes
+.DS_Store
+Thumbs.db
+desktop.ini
+node_modules/
