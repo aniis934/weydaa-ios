@@ -7,9 +7,6 @@ name: ios-compat
 # À la demande (phase 6, avant une publication) : `gh workflow run ios-compat.yml --ref <branche>`
 # (le workflow doit être sur main), puis `gh run download <id> -n ios-compat-16.4`. Mesures : docs/RELEASE.md.
 on:
-  # TEMPORAIRE (essai sur la branche prep/release, avant d'être sur main) : retiré après l'essai.
-  push:
-    tags: ["compat-*"]
   workflow_dispatch:
     inputs:
       ios_version:
@@ -74,8 +71,6 @@ jobs:
 
       - name: Télécharger le simulateur iOS
         id: runtime
-        env:
-          KEEP_IMAGE: ${{ env.USE_CACHE }}
         run: bash scripts/ci/compat.sh download
 
       # Sauvegardé AVANT l'installation (qui supprime l'image pour libérer le disque) et indépendamment

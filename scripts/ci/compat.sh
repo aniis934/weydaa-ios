@@ -2,19 +2,21 @@
 # Compatibilité iOS 16 (workflow ios-compat) : simulateur iOS ancien téléchargé chez Apple (absent de
 # l'image du runner), petit iPhone, compilation, tests unitaires et tour de captures en API simulée
 # (même mécanique que screens.sh). Sous-commandes, dans l'ordre du workflow :
-#   download  télécharge ET installe le simulateur iOS IOS_VERSION (image .dmg gardée dans RUNTIME_DIR
-#             pour le cache facultatif), sauf s'il est déjà là ou restauré du cache — sorties :
-#             downloaded=true|false, source=preinstalled|cache|apple|none
-#   install   installe l'image restaurée du cache puis la supprime (place disque) ; à défaut, installation directe
+#   download  télécharge le simulateur iOS IOS_VERSION chez Apple : xcodebuild l'installe ET en exporte
+#             l'image (.dmg) dans RUNTIME_DIR, que le cache facultatif du workflow peut sauvegarder ; rien
+#             à faire s'il est déjà installé ou restauré du cache — sorties : downloaded=true|false,
+#             source=preinstalled|cache|apple|none
+#   install   installe l'image restaurée du cache (puis la supprime) ; à défaut, installation directe
 #             (xcodebuild, puis xcodes) ; échec lisible si iOS IOS_VERSION reste introuvable
 #   run       simulateur, build-for-testing, tests unitaires, tour → screens/<appareil>/<langue>-<apparence>/
 # Entrées : IOS_VERSION (16.4), DEVICE (vide = iPhone SE (3rd generation), sinon iPhone 8, sinon
 # iPhone SE (2nd generation)), LANGS (fr), APPEARANCES (light), VIDEO (0|1), RUNTIME_DIR (~/.weyda-runtimes).
-# Xcode 26.6 (essai du 2026-10-02) : `xcodebuild -downloadPlatform iOS -buildVersion 16.4` SANS
-# -architectureVariant télécharge « iOS 16.4 Universal Simulator (20E247) », 6,18 Go ; AVEC
-# `-architectureVariant universal`, il répond « iOS 16.4 (universal) is not available for download »
-# (code 70) — l'option ne sert que de repli. `xcrun simctl list` avant, sinon « Unable to connect to
-# simulator ». Bash 3.2 (macOS).
+# Xcode 26.6, essais du 2026-10-02 : `xcodebuild -downloadPlatform iOS -buildVersion 16.4 -exportPath …`
+# SANS -architectureVariant télécharge « iOS 16.4 Universal Simulator (20E247) » (6,18 Go), l'installe et
+# en exporte l'image ; AVEC `-architectureVariant universal`, réponse « iOS 16.4 (universal) is not
+# available for download » (code 70) : l'option ne sert que de repli. `xcrun simctl list` avant, sinon
+# « Unable to connect to simulator ». Bash 3.2 (macOS) : toujours ${VAR} devant un caractère non ASCII
+# (« $X… » y est lu comme une variable nommée « X… » : échec de l'essai 2).
 set -uo pipefail
 
 IOS_VERSION="${IOS_VERSION:-16.4}"
@@ -38,20 +40,11 @@ runtime_id() {
     | first | .identifier // empty' 2>/dev/null
 }
 
-# Progression du téléchargement : une ligne tous les 10 % (xcodebuild en écrit des dizaines de milliers).
-quiet_progress() {
-  awk '/[0-9]%/ {
-         if (match($0, /[0-9]+(\.[0-9]+)?%/)) {
-           p = int(substr($0, RSTART, RLENGTH - 1))
-           if (p >= next_p) { print; fflush(); next_p = p - p % 10 + 10 }
-           next
-         }
-       }
-       { print; fflush() }'
-}
+# Lignes de progression retirées : xcodebuild en écrit des dizaines de milliers (« 12.3% (… of 6.18 GB) »).
+no_progress() { grep --line-buffered -v -E '[0-9]%' || true; }
 
-# Télécharge le simulateur iOS IOS_VERSION : dans le dossier $1 s'il est donné (image .dmg, pour le
-# cache), sinon installation directe. Sans -architectureVariant d'abord, « universal » en repli.
+# Télécharge et installe le simulateur iOS IOS_VERSION ; avec un dossier en argument, xcodebuild y
+# exporte aussi l'image (.dmg). Sans -architectureVariant d'abord, « universal » en repli.
 download_platform() {
   local export_dir="$1" variant status
   for variant in default universal; do
@@ -63,7 +56,7 @@ download_platform() {
       set -- "$@" -exportPath "$export_dir"
     fi
     echo "xcodebuild $*"
-    xcodebuild "$@" 2>&1 | quiet_progress
+    xcodebuild "$@" 2>&1 | no_progress
     status=${PIPESTATUS[0]}
     [ "$status" -ne 0 ] || return 0
     echo "::warning::xcodebuild -downloadPlatform (variante $variant) : code $status"
@@ -139,37 +132,31 @@ cmd_download() {
     return 0
   fi
 
-  # Avec le cache (KEEP_IMAGE=true), l'image est aussi exportée dans RUNTIME_DIR pour être sauvegardée ;
-  # sinon installation directe, sans copie sur le disque.
-  local start=$SECONDS status keep="${KEEP_IMAGE:-false}"
-  echo "Téléchargement chez Apple : simulateur iOS $IOS_VERSION…"
-  if [ "$keep" = true ]; then
-    download_platform "$RUNTIME_DIR"
-  else
-    rm -rf "$RUNTIME_DIR"
-    download_platform ""
-  fi
+  # Même commande que l'essai 1 (avec -exportPath : installe ET exporte l'image). Le workflow ne
+  # sauvegarde l'image que si le cache est demandé.
+  local start=$SECONDS status
+  echo "Téléchargement chez Apple : simulateur iOS ${IOS_VERSION}"
+  download_platform "$RUNTIME_DIR"
   status=$?
-  [ "$status" -ne 0 ] || wait_runtime 120 || true
   local secs=$((SECONDS - start))
-  if [ "$status" -eq 0 ] && [ "$keep" = true ] && [ -n "$(ls -A "$RUNTIME_DIR" 2>/dev/null)" ]; then
+  if [ "$status" -eq 0 ] && [ -n "$(ls -A "$RUNTIME_DIR" 2>/dev/null)" ]; then
     local size
     size=$(du -sh "$RUNTIME_DIR" | cut -f1)
-    echo "Téléchargé et installé en $(duration $secs) ; image gardée pour le cache : $(ls "$RUNTIME_DIR") ($size)"
+    echo "Téléchargé et installé en $(duration $secs) ; image exportée : $(ls "$RUNTIME_DIR") ($size)"
     output downloaded true
     output source apple
-    summary "- Simulateur iOS $IOS_VERSION : téléchargé chez Apple et installé en $(duration $secs) (image de $size pour le cache)"
+    summary "- Simulateur iOS ${IOS_VERSION} : téléchargé chez Apple et installé en $(duration $secs) (image de ${size})"
   elif [ "$status" -eq 0 ]; then
-    echo "Téléchargé et installé en $(duration $secs)"
+    echo "Téléchargé et installé en $(duration $secs) (aucune image exportée)"
     output downloaded false
     output source apple
-    summary "- Simulateur iOS $IOS_VERSION : téléchargé chez Apple et installé en $(duration $secs)"
+    summary "- Simulateur iOS ${IOS_VERSION} : téléchargé chez Apple et installé en $(duration $secs)"
   else
     rm -rf "$RUNTIME_DIR"
     echo "::warning::téléchargement en échec après $(duration $secs) : autres méthodes à l'étape suivante"
     output downloaded false
     output source none
-    summary "- Simulateur iOS $IOS_VERSION : téléchargement en échec ($(duration $secs)), autres méthodes tentées"
+    summary "- Simulateur iOS ${IOS_VERSION} : téléchargement en échec ($(duration $secs)), autres méthodes tentées"
   fi
   disk
 }
