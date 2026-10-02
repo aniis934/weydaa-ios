@@ -6,6 +6,7 @@ import Foundation
 ///   -WeydaLaunchFrame 0.62    affiche une image figée de l'animation (capture)
 ///   -WeydaTab messages        onglet ouvert au démarrage
 ///   -WeydaScreen showcase     écran de démonstration du système de design (Debug)
+///   -WeydaScreen data         démonstration de la couche données : vrais repositories sur l'API simulée (Debug)
 ///   -WeydaMockAPI YES         API simulée : réponses figées de MockFixtures (Debug)
 nonisolated enum LaunchOptions {
     private static var defaults: UserDefaults { .standard }

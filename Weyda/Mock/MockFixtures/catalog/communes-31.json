@@ -1,0 +1,158 @@
+[
+  {
+    "id": 3101,
+    "nameFr": "Ain Biya",
+    "nameAr": "عين البية",
+    "wilayaId": 31
+  },
+  {
+    "id": 3102,
+    "nameFr": "Ain Kerma",
+    "nameAr": "عين الكرمة",
+    "wilayaId": 31
+  },
+  {
+    "id": 3103,
+    "nameFr": "Ain Turk",
+    "nameAr": "عين الترك",
+    "wilayaId": 31
+  },
+  {
+    "id": 3104,
+    "nameFr": "Arzew",
+    "nameAr": "أرزيو",
+    "wilayaId": 31
+  },
+  {
+    "id": 3105,
+    "nameFr": "Ben Freha",
+    "nameAr": "بن فريحة",
+    "wilayaId": 31
+  },
+  {
+    "id": 3106,
+    "nameFr": "Bethioua",
+    "nameAr": "بطيوة",
+    "wilayaId": 31
+  },
+  {
+    "id": 3107,
+    "nameFr": "Bir El Djir",
+    "nameAr": "بئر الجير",
+    "wilayaId": 31
+  },
+  {
+    "id": 3108,
+    "nameFr": "Boufatis",
+    "nameAr": "بوفاطيس",
+    "wilayaId": 31
+  },
+  {
+    "id": 3109,
+    "nameFr": "Bousfer",
+    "nameAr": "بوصفر",
+    "wilayaId": 31
+  },
+  {
+    "id": 3110,
+    "nameFr": "Boutlelis",
+    "nameAr": "بوتليليس",
+    "wilayaId": 31
+  },
+  {
+    "id": 3111,
+    "nameFr": "El Ancor",
+    "nameAr": "العنصر",
+    "wilayaId": 31
+  },
+  {
+    "id": 3112,
+    "nameFr": "El Braya",
+    "nameAr": "البراية",
+    "wilayaId": 31
+  },
+  {
+    "id": 3113,
+    "nameFr": "El Kerma",
+    "nameAr": "الكرمة",
+    "wilayaId": 31
+  },
+  {
+    "id": 3114,
+    "nameFr": "Es Senia",
+    "nameAr": "السانية",
+    "wilayaId": 31
+  },
+  {
+    "id": 3115,
+    "nameFr": "Gdyel",
+    "nameAr": "قديل",
+    "wilayaId": 31
+  },
+  {
+    "id": 3116,
+    "nameFr": "Hassi Ben Okba",
+    "nameAr": "حاسي بن عقبة",
+    "wilayaId": 31
+  },
+  {
+    "id": 3117,
+    "nameFr": "Hassi Bounif",
+    "nameAr": "حاسي بونيف",
+    "wilayaId": 31
+  },
+  {
+    "id": 3118,
+    "nameFr": "Hassi Mefsoukh",
+    "nameAr": "حاسي مفسوخ",
+    "wilayaId": 31
+  },
+  {
+    "id": 3119,
+    "nameFr": "Marsat El Hadjadj",
+    "nameAr": "مرسى الحجاج",
+    "wilayaId": 31
+  },
+  {
+    "id": 3120,
+    "nameFr": "Mers El Kebir",
+    "nameAr": "المرسى الكبير",
+    "wilayaId": 31
+  },
+  {
+    "id": 3121,
+    "nameFr": "Messerghin",
+    "nameAr": "مسرغين",
+    "wilayaId": 31
+  },
+  {
+    "id": 3122,
+    "nameFr": "Oran",
+    "nameAr": "وهران",
+    "wilayaId": 31
+  },
+  {
+    "id": 3123,
+    "nameFr": "Oued Tlelat",
+    "nameAr": "وادي تليلات",
+    "wilayaId": 31
+  },
+  {
+    "id": 3124,
+    "nameFr": "Sidi Ben Yebka",
+    "nameAr": "سيدي بن يبقى",
+    "wilayaId": 31
+  },
+  {
+    "id": 3125,
+    "nameFr": "Sidi Chami",
+    "nameAr": "سيدي الشحمي",
+    "wilayaId": 31
+  },
+  {
+    "id": 3126,
+    "nameFr": "Tafraoui",
+    "nameAr": "تافراوي",
+    "wilayaId": 31
+  }
+]

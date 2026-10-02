@@ -21,6 +21,23 @@ nonisolated struct GoogleLoginRequestDTO: Encodable, Hashable, Sendable {
     var locale: String = "fr"
 }
 
+/// `POST /api/auth/apple` (lot serveur A, pas encore en production) : jeton d'identité Apple, code d'autorisation
+/// (échangé côté serveur contre le jeton de révocation), nonce clair de la demande, nom donné par Apple à la
+/// PREMIÈRE autorisation seulement, langue de l'interface. Réponse = celle de `POST /api/auth/token`.
+nonisolated struct AppleLoginRequestDTO: Encodable, Hashable, Sendable {
+    var identityToken: String
+    var authorizationCode: String? = nil
+    var nonce: String
+    var name: AppleNameDTO? = nil
+    var locale: String = "fr"
+}
+
+/// Prénom / nom transmis par Apple à la première autorisation (`appleTokenSchema.name` côté serveur).
+nonisolated struct AppleNameDTO: Encodable, Hashable, Sendable {
+    var givenName: String? = nil
+    var familyName: String? = nil
+}
+
 nonisolated struct RegisterRequestDTO: Encodable, Hashable, Sendable {
     var name: String
     var email: String
@@ -61,9 +78,14 @@ nonisolated struct ChangePasswordRequestDTO: Encodable, Hashable, Sendable {
 
 /// `DELETE /api/users/me/account` (loi 18-07). Compte avec mot de passe : `password`. Compte créé avec Google
 /// (sans mot de passe) : `googleIdToken`, un id_token Google frais du même compte, revérifié par le serveur.
+/// Compte créé avec Apple (lot serveur A, `deleteAccountSchema`) : jeton d'identité frais + nonce clair de la
+/// demande + code d'autorisation, que le serveur utilise pour révoquer l'accès Apple avant l'effacement.
 nonisolated struct DeleteAccountRequestDTO: Encodable, Hashable, Sendable {
     var password: String? = nil
     var googleIdToken: String? = nil
+    var appleIdentityToken: String? = nil
+    var nonce: String? = nil
+    var appleAuthorizationCode: String? = nil
 }
 
 /// `user` de la réponse token : seule source de `emailVerified` (GET /users/me ne le renvoie pas).
@@ -131,6 +153,9 @@ nonisolated struct MeDTO: Decodable, Hashable, Sendable {
     var emailVerificationWarning: String? = nil
     /// Faux pour un compte créé avec Google : ni changement de mot de passe, ni suppression par mot de passe.
     var hasPassword: Bool? = nil
+    /// Fournisseurs de connexion liés au compte (`credentials`, `google`, `apple`…) — lot serveur A, absent
+    /// des serveurs antérieurs (`nil`).
+    var providers: [String]? = nil
 }
 
 nonisolated extension MeDTO {
@@ -149,6 +174,7 @@ nonisolated extension MeDTO {
         createdAt = container.lenientString("createdAt")
         emailVerificationWarning = container.lenientString("emailVerificationWarning")
         hasPassword = container.lenientBool("hasPassword")
+        providers = container.lenientJSON("providers")?.arrayValue?.compactMap { $0.textValue }
     }
 }
 

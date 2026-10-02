@@ -6,15 +6,9 @@ import Foundation
 
 /// Aides internes des mappers.
 private nonisolated enum MappingSupport {
-    /// Tri stable par clé entière : `sortedBy` (Kotlin) est stable, `sorted(by:)` (Swift) ne le garantit pas.
+    /// Tri stable par clé entière (voir `StableOrder`).
     static func stableSorted<T>(_ items: [T], by key: (T) -> Int) -> [T] {
-        items.enumerated()
-            .sorted { lhs, rhs in
-                let left = key(lhs.element)
-                let right = key(rhs.element)
-                return left != right ? left < right : lhs.offset < rhs.offset
-            }
-            .map { $0.element }
+        StableOrder.sorted(items, by: key)
     }
 
     /// `JsonElement?.toStringList()` : tableau → ses valeurs simples ; valeur simple → [elle] ; sinon [].

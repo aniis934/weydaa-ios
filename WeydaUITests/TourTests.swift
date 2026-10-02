@@ -83,4 +83,21 @@ final class TourTests: XCTestCase {
             capture("90-showcase-\(page)")
         }
     }
+
+    /// Démonstration de la couche données (Debug) : vrais repositories sur l'API simulée, photos fictives.
+    @MainActor
+    func test04Data() {
+        let app = makeApp(["-WeydaSkipLaunch", "YES", "-WeydaScreen", "data"])
+        app.launch()
+        XCTAssertTrue(app.descendants(matching: .any)["screen.data"].waitForExistence(timeout: 20))
+        // Données chargées (catégories de MockFixtures/catalog), puis le temps que les photos s'affichent.
+        XCTAssertTrue(app.descendants(matching: .any)["data.category.vehicules"].waitForExistence(timeout: 20))
+        Thread.sleep(forTimeInterval: 1.0)
+        pause()
+        capture("91-data-1")
+        app.swipeUp()
+        Thread.sleep(forTimeInterval: 1.0)
+        pause(0.8)
+        capture("91-data-2")
+    }
 }
