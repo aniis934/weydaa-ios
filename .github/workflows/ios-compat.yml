@@ -2,9 +2,10 @@ name: ios-compat
 
 # Compatibilité iOS 16 : Xcode 26 + simulateur iOS 16.4 téléchargé chez Apple (l'image du runner n'a
 # que des simulateurs iOS 26), petit iPhone (SE 3e génération, sinon iPhone 8), compilation, tests
-# unitaires et tour de captures en API simulée (aucun appel à la prod). À la demande (phase 6, avant
-# une publication) : `gh workflow run ios-compat.yml --ref <branche>` (le workflow doit être sur main),
-# puis `gh run download <id> -n ios-compat-16.4`. Durées mesurées et limites : docs/RELEASE.md.
+# unitaires et tour de captures en API simulée (aucun appel à la prod). ≈ 10 min, dont ≈ 2 min de
+# téléchargement (6,2 Go) ; le cache GitHub, plus lent que ce téléchargement, est facultatif.
+# À la demande (phase 6, avant une publication) : `gh workflow run ios-compat.yml --ref <branche>`
+# (le workflow doit être sur main), puis `gh run download <id> -n ios-compat-16.4`. Mesures : docs/RELEASE.md.
 on:
   # TEMPORAIRE (essai sur la branche prep/release, avant d'être sur main) : retiré après l'essai.
   push:
@@ -28,9 +29,9 @@ on:
         type: boolean
         default: false
       cache:
-        description: Garder le simulateur téléchargé dans le cache GitHub (plusieurs Go)
+        description: Passer par le cache GitHub (6,2 Go ; plus lent que le téléchargement direct)
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read
@@ -39,7 +40,7 @@ env:
   XCODEGEN_VERSION: "2.46.0"
   DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
   IOS_VERSION: ${{ inputs.ios_version || '16.4' }}
-  USE_CACHE: ${{ github.event_name != 'workflow_dispatch' || inputs.cache }}
+  USE_CACHE: ${{ inputs.cache == true }}
 
 jobs:
   compat:
@@ -73,10 +74,13 @@ jobs:
 
       - name: Télécharger le simulateur iOS
         id: runtime
+        env:
+          KEEP_IMAGE: ${{ env.USE_CACHE }}
         run: bash scripts/ci/compat.sh download
 
       # Sauvegardé AVANT l'installation (qui supprime l'image pour libérer le disque) et indépendamment
-      # du résultat des tests : un échec d'iOS 16 ne fait pas re-télécharger plusieurs Go la fois suivante.
+      # du résultat des tests. Essai du 2026-10-02 : 2 min 12 s pour 6,2 Go, contre 1 min 41 s pour
+      # télécharger ET installer chez Apple — d'où le cache désactivé par défaut.
       - name: Mettre le simulateur en cache
         if: env.USE_CACHE == 'true' && steps.runtime-cache.outputs.cache-hit != 'true' && steps.runtime.outputs.downloaded == 'true'
         uses: actions/cache/save@v6
