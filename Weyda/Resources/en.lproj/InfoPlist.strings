@@ -1,0 +1,2 @@
+/* Display name under the icon (same as app_name on Android). */
+"CFBundleDisplayName" = "Weydaa";

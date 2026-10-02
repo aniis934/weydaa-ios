@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    Clés qu'Xcode ne sait pas générer seul (GENERATE_INFOPLIST_FILE complète le reste depuis
+    project.yml : nom affiché, version, orientation, scènes).
+-->
+<plist version="1.0">
+<dict>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fr</string>
+		<string>ar</string>
+		<string>en</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+		<key>UIImageName</key>
+		<string>SplashMark</string>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<false/>
+	</dict>
+	<key>WeydaAPIHost</key>
+	<string>$(WEYDA_API_HOST)</string>
+	<key>WeydaSupabaseHost</key>
+	<string>$(WEYDA_SUPABASE_HOST)</string>
+	<key>WeydaSupabaseAnonKey</key>
+	<string>$(WEYDA_SUPABASE_ANON_KEY)</string>
+</dict>
+</plist>
