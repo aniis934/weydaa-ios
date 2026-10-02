@@ -1,0 +1,148 @@
+name: ios-release
+
+# Publication vers TestFlight — lancement MANUEL uniquement, jamais sur un envoi de code :
+#   onglet Actions → ios-release → Run workflow (branche main), ou
+#   gh workflow run ios-release.yml --ref main -f notes="Ce que ce build change"
+# Archive Release signée « dans le nuage » avec la clé API App Store Connect (aucun certificat dans le
+# dépôt), numéro de build = numéro d'exécution + IOS_BUILD_OFFSET, envoi direct à App Store Connect,
+# puis notes « À tester » écrites dans TestFlight (au mieux). Secrets, prérequis, dépannage et plan B
+# (fastlane) : docs/RELEASE.md. Rien n'est secret dans les journaux (dépôt public) : les secrets ne
+# passent qu'aux étapes qui en ont besoin, la clé .p8 vit dans RUNNER_TEMP et est effacée à la fin.
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: Notes de version (« À tester » dans TestFlight)
+        required: true
+        type: string
+      tests:
+        description: Lancer les tests unitaires avant l'archive
+        type: boolean
+        default: true
+
+concurrency:
+  group: ios-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  XCODEGEN_VERSION: "2.46.0"
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+
+jobs:
+  release:
+    name: Archive signée et envoi à TestFlight
+    runs-on: macos-26
+    timeout-minutes: 60
+    outputs:
+      build: ${{ steps.check.outputs.build }}
+      version: ${{ steps.archive.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Secrets et numéro de build
+        id: check
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          SUPABASE_HOST: ${{ secrets.SUPABASE_HOST }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+          IOS_BUILD_OFFSET: ${{ vars.IOS_BUILD_OFFSET }}
+          NOTES: ${{ inputs.notes }}
+        run: bash scripts/ci/release.sh check
+
+      - name: Catalogue de chaînes (parité fr / ar / en)
+        run: node scripts/check-strings.mjs
+
+      - name: XcodeGen en cache
+        id: xcodegen
+        uses: actions/cache@v6
+        with:
+          path: ~/.xcodegen-dist
+          key: xcodegen-${{ env.XCODEGEN_VERSION }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Installer XcodeGen
+        if: steps.xcodegen.outputs.cache-hit != 'true'
+        run: bash scripts/ci/install-xcodegen.sh
+
+      # Avant XcodeGen : GoogleService-Info.plist (phase 5) doit exister pour entrer dans le projet.
+      - name: Clé API et configuration (Supabase, Firebase)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          SUPABASE_HOST: ${{ secrets.SUPABASE_HOST }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+        run: bash scripts/ci/release.sh prepare
+
+      - name: Générer le projet Xcode
+        run: bash scripts/ci/generate.sh
+
+      - name: Tests unitaires
+        if: inputs.tests
+        env:
+          SIM_DEVICE: iPhone 17 Pro
+        run: bash scripts/ci/test.sh
+
+      - name: Archive Release signée
+        id: archive
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: bash scripts/ci/release.sh archive
+
+      - name: Envoi à App Store Connect (TestFlight)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: bash scripts/ci/release.sh upload
+
+      - name: Symboles (dSYM)
+        run: bash scripts/ci/release.sh symbols
+
+      # Aucun secret dans les dSYM (le code est public). Crashlytics : envoi ajouté à la phase 5.
+      - name: Publier les dSYM
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-dsyms-${{ steps.check.outputs.build }}
+          path: build/release/dSYMs.zip
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Effacer la clé API et les secrets écrits
+        if: always()
+        run: bash scripts/ci/release.sh cleanup
+
+  notes:
+    name: Notes « À tester » dans TestFlight
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    # Au mieux : le build est déjà chez Apple, un échec ici ne change rien à la publication.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Écrire les notes du build (attend le traitement Apple, 40 min au plus)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          BUNDLE_ID: com.weydaa.app
+          MARKETING_VERSION: ${{ needs.release.outputs.version }}
+          BUILD_NUMBER: ${{ needs.release.outputs.build }}
+          NOTES: ${{ inputs.notes }}
+          NOTES_LOCALE: fr-FR
+          WAIT_MINUTES: "40"
+        run: node scripts/ci/testflight-notes.mjs
