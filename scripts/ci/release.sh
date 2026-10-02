@@ -243,6 +243,9 @@ cmd_archive() {
   version=$(/usr/libexec/PlistBuddy -c "Print :ApplicationProperties:CFBundleShortVersionString" "$plist")
   build=$(/usr/libexec/PlistBuddy -c "Print :ApplicationProperties:CFBundleVersion" "$plist")
   [ "$build" = "$BUILD_NUMBER" ] || die "Archive" "numéro de build inattendu dans l'archive ($build au lieu de $BUILD_NUMBER)"
+  if [ ! -f "$ARCHIVE/Products/Applications/Weyda.app/PrivacyInfo.xcprivacy" ]; then
+    echo "::warning title=Manifeste de confidentialité absent::PrivacyInfo.xcprivacy n'est pas dans l'app (brouillon : docs/store/, à placer dans Weyda/Resources à la phase 7)."
+  fi
   set_output version "$version"
   echo "Archive signée : Weydaa $version ($build)"
   summary "- Archive Release signée : Weydaa $version ($build)"
