@@ -1,0 +1,61 @@
+name: ios-ci
+
+# À chaque envoi de code : catalogue de chaînes, génération du projet, compilation pour le
+# simulateur et tests unitaires. Mac gratuit de GitHub (dépôt public), sans aucun secret.
+on:
+  push:
+    branches: ["**"]
+    paths-ignore: ["docs/**", "**/*.md", "LICENSE"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  XCODEGEN_VERSION: "2.46.0"
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+  SIM_DEVICE: iPhone 17 Pro
+
+jobs:
+  build-and-test:
+    name: Compilation et tests unitaires
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Catalogue de chaînes (parité fr / ar / en)
+        run: node scripts/check-strings.mjs
+
+      - name: XcodeGen en cache
+        id: xcodegen
+        uses: actions/cache@v6
+        with:
+          path: ~/.xcodegen-dist
+          key: xcodegen-${{ env.XCODEGEN_VERSION }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Installer XcodeGen
+        if: steps.xcodegen.outputs.cache-hit != 'true'
+        run: bash scripts/ci/install-xcodegen.sh
+
+      - name: Générer le projet Xcode
+        run: bash scripts/ci/generate.sh
+
+      - name: Compiler et tester
+        run: bash scripts/ci/test.sh
+
+      - name: Journal et résultats (échec)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-ci-results
+          path: |
+            build/logs/
+            build/results/
+          retention-days: 7
+          if-no-files-found: ignore
