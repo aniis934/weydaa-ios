@@ -1,0 +1,12 @@
+// Réglages communs aux configurations Debug et Release.
+// Les valeurs sensibles ne vivent JAMAIS ici (dépôt public) : la CI les écrit dans
+// Config/Secrets.xcconfig depuis le coffre GitHub (fichier ignoré par git). Vide = fonction coupée.
+
+// Hôte de l'API (https:// est ajouté par l'app ; « // » ouvrirait un commentaire xcconfig).
+WEYDA_API_HOST = weydaa.com
+
+// Temps réel (Supabase Realtime) : vide = désactivé, l'app reste fonctionnelle en HTTP seul.
+WEYDA_SUPABASE_HOST =
+WEYDA_SUPABASE_ANON_KEY =
+
+#include? "Secrets.xcconfig"

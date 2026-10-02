@@ -1,0 +1,89 @@
+name: ios-screens
+
+# Tour automatique de l'app en API simulée (aucun appel à la prod) : captures de chaque écran
+# en fr / ar / en × clair / sombre × 2 tailles d'iPhone, plus une vidéo du parcours.
+# À la demande (fin de phase) : `gh workflow run ios-screens.yml --ref <branche>` (le workflow doit
+# être sur main pour ça), ou depuis n'importe quelle branche : `git tag screens-<x> && git push origin screens-<x>`.
+on:
+  push:
+    tags: ["screens-*"]
+  workflow_dispatch:
+    inputs:
+      languages:
+        description: Langues
+        default: fr ar en
+      appearances:
+        description: Apparences
+        default: light dark
+      devices:
+        description: Appareils (séparés par ;)
+        default: iPhone 17 Pro Max;iPhone 17e
+
+permissions:
+  contents: read
+
+env:
+  XCODEGEN_VERSION: "2.46.0"
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+
+jobs:
+  screens:
+    name: Captures et vidéo
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: XcodeGen en cache
+        id: xcodegen
+        uses: actions/cache@v6
+        with:
+          path: ~/.xcodegen-dist
+          key: xcodegen-${{ env.XCODEGEN_VERSION }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Installer XcodeGen
+        if: steps.xcodegen.outputs.cache-hit != 'true'
+        run: bash scripts/ci/install-xcodegen.sh
+
+      - name: Générer le projet Xcode
+        run: bash scripts/ci/generate.sh
+
+      - name: Compiler pour les tests
+        run: |
+          set -o pipefail
+          mkdir -p build/logs
+          xcodebuild build-for-testing \
+            -project Weyda.xcodeproj \
+            -scheme Weyda \
+            -destination "platform=iOS Simulator,name=iPhone 17 Pro Max,OS=latest" \
+            -derivedDataPath build/dd \
+            CODE_SIGNING_ALLOWED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee build/logs/build-for-testing.log | xcbeautify --renderer github-actions
+
+      - name: Tour (captures + vidéo)
+        env:
+          LANGS: ${{ inputs.languages }}
+          APPEARANCES: ${{ inputs.appearances }}
+          DEVICES: ${{ inputs.devices }}
+        run: bash scripts/ci/screens.sh
+
+      - name: Publier les captures
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-screens
+          path: screens/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Résultats bruts (échec)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-screens-results
+          path: |
+            build/logs/
+            build/results/
+          retention-days: 7
+          if-no-files-found: ignore
