@@ -651,6 +651,44 @@ final class ChatViewModelTests: XCTestCase {
         XCTAssertEqual(rows.filter { $0.isMine }.map { $0.id }, ["a", "b", "d"])
     }
 
+    /// « En attente de réponse… » seulement sur MON offre encore ouverte (`showWaiting = isLatest && isPending && isMine`
+    /// du site) : une offre suivie d'une contre-offre ou d'une réponse est dépassée.
+    func testOnlyTheOpenOfferWaitsForAReply() {
+        let me = Self.me
+        let other = Self.other
+        let utc = ChatDayGrouping.deviceCalendar(timeZone: TimeZone(identifier: "UTC") ?? .current)
+        func offer(_ id: String, _ sender: String, _ minutesAgo: Double, _ kind: OfferKind, _ amount: Double) -> ChatMessage {
+            var message = ChatViewModelTests.domain(id, sender, minutesAgo)
+            message.type = .offer
+            message.offer = OfferMeta(kind: kind, amount: amount)
+            return message
+        }
+        func rows(_ messages: [ChatMessage]) -> [ChatTimelineRow] {
+            ChatTimeline.rows(messages: messages, userId: me, now: ChatViewModelTests.reference, calendar: utc)
+        }
+
+        // Fil c3 : NEW (moi) → COUNTER (lui) → COUNTER (moi) → ACCEPTED (lui) : plus rien n'attend.
+        let accepted = rows([
+            offer("n", me, 40, .new, 200_000),
+            offer("k1", other, 30, .counter, 210_000),
+            offer("k2", me, 20, .counter, 205_000),
+            offer("a", other, 10, .accepted, 205_000),
+        ])
+        XCTAssertTrue(accepted.allSatisfy { !$0.showsWaitingForReply && !$0.isOpenOffer && !$0.isActionableOffer })
+
+        // Fil c1 : NEW (moi) puis COUNTER (elle) ouverte : mon offre est dépassée, la sienne attend MA réponse.
+        let countered = [offer("n", me, 40, .new, 2_900_000), offer("k", other, 30, .counter, 3_050_000)]
+        let counteredRows = rows(countered)
+        XCTAssertEqual(counteredRows.filter { $0.showsWaitingForReply }.map { $0.id }, [])
+        XCTAssertEqual(counteredRows.filter { $0.isOpenOffer }.map { $0.id }, ["k"])
+        XCTAssertEqual(counteredRows.filter { $0.isActionableOffer }.map { $0.id }, ["k"])
+
+        // Je contre à mon tour : seule ma DERNIÈRE offre attend.
+        let mine = rows(countered + [offer("m", me, 20, .counter, 3_000_000)])
+        XCTAssertEqual(mine.filter { $0.showsWaitingForReply }.map { $0.id }, ["m"])
+        XCTAssertTrue(mine.allSatisfy { !$0.isActionableOffer })
+    }
+
     func testUserTextDirectionFollowsItsFirstStrongLetter() {
         XCTAssertTrue(ChatTextDirection.isRightToLeft("مرحبا، هل ما زال متاحا؟"))
         XCTAssertTrue(ChatTextDirection.isRightToLeft("3 050 000 دج"))
@@ -709,6 +747,14 @@ final class MockChatFixturesTests: XCTestCase {
         let c3 = try await repository.thread(id: "mock-c3")
         XCTAssertEqual(OfferRules.latestOffer(c3.messages)?.offer, OfferMeta(kind: .accepted, amount: 205_000))
         XCTAssertNil(OfferRules.openOffer(c3.messages))
+
+        // Captures : aucune offre dépassée « en attente » (c1 : seule la contre-offre d'Amina est ouverte, à moi de
+        // répondre ; c3 : négociation close).
+        let c1Rows = ChatTimeline.rows(messages: c1.messages, userId: me, now: Date())
+        XCTAssertTrue(c1Rows.allSatisfy { !$0.showsWaitingForReply })
+        XCTAssertEqual(c1Rows.filter { $0.isActionableOffer }.map { $0.message.offer?.amount }, [3_050_000])
+        let c3Rows = ChatTimeline.rows(messages: c3.messages, userId: me, now: Date())
+        XCTAssertTrue(c3Rows.allSatisfy { !$0.showsWaitingForReply && !$0.isOpenOffer })
 
         let c4 = try await repository.thread(id: "mock-c4")
         XCTAssertEqual(c4.conversation.annonce?.priceType, .free)

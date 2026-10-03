@@ -359,6 +359,7 @@ struct ChatMessageRow: View {
                 message: row.message,
                 offer: offer,
                 isMine: row.isMine,
+                showsWaiting: row.showsWaitingForReply,
                 actions: buttons,
                 isBusy: isOfferBusy,
                 canDelete: row.canDelete,
@@ -595,6 +596,8 @@ private struct ChatOfferCard: View {
     let message: ChatMessage
     let offer: OfferMeta
     let isMine: Bool
+    /// Mon offre encore ouverte (une offre dépassée par la suite du fil n'attend plus rien).
+    let showsWaiting: Bool
     let actions: [OfferAction]
     let isBusy: Bool
     let canDelete: Bool
@@ -646,7 +649,7 @@ private struct ChatOfferCard: View {
                     .italic()
                     .weydaText(.bodySmall)
                     .foregroundStyle(WeydaColor.onSurfaceVariant)
-            } else if isMine && offer.kind.isOpen {
+            } else if showsWaiting {
                 Label(L10n.offerWaitingResponse, systemImage: "clock")
                     .weydaText(.labelMedium)
                     .foregroundStyle(WeydaColor.onSurfaceVariant)

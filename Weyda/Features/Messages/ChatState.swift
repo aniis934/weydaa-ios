@@ -130,12 +130,19 @@ nonisolated struct ChatTimelineRow: Equatable, Sendable, Identifiable {
     let endsGroup: Bool
     /// « Lu » sous mon dernier message lu.
     let showsReadReceipt: Bool
+    /// L'offre OUVERTE du fil (`OfferRules.openOffer` : la dernière offre, si elle est NEW ou COUNTER). Une offre plus
+    /// ancienne est dépassée, même si son type reste NEW ou COUNTER.
+    let isOpenOffer: Bool
     /// Offre ouverte de l'AUTRE partie, la seule qui porte des boutons de réponse.
     let isActionableOffer: Bool
     /// Supprimable maintenant (mon message, fenêtre de 5 minutes du serveur).
     let canDelete: Bool
 
     var id: String { message.id }
+
+    /// « En attente de réponse… » : seulement sur MON offre encore ouverte — `showWaiting = isLatest && isPending && isMine`
+    /// du fil du site (ChatInterface.tsx) ; une offre dépassée n'affiche plus d'attente.
+    var showsWaitingForReply: Bool { isMine && isOpenOffer && !message.isDeleted }
 }
 
 /// Élément affiché du fil : séparateur de jour ou message. Identifiants stables : `chat.day.<AAAA-MM-JJ>` pour un jour,
@@ -188,8 +195,9 @@ nonisolated enum ChatTimeline {
             let previous: ChatMessage? = index > messages.startIndex ? messages[index - 1] : nil
             let next: ChatMessage? = index + 1 < messages.endIndex ? messages[index + 1] : nil
             let isMine = message.isMine(userId)
-            let isOpenOffer = message.offer?.kind.isOpen == true
-            let actionable = hasUser && isOpenOffer && message.senderId != userId && message.id == openOfferId
+            // `openOffer` ne renvoie que la DERNIÈRE offre, et seulement si elle est NEW ou COUNTER.
+            let isOpenOffer = openOfferId != nil && message.id == openOfferId
+            let actionable = hasUser && isOpenOffer && message.senderId != userId
             rows.append(
                 ChatTimelineRow(
                     message: message,
@@ -197,6 +205,7 @@ nonisolated enum ChatTimeline {
                     startsGroup: !continues(previous, message, calendar: calendar),
                     endsGroup: !continues(message, next, calendar: calendar),
                     showsReadReceipt: isMine && message.id == readId,
+                    isOpenOffer: isOpenOffer,
                     isActionableOffer: actionable,
                     canDelete: message.isDeletableBy(userId, now: now)
                 )

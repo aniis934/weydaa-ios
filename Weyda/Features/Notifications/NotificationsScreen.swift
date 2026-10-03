@@ -11,9 +11,8 @@ struct NotificationsActions {
 }
 
 /// Cloche d'un membre, sans état propre — portage de `NotificationsScreen` : rangées dans une `List` native (appui =
-/// marquer lue puis ouvrir la cible, glisser = supprimer), « Tout marquer comme lu » dans la barre tant qu'il reste
-/// des non lues, page suivante en approchant du bas, états (squelettes, erreur, vide), message bref. Grand titre :
-/// la barre garde toute sa largeur pour le bouton.
+/// marquer lue puis ouvrir la cible, glisser = supprimer), « Tout marquer comme lu » (icône de la barre) tant qu'il
+/// reste des non lues, page suivante en approchant du bas, états (squelettes, erreur, vide), message bref.
 struct NotificationsScreen: View {
     private let state: NotificationsState
     private let actions: NotificationsActions
@@ -37,10 +36,15 @@ struct NotificationsScreen: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    // Icône seule : le libellé en toutes lettres réduisait le titre à « Notific… » une fois la barre
+                    // repliée ; VoiceOver lit toujours « Tout marquer comme lu ».
                     if state.unreadCount > 0 && !state.isLoading {
-                        Button(L10n.notificationsMarkAllRead, action: actions.onMarkAllRead)
-                            .tint(WeydaColor.primary)
-                            .accessibilityIdentifier("notifications.markAll")
+                        Button(action: actions.onMarkAllRead) {
+                            Image(systemName: "checkmark.circle")
+                        }
+                        .tint(WeydaColor.primary)
+                        .accessibilityLabel(L10n.notificationsMarkAllRead)
+                        .accessibilityIdentifier("notifications.markAll")
                     }
                 }
             }
