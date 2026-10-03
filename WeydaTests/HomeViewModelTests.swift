@@ -322,11 +322,12 @@ final class HomeMockFixturesTests: XCTestCase {
         XCTAssertEqual(first.priceType, .negotiable)
         XCTAssertNotNil(first.createdAt)
 
-        // La liste de référence (ids partagés avec Annonces et Détail) : 24 annonces sur une seule page.
+        // La liste de référence (ids partagés avec Annonces et Détail) : 24 annonces en page 1 sur 30 au total ;
+        // la page 2 (6 annonces plus anciennes, `mock-a25…a30`) vient des données de l'onglet Annonces.
         let all = try await AnnonceRepository(api: api).search(ListingQuery())
         XCTAssertEqual(all.items.map { $0.id }, (1...24).map { "mock-a\($0)" })
-        XCTAssertEqual(all.total, 24)
-        XCTAssertFalse(all.hasMore)
+        XCTAssertEqual(all.total, 30)
+        XCTAssertTrue(all.hasMore)
         let free = try XCTUnwrap(all.items.last)
         XCTAssertEqual(free.priceType, .free)
         XCTAssertNil(free.price)
