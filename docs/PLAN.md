@@ -117,6 +117,13 @@ par simulation du routeur (52/52 requêtes justes).
 - [ ] Tour de captures (5x connexion, 6x compte) relu, galerie, clôture (PR `phase-3` → `main`)
 - [ ] Test sur iPhone de la connexion Apple / Google : attend le compte Apple, les clés et le lot serveur A (EN-ATTENTE)
 
+## Constats de la CI (phase 3)
+- Équipe AUTH + ACCOUNT : ≈ 8 700 lignes, compilées et testées vertes du premier coup (434 tests, 0 avertissement).
+- iOS 26 : ce qu'on pose dans `.safeAreaInset(edge: .top)` d'une vue défilante passe SOUS l'effet de bord de la barre de
+  navigation (fondu vers le fond) — les puces de « Mes annonces » étaient invisibles. Barres fixes du haut : pile
+  verticale au-dessus de la vue défilante (ou `safeAreaBar`, iOS 26). **Phase 6** : vérifier `OfflineBanner` (même
+  encart sur la fiche et les écrans du compte) en mode avion sur iOS 26.
+
 ## Constats de la CI (phase 2)
 - Le tour filmé saute des passages entiers (l'enregistreur du simulateur perd des images quand le Mac est chargé) :
   les captures font foi, la vidéo sert d'aperçu.

@@ -57,6 +57,17 @@ final class TourAccountTests: TourTestCase {
         let chip = app.descendants(matching: .any)["myListings.filter.rejected"]
         XCTAssertTrue(chip.waitForExistence(timeout: 10), "myListings.filter.rejected introuvable")
         settle()
+        // Libellés plus longs en français : la dernière puce dépasse l'écran → faire défiler la barre d'abord (vers
+        // la fin de la lecture : à gauche en LTR, à droite en arabe).
+        if !chip.isHittable {
+            let bar = app.scrollViews.containing(.any, identifier: "myListings.filter.all").firstMatch
+            if environment["WEYDA_LANG"] == "ar" {
+                bar.swipeRight()
+            } else {
+                bar.swipeLeft()
+            }
+            settle(1)
+        }
         chip.tap()
         let row = app.descendants(matching: .any)["myListings.row.mock-m6"]
         XCTAssertTrue(row.waitForExistence(timeout: 10), "myListings.row.mock-m6 introuvable")
