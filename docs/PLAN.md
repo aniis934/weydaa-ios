@@ -17,7 +17,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 0 | Fondations | dépôt public, projet XcodeGen, CI `ios-ci` + `ios-screens`, tokens de design, W et icône 1024, icônes Lucide, chaînes converties (+ parité), coquille 5 onglets, lancement animé, socle d'API simulée | non | ✅ close le 2026-10-03 |
 | 1 | Données et réseau | modèles, DTO tolérants, client HTTP, erreurs (~65 codes), session + trousseau + refresh, hors ligne, images, formats (DA, dates, chiffres latins), validations, pagination, suggestions, règles d’offre, protocole Phoenix — tests portés d’Android | non | ✅ close le 2026-10-03 |
 | 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ✅ close le 2026-10-03 |
-| 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | 🔄 en cours |
+| 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ✅ close le 2026-10-03 (Apple / Google : test sur iPhone en attente) |
 | 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ⏳ |
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ⏳ |
 | 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ⏳ |
@@ -99,7 +99,7 @@ par simulation du routeur (52/52 requêtes justes).
       visibles en français (« 3 150 000 DA »), barre d'onglets masquée sur la fiche, libellés de contact entiers sur 17e
 - [x] Galerie privée : https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa
 
-## Phase 3 — détail (en cours, reprise le 2026-10-03)
+## Phase 3 — détail (close le 2026-10-03, PR #4)
 Équipe : AUTH et ACCOUNT en parallèle sur des interfaces fixées (`docs/equipe/CONTRACTS-P3.md` : `AuthEntry`,
 `requestLogin`, `requestEmailVerification`, `ProfileView`, session simulée `-WeydaLoggedIn`, utilisateur fictif `mock-me`).
 - [x] Feuille de connexion (`AuthFlowView`, pile propre) : se ferme d'elle-même une fois connecté ; e-mail non vérifié →
@@ -114,7 +114,11 @@ par simulation du routeur (52/52 requêtes justes).
       par mot de passe, Google ou Apple selon `providers`), nous contacter, langue → Réglages de l'app
 - [x] Données simulées `routes-auth.json` + `routes-account.json` (dont les fiches `mock-m1…m6` de « Mes annonces »)
 - [x] CI : 434 tests, 0 échec, 0 avertissement — compilé du premier coup
-- [ ] Tour de captures (5x connexion, 6x compte) relu, galerie, clôture (PR `phase-3` → `main`)
+- [x] Tours de captures verts (5x connexion, 6x compte : 22 écrans × fr/ar/en × clair/sombre × 17 Pro Max + 17e) ;
+      ≈ 220 captures de la phase 3 relues en planches, plus une vérification des écrans de la phase 2 (aucune régression)
+- [x] Corrigé à la relecture : puces de « Mes annonces » invisibles sur iOS 26 (voir constats) ; tour en français
+      (dernière puce hors écran → glissement de la rangée avant l'appui)
+- [x] Galerie privée : https://claude.ai/artifact/RatHcgEgHZHGEzGQhp7VgL — clôture : PR #4 `phase-3` → `main`
 - [ ] Test sur iPhone de la connexion Apple / Google : attend le compte Apple, les clés et le lot serveur A (EN-ATTENTE)
 
 ## Constats de la CI (phase 3)
@@ -123,6 +127,12 @@ par simulation du routeur (52/52 requêtes justes).
   navigation (fondu vers le fond) — les puces de « Mes annonces » étaient invisibles. Barres fixes du haut : pile
   verticale au-dessus de la vue défilante (ou `safeAreaBar`, iOS 26). **Phase 6** : vérifier `OfflineBanner` (même
   encart sur la fiche et les écrans du compte) en mode avion sur iOS 26.
+- Tour (XCUITest) : demander `isHittable` sur un élément hors écran ÉCHOUE (« Activation point invalid ») au lieu de
+  répondre faux ; `app.scrollViews.containing(…)` renvoie d'abord un conteneur parent, qu'un glissement ne fait pas
+  défiler. Pour atteindre un élément d'une rangée horizontale : glisser par coordonnées à la hauteur de la rangée.
+- Faux défaut évité : dans une phrase arabe, le point qui suit une adresse e-mail s'affiche À GAUCHE de l'adresse
+  (« .yacine… ») — c'est la lecture correcte de droite à gauche ; l'isolement de l'adresse (U+2066/U+2069) reste une précaution.
+- `ios-screens` : un Mac sans le simulateur demandé fait échouer la compilation (« Unable to find a device ») — relancer.
 
 ## Constats de la CI (phase 2)
 - Le tour filmé saute des passages entiers (l'enregistreur du simulateur perd des images quand le Mac est chargé) :

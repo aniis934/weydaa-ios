@@ -47,6 +47,9 @@
 - [ ] Écritures réelles en prod avec un compte de test (publier une annonce, envoyer un message, une offre).
 
 ## Décisions
+- [ ] Séparateur des milliers en ANGLAIS (relevé phase 3, hérité de la phase 2) : la locale `en_DZ` affiche « 1.284 views »,
+      « 32.000 DZD » (point, comme l'arabe d'Algérie), ambigu pour un lecteur anglophone (« 1,284 » attendu). Garder, ou
+      forcer la virgule en anglais ? (français : « 1 284 », inchangé).
 - [ ] Âge App Store : 18+ conseillé (cohérent avec les CGU et la fiche Play) ; nom « Weydaa – Petites annonces »
       (repli « Weydaa ») ; ligne de copyright — détails : `docs/store/age-rating.md`, fiches `docs/store/fiche-*.md`.
 - [ ] Textes du site à compléter (relevé du 2026-10-03, hors iOS) : le formulaire Play « Sécurité des données » oublie
@@ -59,11 +62,15 @@
       pour les captures de la fiche App Store (phase 7).
 
 ## Tests sur l'iPhone (TestFlight)
+- [ ] Phase 3 : connexion avec Apple et avec Google, suppression de compte par Apple — quand le compte Apple (capacité
+      « Sign in with Apple »), l'identifiant client Google iOS (`WEYDA_GOOGLE_IOS_CLIENT_ID`) et le lot A seront en place.
 - [ ] Fin de phase 2 : parcourir (fluidité, démarrage : le W fantôme ne doit pas traîner).
 - [ ] Fin de phase 5 : messagerie + push.
 - [ ] Test final guidé (~30 min) puis soumission.
 
 ## Problèmes rencontrés en autonomie
+- [ ] **Feu vert pour la phase 4** (2026-10-03, nuit) : arrêt demandé à la fin de la phase 3 pour vérification — galerie
+      https://claude.ai/artifact/RatHcgEgHZHGEzGQhp7VgL (connexion et compte). Phase 4 = déposer une annonce.
 - [x] **Feu vert pour la phase 3** (2026-10-03) : arrêt demandé à la fin de la phase 2 pour vérification — galerie
       https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa. — Reçu le 2026-10-03 (soir) ; nouvel arrêt demandé à la fin de la phase 3.
 - [ ] **Envoi git (`git push`)** interdit par `weydaa-site/.claude/settings.json` (protection du site) : levé pour la
