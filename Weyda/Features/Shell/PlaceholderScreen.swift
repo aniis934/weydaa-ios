@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Écran provisoire d'un onglet (la coquille). Chaque phase remplace un onglet par son vrai écran. L'identifiant
-/// `screen.<onglet>` sert au tour automatique de captures. (Profil visiteur : `GuestProfileView`.)
+/// `screen.<onglet>` sert au tour automatique de captures. (Profil, visiteur ou membre : `ProfileView`.)
 struct PlaceholderScreen: View {
     let tab: AppTab
 

@@ -1,0 +1,68 @@
+{
+  "id": "mock-m3",
+  "slug": "velo-de-ville-btwin-elops-520-taille-m-alger",
+  "title": "Vélo de ville Btwin Elops 520, taille M",
+  "description": "Vélo de ville acheté en 2024, très peu servi : 7 vitesses, garde-boue, porte-bagages et éclairage. Pneus neufs. À voir à Hydra, essai possible.",
+  "price": 32000,
+  "priceType": "NEGOTIABLE",
+  "status": "PENDING",
+  "views": 0,
+  "isFeatured": false,
+  "createdAt": "2026-10-03T08:15:00.000Z",
+  "updatedAt": "2026-10-03T08:15:00.000Z",
+  "expiresAt": "2026-12-02T08:15:00.000Z",
+  "userId": "mock-me",
+  "categoryId": "sub_velos",
+  "wilayaId": 16,
+  "communeId": 1636,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "attributes": {
+    "condition": "like-new"
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-m3-1",
+      "url": "https://photos.mock.weydaa/annonces/bike-61.webp",
+      "publicId": "annonces/mock-m3/1",
+      "order": 0,
+      "annonceId": "mock-m3"
+    }
+  ],
+  "category": {
+    "id": "sub_velos",
+    "slug": "velos",
+    "nameFr": "Vélos",
+    "nameAr": "دراجات هوائية",
+    "nameEn": "Bicycles",
+    "parentId": "cat_loisirs",
+    "parent": {
+      "slug": "loisirs"
+    }
+  },
+  "wilaya": {
+    "id": 16,
+    "nameFr": "Alger",
+    "nameAr": "الجزائر"
+  },
+  "commune": {
+    "id": 1636,
+    "nameFr": "Hydra",
+    "nameAr": "حيدرة"
+  },
+  "user": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null,
+    "createdAt": "2025-03-14T10:00:00.000Z",
+    "emailVerified": "2025-03-14T10:20:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 0,
+    "ratingSum": 0,
+    "responseMinutes": null,
+    "_count": {
+      "annonces": 2
+    }
+  }
+}

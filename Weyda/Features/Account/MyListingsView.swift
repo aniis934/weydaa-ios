@@ -33,7 +33,8 @@ private struct MyListingsHost: View {
             onPost: { router.select(.post) },
             onNoticeShown: { model.noticeShown() }
         )
-        .refreshable { [model] in
+        // `@MainActor` explicite : juste, que le SDK fasse hériter cette fermeture de l'acteur de la vue ou non.
+        .refreshable { @MainActor [model] in
             await model.pullToRefresh()
         }
         .onAppear {
@@ -83,7 +84,7 @@ struct MyListingsScreen: View {
             }
             .navigationTitle(L10n.myListingsTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .accountNotice(state.notice, onShown: onNoticeShown)
+            .floatingNotice(state.notice, onShown: onNoticeShown)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.myListings")
     }

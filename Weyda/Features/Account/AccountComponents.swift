@@ -3,7 +3,8 @@ import UIKit
 
 // Briques propres aux écrans du compte (Profil, Mes annonces, Mes données, Nous contacter). Les champs, le bandeau
 // d'erreur et le bouton principal des formulaires sont ceux de la connexion (`Weyda/Features/Auth/AuthComponents.swift`,
-// comme sur Android) ; les noms d'ici sont préfixés « Account » pour ne jamais en croiser un autre dans le module.
+// comme sur Android) ; le message bref en bas d'écran est celui de la fiche (`floatingNotice`, DetailShared.swift).
+// Les noms d'ici sont préfixés « Account » pour ne jamais en croiser un autre dans le module.
 
 // MARK: - Garde des écrans de membre
 
@@ -63,17 +64,20 @@ struct AccountMemberGate<Content: View>: View {
 // MARK: - Lignes de menu
 
 /// Ligne d'une liste groupée (Profil) : pictogramme de la marque, libellé, valeur facultative au bout (la langue
-/// courante, comme les Réglages d'iOS). Le chevron est celui de `NavigationLink` ; `destructive` = déconnexion.
+/// courante, comme les Réglages d'iOS), puis un pictogramme de fin facultatif (sortie vers les Réglages). Le chevron
+/// des liens est celui de `NavigationLink` ; `destructive` = déconnexion.
 struct AccountMenuRow: View {
     private let title: String
     private let systemImage: String
     private let value: String?
+    private let trailingSymbol: String?
     private let destructive: Bool
 
-    init(title: String, systemImage: String, value: String? = nil, destructive: Bool = false) {
+    init(title: String, systemImage: String, value: String? = nil, trailingSymbol: String? = nil, destructive: Bool = false) {
         self.title = title
         self.systemImage = systemImage
         self.value = value
+        self.trailingSymbol = trailingSymbol
         self.destructive = destructive
     }
 
@@ -95,6 +99,12 @@ struct AccountMenuRow: View {
                     .foregroundStyle(WeydaColor.onSurfaceVariant)
                     .lineLimit(1)
             }
+            if let trailingSymbol {
+                Image(systemName: trailingSymbol)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(WeydaColor.onSurfaceVariant)
+                    .accessibilityHidden(true)
+            }
         }
         .frame(minHeight: WeydaSize.touchTarget)
         .contentShape(Rectangle())
@@ -106,6 +116,58 @@ struct AccountMenuRow: View {
 
     private var titleColor: Color {
         destructive ? WeydaColor.secondary : WeydaColor.onSurface
+    }
+}
+
+// MARK: - Langue
+
+/// Langue de l'interface, telle que l'affichent les Réglages (le nom de la langue dans sa propre écriture).
+nonisolated enum AccountLanguage {
+    static var currentName: String {
+        switch WeydaLocale.language {
+        case "ar": L10n.languageAr
+        case "en": L10n.languageEn
+        default: L10n.languageFr
+        }
+    }
+}
+
+/// Section « Langue » du Profil (membre et visiteur) — l'écran `LanguageScreen` d'Android, à la manière d'iOS : pas
+/// de sélecteur maison, la langue de l'app se règle dans les Réglages de l'iPhone (Réglages › Weydaa › Langue). La
+/// ligne y mène directement ; la note dessous dit quoi y faire, et quoi faire si le choix n'y figure pas (iOS ne le
+/// propose que si l'iPhone a plusieurs langues préférées).
+struct AccountLanguageSection: View {
+    @Environment(\.openURL) private var openURL
+
+    init() {}
+
+    var body: some View {
+        Section {
+            Button(action: openSettings) {
+                AccountMenuRow(
+                    title: L10n.profileLanguage,
+                    systemImage: "globe",
+                    value: AccountLanguage.currentName,
+                    trailingSymbol: "arrow.up.forward.app"
+                )
+            }
+            .listRowBackground(WeydaColor.surface)
+            .accessibilityHint(L10n.languageOpenSettings)
+            .accessibilityIdentifier("profile.language")
+        } footer: {
+            VStack(alignment: .leading, spacing: WeydaSpace.xs) {
+                Text(L10n.languageHint)
+                Text(L10n.languageLegacyHint)
+            }
+            .weydaText(.bodySmall)
+            .foregroundStyle(WeydaColor.onSurfaceVariant)
+        }
+    }
+
+    /// La page de Weydaa dans les Réglages (langue de l'app, notifications…).
+    private func openSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        openURL(url)
     }
 }
 
@@ -162,8 +224,9 @@ struct AccountTextArea<Field: Hashable>: View {
 
     private var input: some View {
         let shape = RoundedRectangle(cornerRadius: WeydaRadius.field, style: .continuous)
+        let maxLines: Int = minLines + AccountTextAreaMetrics.extraLines
         return TextField("", text: $text, axis: .vertical)
-            .lineLimit(minLines...(minLines + AccountTextAreaMetrics.extraLines))
+            .lineLimit(minLines...maxLines)
             .textInputAutocapitalization(.sentences)
             .weydaText(.bodyLarge)
             .foregroundStyle(WeydaColor.onSurface)
@@ -184,7 +247,7 @@ struct AccountTextArea<Field: Hashable>: View {
             HStack(alignment: .firstTextBaseline, spacing: WeydaSpace.sm) {
                 Text(message ?? "")
                     .weydaText(.bodySmall)
-                    .foregroundStyle(error == nil ? WeydaColor.onSurfaceVariant : WeydaColor.error)
+                    .foregroundStyle(messageColor)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if let counter {
@@ -199,6 +262,10 @@ struct AccountTextArea<Field: Hashable>: View {
 
     private var isFocused: Bool {
         focus.wrappedValue == field
+    }
+
+    private var messageColor: Color {
+        error == nil ? WeydaColor.onSurfaceVariant : WeydaColor.error
     }
 
     private var borderColor: Color {
@@ -218,6 +285,11 @@ nonisolated enum AccountTextAreaMetrics {
 
 // MARK: - Boutons et cartes
 
+/// Côté du W qui s'écrit dans un bouton pendant l'appel (comme `SubmitButton`).
+nonisolated enum AccountButtonMetrics {
+    static let loaderSide: CGFloat = 22
+}
+
 /// Bouton pleine largeur ROUGE d'une action définitive (suppression du compte) — le pendant destructif de
 /// `SubmitButton` (Android : `Button` aux couleurs `error`). Le W s'écrit pendant l'appel ; un nouvel appui est ignoré.
 struct AccountDestructiveButton: View {
@@ -225,8 +297,6 @@ struct AccountDestructiveButton: View {
     private let isEnabled: Bool
     private let isLoading: Bool
     private let action: () -> Void
-
-    private static let loaderSide: CGFloat = 22
 
     init(_ title: String, isEnabled: Bool = true, isLoading: Bool = false, action: @escaping () -> Void) {
         self.title = title
@@ -245,7 +315,7 @@ struct AccountDestructiveButton: View {
                     .opacity(isLoading ? 0 : 1)
                 if isLoading {
                     WeydaLoader(color: WeydaColor.onError)
-                        .frame(width: Self.loaderSide, height: Self.loaderSide)
+                        .frame(width: AccountButtonMetrics.loaderSide, height: AccountButtonMetrics.loaderSide)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -268,6 +338,47 @@ struct AccountDestructiveButton: View {
     }
 }
 
+/// Bouton pleine largeur secondaire (contour vert : « Préparer le fichier ») — Android : `OutlinedButton`. Le W
+/// s'écrit pendant l'appel ; un nouvel appui est ignoré.
+struct AccountSecondaryButton: View {
+    private let title: String
+    private let isLoading: Bool
+    private let action: () -> Void
+
+    init(_ title: String, isLoading: Bool = false, action: @escaping () -> Void) {
+        self.title = title
+        self.isLoading = isLoading
+        self.action = action
+    }
+
+    var body: some View {
+        Button(action: submit) {
+            ZStack {
+                Text(title)
+                    .weydaText(.titleSmall)
+                    .foregroundStyle(WeydaColor.primary)
+                    .multilineTextAlignment(.center)
+                    .opacity(isLoading ? 0 : 1)
+                if isLoading {
+                    WeydaLoader(color: WeydaColor.primary)
+                        .frame(width: AccountButtonMetrics.loaderSide, height: AccountButtonMetrics.loaderSide)
+                }
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        .controlSize(.large)
+        .tint(WeydaColor.primary)
+        .accessibilityLabel(isLoading ? L10n.loading : title)
+    }
+
+    private func submit() {
+        guard !isLoading else { return }
+        action()
+    }
+}
+
 /// Carte de section d'un écran défilant (Mes données) : surface, filet fin, titre puis contenu.
 struct AccountCard<Content: View>: View {
     private let title: String
@@ -282,7 +393,7 @@ struct AccountCard<Content: View>: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
-        VStack(alignment: .leading, spacing: WeydaSpace.sm) {
+        VStack(alignment: .leading, spacing: WeydaSpace.md) {
             Text(title)
                 .weydaText(.titleMedium)
                 .foregroundStyle(titleColor)
@@ -298,106 +409,32 @@ struct AccountCard<Content: View>: View {
     }
 }
 
-// MARK: - Message transitoire
+// MARK: - Feuille de partage
 
-extension View {
-    /// Message transitoire en bas de l'écran (Android : snackbar) : lu par VoiceOver, effacé au bout de 4 s par
-    /// `onShown` (le ViewModel remet son `notice` à nil).
-    func accountNotice(_ notice: String?, onShown: @escaping () -> Void) -> some View {
-        modifier(AccountNoticeModifier(notice: notice, onShown: onShown))
-    }
-}
-
-private struct AccountNoticeModifier: ViewModifier {
-    private let notice: String?
-    private let onShown: () -> Void
-    /// Message dont le temps d'affichage est écoulé (déclenche `onShown`).
-    @State private var elapsed: String? = nil
-
-    init(notice: String?, onShown: @escaping () -> Void) {
-        self.notice = notice
-        self.onShown = onShown
+/// Feuille de partage du SYSTÈME, ouverte d'elle-même dès que l'export est prêt (Android : `ACTION_SEND` + sélecteur)
+/// — présentée par UIKit au-dessus de l'écran courant : c'est la vraie feuille d'iOS (AirDrop, Fichiers, Mail…), pas
+/// une copie glissée dans une feuille SwiftUI. L'écran garde ensuite un `ShareLink` pour repartager le même fichier
+/// sans refaire d'export (2 par 24 h).
+enum AccountShareSheet {
+    static func present(_ url: URL) {
+        guard let presenter = topViewController() else { return }
+        let controller = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        // iPad (app iPhone agrandie) : une feuille de partage doit être ancrée quelque part.
+        controller.popoverPresentationController?.sourceView = presenter.view
+        presenter.present(controller, animated: true)
     }
 
-    func body(content: Content) -> some View {
-        content
-            .overlay(alignment: .bottom) {
-                if let notice {
-                    AccountNoticeToast(text: notice)
-                        .padding(.horizontal, WeydaSpace.screen)
-                        .padding(.bottom, WeydaSpace.lg)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
-            }
-            .weydaAnimation(.easeOut(duration: WeydaDuration.medium), value: notice)
-            .task(id: notice) {
-                elapsed = nil
-                guard let notice else { return }
-                UIAccessibility.post(notification: .announcement, argument: notice)
-                do {
-                    try await Task.sleep(nanoseconds: AccountNoticeTiming.visibleNanoseconds)
-                } catch {
-                    return
-                }
-                elapsed = notice
-            }
-            .onChange(of: elapsed) { value in
-                if value != nil {
-                    onShown()
-                }
-            }
-    }
-}
-
-nonisolated enum AccountNoticeTiming {
-    /// 4 s, la durée d'une snackbar courte d'Android.
-    static let visibleNanoseconds: UInt64 = 4_000_000_000
-}
-
-/// La pastille du message : couleurs inversées (sombre sur fond clair, claire sur fond sombre), comme une snackbar.
-private struct AccountNoticeToast: View {
-    let text: String
-
-    var body: some View {
-        Text(text)
-            .weydaText(.bodyMedium)
-            .foregroundStyle(WeydaColor.background)
-            .multilineTextAlignment(.leading)
-            .padding(.horizontal, WeydaSpace.lg)
-            .padding(.vertical, WeydaSpace.md)
-            .frame(maxWidth: WeydaSize.formMaxWidth, alignment: .leading)
-            .background(WeydaColor.onBackground, in: RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous))
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("account.notice")
-    }
-}
-
-// MARK: - Langue et chaînes en attente
-
-/// Langue de l'interface, telle que l'affichent les Réglages (le nom de la langue dans sa propre écriture).
-nonisolated enum AccountLanguage {
-    static var currentName: String {
-        switch WeydaLocale.language {
-        case "ar": L10n.languageAr
-        case "en": L10n.languageEn
-        default: L10n.languageFr
+    /// Le contrôleur affiché tout en haut de la fenêtre active (une feuille SwiftUI ouverte compte).
+    private static func topViewController() -> UIViewController? {
+        let scenes: [UIWindowScene] = UIApplication.shared.connectedScenes.compactMap { scene in
+            scene as? UIWindowScene
         }
+        let windows: [UIWindow] = scenes.flatMap { scene in scene.windows }
+        let window: UIWindow? = windows.first { candidate in candidate.isKeyWindow } ?? windows.first
+        var top: UIViewController? = window?.rootViewController
+        while let presented = top?.presentedViewController {
+            top = presented
+        }
+        return top
     }
-}
-
-/// Textes du compte qui attendent leur clé au catalogue (demandées dans la note de l'agent ACCOUNT) : chaque
-/// propriété renvoie aujourd'hui la clé existante la plus proche, à remplacer par l'accès typé une fois la clé
-/// ajoutée (une ligne chacune).
-nonisolated enum AccountStrings {
-    /// `stat_expired` « Expirées » (statistiques du profil) — d'ici là : « Expirée » (statut d'une annonce).
-    static var statExpired: String { L10n.statusExpired }
-
-    /// `account_delete_apple_hint` — d'ici là : aucune explication (seuls les comptes Apple la verront, lot A).
-    static var appleDeleteHint: String? { nil }
-
-    /// `account_delete_apple_confirm` « Confirmer avec Apple et supprimer » — d'ici là : « Supprimer définitivement ».
-    static var appleDeleteConfirm: String { L10n.deleteAccountAction }
-
-    /// `retry_in_hours` « Réessayez dans %1$d h. » (export refusé : 2 par 24 h) — d'ici là : rien, le message seul.
-    static func retryInHours(_ hours: Int) -> String? { nil }
 }

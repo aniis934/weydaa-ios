@@ -119,6 +119,21 @@ nonisolated struct GoogleOAuthClient: Hashable, Sendable {
         return token
     }
 
+    /// Échange du code chez Google ; seul l'`id_token` en revient. Statut hors 2xx → `tokenExchangeFailed`.
+    /// (`URLSession.data(for:)` attend hors du fil principal ; la réponse, minuscule, est lue chez l'appelant.)
+    static func exchange(_ request: URLRequest, session: URLSession) async throws -> String {
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw GoogleSignInError.tokenExchangeFailed
+        }
+        return try idToken(from: data)
+    }
+
+    /// Session de l'échange de jetons : éphémère (aucun cookie, aucun cache des jetons sur disque).
+    static func makeSession() -> URLSession {
+        URLSession(configuration: .ephemeral)
+    }
+
     /// `application/x-www-form-urlencoded` strict : tout sauf les caractères non réservés est encodé (un code Google
     /// contient « / », l'URI de retour « : »).
     static func formEncoded(_ fields: [(name: String, value: String)]) -> String {
@@ -148,7 +163,7 @@ final class GoogleSignInCoordinator {
     init(
         clientID: String? = AppConfig.current.googleIOSClientID,
         simulated: Bool = AuthSimulation.isEnabled,
-        session: URLSession = GoogleSignInCoordinator.makeSession()
+        session: URLSession = GoogleOAuthClient.makeSession()
     ) {
         client = GoogleOAuthClient(clientID: clientID)
         isSimulated = simulated
@@ -174,7 +189,7 @@ final class GoogleSignInCoordinator {
         guard let request = client.tokenRequest(code: code, codeVerifier: verifier) else {
             throw GoogleSignInError.tokenExchangeFailed
         }
-        return try await Self.exchange(request, session: session)
+        return try await GoogleOAuthClient.exchange(request, session: session)
     }
 
     /// Ouvre la page de Google et attend le retour sur le schéma de l'app.
@@ -186,13 +201,20 @@ final class GoogleSignInCoordinator {
         }
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, any Error>) in
             let resume = SingleResume(continuation)
-            let authentication = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackScheme) { callbackURL, error in
+            // `@Sendable` explicite : le rappel n'hérite pas du fil principal (le système l'appelle sur la file de
+            // son choix) et ne touche que `resume`, protégé par son verrou.
+            let completion: @Sendable (URL?, (any Error)?) -> Void = { callbackURL, error in
                 if let callbackURL {
                     resume.resume(with: .success(callbackURL))
                 } else {
                     resume.resume(with: .failure(GoogleSignInCoordinator.mapSessionError(error)))
                 }
             }
+            let authentication = ASWebAuthenticationSession(
+                url: url,
+                callbackURLScheme: callbackScheme,
+                completionHandler: completion
+            )
             authentication.presentationContextProvider = anchor
             // Cookies partagés avec Safari : un compte Google déjà ouvert évite de retaper son mot de passe.
             authentication.prefersEphemeralWebBrowserSession = false
@@ -202,16 +224,6 @@ final class GoogleSignInCoordinator {
                 resume.resume(with: .failure(GoogleSignInError.authorizationFailed))
             }
         }
-    }
-
-    /// Échange du code, hors du fil principal ; seul l'`id_token` en revient.
-    @concurrent
-    nonisolated static func exchange(_ request: URLRequest, session: URLSession) async throws -> String {
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw GoogleSignInError.tokenExchangeFailed
-        }
-        return try GoogleOAuthClient.idToken(from: data)
     }
 
     /// Fenêtre fermée par l'utilisateur → annulation silencieuse ; autre échec → `authorizationFailed`.
@@ -224,10 +236,5 @@ final class GoogleSignInCoordinator {
             return CancellationError()
         }
         return GoogleSignInError.authorizationFailed
-    }
-
-    /// Session de l'échange de jetons : éphémère (aucun cookie, aucun cache des jetons sur disque).
-    nonisolated static func makeSession() -> URLSession {
-        URLSession(configuration: .ephemeral)
     }
 }

@@ -1,0 +1,63 @@
+{
+  "annonces": [
+    {
+      "id": "mock-m5",
+      "slug": "montre-casio-g-shock-ga-2100-noire-alger",
+      "title": "Montre Casio G-Shock GA-2100 noire",
+      "description": "G-Shock GA-2100 noire, portée quelques mois, bracelet en parfait état. Boîte et notice.",
+      "price": 14500,
+      "priceType": "FIXED",
+      "status": "EXPIRED",
+      "views": 47,
+      "isFeatured": false,
+      "createdAt": "2026-07-20T10:00:00.000Z",
+      "updatedAt": "2026-07-20T10:00:00.000Z",
+      "expiresAt": "2026-09-18T10:00:00.000Z",
+      "userId": "mock-me",
+      "categoryId": "sub_montres-bijoux",
+      "wilayaId": 16,
+      "communeId": 1603,
+      "deletedAt": null,
+      "renewalCount": 1,
+      "attributes": {
+        "condition": "good"
+      },
+      "phone": "0555000000",
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-m5-1",
+          "url": "https://photos.mock.weydaa/annonces/watch-61.webp",
+          "publicId": "annonces/mock-m5/1",
+          "order": 0,
+          "annonceId": "mock-m5"
+        }
+      ],
+      "category": {
+        "id": "sub_montres-bijoux",
+        "slug": "montres-bijoux",
+        "nameFr": "Montres & Bijoux",
+        "nameAr": "ساعات ومجوهرات",
+        "nameEn": "Watches & Jewelry",
+        "parentId": "cat_mode",
+        "parent": {
+          "slug": "mode"
+        }
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      },
+      "commune": {
+        "id": 1603,
+        "nameFr": "Alger Centre",
+        "nameAr": "الجزائر الوسطى"
+      },
+      "aiModeration": null
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

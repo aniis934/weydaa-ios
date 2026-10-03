@@ -398,7 +398,7 @@ struct TermsNotice: View {
     }
 
     /// La phrase traduite, les deux mentions devenues des liens vers les pages du site.
-    static func sentence() -> AttributedString {
+    nonisolated static func sentence() -> AttributedString {
         let terms = L10n.authTermsLink
         let privacy = L10n.authPrivacyLink
         var text = AttributedString(L10n.authTermsNotice(terms, privacy))
@@ -411,8 +411,121 @@ struct TermsNotice: View {
         return text
     }
 
-    static func page(for url: URL) -> WebPage? {
+    nonisolated static func page(for url: URL) -> WebPage? {
         WebPage.allCases.first { $0.url() == url }
+    }
+}
+
+/// Actions des connexions Apple et Google, communes à Connexion et Inscription.
+struct AuthSocialActions {
+    /// Bouton système Apple, au moment de l'appui : portée et nonce de la demande.
+    var appleRequest: (ASAuthorizationAppleIDRequest) -> Void
+    /// Bouton système Apple, à la fin (autorisation ou échec).
+    var appleCompletion: (Result<ASAuthorization, any Error>) -> Void
+    /// API simulée : appui sur le bouton Apple, sans fenêtre système.
+    var appleSimulated: () -> Void
+    var google: () -> Void
+    var openPage: (WebPage) -> Void
+}
+
+/// « ou », « Continuer avec Apple », « Continuer avec Google » (si l'app a un identifiant client) puis l'acceptation
+/// des conditions : sous Connexion et Inscription (Android : `OrDivider` + `GoogleSignInButton` + `TermsNotice`).
+/// Apple et Google créent le compte s'il n'existe pas, d'où les conditions juste dessous.
+struct AuthSocialSection: View {
+    private let isAppleSimulated: Bool
+    private let showsGoogle: Bool
+    private let isSubmitting: Bool
+    private let isAppleSubmitting: Bool
+    private let isGoogleSubmitting: Bool
+    private let actions: AuthSocialActions
+
+    init(
+        isAppleSimulated: Bool,
+        showsGoogle: Bool,
+        isSubmitting: Bool,
+        isAppleSubmitting: Bool,
+        isGoogleSubmitting: Bool,
+        actions: AuthSocialActions
+    ) {
+        self.isAppleSimulated = isAppleSimulated
+        self.showsGoogle = showsGoogle
+        self.isSubmitting = isSubmitting
+        self.isAppleSubmitting = isAppleSubmitting
+        self.isGoogleSubmitting = isGoogleSubmitting
+        self.actions = actions
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            OrDivider()
+            AppleSignInButton(
+                isSimulated: isAppleSimulated,
+                isEnabled: !isSubmitting && !isGoogleSubmitting,
+                isLoading: isAppleSubmitting,
+                onRequest: actions.appleRequest,
+                onCompletion: actions.appleCompletion,
+                onSimulatedTap: actions.appleSimulated
+            )
+            if showsGoogle {
+                GoogleSignInButton(
+                    isEnabled: !isSubmitting && !isAppleSubmitting,
+                    isLoading: isGoogleSubmitting,
+                    action: actions.google
+                )
+                .padding(.top, WeydaSpace.md)
+            }
+            TermsNotice(onOpenPage: actions.openPage)
+        }
+        .padding(.top, WeydaSpace.xs)
+    }
+}
+
+/// Code à 6 chiffres (Android : champ du code de `VerifyEmailScreen`) : grands chiffres espacés, centrés, toujours
+/// de gauche à droite ; le code reçu par e-mail est proposé au-dessus du clavier (remplissage automatique).
+struct AuthCodeField<Field: Hashable>: View {
+    private let label: String
+    @Binding private var text: String
+    private let focus: FocusState<Field?>.Binding
+    private let field: Field
+    private let error: String?
+    private let isEnabled: Bool
+
+    /// Espace entre les chiffres (Android : letterSpacing 10 sp). Calculé : un type générique ne peut pas avoir de
+    /// propriété statique stockée.
+    private static var digitSpacing: CGFloat { WeydaSpace.sm }
+
+    init(
+        _ label: String,
+        text: Binding<String>,
+        focus: FocusState<Field?>.Binding,
+        field: Field,
+        error: String? = nil,
+        isEnabled: Bool = true
+    ) {
+        self.label = label
+        _text = text
+        self.focus = focus
+        self.field = field
+        self.error = error
+        self.isEnabled = isEnabled
+    }
+
+    var body: some View {
+        AuthFieldFrame(label: label, error: error, supporting: nil, input: input)
+    }
+
+    private var input: some View {
+        TextField("", text: $text)
+            .authKeyboard(.oneTimeCode)
+            .font(WeydaTextStyle.headlineMedium.font.monospacedDigit())
+            .tracking(Self.digitSpacing)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(WeydaColor.onSurface)
+            .focused(focus, equals: field)
+            .disabled(!isEnabled)
+            .modifier(AuthInputChrome(isFocused: focus.wrappedValue == field, hasError: error != nil, hasAccessory: false))
+            .accessibilityLabel(label)
+            .accessibilityIdentifier("auth.code")
     }
 }
 

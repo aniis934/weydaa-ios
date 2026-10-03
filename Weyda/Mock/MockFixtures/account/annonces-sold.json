@@ -1,0 +1,64 @@
+{
+  "annonces": [
+    {
+      "id": "mock-m4",
+      "slug": "televiseur-samsung-55-pouces-4k-crystal-uhd-alger",
+      "title": "Téléviseur Samsung 55 pouces 4K Crystal UHD",
+      "description": "Smart TV Samsung 55 pouces, image 4K, Netflix et YouTube intégrés. Télécommande et pied d'origine. Aucun pixel mort.",
+      "price": 72000,
+      "priceType": "FIXED",
+      "status": "SOLD",
+      "views": 539,
+      "isFeatured": false,
+      "createdAt": "2026-08-28T12:40:00.000Z",
+      "updatedAt": "2026-08-28T12:40:00.000Z",
+      "expiresAt": "2026-10-27T12:40:00.000Z",
+      "userId": "mock-me",
+      "categoryId": "sub_tv",
+      "wilayaId": 16,
+      "communeId": 1627,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "attributes": {
+        "brand": "samsung",
+        "condition": "good"
+      },
+      "phone": "0555000000",
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-m4-1",
+          "url": "https://photos.mock.weydaa/annonces/tv-61.webp",
+          "publicId": "annonces/mock-m4/1",
+          "order": 0,
+          "annonceId": "mock-m4"
+        }
+      ],
+      "category": {
+        "id": "sub_tv",
+        "slug": "tv",
+        "nameFr": "TV",
+        "nameAr": "تلفاز",
+        "nameEn": "TV",
+        "parentId": "cat_electronique",
+        "parent": {
+          "slug": "electronique"
+        }
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      },
+      "commune": {
+        "id": 1627,
+        "nameFr": "El Biar",
+        "nameAr": "البيار"
+      },
+      "aiModeration": null
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

@@ -15,6 +15,8 @@ import Foundation
 ///   -WeydaMockAPI YES         API simulée : réponses figées de MockFixtures (Debug)
 ///   -WeydaLoggedIn YES        avec l'API simulée : session ouverte d'emblée (utilisateur fictif de référence,
 ///                  unverified  e-mail vérifié — ou à vérifier avec `unverified`) ; sans effet sur l'API réelle
+///   -WeydaAuthDemo invalid    (Debug) inscription pré-remplie de valeurs refusées, erreurs de champ affichées :
+///                             capture d'un formulaire en erreur sans saisie au clavier (fiable dans toutes les langues)
 nonisolated enum LaunchOptions {
     /// Session simulée demandée par `-WeydaLoggedIn` (captures des écrans de membre).
     nonisolated enum MockSession: Sendable {
@@ -52,6 +54,15 @@ nonisolated enum LaunchOptions {
         case "unverified": return .unverified
         default: return nil
         }
+    }
+
+    /// Démonstration d'un formulaire de connexion pour les captures (`-WeydaAuthDemo invalid`) ; toujours nil en Release.
+    static var authDemo: String? {
+        #if DEBUG
+        return defaults.string(forKey: "WeydaAuthDemo")
+        #else
+        return nil
+        #endif
     }
 
     /// Vrai pendant les tests unitaires (l'app sert d'hôte) : pas d'animation de lancement.

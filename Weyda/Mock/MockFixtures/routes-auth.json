@@ -1,0 +1,11 @@
+[
+  {"method": "POST", "path": "/api/auth/token", "fixture": "auth/token.json"},
+  {"method": "POST", "path": "/api/auth/token/refresh", "fixture": "auth/token.json"},
+  {"method": "POST", "path": "/api/auth/google", "fixture": "auth/token.json"},
+  {"method": "POST", "path": "/api/auth/apple", "fixture": "auth/token.json"},
+  {"method": "POST", "path": "/api/auth/register", "status": 201, "fixture": "auth/register.json"},
+  {"method": "POST", "path": "/api/auth/forgot-password", "fixture": "auth/forgot-password.json"},
+  {"method": "POST", "path": "/api/auth/reset-password", "fixture": "auth/reset-password.json"},
+  {"method": "POST", "path": "/api/email-verify", "fixture": "auth/email-verify.json"},
+  {"method": "POST", "path": "/api/email-verify/confirm", "fixture": "auth/email-verify-confirm.json"}
+]

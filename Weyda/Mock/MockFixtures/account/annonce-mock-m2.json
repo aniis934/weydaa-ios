@@ -1,0 +1,68 @@
+{
+  "id": "mock-m2",
+  "slug": "canape-d-angle-5-places-gris-anthracite-alger",
+  "title": "Canapé d'angle 5 places gris anthracite",
+  "description": "Canapé d'angle en tissu, 5 places, gris anthracite. Housses déhoussables et lavées. Démonté pour le transport, à récupérer à Kouba.",
+  "price": 65000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 286,
+  "isFeatured": false,
+  "createdAt": "2026-08-09T17:05:00.000Z",
+  "updatedAt": "2026-08-09T17:05:00.000Z",
+  "expiresAt": "2026-10-08T17:05:00.000Z",
+  "userId": "mock-me",
+  "categoryId": "sub_meubles",
+  "wilayaId": 16,
+  "communeId": 1638,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "attributes": {
+    "condition": "good"
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-m2-1",
+      "url": "https://photos.mock.weydaa/annonces/sofa-61.webp",
+      "publicId": "annonces/mock-m2/1",
+      "order": 0,
+      "annonceId": "mock-m2"
+    }
+  ],
+  "category": {
+    "id": "sub_meubles",
+    "slug": "meubles",
+    "nameFr": "Meubles",
+    "nameAr": "أثاث",
+    "nameEn": "Furniture",
+    "parentId": "cat_maison",
+    "parent": {
+      "slug": "maison"
+    }
+  },
+  "wilaya": {
+    "id": 16,
+    "nameFr": "Alger",
+    "nameAr": "الجزائر"
+  },
+  "commune": {
+    "id": 1638,
+    "nameFr": "Kouba",
+    "nameAr": "القبة"
+  },
+  "user": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null,
+    "createdAt": "2025-03-14T10:00:00.000Z",
+    "emailVerified": "2025-03-14T10:20:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 0,
+    "ratingSum": 0,
+    "responseMinutes": null,
+    "_count": {
+      "annonces": 2
+    }
+  }
+}

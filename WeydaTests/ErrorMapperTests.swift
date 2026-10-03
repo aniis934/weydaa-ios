@@ -1,7 +1,8 @@
+import AuthenticationServices
 import XCTest
 @testable import Weyda
 
-/// Portage d'`ErrorMapperTest.kt` (+ cas iOS : annulation, erreurs d'image, délais et essais restants).
+/// Portage d'`ErrorMapperTest.kt` (+ cas iOS : annulation, erreurs d'image, délais et essais restants, Apple / Google).
 /// Les messages sont comparés aux chaînes du catalogue (`L10n`) de la langue du simulateur.
 final class ErrorMapperTests: XCTestCase {
     private struct Boom: Error {}
@@ -126,6 +127,37 @@ final class ErrorMapperTests: XCTestCase {
         XCTAssertEqual(ErrorMapper.attributeMessage("invalid_option"), L10n.validationAttrOption)
         let error = APIError(status: 400, code: "invalidAttributes", attributeErrors: ["year": "above_max"])
         XCTAssertEqual(ErrorMapper.attributeMessages(for: error), ["year": L10n.validationAttrMax])
+    }
+
+    /// Sign in with Apple (lot serveur A, sans équivalent Android) et échecs Apple / Google sur l'appareil.
+    func testAppleCodesAndDeviceSignInErrorsHaveDedicatedMessages() {
+        XCTAssertEqual(ErrorMapper.message(code: "invalidAppleToken", status: 401), L10n.errorInvalidAppleToken)
+        XCTAssertEqual(ErrorMapper.message(code: "appleEmailMissing", status: 403), L10n.errorAppleEmailMissing)
+        XCTAssertEqual(ErrorMapper.message(code: "appleReauthMismatch", status: 403), L10n.errorAppleReauthMismatch)
+        XCTAssertEqual(ErrorMapper.message(code: "appleSignInUnavailable", status: 503), L10n.errorAppleUnavailable)
+        for code in ["invalidAppleToken", "appleEmailMissing", "appleReauthMismatch", "appleSignInUnavailable"] {
+            XCTAssertNotEqual(ErrorMapper.message(code: code, status: 418), L10n.errorGeneric, code)
+        }
+        XCTAssertEqual(
+            ErrorMapper.message(for: APIError(status: 401, code: "invalidAppleToken")),
+            L10n.errorInvalidAppleToken
+        )
+        XCTAssertEqual(ErrorMapper.message(for: AppleSignInError.failed), L10n.errorAppleUnavailable)
+        XCTAssertEqual(ErrorMapper.message(for: AppleSignInError.invalidResponse), L10n.errorAppleUnavailable)
+        XCTAssertEqual(ErrorMapper.message(for: GoogleSignInError.notConfigured), L10n.errorGoogleUnavailable)
+        XCTAssertEqual(ErrorMapper.message(for: GoogleSignInError.stateMismatch), L10n.errorGoogleSignIn)
+        XCTAssertEqual(ErrorMapper.message(for: GoogleSignInError.tokenExchangeFailed), L10n.errorGoogleSignIn)
+        XCTAssertEqual(ErrorMapper.message(for: GoogleSignInError.missingIDToken), L10n.errorGoogleSignIn)
+        // Fenêtre Apple ou Google fermée : annulation, rien à afficher.
+        XCTAssertNil(ErrorMapper.message(for: AppleSignInCoordinator.mapError(
+            NSError(domain: ASAuthorizationError.errorDomain, code: ASAuthorizationError.Code.canceled.rawValue)
+        )))
+        XCTAssertNil(ErrorMapper.message(for: GoogleSignInCoordinator.mapSessionError(
+            NSError(
+                domain: ASWebAuthenticationSessionError.errorDomain,
+                code: ASWebAuthenticationSessionError.Code.canceledLogin.rawValue
+            )
+        )))
     }
 
     func testRetryDelayAndRemainingAttemptsAreAppended() {

@@ -1,0 +1,17 @@
+{
+  "id": "mock-me",
+  "name": "Yacine Benali",
+  "email": "yacine.benali@example.com",
+  "phone": "0555000000",
+  "phoneCountryCode": "+213",
+  "isRecommended": false,
+  "recommendedAt": null,
+  "bio": "Particulier à Alger, je vends ce dont je ne me sers plus.",
+  "avatar": null,
+  "role": "USER",
+  "createdAt": "2025-03-14T10:00:00.000Z",
+  "hasPassword": true,
+  "providers": [
+    "credentials"
+  ]
+}

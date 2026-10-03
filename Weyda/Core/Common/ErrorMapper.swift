@@ -72,11 +72,11 @@ nonisolated enum ErrorMapper {
         case "loginRequired", "invalidRefreshToken": return L10n.errorSessionExpired
         case "emailNotVerified": return L10n.errorEmailNotVerified
         case "googleReauthMismatch": return L10n.errorGoogleReauthMismatch
-        // Sign in with Apple (lot serveur A). PROVISOIRE : messages génériques existants, en attendant les clés
-        // demandées dans la note AUTH (error_invalid_apple_token, error_apple_email_missing,
-        // error_apple_reauth_mismatch, error_apple_unavailable).
-        case "invalidAppleToken", "appleEmailMissing", "appleReauthMismatch": return L10n.errorForbidden
-        case "appleSignInUnavailable": return L10n.errorServer
+        // Sign in with Apple (lot serveur A, sans équivalent Android).
+        case "invalidAppleToken": return L10n.errorInvalidAppleToken
+        case "appleEmailMissing": return L10n.errorAppleEmailMissing
+        case "appleReauthMismatch": return L10n.errorAppleReauthMismatch
+        case "appleSignInUnavailable": return L10n.errorAppleUnavailable
         case "invalidOrExpiredLink", "linkExpired": return L10n.resetInvalidLink
         case "cannotReportSelf": return L10n.errorCannotReportSelf
         case "emailExists", "emailAlreadyUsed": return L10n.errorEmailExists
@@ -128,11 +128,11 @@ nonisolated enum ErrorMapper {
         }
     }
 
-    /// Échec de Sign in with Apple sur l'appareil (capacité absente, réponse illisible). PROVISOIRE : message
-    /// générique, puis `L10n.errorAppleUnavailable` une fois la clé ajoutée.
+    /// Échec de Sign in with Apple sur l'appareil (capacité absente du profil, pas de compte iCloud, réponse
+    /// illisible) : « Connexion avec Apple impossible pour le moment », l'e-mail reste proposé.
     static func appleMessage(_ error: AppleSignInError) -> String {
         switch error {
-        case .failed, .invalidResponse: return L10n.errorServer
+        case .failed, .invalidResponse: return L10n.errorAppleUnavailable
         }
     }
 

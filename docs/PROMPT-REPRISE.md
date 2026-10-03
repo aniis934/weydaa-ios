@@ -26,6 +26,10 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-03 (nuit)** — **Phase 3 reprise** sur feu vert du propriétaire, qui demande un NOUVEL ARRÊT à la fin de la
+  phase 3 (CI verte, PR fusionnée, galerie publiée → attendre son feu vert pour la phase 4). `main` fusionné dans
+  `phase-3` (commit « wip » = le partiel) ; équipe AUTH + ACCOUNT relancée (notes et chaînes de l'équipe dans le
+  dossier temporaire de la session : `ios-team/`). `git push` autorisé pour la session, dépôt iOS seulement.
 - **2026-10-03 (soir)** — **Phase 2 close** (PR #3) : 356 tests verts, 612 captures relues, galerie
   https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa. **ARRÊT DEMANDÉ PAR LE PROPRIÉTAIRE** à la fin de la phase 2
   pour vérifier : attendre son feu vert avant la phase 3.

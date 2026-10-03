@@ -7,10 +7,16 @@ import Foundation
 nonisolated enum L10n {
     /// Mes données
     static var accountDataTitle: String { tr("account_data_title") }
+    /// Confirmer avec Apple et supprimer
+    static var accountDeleteAppleConfirm: String { tr("account_delete_apple_confirm") }
+    /// Votre compte est lié à Apple : confirmez votre identité avec Apple pour le supprimer.
+    static var accountDeleteAppleHint: String { tr("account_delete_apple_hint") }
     /// Confirmer avec Google et supprimer
     static var accountDeleteGoogleConfirm: String { tr("account_delete_google_confirm") }
     /// Votre compte est lié à Google : confirmez votre identité avec Google pour le supprimer.
     static var accountDeleteGoogleHint: String { tr("account_delete_google_hint") }
+    /// Expirées
+    static var accountStatExpired: String { tr("account_stat_expired") }
     /// Créer une alerte
     static var alertCreate: String { tr("alert_create") }
     /// Alerte créée : vous serez prévenu des nouvelles annonces.
@@ -335,6 +341,12 @@ nonisolated enum L10n {
     static var errorAlreadyReported: String { tr("error_already_reported") }
     /// Cette annonce n'est plus disponible — les offres sont fermées.
     static var errorAnnonceUnavailable: String { tr("error_annonce_unavailable") }
+    /// Votre compte Apple ne fournit pas d'email vérifié.
+    static var errorAppleEmailMissing: String { tr("error_apple_email_missing") }
+    /// Ce compte Apple ne correspond pas au compte connecté.
+    static var errorAppleReauthMismatch: String { tr("error_apple_reauth_mismatch") }
+    /// Connexion avec Apple impossible pour le moment. Réessayez ou utilisez votre email.
+    static var errorAppleUnavailable: String { tr("error_apple_unavailable") }
     /// Vous ne pouvez pas vous bloquer vous-même.
     static var errorCannotBlockSelf: String { tr("error_cannot_block_self") }
     /// Vous ne pouvez pas vous contacter vous-même.
@@ -365,7 +377,7 @@ nonisolated enum L10n {
     static var errorGeneric: String { tr("error_generic") }
     /// Votre compte Google ne fournit pas d'email vérifié.
     static var errorGoogleEmailMissing: String { tr("error_google_email_missing") }
-    /// Aucun compte Google sur cet appareil. Ajoutez-en un dans les paramètres Android.
+    /// Aucun compte Google choisi. Réessayez, ou connectez-vous avec votre email.
     static var errorGoogleNoAccount: String { tr("error_google_no_account") }
     /// Ce compte Google ne correspond pas au compte connecté.
     static var errorGoogleReauthMismatch: String { tr("error_google_reauth_mismatch") }
@@ -377,6 +389,8 @@ nonisolated enum L10n {
     static var errorIncorrectCode: String { tr("error_incorrect_code") }
     /// Mot de passe actuel incorrect.
     static var errorIncorrectPassword: String { tr("error_incorrect_password") }
+    /// Connexion Apple refusée : jeton invalide ou expiré. Réessayez.
+    static var errorInvalidAppleToken: String { tr("error_invalid_apple_token") }
     /// Certaines caractéristiques sont invalides. Vérifiez les champs signalés.
     static var errorInvalidAttributes: String { tr("error_invalid_attributes") }
     /// Email ou mot de passe incorrect.
@@ -531,11 +545,11 @@ nonisolated enum L10n {
     static var languageEn: String { tr("language_en") }
     /// Français
     static var languageFr: String { tr("language_fr") }
-    /// Le changement est immédiat. Android retient ce choix pour Weydaa seulement.
+    /// La langue de Weydaa se choisit dans les Réglages de l'iPhone : touchez « Langue » pour les ouvrir.
     static var languageHint: String { tr("language_hint") }
-    /// Sur cette version d'Android, la langue d'une application se règle depuis les paramètres du système.
+    /// Langue absente de la liste ? Ajoutez-la d'abord dans Réglages › Général › Langue et région.
     static var languageLegacyHint: String { tr("language_legacy_hint") }
-    /// Ouvrir les paramètres
+    /// Ouvrir les Réglages
     static var languageOpenSettings: String { tr("language_open_settings") }
     /// Langue du système
     static var languageSystem: String { tr("language_system") }
@@ -1099,8 +1113,11 @@ nonisolated enum L10n {
     /// Toutes les clés du catalogue (test de parité).
     static let allKeys: [String] = [
         "account_data_title",
+        "account_delete_apple_confirm",
+        "account_delete_apple_hint",
         "account_delete_google_confirm",
         "account_delete_google_hint",
+        "account_stat_expired",
         "alert_create",
         "alert_created",
         "alert_delete",
@@ -1263,6 +1280,9 @@ nonisolated enum L10n {
         "error_already_favorited",
         "error_already_reported",
         "error_annonce_unavailable",
+        "error_apple_email_missing",
+        "error_apple_reauth_mismatch",
+        "error_apple_unavailable",
         "error_cannot_block_self",
         "error_cannot_contact_self",
         "error_cannot_report_self",
@@ -1284,6 +1304,7 @@ nonisolated enum L10n {
         "error_google_unavailable",
         "error_incorrect_code",
         "error_incorrect_password",
+        "error_invalid_apple_token",
         "error_invalid_attributes",
         "error_invalid_credentials",
         "error_invalid_data",

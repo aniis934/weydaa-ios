@@ -146,6 +146,15 @@ final class UserRepository {
         return session.user ?? dto.toDomain(emailVerified: false)
     }
 
+    /// Moyens de connexion du compte (`hasPassword`, `providers` du lot serveur A), relus sur le serveur : ils
+    /// choisissent la confirmation de la suppression du compte (mot de passe, Google ou Apple). `providers` n'existe
+    /// que dans cette réponse, pas dans `User` (format stocké) ; l'utilisateur de session est rafraîchi au passage.
+    func signInMethods() async throws -> (hasPassword: Bool, providers: [String]?) {
+        let dto = try await api.me()
+        session.updateUser { current in dto.toDomain(emailVerified: current.emailVerified) }
+        return (dto.hasPassword ?? true, dto.providers)
+    }
+
     /// PUT ne renvoie que quelques champs : fusion avec l'utilisateur courant. Un changement d'e-mail remet
     /// `emailVerified` à faux côté serveur (nouveau code envoyé). L'indicatif choisi sur le site est conservé
     /// (+213 par défaut).

@@ -1,0 +1,60 @@
+{
+  "exportedAt": "2026-10-03T09:00:00.000Z",
+  "profile": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "email": "yacine.benali@example.com",
+    "phone": "0555000000",
+    "phoneCountryCode": "+213",
+    "bio": "Particulier à Alger, je vends ce dont je ne me sers plus.",
+    "createdAt": "2025-03-14T10:00:00.000Z"
+  },
+  "annonces": [
+    {
+      "id": "mock-m3",
+      "title": "Vélo de ville Btwin Elops 520, taille M",
+      "status": "PENDING",
+      "price": 32000,
+      "createdAt": "2026-10-03T08:15:00.000Z"
+    },
+    {
+      "id": "mock-m6",
+      "title": "iPhone 13 128 Go bleu",
+      "status": "REJECTED",
+      "price": 1000,
+      "createdAt": "2026-09-29T19:20:00.000Z"
+    },
+    {
+      "id": "mock-m1",
+      "title": "Lenovo ThinkPad T14 — i5, 16 Go, SSD 512 Go",
+      "status": "ACTIVE",
+      "price": 85000,
+      "createdAt": "2026-09-21T09:30:00.000Z"
+    },
+    {
+      "id": "mock-m4",
+      "title": "Téléviseur Samsung 55 pouces 4K Crystal UHD",
+      "status": "SOLD",
+      "price": 72000,
+      "createdAt": "2026-08-28T12:40:00.000Z"
+    },
+    {
+      "id": "mock-m2",
+      "title": "Canapé d'angle 5 places gris anthracite",
+      "status": "ACTIVE",
+      "price": 65000,
+      "createdAt": "2026-08-09T17:05:00.000Z"
+    },
+    {
+      "id": "mock-m5",
+      "title": "Montre Casio G-Shock GA-2100 noire",
+      "status": "EXPIRED",
+      "price": 14500,
+      "createdAt": "2026-07-20T10:00:00.000Z"
+    }
+  ],
+  "conversations": [],
+  "favorites": [],
+  "reviews": [],
+  "notifications": []
+}

@@ -7,29 +7,22 @@ import SwiftUI
 struct ProfileView: View {
     @EnvironmentObject private var container: AppContainer
     @EnvironmentObject private var session: SessionManager
-    @State private var showsLanguage: Bool = false
 
     init() {}
 
     var body: some View {
-        Group {
-            if let user = session.user {
-                ProfileHost(
-                    model: ProfileViewModel(
-                        users: container.users,
-                        auth: container.auth,
-                        userUpdates: session.$user.eraseToAnyPublisher()
-                    ),
-                    onLanguage: { showsLanguage = true }
+        if let user = session.user {
+            ProfileHost(
+                model: ProfileViewModel(
+                    users: container.users,
+                    auth: container.auth,
+                    userUpdates: session.$user.eraseToAnyPublisher()
                 )
-                // Un autre compte = un autre ViewModel : rien ne passe d'un utilisateur au suivant.
-                .id(user.id)
-            } else {
-                GuestProfileScreen(onLanguage: { showsLanguage = true })
-            }
-        }
-        .sheet(isPresented: $showsLanguage) {
-            LanguageSheet()
+            )
+            // Un autre compte = un autre ViewModel : rien ne passe d'un utilisateur au suivant.
+            .id(user.id)
+        } else {
+            GuestProfileScreen()
         }
     }
 }
@@ -38,21 +31,19 @@ struct ProfileView: View {
 private struct ProfileHost: View {
     @StateObject private var model: ProfileViewModel
     @EnvironmentObject private var router: AppRouter
-    private let onLanguage: () -> Void
 
-    init(model: @autoclosure @escaping () -> ProfileViewModel, onLanguage: @escaping () -> Void) {
+    init(model: @autoclosure @escaping () -> ProfileViewModel) {
         _model = StateObject(wrappedValue: model())
-        self.onLanguage = onLanguage
     }
 
     var body: some View {
         ProfileScreen(
             state: model.state,
             onVerifyEmail: { router.requestEmailVerification() },
-            onLanguage: onLanguage,
             onLogout: { model.logout() }
         )
-        .refreshable { [model] in
+        // `@MainActor` explicite : juste, que le SDK fasse hériter cette fermeture de l'acteur de la vue ou non.
+        .refreshable { @MainActor [model] in
             await model.pullToRefresh()
         }
     }
@@ -63,19 +54,12 @@ private struct ProfileHost: View {
 struct ProfileScreen: View {
     private let state: ProfileState
     private let onVerifyEmail: () -> Void
-    private let onLanguage: () -> Void
     private let onLogout: () -> Void
     @State private var confirmsLogout: Bool = false
 
-    init(
-        state: ProfileState,
-        onVerifyEmail: @escaping () -> Void,
-        onLanguage: @escaping () -> Void,
-        onLogout: @escaping () -> Void
-    ) {
+    init(state: ProfileState, onVerifyEmail: @escaping () -> Void, onLogout: @escaping () -> Void) {
         self.state = state
         self.onVerifyEmail = onVerifyEmail
-        self.onLanguage = onLanguage
         self.onLogout = onLogout
     }
 
@@ -103,6 +87,7 @@ struct ProfileScreen: View {
                 statsSection
                 activitySection
                 accountSection(user)
+                AccountLanguageSection()
                 helpSection
                 logoutSection
             }
@@ -160,18 +145,14 @@ struct ProfileScreen: View {
         }
     }
 
-    /// Compte : profil, mot de passe (pas pour un compte créé avec Google ou Apple), langue, données personnelles.
+    /// Compte : profil, mot de passe (pas pour un compte créé avec Google ou Apple), données personnelles. La langue
+    /// a sa propre section (sa note explique le passage par les Réglages).
     private func accountSection(_ user: User) -> some View {
         Section {
             menuLink(.editProfile, title: L10n.profileEdit, symbol: AppRoute.editProfile.symbol, id: "editProfile")
             if user.hasPassword {
                 menuLink(.changePassword, title: L10n.profileChangePassword, symbol: AppRoute.changePassword.symbol, id: "changePassword")
             }
-            Button(action: onLanguage) {
-                AccountMenuRow(title: L10n.profileLanguage, systemImage: "globe", value: AccountLanguage.currentName)
-            }
-            .listRowBackground(WeydaColor.surface)
-            .accessibilityIdentifier("profile.language")
             menuLink(.accountData, title: L10n.profileAccountData, symbol: AppRoute.accountData.symbol, id: "accountData")
         }
     }
@@ -364,7 +345,7 @@ private struct ProfileStatsGrid: View {
             ProfileStat(id: "active", value: stats.activeCount, label: L10n.statActive),
             ProfileStat(id: "pending", value: stats.pendingCount, label: L10n.statPending),
             ProfileStat(id: "sold", value: stats.soldCount, label: L10n.statSold),
-            ProfileStat(id: "expired", value: stats.expiredCount, label: AccountStrings.statExpired),
+            ProfileStat(id: "expired", value: stats.expiredCount, label: L10n.accountStatExpired),
             ProfileStat(id: "favorites", value: stats.favoritesReceived, label: L10n.statFavorites),
             ProfileStat(id: "messages", value: stats.messagesReceived, label: L10n.statMessages),
         ]
@@ -428,11 +409,8 @@ private struct ProfileStatsSkeleton: View {
 /// agent AUTH), puis la langue, « Nous contacter » et les informations légales, consultables sans compte.
 private struct GuestProfileScreen: View {
     @EnvironmentObject private var router: AppRouter
-    private let onLanguage: () -> Void
 
-    init(onLanguage: @escaping () -> Void) {
-        self.onLanguage = onLanguage
-    }
+    init() {}
 
     var body: some View {
         List {
@@ -444,12 +422,8 @@ private struct GuestProfileScreen: View {
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
+            AccountLanguageSection()
             Section {
-                Button(action: onLanguage) {
-                    AccountMenuRow(title: L10n.profileLanguage, systemImage: "globe", value: AccountLanguage.currentName)
-                }
-                .listRowBackground(WeydaColor.surface)
-                .accessibilityIdentifier("profile.language")
                 NavigationLink(value: AppRoute.contact) {
                     AccountMenuRow(title: L10n.contactTitle, systemImage: AppRoute.contact.symbol)
                 }

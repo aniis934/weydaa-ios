@@ -108,15 +108,18 @@ final class AppRouterTests: XCTestCase {
     }
 
     @MainActor
-    func testRequestLoginShowsTheProfileTabAtItsRoot() {
+    func testRequestLoginOpensTheSignInSheetOverTheCurrentScreen() {
         let router = makeRouter(tab: .account)
         router.push(.about)
         router.select(.home)
         router.push(.detail(idOrSlug: "a1"))
         router.requestLogin()
-        XCTAssertEqual(router.selectedTab, .account)
-        XCTAssertEqual(router.stack(for: .account), [])
-        XCTAssertEqual(router.stack(for: .home), [.detail(idOrSlug: "a1")], "l'annonce reste ouverte dans l'Accueil")
+        XCTAssertEqual(router.authFlow, .login)
+        XCTAssertEqual(router.selectedTab, .home, "l'écran d'origine reste dessous (feuille, phase 3)")
+        XCTAssertEqual(router.stack(for: .home), [.detail(idOrSlug: "a1")])
+        XCTAssertEqual(router.stack(for: .account), [.about])
+        router.requestEmailVerification()
+        XCTAssertEqual(router.authFlow, .verifyEmail)
     }
 
     // MARK: - Liens profonds
@@ -169,6 +172,16 @@ final class AppRouterTests: XCTestCase {
         router.open(.resetPassword(token: "t0k3n"))
         XCTAssertEqual(router.selectedTab, .account)
         XCTAssertEqual(router.stack(for: .account), [])
+        XCTAssertEqual(router.authFlow, .resetPassword(token: "t0k3n"))
+    }
+
+    @MainActor
+    func testAnotherDeepLinkClosesTheSignInSheet() {
+        let router = makeRouter()
+        router.requestLogin()
+        router.open(.listing(idOrSlug: "a1"))
+        XCTAssertNil(router.authFlow, "l'écran visé doit être visible")
+        XCTAssertEqual(router.stack(for: .home), [.detail(idOrSlug: "a1")])
     }
 
     @MainActor
