@@ -18,7 +18,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 1 | Données et réseau | modèles, DTO tolérants, client HTTP, erreurs (~65 codes), session + trousseau + refresh, hors ligne, images, formats (DA, dates, chiffres latins), validations, pagination, suggestions, règles d’offre, protocole Phoenix — tests portés d’Android | non | ✅ close le 2026-10-03 |
 | 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ✅ close le 2026-10-03 |
 | 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ✅ close le 2026-10-03 (Apple / Google : test sur iPhone en attente) |
-| 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ⏳ |
+| 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ✅ close le 2026-10-04 |
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ⏳ |
 | 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ⏳ |
 | 7 | App Store + lot serveur C | TestFlight final, manifeste de confidentialité, étiquettes App Privacy, âge, textes fr/ar/en, captures 6,9", compte de démo, test final, soumission | oui | ⏳ |
@@ -120,6 +120,33 @@ par simulation du routeur (52/52 requêtes justes).
       (dernière puce hors écran → glissement de la rangée avant l'appui)
 - [x] Galerie privée : https://claude.ai/artifact/RatHcgEgHZHGEzGQhp7VgL — clôture : PR #4 `phase-3` → `main`
 - [ ] Test sur iPhone de la connexion Apple / Google : attend le compte Apple, les clés et le lot serveur A (EN-ATTENTE)
+
+## Phase 4 — détail (close le 2026-10-04, PR #5)
+Équipe : WIZARD (logique + tests), SCREENS (écrans + tour 7x), MEDIA (photos + « Mes annonces », tour 8x) en parallèle sur des
+interfaces fixées (`docs/equipe/CONTRACTS-P4.md` : `PostListingState`, `PostListingViewModel`, `PostDraftStore`, `PostPhotoStore`,
+`postGalleryPicker` / `postCameraPicker` / `LocalPhotoThumbnail`, brouillons simulés `-WeydaPostDraft`).
+- [x] Assistant 6 étapes (catégorie, caractéristiques si la catégorie en a, infos et prix, photos, localisation, vérification) :
+      portage de `PostListingViewModel` (validation par étape, selects dépendants, retour sur l'étape fautive selon l'erreur serveur)
+- [x] Brouillon sur disque (`Application Support/PostDrafts`, exclu des sauvegardes, propriétaire, effacé à la déconnexion
+      volontaire) ; édition : brouillon en mémoire ; photos locales nommées par SHA-256 (une photo choisie deux fois = une)
+- [x] Photos : galerie (`PhotosPicker`, sans permission), appareil photo (`UIImagePickerController`, `NSCameraUsageDescription`
+      fr/ar/en ; bouton masqué sans caméra), envoi séquentiel (JPEG 1600 px), échec + réessayer, photo principale
+- [x] Modifier une annonce (route `editListing`, depuis la fiche ou « Mes annonces ») : ouverture sur le récapitulatif, retour
+      au récapitulatif puis confirmation d'abandon ; boutons de « Mes annonces » (modifier, vendu, renouveler, supprimer)
+- [x] Données simulées : `routes-post.json`, `routes-mylistings.json`, 8 brouillons ; attributs de « Voitures » filtrés comme le
+      serveur (`showFor` / `hideFor`)
+- [x] CI : 475 tests (472 + 3 sautés en dehors du mode `live`), 0 échec, 0 avertissement — compilé du premier coup
+- [x] ≈ 340 captures de la phase 4 relues (fr/ar/en × clair/sombre × 17 Pro Max + 17e) + vidéo ; aucune régression des phases 2-3
+- [x] Corrigé à la relecture : l'année groupée comme un prix dans le récapitulatif (« 2 019 ») — milliers à partir de 10 000
+- [x] Galerie privée : https://claude.ai/artifact/TcxYfo9YzeUPup9hiYkeAt — clôture : PR #5 `phase-4` → `main`
+- [ ] Sur iPhone : appareil photo et sélecteur de photos réels ; première vraie publication avec un compte de test (EN-ATTENTE)
+
+## Constats de la CI (phase 4)
+- Équipe de 3 agents : ≈ 6 200 lignes, compilées et testées vertes du premier coup (contrats fixés d'avance + relecture
+  « compilateur » par chaque agent ; les risques signalés par les agents ont été relus par l'orchestrateur avant l'envoi).
+- Le tour ne peut pas piloter le sélecteur de photos (hors processus) ni l'appareil photo (absent du simulateur) : les étapes
+  remplies viennent de brouillons simulés (`-WeydaPostDraft <nom>`, écrits dans un dossier temporaire vidé à chaque lancement).
+- `ios-screens` : un tour peut attendre un Mac libre plus de 25 min quand les 5 Mac gratuits sont pris (CI + autres tours).
 
 ## Constats de la CI (phase 3)
 - Équipe AUTH + ACCOUNT : ≈ 8 700 lignes, compilées et testées vertes du premier coup (434 tests, 0 avertissement).

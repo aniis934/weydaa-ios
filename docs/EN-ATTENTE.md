@@ -64,11 +64,15 @@
 ## Tests sur l'iPhone (TestFlight)
 - [ ] Phase 3 : connexion avec Apple et avec Google, suppression de compte par Apple — quand le compte Apple (capacité
       « Sign in with Apple »), l'identifiant client Google iOS (`WEYDA_GOOGLE_IOS_CLIENT_ID`) et le lot A seront en place.
+- [ ] Phase 4 : appareil photo (demande d'autorisation, photo prise → envoyée), sélecteur de photos réel (HEIC, plusieurs
+      photos), brouillon retrouvé après fermeture de l'app ; première vraie annonce avec un compte de test (feu vert).
 - [ ] Fin de phase 2 : parcourir (fluidité, démarrage : le W fantôme ne doit pas traîner).
 - [ ] Fin de phase 5 : messagerie + push.
 - [ ] Test final guidé (~30 min) puis soumission.
 
 ## Problèmes rencontrés en autonomie
+- [ ] **Feu vert pour la phase 5** (2026-10-04) : arrêt à la fin de la phase 4 pour vérification — galerie
+      https://claude.ai/artifact/TcxYfo9YzeUPup9hiYkeAt (déposer une annonce). Phase 5 = messagerie et notifications (+ lot serveur B).
 - [x] **Feu vert pour la phase 4** (2026-10-03, nuit) : arrêt demandé à la fin de la phase 3 pour vérification — galerie
       https://claude.ai/artifact/RatHcgEgHZHGEzGQhp7VgL (connexion et compte). Phase 4 = déposer une annonce. — Reçu le 2026-10-04.
 - [x] **Feu vert pour la phase 3** (2026-10-03) : arrêt demandé à la fin de la phase 2 pour vérification — galerie
