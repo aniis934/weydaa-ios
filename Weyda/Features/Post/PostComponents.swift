@@ -68,7 +68,9 @@ nonisolated enum PostFormText {
         case .select:
             return options.first { $0.value == raw }?.label ?? definition.optionLabel(raw)
         case .number:
-            let number: String = Double(raw).map { Format.decimal($0) } ?? raw
+            // Milliers groupés à partir de 10 000 seulement : une année (« 2019 ») ou une cylindrée (« 1500 ») ne se
+            // groupe pas — Android affichait « 2 019 » sur son récapitulatif.
+            let number: String = Double(raw).flatMap { abs($0) >= 10_000 ? Format.decimal($0) : nil } ?? raw
             guard let unit = TextCheck.nonBlank(definition.unitLabel) else { return number }
             return "\(number) \(unit)"
         case .text:
