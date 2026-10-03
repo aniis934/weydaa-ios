@@ -1,0 +1,252 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a3",
+      "title": "Appartement F3 de 85 m² à Hydra",
+      "description": "Particulier vend F3 de 85 m² au 4e étage d'une résidence calme et gardée, avec ascenseur. Double exposition, deux balcons, cuisine équipée, salle de bain refaite à neuf. Place de parking en sous-sol. Livret foncier. Visites le week-end sur rendez-vous, agences s'abstenir.",
+      "price": 38000000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 176,
+      "isFeatured": true,
+      "createdAt": "2026-10-02T18:20:00.000Z",
+      "updatedAt": "2026-10-02T18:20:00.000Z",
+      "expiresAt": "2026-12-01T18:20:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_vente-appartement",
+      "wilayaId": 16,
+      "communeId": 1636,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "appartement-f3-de-85-m-a-hydra-alger",
+      "attributes": {
+        "surface": 85,
+        "rooms": "3",
+        "floor": 4,
+        "furnished": false,
+        "deed_type": "livret-foncier",
+        "condition": "good",
+        "has_parking": true,
+        "has_elevator": true,
+        "has_balcony": true,
+        "total_floors": 7
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a3-1",
+          "url": "https://photos.mock.weydaa/annonces/house-1.webp",
+          "publicId": "annonces/mock-a3/1",
+          "order": 0,
+          "annonceId": "mock-a3"
+        }
+      ],
+      "category": {
+        "slug": "vente-appartement",
+        "nameFr": "Vente appartement",
+        "nameAr": "بيع شقة",
+        "nameEn": "Apartment for Sale"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a9",
+      "title": "Canapé d'angle 6 places en velours vert",
+      "description": "Grand canapé d'angle 6 places en velours vert sapin, angle réversible, avec méridienne et deux poufs assortis. Fabriqué sur mesure par un artisan il y a deux ans, structure en bois massif. Très bon état, aucune tache. Dimensions 3,10 × 2,20 m. À enlever à Dely Ibrahim.",
+      "price": 125000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 188,
+      "isFeatured": true,
+      "createdAt": "2026-09-30T21:10:00.000Z",
+      "updatedAt": "2026-09-30T21:10:00.000Z",
+      "expiresAt": "2026-11-29T21:10:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_meubles",
+      "wilayaId": 16,
+      "communeId": 1622,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "canape-dangle-6-places-en-velours-vert-alger",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a9-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-1.webp",
+          "publicId": "annonces/mock-a9/1",
+          "order": 0,
+          "annonceId": "mock-a9"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a17",
+      "title": "MacBook Air M1 8 Go / 256 Go",
+      "description": "MacBook Air M1 (2020) gris sidéral, 8 Go de mémoire et SSD de 256 Go, clavier AZERTY. 112 cycles de batterie seulement, état quasi neuf. Livré avec le chargeur d'origine et une housse. Idéal pour les études. Prix ferme.",
+      "price": 135000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 640,
+      "isFeatured": true,
+      "createdAt": "2026-09-24T22:40:00.000Z",
+      "updatedAt": "2026-09-24T22:40:00.000Z",
+      "expiresAt": "2026-11-23T22:40:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_ordinateurs-portables",
+      "wilayaId": 16,
+      "communeId": 1609,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "macbook-air-m1-8-go-256-go-alger",
+      "attributes": {
+        "brand": "apple",
+        "model": "macbook-air-m1",
+        "condition": "like-new",
+        "storage_gb": "256",
+        "ram_gb": "8"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a17-1",
+          "url": "https://photos.mock.weydaa/annonces/laptop-1.webp",
+          "publicId": "annonces/mock-a17/1",
+          "order": 0,
+          "annonceId": "mock-a17"
+        }
+      ],
+      "category": {
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a1",
+      "title": "iPhone 15 Pro Max 256 Go Titane naturel",
+      "description": "Vends iPhone 15 Pro Max 256 Go, couleur titane naturel, acheté en janvier. Batterie à 94 %, jamais ouvert ni réparé, toujours sous coque et verre trempé. Livré avec boîte, câble d'origine et facture. Débloqué tous opérateurs. Remise en main propre à Bab Ezzouar ; échange possible contre un Galaxy S24 Ultra avec différence.",
+      "price": 215000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 54,
+      "isFeatured": false,
+      "createdAt": "2026-10-03T07:42:00.000Z",
+      "updatedAt": "2026-10-03T07:42:00.000Z",
+      "expiresAt": "2026-12-02T07:42:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 16,
+      "communeId": 1605,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "iphone-15-pro-max-256-go-titane-naturel-alger",
+      "attributes": {
+        "brand": "apple",
+        "model": "iphone-15-pro-max",
+        "condition": "like-new",
+        "storage_gb": "256",
+        "ram_gb": "8",
+        "warranty": false
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a1-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-1.webp",
+          "publicId": "annonces/mock-a1/1",
+          "order": 0,
+          "annonceId": "mock-a1"
+        }
+      ],
+      "category": {
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a25",
+      "title": "Renault Clio 5 Intens 1.3 TCe EDC 2021",
+      "description": "Clio 5 Intens 1.3 TCe 140 ch, boîte automatique EDC, achetée neuve en concession en 2021, 41 000 km. Entretien exclusivement chez Renault, factures disponibles. Écran tactile, caméra de recul, régulateur de vitesse. Dédouanée, carte grise à mon nom. Visible à Kouba, essai possible le week-end.",
+      "price": 4250000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 389,
+      "isFeatured": false,
+      "createdAt": "2026-09-10T16:20:00.000Z",
+      "updatedAt": "2026-09-10T16:20:00.000Z",
+      "expiresAt": "2026-11-09T16:20:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_voitures",
+      "wilayaId": 16,
+      "communeId": 1638,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-5-intens-1-3-tce-edc-2021-alger",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-5",
+        "year": 2021,
+        "mileage": 41000,
+        "fuel": "essence",
+        "transmission": "automatic",
+        "condition": "like-new",
+        "color": "red",
+        "doors": "5",
+        "customs_status": "cleared"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a25-1",
+          "url": "https://photos.mock.weydaa/annonces/car-5.webp",
+          "publicId": "annonces/mock-a25/1",
+          "order": 0,
+          "annonceId": "mock-a25"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "totalPages": 1
+}

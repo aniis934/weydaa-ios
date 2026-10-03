@@ -1,0 +1,60 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a2",
+      "title": "Renault Clio 4 GT Line 2019 diesel",
+      "description": "Clio 4 GT Line 1.5 dCi 90 ch, première main, 86 000 km réels. Carnet d'entretien à jour, vidange et filtres faits le mois dernier. Jamais accidentée, carte grise et assurance en règle. Climatisation, GPS, caméra de recul, jantes 17 pouces. Prix légèrement négociable après essai, pas d'échange.",
+      "price": 3150000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 121,
+      "isFeatured": true,
+      "createdAt": "2026-10-03T05:55:00.000Z",
+      "updatedAt": "2026-10-03T05:55:00.000Z",
+      "expiresAt": "2026-12-02T05:55:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_voitures",
+      "wilayaId": 31,
+      "communeId": 3107,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-4-gt-line-2019-diesel-oran",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-4",
+        "year": 2019,
+        "mileage": 86000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5",
+        "exchange_possible": false
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a2-1",
+          "url": "https://photos.mock.weydaa/annonces/car-1.webp",
+          "publicId": "annonces/mock-a2/1",
+          "order": 0,
+          "annonceId": "mock-a2"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

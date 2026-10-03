@@ -1,0 +1,73 @@
+{
+  "id": "mock-a24",
+  "title": "À donner : canapé 3 places",
+  "description": "Je donne un canapé 3 places en tissu gris, encore confortable, quelques traces d'usure sur les accoudoirs. À récupérer sur place à Annaba (3e étage sans ascenseur), prévoir deux personnes. Premier arrivé, premier servi.",
+  "price": null,
+  "priceType": "FREE",
+  "status": "ACTIVE",
+  "views": 158,
+  "isFeatured": false,
+  "createdAt": "2026-09-12T10:30:00.000Z",
+  "updatedAt": "2026-09-12T10:30:00.000Z",
+  "expiresAt": "2026-11-11T10:30:00.000Z",
+  "userId": "mock-u3",
+  "categoryId": "sub_meubles",
+  "wilayaId": 23,
+  "communeId": 2302,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "a-donner-canape-3-places-annaba",
+  "attributes": null,
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a24-1",
+      "url": "https://photos.mock.weydaa/annonces/sofa-2.webp",
+      "publicId": "annonces/mock-a24/1",
+      "order": 0,
+      "annonceId": "mock-a24"
+    },
+    {
+      "id": "img-mock-a24-2",
+      "url": "https://photos.mock.weydaa/annonces/sofa-54.webp",
+      "publicId": "annonces/mock-a24/2",
+      "order": 1,
+      "annonceId": "mock-a24"
+    }
+  ],
+  "category": {
+    "id": "sub_meubles",
+    "slug": "meubles",
+    "nameFr": "Meubles",
+    "nameAr": "أثاث",
+    "nameEn": "Furniture",
+    "parentId": "cat_maison",
+    "parent": {
+      "slug": "maison"
+    }
+  },
+  "wilaya": {
+    "id": 23,
+    "nameFr": "Annaba",
+    "nameAr": "عنابة"
+  },
+  "commune": {
+    "id": 2302,
+    "nameFr": "Annaba",
+    "nameAr": "عنابة"
+  },
+  "user": {
+    "id": "mock-u3",
+    "name": "Yacine M.",
+    "avatar": null,
+    "createdAt": "2025-01-20T09:05:00.000Z",
+    "emailVerified": "2025-01-20T09:16:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 5,
+    "ratingSum": 21,
+    "responseMinutes": 180,
+    "_count": {
+      "annonces": 6
+    }
+  }
+}

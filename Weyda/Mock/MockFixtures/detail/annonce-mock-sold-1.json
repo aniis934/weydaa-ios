@@ -1,0 +1,73 @@
+{
+  "id": "mock-sold-1",
+  "title": "Montre Seiko 5 Sports automatique",
+  "description": "Seiko 5 Sports automatique, boîtier acier 42 mm, cadran bleu. Portée quelques mois, aucune rayure sur le verre. Vendue avec sa boîte, le bracelet d'origine et un bracelet NATO en plus.",
+  "price": 32000,
+  "priceType": "NEGOTIABLE",
+  "status": "SOLD",
+  "views": 389,
+  "isFeatured": false,
+  "createdAt": "2026-09-05T16:40:00.000Z",
+  "updatedAt": "2026-09-29T09:15:00.000Z",
+  "expiresAt": "2026-11-04T16:40:00.000Z",
+  "userId": "mock-u5",
+  "categoryId": "sub_montres-bijoux",
+  "wilayaId": 19,
+  "communeId": 1955,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "montre-seiko-5-sports-automatique-setif",
+  "attributes": null,
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-sold-1-1",
+      "url": "https://photos.mock.weydaa/annonces/watch-2.webp",
+      "publicId": "annonces/mock-sold-1/1",
+      "order": 0,
+      "annonceId": "mock-sold-1"
+    },
+    {
+      "id": "img-mock-sold-1-2",
+      "url": "https://photos.mock.weydaa/annonces/watch-53.webp",
+      "publicId": "annonces/mock-sold-1/2",
+      "order": 1,
+      "annonceId": "mock-sold-1"
+    }
+  ],
+  "category": {
+    "id": "sub_montres-bijoux",
+    "slug": "montres-bijoux",
+    "nameFr": "Montres & Bijoux",
+    "nameAr": "ساعات ومجوهرات",
+    "nameEn": "Watches & Jewelry",
+    "parentId": "cat_mode",
+    "parent": {
+      "slug": "mode"
+    }
+  },
+  "wilaya": {
+    "id": 19,
+    "nameFr": "Sétif",
+    "nameAr": "سطيف"
+  },
+  "commune": {
+    "id": 1955,
+    "nameFr": "Setif",
+    "nameAr": "سطيف"
+  },
+  "user": {
+    "id": "mock-u5",
+    "name": "Sofiane T.",
+    "avatar": null,
+    "createdAt": "2024-11-17T20:40:00.000Z",
+    "emailVerified": null,
+    "isRecommended": false,
+    "ratingCount": 0,
+    "ratingSum": 0,
+    "responseMinutes": null,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

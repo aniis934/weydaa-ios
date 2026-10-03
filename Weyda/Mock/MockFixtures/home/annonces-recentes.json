@@ -1,0 +1,1125 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a1",
+      "title": "iPhone 15 Pro Max 256 Go Titane naturel",
+      "description": "Vends iPhone 15 Pro Max 256 Go, couleur titane naturel, acheté en janvier. Batterie à 94 %, jamais ouvert ni réparé, toujours sous coque et verre trempé. Livré avec boîte, câble d'origine et facture. Débloqué tous opérateurs. Remise en main propre à Bab Ezzouar ; échange possible contre un Galaxy S24 Ultra avec différence.",
+      "price": 215000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 54,
+      "isFeatured": false,
+      "createdAt": "2026-10-03T07:42:00.000Z",
+      "updatedAt": "2026-10-03T07:42:00.000Z",
+      "expiresAt": "2026-12-02T07:42:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 16,
+      "communeId": 1605,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "iphone-15-pro-max-256-go-titane-naturel-alger",
+      "attributes": {
+        "brand": "apple",
+        "model": "iphone-15-pro-max",
+        "condition": "like-new",
+        "storage_gb": "256",
+        "ram_gb": "8",
+        "warranty": false
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a1-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-1.webp",
+          "publicId": "annonces/mock-a1/1",
+          "order": 0,
+          "annonceId": "mock-a1"
+        }
+      ],
+      "category": {
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a2",
+      "title": "Renault Clio 4 GT Line 2019 diesel",
+      "description": "Clio 4 GT Line 1.5 dCi 90 ch, première main, 86 000 km réels. Carnet d'entretien à jour, vidange et filtres faits le mois dernier. Jamais accidentée, carte grise et assurance en règle. Climatisation, GPS, caméra de recul, jantes 17 pouces. Prix légèrement négociable après essai, pas d'échange.",
+      "price": 3150000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 121,
+      "isFeatured": true,
+      "createdAt": "2026-10-03T05:55:00.000Z",
+      "updatedAt": "2026-10-03T05:55:00.000Z",
+      "expiresAt": "2026-12-02T05:55:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_voitures",
+      "wilayaId": 31,
+      "communeId": 3107,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-4-gt-line-2019-diesel-oran",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-4",
+        "year": 2019,
+        "mileage": 86000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5",
+        "exchange_possible": false
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a2-1",
+          "url": "https://photos.mock.weydaa/annonces/car-1.webp",
+          "publicId": "annonces/mock-a2/1",
+          "order": 0,
+          "annonceId": "mock-a2"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a3",
+      "title": "Appartement F3 de 85 m² à Hydra",
+      "description": "Particulier vend F3 de 85 m² au 4e étage d'une résidence calme et gardée, avec ascenseur. Double exposition, deux balcons, cuisine équipée, salle de bain refaite à neuf. Place de parking en sous-sol. Livret foncier. Visites le week-end sur rendez-vous, agences s'abstenir.",
+      "price": 38000000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 176,
+      "isFeatured": true,
+      "createdAt": "2026-10-02T18:20:00.000Z",
+      "updatedAt": "2026-10-02T18:20:00.000Z",
+      "expiresAt": "2026-12-01T18:20:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_vente-appartement",
+      "wilayaId": 16,
+      "communeId": 1636,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "appartement-f3-de-85-m-a-hydra-alger",
+      "attributes": {
+        "surface": 85,
+        "rooms": "3",
+        "floor": 4,
+        "furnished": false,
+        "deed_type": "livret-foncier",
+        "condition": "good",
+        "has_parking": true,
+        "has_elevator": true,
+        "has_balcony": true,
+        "total_floors": 7
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a3-1",
+          "url": "https://photos.mock.weydaa/annonces/house-1.webp",
+          "publicId": "annonces/mock-a3/1",
+          "order": 0,
+          "annonceId": "mock-a3"
+        }
+      ],
+      "category": {
+        "slug": "vente-appartement",
+        "nameFr": "Vente appartement",
+        "nameAr": "بيع شقة",
+        "nameEn": "Apartment for Sale"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a4",
+      "title": "Réfrigérateur Condor No Frost 460 L",
+      "description": "Réfrigérateur combiné Condor No Frost 460 litres, couleur inox, acheté il y a un an et demi. Fonctionne parfaitement, aucune rayure sur les portes. Vendu pour cause de déménagement. À récupérer à Boufarik, livraison possible sur Blida avec participation aux frais.",
+      "price": 72000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 87,
+      "isFeatured": false,
+      "createdAt": "2026-10-02T15:05:00.000Z",
+      "updatedAt": "2026-10-02T15:05:00.000Z",
+      "expiresAt": "2026-12-01T15:05:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_refrigerateur",
+      "wilayaId": 9,
+      "communeId": 907,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "refrigerateur-condor-no-frost-460-l-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a4-1",
+          "url": "https://photos.mock.weydaa/annonces/fridge-1.webp",
+          "publicId": "annonces/mock-a4/1",
+          "order": 0,
+          "annonceId": "mock-a4"
+        }
+      ],
+      "category": {
+        "slug": "refrigerateur",
+        "nameFr": "Réfrigérateur / Congélateur",
+        "nameAr": "ثلاجة / مجمد",
+        "nameEn": "Refrigerator / Freezer"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a5",
+      "title": "VTT Rockrider ST 540 taille L, très bon état",
+      "description": "VTT Rockrider ST 540, cadre aluminium taille L (pour 1,75 m à 1,90 m), roues 27,5 pouces, freins à disque hydrauliques, fourche suspendue. Révisé en septembre : chaîne et plaquettes neuves. Quelques traces d'usage sur le cadre. Idéal pour les sentiers autour de Béjaïa.",
+      "price": 38000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 143,
+      "isFeatured": false,
+      "createdAt": "2026-10-02T11:30:00.000Z",
+      "updatedAt": "2026-10-02T11:30:00.000Z",
+      "expiresAt": "2026-12-01T11:30:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_velos",
+      "wilayaId": 6,
+      "communeId": 610,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "vtt-rockrider-st-540-taille-l-tres-bon-etat-bejaia",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a5-1",
+          "url": "https://photos.mock.weydaa/annonces/bike-1.webp",
+          "publicId": "annonces/mock-a5/1",
+          "order": 0,
+          "annonceId": "mock-a5"
+        }
+      ],
+      "category": {
+        "slug": "velos",
+        "nameFr": "Vélos",
+        "nameAr": "دراجات هوائية",
+        "nameEn": "Bicycles"
+      },
+      "wilaya": {
+        "id": 6,
+        "nameFr": "Béjaïa",
+        "nameAr": "بجاية"
+      }
+    },
+    {
+      "id": "mock-a6",
+      "title": "Samsung Galaxy S23 Ultra 512 Go",
+      "description": "Galaxy S23 Ultra 512 Go / 12 Go de RAM, coloris noir, double SIM. Écran sans aucune rayure (protection posée dès l'achat), stylet S Pen fourni. Vendu avec chargeur rapide 45 W et deux coques. Prix ferme, paiement en espèces à la remise.",
+      "price": 148000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 301,
+      "isFeatured": true,
+      "createdAt": "2026-10-02T08:10:00.000Z",
+      "updatedAt": "2026-10-02T08:10:00.000Z",
+      "expiresAt": "2026-12-01T08:10:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 25,
+      "communeId": 2505,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "samsung-galaxy-s23-ultra-512-go-constantine",
+      "attributes": {
+        "brand": "samsung",
+        "model": "galaxy-s23-ultra",
+        "condition": "good",
+        "storage_gb": "512",
+        "ram_gb": "12"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a6-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-2.webp",
+          "publicId": "annonces/mock-a6/1",
+          "order": 0,
+          "annonceId": "mock-a6"
+        }
+      ],
+      "category": {
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    },
+    {
+      "id": "mock-a7",
+      "title": "Location F2 meublé de 60 m² au centre d'Oran",
+      "description": "F2 meublé et équipé de 60 m² au 2e étage, proche du tramway et des commerces. Salon, chambre, cuisine équipée (réfrigérateur, cuisinière, machine à laver), balcon. Loyer de 45 000 DA par mois, 6 mois d'avance. Idéal pour un couple ou un fonctionnaire. Libre à partir du 15 octobre.",
+      "price": 45000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 467,
+      "isFeatured": false,
+      "createdAt": "2026-10-01T19:45:00.000Z",
+      "updatedAt": "2026-10-01T19:45:00.000Z",
+      "expiresAt": "2026-11-30T19:45:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_location-appartement",
+      "wilayaId": 31,
+      "communeId": 3122,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "location-f2-meuble-de-60-m-au-centre-doran-oran",
+      "attributes": {
+        "surface": 60,
+        "rooms": "2",
+        "floor": 2,
+        "furnished": true,
+        "condition": "good",
+        "has_balcony": true
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a7-1",
+          "url": "https://photos.mock.weydaa/annonces/house-2.webp",
+          "publicId": "annonces/mock-a7/1",
+          "order": 0,
+          "annonceId": "mock-a7"
+        }
+      ],
+      "category": {
+        "slug": "location-appartement",
+        "nameFr": "Location appartement",
+        "nameAr": "إيجار شقة",
+        "nameEn": "Apartment for Rent"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a8",
+      "title": "Montre Casio G-Shock GA-2100 neuve",
+      "description": "Montre Casio G-Shock GA-2100 noire, neuve dans sa boîte avec étiquettes et garantie. Reçue en double pour mon anniversaire. Étanche 200 m, éclairage LED, pile prévue pour 3 ans. Remise en main propre au centre-ville de Sétif.",
+      "price": 14500,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 96,
+      "isFeatured": false,
+      "createdAt": "2026-10-01T09:25:00.000Z",
+      "updatedAt": "2026-10-01T09:25:00.000Z",
+      "expiresAt": "2026-11-30T09:25:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_montres-bijoux",
+      "wilayaId": 19,
+      "communeId": 1955,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "montre-casio-g-shock-ga-2100-neuve-setif",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a8-1",
+          "url": "https://photos.mock.weydaa/annonces/watch-1.webp",
+          "publicId": "annonces/mock-a8/1",
+          "order": 0,
+          "annonceId": "mock-a8"
+        }
+      ],
+      "category": {
+        "slug": "montres-bijoux",
+        "nameFr": "Montres & Bijoux",
+        "nameAr": "ساعات ومجوهرات",
+        "nameEn": "Watches & Jewelry"
+      },
+      "wilaya": {
+        "id": 19,
+        "nameFr": "Sétif",
+        "nameAr": "سطيف"
+      }
+    },
+    {
+      "id": "mock-a9",
+      "title": "Canapé d'angle 6 places en velours vert",
+      "description": "Grand canapé d'angle 6 places en velours vert sapin, angle réversible, avec méridienne et deux poufs assortis. Fabriqué sur mesure par un artisan il y a deux ans, structure en bois massif. Très bon état, aucune tache. Dimensions 3,10 × 2,20 m. À enlever à Dely Ibrahim.",
+      "price": 125000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 188,
+      "isFeatured": true,
+      "createdAt": "2026-09-30T21:10:00.000Z",
+      "updatedAt": "2026-09-30T21:10:00.000Z",
+      "expiresAt": "2026-11-29T21:10:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_meubles",
+      "wilayaId": 16,
+      "communeId": 1622,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "canape-dangle-6-places-en-velours-vert-alger",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a9-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-1.webp",
+          "publicId": "annonces/mock-a9/1",
+          "order": 0,
+          "annonceId": "mock-a9"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a10",
+      "title": "Volkswagen Golf 7 1.6 TDI 2016",
+      "description": "Golf 7 1.6 TDI 110 ch, finition Confortline, 142 000 km. Entretien suivi chez le concessionnaire, distribution faite à 120 000 km. Carrosserie propre, intérieur sans usure. Bluetooth, radar de recul, régulateur de vitesse. Visible à El Eulma, personnes sérieuses uniquement.",
+      "price": 3600000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 528,
+      "isFeatured": false,
+      "createdAt": "2026-09-30T10:40:00.000Z",
+      "updatedAt": "2026-09-30T10:40:00.000Z",
+      "expiresAt": "2026-11-29T10:40:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_voitures",
+      "wilayaId": 19,
+      "communeId": 1932,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "volkswagen-golf-7-16-tdi-2016-setif",
+      "attributes": {
+        "make": "volkswagen",
+        "model": "golf-7",
+        "year": 2016,
+        "mileage": 142000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "grey",
+        "doors": "5"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a10-1",
+          "url": "https://photos.mock.weydaa/annonces/car-2.webp",
+          "publicId": "annonces/mock-a10/1",
+          "order": 0,
+          "annonceId": "mock-a10"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 19,
+        "nameFr": "Sétif",
+        "nameAr": "سطيف"
+      }
+    },
+    {
+      "id": "mock-a11",
+      "title": "Karakou algérois brodé main, taille 38",
+      "description": "Karakou en velours bordeaux brodé main au fil doré, avec seroual chelka assorti. Porté une seule fois pour un mariage. Taille 38, retouches possibles. Vendu avec sa housse. Visible à Ouled Yaïch, échange non souhaité.",
+      "price": 42000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 214,
+      "isFeatured": false,
+      "createdAt": "2026-09-29T17:15:00.000Z",
+      "updatedAt": "2026-09-29T17:15:00.000Z",
+      "expiresAt": "2026-11-28T17:15:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_vetements-femme",
+      "wilayaId": 9,
+      "communeId": 923,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "karakou-algerois-brode-main-taille-38-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a11-1",
+          "url": "https://photos.mock.weydaa/annonces/dress-1.webp",
+          "publicId": "annonces/mock-a11/1",
+          "order": 0,
+          "annonceId": "mock-a11"
+        }
+      ],
+      "category": {
+        "slug": "vetements-femme",
+        "nameFr": "Vêtements femme",
+        "nameAr": "ملابس نساء",
+        "nameEn": "Women's Clothing"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a12",
+      "title": "TV Samsung 55 pouces Crystal UHD 4K",
+      "description": "Téléviseur Samsung 55 pouces Crystal UHD 4K, Smart TV (Netflix, YouTube), récepteur satellite intégré. Acheté en mars, encore sous garantie avec la facture. Vendu avec télécommande et pied d'origine. Cause départ à l'étranger.",
+      "price": 82000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 389,
+      "isFeatured": false,
+      "createdAt": "2026-09-29T08:30:00.000Z",
+      "updatedAt": "2026-09-29T08:30:00.000Z",
+      "expiresAt": "2026-11-28T08:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_tv",
+      "wilayaId": 23,
+      "communeId": 2306,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "tv-samsung-55-pouces-crystal-uhd-4k-annaba",
+      "attributes": {
+        "brand": "samsung",
+        "condition": "like-new",
+        "screen_size": 55,
+        "warranty": true
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a12-1",
+          "url": "https://photos.mock.weydaa/annonces/tv-1.webp",
+          "publicId": "annonces/mock-a12/1",
+          "order": 0,
+          "annonceId": "mock-a12"
+        }
+      ],
+      "category": {
+        "slug": "tv",
+        "nameFr": "TV",
+        "nameAr": "تلفاز",
+        "nameEn": "TV"
+      },
+      "wilaya": {
+        "id": 23,
+        "nameFr": "Annaba",
+        "nameAr": "عنابة"
+      }
+    },
+    {
+      "id": "mock-a13",
+      "title": "Villa R+1 avec jardin à Tizi Ouzou",
+      "description": "Villa R+1 de 240 m² habitables sur un terrain de 400 m², quartier résidentiel calme à 5 minutes du centre. 6 pièces, 2 salles de bain, garage pour deux voitures, jardin arboré (oliviers, figuiers). Construction de 2012, acte notarié. Prix négociable, pas d'échange.",
+      "price": 52000000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 702,
+      "isFeatured": true,
+      "createdAt": "2026-09-28T12:00:00.000Z",
+      "updatedAt": "2026-09-28T12:00:00.000Z",
+      "expiresAt": "2026-11-27T12:00:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_vente-maison-villa",
+      "wilayaId": 15,
+      "communeId": 1563,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "villa-r1-avec-jardin-a-tizi-ouzou-tizi-ouzou",
+      "attributes": {
+        "surface": 240,
+        "rooms": "6-plus",
+        "deed_type": "acte",
+        "condition": "good",
+        "has_parking": true,
+        "has_balcony": true,
+        "construction_year": 2012,
+        "total_floors": 2
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a13-1",
+          "url": "https://photos.mock.weydaa/annonces/house-3.webp",
+          "publicId": "annonces/mock-a13/1",
+          "order": 0,
+          "annonceId": "mock-a13"
+        }
+      ],
+      "category": {
+        "slug": "vente-maison-villa",
+        "nameFr": "Vente maison / villa",
+        "nameAr": "بيع منزل / فيلا",
+        "nameEn": "House / Villa for Sale"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a14",
+      "title": "Hyundai Accent RB 2017 essence",
+      "description": "Hyundai Accent RB 1.4 essence, boîte manuelle, 98 000 km. Deuxième main, toujours garée au sous-sol. Climatisation, vitres électriques, quatre pneus neufs. Contrôle technique valide. Visible à Blida centre.",
+      "price": 2350000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 455,
+      "isFeatured": false,
+      "createdAt": "2026-09-27T16:50:00.000Z",
+      "updatedAt": "2026-09-27T16:50:00.000Z",
+      "expiresAt": "2026-11-26T16:50:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_voitures",
+      "wilayaId": 9,
+      "communeId": 905,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "hyundai-accent-rb-2017-essence-blida",
+      "attributes": {
+        "make": "hyundai",
+        "model": "accent",
+        "year": 2017,
+        "mileage": 98000,
+        "fuel": "essence",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "silver",
+        "doors": "4",
+        "technical_inspection": true
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a14-1",
+          "url": "https://photos.mock.weydaa/annonces/car-3.webp",
+          "publicId": "annonces/mock-a14/1",
+          "order": 0,
+          "annonceId": "mock-a14"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a15",
+      "title": "Chatons persans de 3 mois",
+      "description": "Deux chatons persans, un mâle et une femelle, nés début juillet. Sevrés, propres, vermifugés et vaccinés (carnet de santé fourni). Les parents sont visibles à la maison. Prix par chaton, réservés à des familles qui ont déjà eu des chats.",
+      "price": 15000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 276,
+      "isFeatured": false,
+      "createdAt": "2026-09-26T20:35:00.000Z",
+      "updatedAt": "2026-09-26T20:35:00.000Z",
+      "expiresAt": "2026-11-25T20:35:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_chats",
+      "wilayaId": 15,
+      "communeId": 1520,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "chatons-persans-de-3-mois-tizi-ouzou",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a15-1",
+          "url": "https://photos.mock.weydaa/annonces/pet-1.webp",
+          "publicId": "annonces/mock-a15/1",
+          "order": 0,
+          "annonceId": "mock-a15"
+        }
+      ],
+      "category": {
+        "slug": "chats",
+        "nameFr": "Chats",
+        "nameAr": "قطط",
+        "nameEn": "Cats"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a16",
+      "title": "Perceuse à percussion Bosch Professional + coffret",
+      "description": "Perceuse à percussion Bosch Professional 600 W, vendue avec son coffret, une poignée supplémentaire et un jeu de 15 forets (béton, bois, métal). Très peu servie, achetée pour un seul chantier. Prix à débattre.",
+      "price": 13500,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 131,
+      "isFeatured": false,
+      "createdAt": "2026-09-26T09:05:00.000Z",
+      "updatedAt": "2026-09-26T09:05:00.000Z",
+      "expiresAt": "2026-11-25T09:05:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_bricolage-outillage",
+      "wilayaId": 5,
+      "communeId": 507,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "perceuse-a-percussion-bosch-professional-coffret-batna",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a16-1",
+          "url": "https://photos.mock.weydaa/annonces/tools-1.webp",
+          "publicId": "annonces/mock-a16/1",
+          "order": 0,
+          "annonceId": "mock-a16"
+        }
+      ],
+      "category": {
+        "slug": "bricolage-outillage",
+        "nameFr": "Bricolage & Outillage",
+        "nameAr": "أدوات وعدة",
+        "nameEn": "DIY & Tools"
+      },
+      "wilaya": {
+        "id": 5,
+        "nameFr": "Batna",
+        "nameAr": "باتنة"
+      }
+    },
+    {
+      "id": "mock-a17",
+      "title": "MacBook Air M1 8 Go / 256 Go",
+      "description": "MacBook Air M1 (2020) gris sidéral, 8 Go de mémoire et SSD de 256 Go, clavier AZERTY. 112 cycles de batterie seulement, état quasi neuf. Livré avec le chargeur d'origine et une housse. Idéal pour les études. Prix ferme.",
+      "price": 135000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 640,
+      "isFeatured": true,
+      "createdAt": "2026-09-24T22:40:00.000Z",
+      "updatedAt": "2026-09-24T22:40:00.000Z",
+      "expiresAt": "2026-11-23T22:40:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_ordinateurs-portables",
+      "wilayaId": 16,
+      "communeId": 1609,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "macbook-air-m1-8-go-256-go-alger",
+      "attributes": {
+        "brand": "apple",
+        "model": "macbook-air-m1",
+        "condition": "like-new",
+        "storage_gb": "256",
+        "ram_gb": "8"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a17-1",
+          "url": "https://photos.mock.weydaa/annonces/laptop-1.webp",
+          "publicId": "annonces/mock-a17/1",
+          "order": 0,
+          "annonceId": "mock-a17"
+        }
+      ],
+      "category": {
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a18",
+      "title": "Recrute vendeur(se) pour boutique de prêt-à-porter",
+      "description": "Boutique de prêt-à-porter au centre de Tizi Ouzou recrute un(e) vendeur(se) à temps plein. Expérience dans la vente souhaitée, bonne présentation, maîtrise du kabyle et du français. Horaires 9 h – 18 h, repos le vendredi. Salaire de 45 000 DA net + primes sur objectifs. Envoyez votre CV par message.",
+      "price": 45000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 512,
+      "isFeatured": false,
+      "createdAt": "2026-09-23T19:20:00.000Z",
+      "updatedAt": "2026-09-23T19:20:00.000Z",
+      "expiresAt": "2026-11-22T19:20:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_offres-emploi",
+      "wilayaId": 15,
+      "communeId": 1563,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "recrute-vendeurse-pour-boutique-de-pret-a-porter-tizi-ouzou",
+      "attributes": null,
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a18-1",
+          "url": "https://photos.mock.weydaa/annonces/job-1.webp",
+          "publicId": "annonces/mock-a18/1",
+          "order": 0,
+          "annonceId": "mock-a18"
+        }
+      ],
+      "category": {
+        "slug": "offres-emploi",
+        "nameFr": "Offres d'emploi",
+        "nameAr": "عروض عمل",
+        "nameEn": "Job Offers"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a19",
+      "title": "Séjour à Hammamet 8 jours / 7 nuits à céder",
+      "description": "Je cède ma réservation pour 2 adultes à Hammamet (Tunisie) : hôtel 4 étoiles en demi-pension, du 18 au 25 octobre. Désistement pour raison familiale. Prix inférieur au tarif de l'agence, changement de nom pris en charge. Contact par message uniquement.",
+      "price": 89000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 233,
+      "isFeatured": false,
+      "createdAt": "2026-09-22T10:15:00.000Z",
+      "updatedAt": "2026-09-22T10:15:00.000Z",
+      "expiresAt": "2026-11-21T10:15:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_excursions-circuits",
+      "wilayaId": 31,
+      "communeId": 3114,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "sejour-a-hammamet-8-jours-7-nuits-a-ceder-oran",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a19-1",
+          "url": "https://photos.mock.weydaa/annonces/travel-1.webp",
+          "publicId": "annonces/mock-a19/1",
+          "order": 0,
+          "annonceId": "mock-a19"
+        }
+      ],
+      "category": {
+        "slug": "excursions-circuits",
+        "nameFr": "Excursions & Circuits",
+        "nameAr": "رحلات وجولات",
+        "nameEn": "Tours & Excursions"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a20",
+      "title": "Peugeot Partner Tepee 1.6 HDi 2015",
+      "description": "Peugeot Partner Tepee 1.6 HDi 92 ch, 168 000 km, 5 places, idéal pour une famille ou un commerce. Moteur et boîte en très bon état, embrayage changé l'an dernier. Deux portes latérales coulissantes, barres de toit. Papiers en règle, visible à El Khroub.",
+      "price": 2450000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 347,
+      "isFeatured": false,
+      "createdAt": "2026-09-20T21:30:00.000Z",
+      "updatedAt": "2026-09-20T21:30:00.000Z",
+      "expiresAt": "2026-11-19T21:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_utilitaires",
+      "wilayaId": 25,
+      "communeId": 2507,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "peugeot-partner-tepee-16-hdi-2015-constantine",
+      "attributes": {
+        "make": "peugeot",
+        "model": "partner",
+        "year": 2015,
+        "mileage": 168000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a20-1",
+          "url": "https://photos.mock.weydaa/annonces/car-4.webp",
+          "publicId": "annonces/mock-a20/1",
+          "order": 0,
+          "annonceId": "mock-a20"
+        }
+      ],
+      "category": {
+        "slug": "utilitaires",
+        "nameFr": "Utilitaires",
+        "nameAr": "مركبات نفعية",
+        "nameEn": "Utility Vehicles"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    },
+    {
+      "id": "mock-a21",
+      "title": "Xiaomi Redmi Note 13 Pro 256 Go neuf",
+      "description": "Redmi Note 13 Pro 8 Go / 256 Go, neuf sous blister, version globale. Écran AMOLED 120 Hz, appareil photo 200 Mpx, charge rapide 67 W. Garantie de 12 mois. Livraison possible sur Béjaïa et Akbou.",
+      "price": 52000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 298,
+      "isFeatured": false,
+      "createdAt": "2026-09-19T11:45:00.000Z",
+      "updatedAt": "2026-09-19T11:45:00.000Z",
+      "expiresAt": "2026-11-18T11:45:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 6,
+      "communeId": 604,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "xiaomi-redmi-note-13-pro-256-go-neuf-bejaia",
+      "attributes": {
+        "brand": "xiaomi",
+        "model": "redmi-note-13-pro",
+        "condition": "new",
+        "storage_gb": "256",
+        "ram_gb": "8",
+        "warranty": true
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a21-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-3.webp",
+          "publicId": "annonces/mock-a21/1",
+          "order": 0,
+          "annonceId": "mock-a21"
+        }
+      ],
+      "category": {
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones"
+      },
+      "wilaya": {
+        "id": 6,
+        "nameFr": "Béjaïa",
+        "nameAr": "بجاية"
+      }
+    },
+    {
+      "id": "mock-a22",
+      "title": "Terrain de 300 m² viabilisé à Bouinan",
+      "description": "Terrain plat de 300 m², viabilisé (eau, électricité, gaz), dans un lotissement calme de Bouinan, façade de 15 m sur une rue goudronnée. Livret foncier, permis de construire possible en R+2. Prix à discuter sur place.",
+      "price": null,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 410,
+      "isFeatured": false,
+      "createdAt": "2026-09-17T08:20:00.000Z",
+      "updatedAt": "2026-09-17T08:20:00.000Z",
+      "expiresAt": "2026-11-16T08:20:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_terrain",
+      "wilayaId": 9,
+      "communeId": 909,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "terrain-de-300-m-viabilise-a-bouinan-blida",
+      "attributes": {
+        "surface": 300,
+        "deed_type": "livret-foncier",
+        "facade": "secondary-road"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a22-1",
+          "url": "https://photos.mock.weydaa/annonces/house-4.webp",
+          "publicId": "annonces/mock-a22/1",
+          "order": 0,
+          "annonceId": "mock-a22"
+        }
+      ],
+      "category": {
+        "slug": "terrain",
+        "nameFr": "Terrain",
+        "nameAr": "أرض",
+        "nameEn": "Land"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a23",
+      "title": "HP EliteBook 840 G6 i5 / 16 Go / SSD 512 Go",
+      "description": "PC portable HP EliteBook 840 G6 : Intel Core i5 de 8e génération, 16 Go de RAM, SSD de 512 Go, écran 14 pouces Full HD. Windows 11 Pro activé, batterie qui tient environ 5 heures, clavier AZERTY rétroéclairé. Idéal pour le bureau ou les études.",
+      "price": 68000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 265,
+      "isFeatured": false,
+      "createdAt": "2026-09-14T18:05:00.000Z",
+      "updatedAt": "2026-09-14T18:05:00.000Z",
+      "expiresAt": "2026-11-13T18:05:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_ordinateurs-portables",
+      "wilayaId": 31,
+      "communeId": 3104,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "hp-elitebook-840-g6-i5-16-go-ssd-512-go-oran",
+      "attributes": {
+        "brand": "hp",
+        "model": "elitebook",
+        "condition": "good",
+        "storage_gb": "512",
+        "ram_gb": "16"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a23-1",
+          "url": "https://photos.mock.weydaa/annonces/laptop-2.webp",
+          "publicId": "annonces/mock-a23/1",
+          "order": 0,
+          "annonceId": "mock-a23"
+        }
+      ],
+      "category": {
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a24",
+      "title": "À donner : canapé 3 places",
+      "description": "Je donne un canapé 3 places en tissu gris, encore confortable, quelques traces d'usure sur les accoudoirs. À récupérer sur place à Annaba (3e étage sans ascenseur), prévoir deux personnes. Premier arrivé, premier servi.",
+      "price": null,
+      "priceType": "FREE",
+      "status": "ACTIVE",
+      "views": 158,
+      "isFeatured": false,
+      "createdAt": "2026-09-12T10:30:00.000Z",
+      "updatedAt": "2026-09-12T10:30:00.000Z",
+      "expiresAt": "2026-11-11T10:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_meubles",
+      "wilayaId": 23,
+      "communeId": 2302,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "a-donner-canape-3-places-annaba",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a24-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-2.webp",
+          "publicId": "annonces/mock-a24/1",
+          "order": 0,
+          "annonceId": "mock-a24"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 23,
+        "nameFr": "Annaba",
+        "nameAr": "عنابة"
+      }
+    }
+  ],
+  "total": 30,
+  "page": 1,
+  "totalPages": 2
+}

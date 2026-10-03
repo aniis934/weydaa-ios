@@ -1,0 +1,87 @@
+{
+  "id": "mock-a21",
+  "title": "Xiaomi Redmi Note 13 Pro 256 Go neuf",
+  "description": "Redmi Note 13 Pro 8 Go / 256 Go, neuf sous blister, version globale. Écran AMOLED 120 Hz, appareil photo 200 Mpx, charge rapide 67 W. Garantie de 12 mois. Livraison possible sur Béjaïa et Akbou.",
+  "price": 52000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 298,
+  "isFeatured": false,
+  "createdAt": "2026-09-19T11:45:00.000Z",
+  "updatedAt": "2026-09-19T11:45:00.000Z",
+  "expiresAt": "2026-11-18T11:45:00.000Z",
+  "userId": "mock-u6",
+  "categoryId": "sub_smartphones",
+  "wilayaId": 6,
+  "communeId": 604,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "xiaomi-redmi-note-13-pro-256-go-neuf-bejaia",
+  "attributes": {
+    "brand": "xiaomi",
+    "model": "redmi-note-13-pro",
+    "condition": "new",
+    "storage_gb": "256",
+    "ram_gb": "8",
+    "warranty": true
+  },
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a21-1",
+      "url": "https://photos.mock.weydaa/annonces/phone-3.webp",
+      "publicId": "annonces/mock-a21/1",
+      "order": 0,
+      "annonceId": "mock-a21"
+    },
+    {
+      "id": "img-mock-a21-2",
+      "url": "https://photos.mock.weydaa/annonces/phone-57.webp",
+      "publicId": "annonces/mock-a21/2",
+      "order": 1,
+      "annonceId": "mock-a21"
+    },
+    {
+      "id": "img-mock-a21-3",
+      "url": "https://photos.mock.weydaa/annonces/phone-58.webp",
+      "publicId": "annonces/mock-a21/3",
+      "order": 2,
+      "annonceId": "mock-a21"
+    }
+  ],
+  "category": {
+    "id": "sub_smartphones",
+    "slug": "smartphones",
+    "nameFr": "Smartphones",
+    "nameAr": "هواتف ذكية",
+    "nameEn": "Smartphones",
+    "parentId": "cat_electronique",
+    "parent": {
+      "slug": "electronique"
+    }
+  },
+  "wilaya": {
+    "id": 6,
+    "nameFr": "Béjaïa",
+    "nameAr": "بجاية"
+  },
+  "commune": {
+    "id": 604,
+    "nameFr": "Akbou",
+    "nameAr": "أقبو"
+  },
+  "user": {
+    "id": "mock-u6",
+    "name": "Lyes A.",
+    "avatar": null,
+    "createdAt": "2023-04-25T08:30:00.000Z",
+    "emailVerified": "2023-04-25T08:41:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 8,
+    "ratingSum": 36,
+    "responseMinutes": 60,
+    "_count": {
+      "annonces": 4
+    }
+  }
+}

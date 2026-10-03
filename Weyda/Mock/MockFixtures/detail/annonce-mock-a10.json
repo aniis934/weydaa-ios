@@ -1,0 +1,104 @@
+{
+  "id": "mock-a10",
+  "title": "Volkswagen Golf 7 1.6 TDI 2016",
+  "description": "Golf 7 1.6 TDI 110 ch, finition Confortline, 142 000 km. Entretien suivi chez le concessionnaire, distribution faite à 120 000 km. Carrosserie propre, intérieur sans usure. Bluetooth, radar de recul, régulateur de vitesse. Visible à El Eulma, personnes sérieuses uniquement.",
+  "price": 3600000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 528,
+  "isFeatured": false,
+  "createdAt": "2026-09-30T10:40:00.000Z",
+  "updatedAt": "2026-09-30T10:40:00.000Z",
+  "expiresAt": "2026-11-29T10:40:00.000Z",
+  "userId": "mock-u5",
+  "categoryId": "sub_voitures",
+  "wilayaId": 19,
+  "communeId": 1932,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "volkswagen-golf-7-16-tdi-2016-setif",
+  "attributes": {
+    "make": "volkswagen",
+    "model": "golf-7",
+    "year": 2016,
+    "mileage": 142000,
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "grey",
+    "doors": "5"
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a10-1",
+      "url": "https://photos.mock.weydaa/annonces/car-2.webp",
+      "publicId": "annonces/mock-a10/1",
+      "order": 0,
+      "annonceId": "mock-a10"
+    },
+    {
+      "id": "img-mock-a10-2",
+      "url": "https://photos.mock.weydaa/annonces/car-58.webp",
+      "publicId": "annonces/mock-a10/2",
+      "order": 1,
+      "annonceId": "mock-a10"
+    },
+    {
+      "id": "img-mock-a10-3",
+      "url": "https://photos.mock.weydaa/annonces/car-59.webp",
+      "publicId": "annonces/mock-a10/3",
+      "order": 2,
+      "annonceId": "mock-a10"
+    },
+    {
+      "id": "img-mock-a10-4",
+      "url": "https://photos.mock.weydaa/annonces/car-60.webp",
+      "publicId": "annonces/mock-a10/4",
+      "order": 3,
+      "annonceId": "mock-a10"
+    },
+    {
+      "id": "img-mock-a10-5",
+      "url": "https://photos.mock.weydaa/annonces/car-61.webp",
+      "publicId": "annonces/mock-a10/5",
+      "order": 4,
+      "annonceId": "mock-a10"
+    }
+  ],
+  "category": {
+    "id": "sub_voitures",
+    "slug": "voitures",
+    "nameFr": "Voitures",
+    "nameAr": "سيارات",
+    "nameEn": "Cars",
+    "parentId": "cat_vehicules",
+    "parent": {
+      "slug": "vehicules"
+    }
+  },
+  "wilaya": {
+    "id": 19,
+    "nameFr": "Sétif",
+    "nameAr": "سطيف"
+  },
+  "commune": {
+    "id": 1932,
+    "nameFr": "El Eulma",
+    "nameAr": "العلمة"
+  },
+  "user": {
+    "id": "mock-u5",
+    "name": "Sofiane T.",
+    "avatar": null,
+    "createdAt": "2024-11-17T20:40:00.000Z",
+    "emailVerified": null,
+    "isRecommended": false,
+    "ratingCount": 0,
+    "ratingSum": 0,
+    "responseMinutes": null,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

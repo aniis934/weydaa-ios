@@ -1,0 +1,191 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a13",
+      "title": "Villa R+1 avec jardin à Tizi Ouzou",
+      "description": "Villa R+1 de 240 m² habitables sur un terrain de 400 m², quartier résidentiel calme à 5 minutes du centre. 6 pièces, 2 salles de bain, garage pour deux voitures, jardin arboré (oliviers, figuiers). Construction de 2012, acte notarié. Prix négociable, pas d'échange.",
+      "price": 52000000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 702,
+      "isFeatured": true,
+      "createdAt": "2026-09-28T12:00:00.000Z",
+      "updatedAt": "2026-09-28T12:00:00.000Z",
+      "expiresAt": "2026-11-27T12:00:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_vente-maison-villa",
+      "wilayaId": 15,
+      "communeId": 1563,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "villa-r1-avec-jardin-a-tizi-ouzou-tizi-ouzou",
+      "attributes": {
+        "surface": 240,
+        "rooms": "6-plus",
+        "deed_type": "acte",
+        "condition": "good",
+        "has_parking": true,
+        "has_balcony": true,
+        "construction_year": 2012,
+        "total_floors": 2
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a13-1",
+          "url": "https://photos.mock.weydaa/annonces/house-3.webp",
+          "publicId": "annonces/mock-a13/1",
+          "order": 0,
+          "annonceId": "mock-a13"
+        }
+      ],
+      "category": {
+        "slug": "vente-maison-villa",
+        "nameFr": "Vente maison / villa",
+        "nameAr": "بيع منزل / فيلا",
+        "nameEn": "House / Villa for Sale"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a15",
+      "title": "Chatons persans de 3 mois",
+      "description": "Deux chatons persans, un mâle et une femelle, nés début juillet. Sevrés, propres, vermifugés et vaccinés (carnet de santé fourni). Les parents sont visibles à la maison. Prix par chaton, réservés à des familles qui ont déjà eu des chats.",
+      "price": 15000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 276,
+      "isFeatured": false,
+      "createdAt": "2026-09-26T20:35:00.000Z",
+      "updatedAt": "2026-09-26T20:35:00.000Z",
+      "expiresAt": "2026-11-25T20:35:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_chats",
+      "wilayaId": 15,
+      "communeId": 1520,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "chatons-persans-de-3-mois-tizi-ouzou",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a15-1",
+          "url": "https://photos.mock.weydaa/annonces/pet-1.webp",
+          "publicId": "annonces/mock-a15/1",
+          "order": 0,
+          "annonceId": "mock-a15"
+        }
+      ],
+      "category": {
+        "slug": "chats",
+        "nameFr": "Chats",
+        "nameAr": "قطط",
+        "nameEn": "Cats"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a18",
+      "title": "Recrute vendeur(se) pour boutique de prêt-à-porter",
+      "description": "Boutique de prêt-à-porter au centre de Tizi Ouzou recrute un(e) vendeur(se) à temps plein. Expérience dans la vente souhaitée, bonne présentation, maîtrise du kabyle et du français. Horaires 9 h – 18 h, repos le vendredi. Salaire de 45 000 DA net + primes sur objectifs. Envoyez votre CV par message.",
+      "price": 45000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 512,
+      "isFeatured": false,
+      "createdAt": "2026-09-23T19:20:00.000Z",
+      "updatedAt": "2026-09-23T19:20:00.000Z",
+      "expiresAt": "2026-11-22T19:20:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_offres-emploi",
+      "wilayaId": 15,
+      "communeId": 1563,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "recrute-vendeurse-pour-boutique-de-pret-a-porter-tizi-ouzou",
+      "attributes": null,
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a18-1",
+          "url": "https://photos.mock.weydaa/annonces/job-1.webp",
+          "publicId": "annonces/mock-a18/1",
+          "order": 0,
+          "annonceId": "mock-a18"
+        }
+      ],
+      "category": {
+        "slug": "offres-emploi",
+        "nameFr": "Offres d'emploi",
+        "nameAr": "عروض عمل",
+        "nameEn": "Job Offers"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a21",
+      "title": "Xiaomi Redmi Note 13 Pro 256 Go neuf",
+      "description": "Redmi Note 13 Pro 8 Go / 256 Go, neuf sous blister, version globale. Écran AMOLED 120 Hz, appareil photo 200 Mpx, charge rapide 67 W. Garantie de 12 mois. Livraison possible sur Béjaïa et Akbou.",
+      "price": 52000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 298,
+      "isFeatured": false,
+      "createdAt": "2026-09-19T11:45:00.000Z",
+      "updatedAt": "2026-09-19T11:45:00.000Z",
+      "expiresAt": "2026-11-18T11:45:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 6,
+      "communeId": 604,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "xiaomi-redmi-note-13-pro-256-go-neuf-bejaia",
+      "attributes": {
+        "brand": "xiaomi",
+        "model": "redmi-note-13-pro",
+        "condition": "new",
+        "storage_gb": "256",
+        "ram_gb": "8",
+        "warranty": true
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a21-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-3.webp",
+          "publicId": "annonces/mock-a21/1",
+          "order": 0,
+          "annonceId": "mock-a21"
+        }
+      ],
+      "category": {
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones"
+      },
+      "wilaya": {
+        "id": 6,
+        "nameFr": "Béjaïa",
+        "nameAr": "بجاية"
+      }
+    }
+  ],
+  "total": 4,
+  "page": 1,
+  "totalPages": 1
+}

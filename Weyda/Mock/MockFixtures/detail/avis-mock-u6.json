@@ -1,0 +1,69 @@
+{
+  "reviews": [
+    {
+      "id": "mock-rev-u6-1",
+      "rating": 5,
+      "comment": "Visite organisée rapidement, villa conforme aux photos.",
+      "createdAt": "2026-09-18T11:00:00.000Z",
+      "updatedAt": "2026-09-18T11:00:00.000Z",
+      "author": {
+        "id": "mock-b1-u6",
+        "name": "Mourad T.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u6-2",
+      "rating": 4,
+      "comment": "Chatons en bonne santé et bien sociabilisés.",
+      "createdAt": "2026-08-26T16:45:00.000Z",
+      "updatedAt": "2026-08-26T16:45:00.000Z",
+      "author": {
+        "id": "mock-b2-u6",
+        "name": "Thiziri A.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u6-3",
+      "rating": 5,
+      "comment": "Téléphone neuf sous blister, merci !",
+      "createdAt": "2026-08-01T10:15:00.000Z",
+      "updatedAt": "2026-08-01T10:15:00.000Z",
+      "author": {
+        "id": "mock-b3-u6",
+        "name": "Samir K.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u6-4",
+      "rating": 4,
+      "comment": null,
+      "createdAt": "2026-06-20T13:30:00.000Z",
+      "updatedAt": "2026-06-20T13:30:00.000Z",
+      "author": {
+        "id": "mock-b4-u6",
+        "name": "Lydia M.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u6-5",
+      "rating": 4,
+      "comment": "Sérieux mais pas très bavard.",
+      "createdAt": "2026-05-28T17:05:00.000Z",
+      "updatedAt": "2026-05-28T17:05:00.000Z",
+      "author": {
+        "id": "mock-b5-u6",
+        "name": "Rayan B.",
+        "avatar": null
+      }
+    }
+  ],
+  "total": 8,
+  "totalPages": 2,
+  "page": 1,
+  "ratingCount": 8,
+  "average": 4.5
+}

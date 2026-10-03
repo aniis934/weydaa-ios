@@ -1,0 +1,232 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a4",
+      "title": "Réfrigérateur Condor No Frost 460 L",
+      "description": "Réfrigérateur combiné Condor No Frost 460 litres, couleur inox, acheté il y a un an et demi. Fonctionne parfaitement, aucune rayure sur les portes. Vendu pour cause de déménagement. À récupérer à Boufarik, livraison possible sur Blida avec participation aux frais.",
+      "price": 72000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 87,
+      "isFeatured": false,
+      "createdAt": "2026-10-02T15:05:00.000Z",
+      "updatedAt": "2026-10-02T15:05:00.000Z",
+      "expiresAt": "2026-12-01T15:05:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_refrigerateur",
+      "wilayaId": 9,
+      "communeId": 907,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "refrigerateur-condor-no-frost-460-l-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a4-1",
+          "url": "https://photos.mock.weydaa/annonces/fridge-1.webp",
+          "publicId": "annonces/mock-a4/1",
+          "order": 0,
+          "annonceId": "mock-a4"
+        }
+      ],
+      "category": {
+        "slug": "refrigerateur",
+        "nameFr": "Réfrigérateur / Congélateur",
+        "nameAr": "ثلاجة / مجمد",
+        "nameEn": "Refrigerator / Freezer"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a11",
+      "title": "Karakou algérois brodé main, taille 38",
+      "description": "Karakou en velours bordeaux brodé main au fil doré, avec seroual chelka assorti. Porté une seule fois pour un mariage. Taille 38, retouches possibles. Vendu avec sa housse. Visible à Ouled Yaïch, échange non souhaité.",
+      "price": 42000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 214,
+      "isFeatured": false,
+      "createdAt": "2026-09-29T17:15:00.000Z",
+      "updatedAt": "2026-09-29T17:15:00.000Z",
+      "expiresAt": "2026-11-28T17:15:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_vetements-femme",
+      "wilayaId": 9,
+      "communeId": 923,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "karakou-algerois-brode-main-taille-38-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a11-1",
+          "url": "https://photos.mock.weydaa/annonces/dress-1.webp",
+          "publicId": "annonces/mock-a11/1",
+          "order": 0,
+          "annonceId": "mock-a11"
+        }
+      ],
+      "category": {
+        "slug": "vetements-femme",
+        "nameFr": "Vêtements femme",
+        "nameAr": "ملابس نساء",
+        "nameEn": "Women's Clothing"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a14",
+      "title": "Hyundai Accent RB 2017 essence",
+      "description": "Hyundai Accent RB 1.4 essence, boîte manuelle, 98 000 km. Deuxième main, toujours garée au sous-sol. Climatisation, vitres électriques, quatre pneus neufs. Contrôle technique valide. Visible à Blida centre.",
+      "price": 2350000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 455,
+      "isFeatured": false,
+      "createdAt": "2026-09-27T16:50:00.000Z",
+      "updatedAt": "2026-09-27T16:50:00.000Z",
+      "expiresAt": "2026-11-26T16:50:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_voitures",
+      "wilayaId": 9,
+      "communeId": 905,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "hyundai-accent-rb-2017-essence-blida",
+      "attributes": {
+        "make": "hyundai",
+        "model": "accent",
+        "year": 2017,
+        "mileage": 98000,
+        "fuel": "essence",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "silver",
+        "doors": "4",
+        "technical_inspection": true
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a14-1",
+          "url": "https://photos.mock.weydaa/annonces/car-3.webp",
+          "publicId": "annonces/mock-a14/1",
+          "order": 0,
+          "annonceId": "mock-a14"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a22",
+      "title": "Terrain de 300 m² viabilisé à Bouinan",
+      "description": "Terrain plat de 300 m², viabilisé (eau, électricité, gaz), dans un lotissement calme de Bouinan, façade de 15 m sur une rue goudronnée. Livret foncier, permis de construire possible en R+2. Prix à discuter sur place.",
+      "price": null,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 410,
+      "isFeatured": false,
+      "createdAt": "2026-09-17T08:20:00.000Z",
+      "updatedAt": "2026-09-17T08:20:00.000Z",
+      "expiresAt": "2026-11-16T08:20:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_terrain",
+      "wilayaId": 9,
+      "communeId": 909,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "terrain-de-300-m-viabilise-a-bouinan-blida",
+      "attributes": {
+        "surface": 300,
+        "deed_type": "livret-foncier",
+        "facade": "secondary-road"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a22-1",
+          "url": "https://photos.mock.weydaa/annonces/house-4.webp",
+          "publicId": "annonces/mock-a22/1",
+          "order": 0,
+          "annonceId": "mock-a22"
+        }
+      ],
+      "category": {
+        "slug": "terrain",
+        "nameFr": "Terrain",
+        "nameAr": "أرض",
+        "nameEn": "Land"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a30",
+      "title": "Bureau en bois massif avec 3 tiroirs",
+      "description": "Bureau en bois massif de 120 × 60 cm, trois tiroirs, très solide. Quelques marques d'usage sur le plateau, rien de gênant. Idéal pour un coin étude ou le télétravail, démontable pour le transport.",
+      "price": 24000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 98,
+      "isFeatured": false,
+      "createdAt": "2026-08-27T11:00:00.000Z",
+      "updatedAt": "2026-08-27T11:00:00.000Z",
+      "expiresAt": "2026-10-26T11:00:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_meubles",
+      "wilayaId": 9,
+      "communeId": 905,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "bureau-en-bois-massif-avec-3-tiroirs-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a30-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-5.webp",
+          "publicId": "annonces/mock-a30/1",
+          "order": 0,
+          "annonceId": "mock-a30"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "totalPages": 1
+}

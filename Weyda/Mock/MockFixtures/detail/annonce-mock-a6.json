@@ -1,0 +1,93 @@
+{
+  "id": "mock-a6",
+  "title": "Samsung Galaxy S23 Ultra 512 Go",
+  "description": "Galaxy S23 Ultra 512 Go / 12 Go de RAM, coloris noir, double SIM. Écran sans aucune rayure (protection posée dès l'achat), stylet S Pen fourni. Vendu avec chargeur rapide 45 W et deux coques. Prix ferme, paiement en espèces à la remise.",
+  "price": 148000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 301,
+  "isFeatured": true,
+  "createdAt": "2026-10-02T08:10:00.000Z",
+  "updatedAt": "2026-10-02T08:10:00.000Z",
+  "expiresAt": "2026-12-01T08:10:00.000Z",
+  "userId": "mock-u3",
+  "categoryId": "sub_smartphones",
+  "wilayaId": 25,
+  "communeId": 2505,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "samsung-galaxy-s23-ultra-512-go-constantine",
+  "attributes": {
+    "brand": "samsung",
+    "model": "galaxy-s23-ultra",
+    "condition": "good",
+    "storage_gb": "512",
+    "ram_gb": "12"
+  },
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a6-1",
+      "url": "https://photos.mock.weydaa/annonces/phone-2.webp",
+      "publicId": "annonces/mock-a6/1",
+      "order": 0,
+      "annonceId": "mock-a6"
+    },
+    {
+      "id": "img-mock-a6-2",
+      "url": "https://photos.mock.weydaa/annonces/phone-54.webp",
+      "publicId": "annonces/mock-a6/2",
+      "order": 1,
+      "annonceId": "mock-a6"
+    },
+    {
+      "id": "img-mock-a6-3",
+      "url": "https://photos.mock.weydaa/annonces/phone-55.webp",
+      "publicId": "annonces/mock-a6/3",
+      "order": 2,
+      "annonceId": "mock-a6"
+    },
+    {
+      "id": "img-mock-a6-4",
+      "url": "https://photos.mock.weydaa/annonces/phone-56.webp",
+      "publicId": "annonces/mock-a6/4",
+      "order": 3,
+      "annonceId": "mock-a6"
+    }
+  ],
+  "category": {
+    "id": "sub_smartphones",
+    "slug": "smartphones",
+    "nameFr": "Smartphones",
+    "nameAr": "هواتف ذكية",
+    "nameEn": "Smartphones",
+    "parentId": "cat_electronique",
+    "parent": {
+      "slug": "electronique"
+    }
+  },
+  "wilaya": {
+    "id": 25,
+    "nameFr": "Constantine",
+    "nameAr": "قسنطينة"
+  },
+  "commune": {
+    "id": 2505,
+    "nameFr": "Constantine",
+    "nameAr": "قسنطينة"
+  },
+  "user": {
+    "id": "mock-u3",
+    "name": "Yacine M.",
+    "avatar": null,
+    "createdAt": "2025-01-20T09:05:00.000Z",
+    "emailVerified": "2025-01-20T09:16:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 5,
+    "ratingSum": 21,
+    "responseMinutes": 180,
+    "_count": {
+      "annonces": 6
+    }
+  }
+}

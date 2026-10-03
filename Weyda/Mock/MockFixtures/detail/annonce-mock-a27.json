@@ -1,0 +1,98 @@
+{
+  "id": "mock-a27",
+  "title": "Dacia Logan 1.5 dCi 2015 première main",
+  "description": "Dacia Logan 1.5 dCi 75 ch, première main, 156 000 km. Climatisation fonctionnelle, vidange faite à 150 000 km, pneus avant neufs. Coffre très spacieux, jamais accidentée, aucun frais à prévoir.",
+  "price": 1650000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 274,
+  "isFeatured": false,
+  "createdAt": "2026-09-05T13:10:00.000Z",
+  "updatedAt": "2026-09-05T13:10:00.000Z",
+  "expiresAt": "2026-11-04T13:10:00.000Z",
+  "userId": "mock-u5",
+  "categoryId": "sub_voitures",
+  "wilayaId": 19,
+  "communeId": 1955,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "dacia-logan-1-5-dci-2015-premiere-main-setif",
+  "attributes": {
+    "make": "dacia",
+    "model": "logan",
+    "year": 2015,
+    "mileage": 156000,
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "grey",
+    "doors": "4",
+    "technical_inspection": true
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a27-1",
+      "url": "https://photos.mock.weydaa/annonces/car-7.webp",
+      "publicId": "annonces/mock-a27/1",
+      "order": 0,
+      "annonceId": "mock-a27"
+    },
+    {
+      "id": "img-mock-a27-2",
+      "url": "https://photos.mock.weydaa/annonces/car-75.webp",
+      "publicId": "annonces/mock-a27/2",
+      "order": 1,
+      "annonceId": "mock-a27"
+    },
+    {
+      "id": "img-mock-a27-3",
+      "url": "https://photos.mock.weydaa/annonces/car-76.webp",
+      "publicId": "annonces/mock-a27/3",
+      "order": 2,
+      "annonceId": "mock-a27"
+    },
+    {
+      "id": "img-mock-a27-4",
+      "url": "https://photos.mock.weydaa/annonces/car-77.webp",
+      "publicId": "annonces/mock-a27/4",
+      "order": 3,
+      "annonceId": "mock-a27"
+    }
+  ],
+  "category": {
+    "id": "sub_voitures",
+    "slug": "voitures",
+    "nameFr": "Voitures",
+    "nameAr": "سيارات",
+    "nameEn": "Cars",
+    "parentId": "cat_vehicules",
+    "parent": {
+      "slug": "vehicules"
+    }
+  },
+  "wilaya": {
+    "id": 19,
+    "nameFr": "Sétif",
+    "nameAr": "سطيف"
+  },
+  "commune": {
+    "id": 1955,
+    "nameFr": "Setif",
+    "nameAr": "سطيف"
+  },
+  "user": {
+    "id": "mock-u5",
+    "name": "Sofiane T.",
+    "avatar": null,
+    "createdAt": "2024-11-17T20:40:00.000Z",
+    "emailVerified": null,
+    "isRecommended": false,
+    "ratingCount": 0,
+    "ratingSum": 0,
+    "responseMinutes": null,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

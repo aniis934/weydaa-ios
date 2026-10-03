@@ -1,0 +1,101 @@
+{
+  "id": "mock-a7",
+  "title": "Location F2 meublé de 60 m² au centre d'Oran",
+  "description": "F2 meublé et équipé de 60 m² au 2e étage, proche du tramway et des commerces. Salon, chambre, cuisine équipée (réfrigérateur, cuisinière, machine à laver), balcon. Loyer de 45 000 DA par mois, 6 mois d'avance. Idéal pour un couple ou un fonctionnaire. Libre à partir du 15 octobre.",
+  "price": 45000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 467,
+  "isFeatured": false,
+  "createdAt": "2026-10-01T19:45:00.000Z",
+  "updatedAt": "2026-10-01T19:45:00.000Z",
+  "expiresAt": "2026-11-30T19:45:00.000Z",
+  "userId": "mock-u2",
+  "categoryId": "sub_location-appartement",
+  "wilayaId": 31,
+  "communeId": 3122,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "location-f2-meuble-de-60-m-au-centre-doran-oran",
+  "attributes": {
+    "surface": 60,
+    "rooms": "2",
+    "floor": 2,
+    "furnished": true,
+    "condition": "good",
+    "has_balcony": true
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a7-1",
+      "url": "https://photos.mock.weydaa/annonces/house-2.webp",
+      "publicId": "annonces/mock-a7/1",
+      "order": 0,
+      "annonceId": "mock-a7"
+    },
+    {
+      "id": "img-mock-a7-2",
+      "url": "https://photos.mock.weydaa/annonces/house-55.webp",
+      "publicId": "annonces/mock-a7/2",
+      "order": 1,
+      "annonceId": "mock-a7"
+    },
+    {
+      "id": "img-mock-a7-3",
+      "url": "https://photos.mock.weydaa/annonces/house-56.webp",
+      "publicId": "annonces/mock-a7/3",
+      "order": 2,
+      "annonceId": "mock-a7"
+    },
+    {
+      "id": "img-mock-a7-4",
+      "url": "https://photos.mock.weydaa/annonces/house-57.webp",
+      "publicId": "annonces/mock-a7/4",
+      "order": 3,
+      "annonceId": "mock-a7"
+    },
+    {
+      "id": "img-mock-a7-5",
+      "url": "https://photos.mock.weydaa/annonces/house-58.webp",
+      "publicId": "annonces/mock-a7/5",
+      "order": 4,
+      "annonceId": "mock-a7"
+    }
+  ],
+  "category": {
+    "id": "sub_location-appartement",
+    "slug": "location-appartement",
+    "nameFr": "Location appartement",
+    "nameAr": "إيجار شقة",
+    "nameEn": "Apartment for Rent",
+    "parentId": "cat_immobilier",
+    "parent": {
+      "slug": "immobilier"
+    }
+  },
+  "wilaya": {
+    "id": 31,
+    "nameFr": "Oran",
+    "nameAr": "وهران"
+  },
+  "commune": {
+    "id": 3122,
+    "nameFr": "Oran",
+    "nameAr": "وهران"
+  },
+  "user": {
+    "id": "mock-u2",
+    "name": "Amina K.",
+    "avatar": null,
+    "createdAt": "2024-06-02T18:45:00.000Z",
+    "emailVerified": "2024-06-02T18:52:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 12,
+    "ratingSum": 55,
+    "responseMinutes": 45,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

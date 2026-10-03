@@ -1,0 +1,15 @@
+{
+  "id": "mock-u1",
+  "name": "Karim B.",
+  "bio": "Particulier à Alger. Photos réelles, prix juste, remise en main propre à Bab Ezzouar ou Hydra en semaine après 17 h.",
+  "avatar": null,
+  "createdAt": "2023-03-14T10:12:00.000Z",
+  "emailVerified": "2023-03-14T10:31:00.000Z",
+  "isRecommended": true,
+  "ratingCount": 23,
+  "ratingSum": 110,
+  "responseMinutes": 20,
+  "_count": {
+    "annonces": 5
+  }
+}

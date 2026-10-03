@@ -1,0 +1,110 @@
+{
+  "id": "mock-a13",
+  "title": "Villa R+1 avec jardin à Tizi Ouzou",
+  "description": "Villa R+1 de 240 m² habitables sur un terrain de 400 m², quartier résidentiel calme à 5 minutes du centre. 6 pièces, 2 salles de bain, garage pour deux voitures, jardin arboré (oliviers, figuiers). Construction de 2012, acte notarié. Prix négociable, pas d'échange.",
+  "price": 52000000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 702,
+  "isFeatured": true,
+  "createdAt": "2026-09-28T12:00:00.000Z",
+  "updatedAt": "2026-09-28T12:00:00.000Z",
+  "expiresAt": "2026-11-27T12:00:00.000Z",
+  "userId": "mock-u6",
+  "categoryId": "sub_vente-maison-villa",
+  "wilayaId": 15,
+  "communeId": 1563,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "villa-r1-avec-jardin-a-tizi-ouzou-tizi-ouzou",
+  "attributes": {
+    "surface": 240,
+    "rooms": "6-plus",
+    "deed_type": "acte",
+    "condition": "good",
+    "has_parking": true,
+    "has_balcony": true,
+    "construction_year": 2012,
+    "total_floors": 2
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a13-1",
+      "url": "https://photos.mock.weydaa/annonces/house-3.webp",
+      "publicId": "annonces/mock-a13/1",
+      "order": 0,
+      "annonceId": "mock-a13"
+    },
+    {
+      "id": "img-mock-a13-2",
+      "url": "https://photos.mock.weydaa/annonces/house-59.webp",
+      "publicId": "annonces/mock-a13/2",
+      "order": 1,
+      "annonceId": "mock-a13"
+    },
+    {
+      "id": "img-mock-a13-3",
+      "url": "https://photos.mock.weydaa/annonces/house-60.webp",
+      "publicId": "annonces/mock-a13/3",
+      "order": 2,
+      "annonceId": "mock-a13"
+    },
+    {
+      "id": "img-mock-a13-4",
+      "url": "https://photos.mock.weydaa/annonces/house-61.webp",
+      "publicId": "annonces/mock-a13/4",
+      "order": 3,
+      "annonceId": "mock-a13"
+    },
+    {
+      "id": "img-mock-a13-5",
+      "url": "https://photos.mock.weydaa/annonces/house-62.webp",
+      "publicId": "annonces/mock-a13/5",
+      "order": 4,
+      "annonceId": "mock-a13"
+    },
+    {
+      "id": "img-mock-a13-6",
+      "url": "https://photos.mock.weydaa/annonces/house-63.webp",
+      "publicId": "annonces/mock-a13/6",
+      "order": 5,
+      "annonceId": "mock-a13"
+    }
+  ],
+  "category": {
+    "id": "sub_vente-maison-villa",
+    "slug": "vente-maison-villa",
+    "nameFr": "Vente maison / villa",
+    "nameAr": "بيع منزل / فيلا",
+    "nameEn": "House / Villa for Sale",
+    "parentId": "cat_immobilier",
+    "parent": {
+      "slug": "immobilier"
+    }
+  },
+  "wilaya": {
+    "id": 15,
+    "nameFr": "Tizi Ouzou",
+    "nameAr": "تيزي وزو"
+  },
+  "commune": {
+    "id": 1563,
+    "nameFr": "Tizi-Ouzou",
+    "nameAr": "تيزي وزو"
+  },
+  "user": {
+    "id": "mock-u6",
+    "name": "Lyes A.",
+    "avatar": null,
+    "createdAt": "2023-04-25T08:30:00.000Z",
+    "emailVerified": "2023-04-25T08:41:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 8,
+    "ratingSum": 36,
+    "responseMinutes": 60,
+    "_count": {
+      "annonces": 4
+    }
+  }
+}

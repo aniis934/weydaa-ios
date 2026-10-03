@@ -1,0 +1,15 @@
+{
+  "id": "mock-u2",
+  "name": "Amina K.",
+  "bio": "Oran et environs. Je réponds aux messages le soir. Pas d'échange, merci.",
+  "avatar": null,
+  "createdAt": "2024-06-02T18:45:00.000Z",
+  "emailVerified": "2024-06-02T18:52:00.000Z",
+  "isRecommended": false,
+  "ratingCount": 12,
+  "ratingSum": 55,
+  "responseMinutes": 45,
+  "_count": {
+    "annonces": 5
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "id": "mock-a26",
+  "title": "Renault Clio 3 1.5 dCi 2010",
+  "description": "Clio 3 1.5 dCi 85 ch, 214 000 km, moteur sain, embrayage changé l'an dernier. Quelques rayures sur le pare-chocs arrière, intérieur propre. Idéale pour un premier véhicule, environ 5 L aux 100. Papiers en règle, prix à discuter raisonnablement.",
+  "price": 1380000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 612,
+  "isFeatured": false,
+  "createdAt": "2026-09-08T09:45:00.000Z",
+  "updatedAt": "2026-09-08T09:45:00.000Z",
+  "expiresAt": "2026-11-07T09:45:00.000Z",
+  "userId": "mock-u2",
+  "categoryId": "sub_voitures",
+  "wilayaId": 31,
+  "communeId": 3114,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "renault-clio-3-1-5-dci-2010-oran",
+  "attributes": {
+    "make": "renault",
+    "model": "clio-3",
+    "year": 2010,
+    "mileage": 214000,
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "fair",
+    "color": "black",
+    "doors": "5"
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a26-1",
+      "url": "https://photos.mock.weydaa/annonces/car-6.webp",
+      "publicId": "annonces/mock-a26/1",
+      "order": 0,
+      "annonceId": "mock-a26"
+    },
+    {
+      "id": "img-mock-a26-2",
+      "url": "https://photos.mock.weydaa/annonces/car-72.webp",
+      "publicId": "annonces/mock-a26/2",
+      "order": 1,
+      "annonceId": "mock-a26"
+    },
+    {
+      "id": "img-mock-a26-3",
+      "url": "https://photos.mock.weydaa/annonces/car-73.webp",
+      "publicId": "annonces/mock-a26/3",
+      "order": 2,
+      "annonceId": "mock-a26"
+    },
+    {
+      "id": "img-mock-a26-4",
+      "url": "https://photos.mock.weydaa/annonces/car-74.webp",
+      "publicId": "annonces/mock-a26/4",
+      "order": 3,
+      "annonceId": "mock-a26"
+    }
+  ],
+  "category": {
+    "id": "sub_voitures",
+    "slug": "voitures",
+    "nameFr": "Voitures",
+    "nameAr": "سيارات",
+    "nameEn": "Cars",
+    "parentId": "cat_vehicules",
+    "parent": {
+      "slug": "vehicules"
+    }
+  },
+  "wilaya": {
+    "id": 31,
+    "nameFr": "Oran",
+    "nameAr": "وهران"
+  },
+  "commune": {
+    "id": 3114,
+    "nameFr": "Es Senia",
+    "nameAr": "السانية"
+  },
+  "user": {
+    "id": "mock-u2",
+    "name": "Amina K.",
+    "avatar": null,
+    "createdAt": "2024-06-02T18:45:00.000Z",
+    "emailVerified": "2024-06-02T18:52:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 12,
+    "ratingSum": 55,
+    "responseMinutes": 45,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}
