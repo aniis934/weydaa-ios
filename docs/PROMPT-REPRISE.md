@@ -26,27 +26,32 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-03 (nuit)** — **Phase 3 close** (PR #4) : connexion (e-mail, inscription, mot de passe oublié, nouveau
+  mot de passe, code e-mail, Apple, Google sans SDK) et compte (profil, modifier, mot de passe, mes annonces, mes
+  données, contact, langue → Réglages). 434 tests verts, tours de captures verts, galerie
+  https://claude.ai/artifact/RatHcgEgHZHGEzGQhp7VgL. **ARRÊT DEMANDÉ PAR LE PROPRIÉTAIRE** à la fin de la phase 3 :
+  attendre son feu vert avant la phase 4 (déposer une annonce). Connexion Apple / Google : à tester sur iPhone quand
+  le compte Apple, l'identifiant Google iOS et le lot A seront là (`EN-ATTENTE.md`).
 - **2026-10-03 (soir)** — **Phase 2 close** (PR #3) : 356 tests verts, 612 captures relues, galerie
   https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa. **ARRÊT DEMANDÉ PAR LE PROPRIÉTAIRE** à la fin de la phase 2
   pour vérifier : attendre son feu vert avant la phase 3.
 - Phase 1 close (PR #2, galerie https://claude.ai/artifact/WxiTw2n3mHKn5LP1Hcd6x8). Lots serveur A/B/C prêts en PR
   non fusionnées (weyda2026 #5, #6, #7). Préparation App Store sur `prep/release` (worktree `../weydaa-ios-release`,
   `ios-compat` vert sur iOS 16.4) — à fusionner en phase 6.
-- **Phase 3 commencée puis mise en pause** (à la demande d'arrêt) : worktree `../weydaa-ios-p3`, branche `phase-3`
-  créée depuis la phase 2 AVANT ses écrans, travail partiel NON commité (connexion : `Weyda/Features/Auth`,
-  `Weyda/Core/Auth`, composants de formulaire, branchements AppRouter/RootView/AppContainer/LaunchOptions/AppConfig ;
-  compte : `Weyda/Features/Account` commencé). Contrat : `docs/equipe/CONTRACTS-P3.md` (interfaces AUTH ↔ ACCOUNT,
-  utilisateur fictif `mock-me`, `-WeydaLoggedIn`). Reprise : fusionner `main` dans `phase-3`, relire le partiel, finir AUTH puis ACCOUNT.
 - **Méthode : une équipe d'agents en parallèle** (demandée par le propriétaire). L'orchestrateur fixe les contrats
   d'interface AVANT le code (`docs/equipe/CONTRACTS*.md`, `SCREEN-BRIEF.md`), chaque agent écrit SES fichiers et une
   note d'API, l'orchestrateur intègre, commite et lance UNE CI par lot, relit TOUTES les captures en planches
   contact (ffmpeg) avant la galerie.
 - **Envoi git** : `weydaa-site/.claude/settings.json` interdit `git push` (protection du site : un envoi sur
   `master` part en production). La session tourne depuis `weydaa-site` → la règle bloque aussi le dépôt iOS. Le
-  propriétaire l'a levée pour la phase 2 puis elle a été rétablie : redemander à la prochaine phase (ou ouvrir la
+  propriétaire l'a levée pour la phase 2 puis elle a été rétablie ; en phase 3, il a autorisé « pour la session, dépôt
+  iOS seulement » → envois ciblés `git -C <worktree iOS> push`. Redemander à chaque nouvelle session (ou ouvrir la
   session depuis `weydaa-ios`).
-- À faire en phase 3 : traduire les 4 codes d'erreur Apple du lot A (`invalidAppleToken`, `appleEmailMissing`,
-  `appleReauthMismatch`, `appleSignInUnavailable`) ; remplacer les 3 chaînes qui parlent d'Android.
+- Phase 4 (au feu vert) : nouveau worktree `../weydaa-ios-p4` depuis `main` ; contrats `docs/equipe/CONTRACTS-P4.md`
+  à écrire d'abord (assistant 6 étapes, attributs dynamiques, photos, brouillon, actions de « Mes annonces » : le
+  ViewModel porte déjà la logique vendu / renouveler / supprimer, sans bouton). Chaînes des agents : un fichier JSON
+  par agent fusionné par `node scripts/merge-agent-strings.mjs . <fichiers>` (même format que `scripts/ios-strings.json`),
+  clés utilisables tout de suite dans le code ; puis `node scripts/convert-strings.mjs`.
 
 ## Rappels
 - Pas de Mac : chaque vérification passe par la CI (`gh run watch`, `gh run view --log-failed`).

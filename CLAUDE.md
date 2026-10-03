@@ -40,14 +40,17 @@ Weyda/App/               WeydaApp, AppContainer (DI manuelle : clients, session,
 Weyda/Core/              Config, Localization (L10n.swift GÉNÉRÉ, WeydaLocale : langue + chiffres latins),
                          Models, Network (APIClient, WeydaAPI/LiveWeydaAPI, DTO/), Mapping, Session (trousseau),
                          Repositories, Realtime (Phoenix), Images (pipeline + RemoteImage), Upload, Local, Common
-                         (Format, ErrorMapper, Validators, Paging, SuggestionsEngine)
+                         (Format, ErrorMapper, Validators, Paging, SuggestionsEngine), Auth (Sign in with Apple +
+                         nonce, Google par ASWebAuthenticationSession + PKCE, sans SDK)
 Weyda/DesignSystem/      Tokens (WeydaColor/Palette/Ramp, WeydaSpace/Size/Radius, WeydaDuration/WeydaCurve,
                          WeydaTextStyle), Brand (WeydaMarkPath = tracé unique du W, WeydaMark/Extruded/Tile/
                          Loader/Wordmark, LaunchView), Components, Showcase (Debug)
-Weyda/Features/          un dossier par domaine : Home, Listings, Detail, Seller, About (phase 2) ; Shell (provisoires)
+Weyda/Features/          un dossier par domaine : Home, Listings, Detail, Seller, About (phase 2) ; Auth (feuille
+                         de connexion `AuthFlowView`), Account (profil et écrans du compte) (phase 3) ; Shell (provisoires)
 Weyda/Mock/              API simulée (Debug) : MockURLProtocol (jokers, `*` de requête), MockPhotos (photos dessinées),
                          MockFixtures/routes-<domaine>.json + dossiers (exclu des builds Release)
-Weyda/Resources/         Assets.xcassets (AppIcon, SplashMark, LaunchBackground, AccentColor, Categories/ Lucide),
+Weyda/Resources/         Assets.xcassets (AppIcon, SplashMark, LaunchBackground, AccentColor, Categories/ Lucide,
+                         GoogleLogo),
                          Localizable.xcstrings (GÉNÉRÉ), Info.plist (clés non générables), *.lproj/InfoPlist.strings
 WeydaTests/              tests unitaires (logique portée d'Android avec ses cas de test)
 WeydaUITests/            tour de captures : TourSupport (classe de base TourTestCase, `captureRoute`), un fichier

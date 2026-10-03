@@ -5,14 +5,25 @@ import Foundation
 ///   -WeydaSkipLaunch YES      saute l'animation de lancement
 ///   -WeydaLaunchFrame 0.62    affiche une image figée de l'animation (capture)
 ///   -WeydaTab messages        onglet ouvert au démarrage
-///   -WeydaRoute detail:x      écran ouvert au démarrage (formats : `LaunchRoute.parse`)
+///   -WeydaRoute detail:x      écran ouvert au démarrage (formats : `LaunchRoute.parse`) ; feuille de connexion :
+///                login · register · forgot · verify · reset:<jeton>   (`AuthEntry.launchEntry`)
 ///   -WeydaFreezeMotion YES    fige les animations décoratives sans fin (scintillement des squelettes) :
 ///                             captures reproductibles, et l'outil de test n'attend pas un « repos » qui ne vient pas
 ///   -WeydaScreen showcase     écran de démonstration du système de design (Debug) ;
 ///                components   la démonstration des composants seule
 ///   -WeydaScreen data         démonstration de la couche données : vrais repositories sur l'API simulée (Debug)
 ///   -WeydaMockAPI YES         API simulée : réponses figées de MockFixtures (Debug)
+///   -WeydaLoggedIn YES        avec l'API simulée : session ouverte d'emblée (utilisateur fictif de référence,
+///                  unverified  e-mail vérifié — ou à vérifier avec `unverified`) ; sans effet sur l'API réelle
+///   -WeydaAuthDemo invalid    (Debug) inscription pré-remplie de valeurs refusées, erreurs de champ affichées :
+///                             capture d'un formulaire en erreur sans saisie au clavier (fiable dans toutes les langues)
 nonisolated enum LaunchOptions {
+    /// Session simulée demandée par `-WeydaLoggedIn` (captures des écrans de membre).
+    nonisolated enum MockSession: Sendable {
+        case verified
+        case unverified
+    }
+
     private static var defaults: UserDefaults { .standard }
 
     static var skipLaunch: Bool { defaults.bool(forKey: "WeydaSkipLaunch") || isRunningUnitTests }
@@ -33,6 +44,26 @@ nonisolated enum LaunchOptions {
     static var screen: String? { defaults.string(forKey: "WeydaScreen") }
 
     static var mockAPI: Bool { defaults.bool(forKey: "WeydaMockAPI") }
+
+    /// `-WeydaLoggedIn YES` → `.verified`, `-WeydaLoggedIn unverified` → `.unverified`, sinon nil. Lue par
+    /// `AppContainer`, seulement en API simulée.
+    static var mockSession: MockSession? {
+        guard let raw = defaults.string(forKey: "WeydaLoggedIn")?.lowercased() else { return nil }
+        switch raw {
+        case "yes", "true", "1", "verified": return .verified
+        case "unverified": return .unverified
+        default: return nil
+        }
+    }
+
+    /// Démonstration d'un formulaire de connexion pour les captures (`-WeydaAuthDemo invalid`) ; toujours nil en Release.
+    static var authDemo: String? {
+        #if DEBUG
+        return defaults.string(forKey: "WeydaAuthDemo")
+        #else
+        return nil
+        #endif
+    }
 
     /// Vrai pendant les tests unitaires (l'app sert d'hôte) : pas d'animation de lancement.
     static var isRunningUnitTests: Bool {

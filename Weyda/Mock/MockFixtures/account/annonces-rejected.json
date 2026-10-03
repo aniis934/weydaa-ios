@@ -1,0 +1,73 @@
+{
+  "annonces": [
+    {
+      "id": "mock-m6",
+      "slug": "iphone-13-128-go-bleu-alger",
+      "title": "iPhone 13 128 Go bleu",
+      "description": "iPhone 13 128 Go, couleur bleue, batterie à 87 %. Vendu avec sa boîte et un chargeur.",
+      "price": 1000,
+      "priceType": "FIXED",
+      "status": "REJECTED",
+      "views": 0,
+      "isFeatured": false,
+      "createdAt": "2026-09-29T19:20:00.000Z",
+      "updatedAt": "2026-09-29T19:20:00.000Z",
+      "expiresAt": "2026-11-28T19:20:00.000Z",
+      "userId": "mock-me",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 16,
+      "communeId": 1605,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "attributes": {
+        "brand": "apple",
+        "storage_gb": "128"
+      },
+      "phone": "0555000000",
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-m6-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-61.webp",
+          "publicId": "annonces/mock-m6/1",
+          "order": 0,
+          "annonceId": "mock-m6"
+        }
+      ],
+      "category": {
+        "id": "sub_smartphones",
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones",
+        "parentId": "cat_electronique",
+        "parent": {
+          "slug": "electronique"
+        }
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      },
+      "commune": {
+        "id": 1605,
+        "nameFr": "Bab Ezzouar",
+        "nameAr": "باب الزوار"
+      },
+      "aiModeration": {
+        "decision": "REJECT",
+        "confidence": 0.93,
+        "reasons": [
+          "Le prix indiqué (1 000 DA) ne correspond pas à l'article.",
+          "La photo ne montre pas le téléphone mis en vente."
+        ],
+        "suggestedCategory": null,
+        "descriptionSuggestions": "Indiquez le prix réel et ajoutez des photos de l'écran allumé et du dos."
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

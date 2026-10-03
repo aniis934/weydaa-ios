@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// L'écran de chaque route — les points d'entrée fixés par le contrat de la phase 2. Les routes des phases
+/// L'écran de chaque route — les points d'entrée fixés par les contrats des phases 2 et 3. Les routes des phases
 /// suivantes ouvrent un écran d'attente. Pas de `default` : une route ajoutée sans écran ne compile pas.
 struct RouteDestination: View {
     private let route: AppRoute
@@ -19,8 +19,19 @@ struct RouteDestination: View {
             WebPageView(page: page)
         case .about:
             AboutView()
-        case .chat, .myListings, .favorites, .savedSearches, .notifications, .editProfile, .changePassword,
-             .accountData, .contact, .editListing:
+        // Compte (phase 3) : les écrans de membre se gardent eux-mêmes (`AccountMemberGate`) ; « Nous contacter »
+        // est ouvert aux visiteurs.
+        case .myListings:
+            MyListingsView()
+        case .editProfile:
+            EditProfileView()
+        case .changePassword:
+            ChangePasswordView()
+        case .accountData:
+            AccountDataView()
+        case .contact:
+            ContactView()
+        case .chat, .favorites, .savedSearches, .notifications, .editListing:
             ComingSoonView(route: route)
         }
     }

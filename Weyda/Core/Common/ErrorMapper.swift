@@ -1,7 +1,7 @@
 import Foundation
 
-/// Traduction des erreurs (réseau, `{ error: "cleI18n" }` du serveur, Zod par champ, image) en messages —
-/// portage d'`ui/common/ErrorMapper.kt`. Pur : testable sans interface.
+/// Traduction des erreurs (réseau, `{ error: "cleI18n" }` du serveur, Zod par champ, image, connexions Apple /
+/// Google de l'appareil) en messages — portage d'`ui/common/ErrorMapper.kt`. Pur : testable sans interface.
 nonisolated enum ErrorMapper {
     /// Message à afficher ; `nil` = annulation (`CancellationError`, `URLError.cancelled`) : ne rien afficher.
     static func message(for error: any Error) -> String? {
@@ -12,6 +12,12 @@ nonisolated enum ErrorMapper {
         if let imageError = error as? ImagePreparationError {
             if case .tooLarge = imageError { return L10n.errorUploadTooLarge }
             return L10n.errorPhotoRead
+        }
+        if let appleError = error as? AppleSignInError {
+            return appleMessage(appleError)
+        }
+        if let googleError = error as? GoogleSignInError {
+            return googleMessage(googleError)
         }
         if let urlError = error as? URLError {
             // URL mal formée = défaut de l'app (Android : IllegalArgumentException), pas le réseau.
@@ -66,6 +72,11 @@ nonisolated enum ErrorMapper {
         case "loginRequired", "invalidRefreshToken": return L10n.errorSessionExpired
         case "emailNotVerified": return L10n.errorEmailNotVerified
         case "googleReauthMismatch": return L10n.errorGoogleReauthMismatch
+        // Sign in with Apple (lot serveur A, sans équivalent Android).
+        case "invalidAppleToken": return L10n.errorInvalidAppleToken
+        case "appleEmailMissing": return L10n.errorAppleEmailMissing
+        case "appleReauthMismatch": return L10n.errorAppleReauthMismatch
+        case "appleSignInUnavailable": return L10n.errorAppleUnavailable
         case "invalidOrExpiredLink", "linkExpired": return L10n.resetInvalidLink
         case "cannotReportSelf": return L10n.errorCannotReportSelf
         case "emailExists", "emailAlreadyUsed": return L10n.errorEmailExists
@@ -114,6 +125,23 @@ nonisolated enum ErrorMapper {
         case "categoryNotFound": return L10n.errorCategoryNotFound
         case "serverError": return L10n.errorServer
         default: return message(status: status)
+        }
+    }
+
+    /// Échec de Sign in with Apple sur l'appareil (capacité absente du profil, pas de compte iCloud, réponse
+    /// illisible) : « Connexion avec Apple impossible pour le moment », l'e-mail reste proposé.
+    static func appleMessage(_ error: AppleSignInError) -> String {
+        switch error {
+        case .failed, .invalidResponse: return L10n.errorAppleUnavailable
+        }
+    }
+
+    /// Échec de la connexion Google sur l'appareil : sans identifiant client, « services Google indisponibles » ;
+    /// sinon « Connexion Google impossible. Réessayez. ».
+    static func googleMessage(_ error: GoogleSignInError) -> String {
+        switch error {
+        case .notConfigured: return L10n.errorGoogleUnavailable
+        case .stateMismatch, .authorizationFailed, .tokenExchangeFailed, .missingIDToken: return L10n.errorGoogleSignIn
         }
     }
 

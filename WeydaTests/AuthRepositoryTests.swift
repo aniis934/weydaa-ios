@@ -177,6 +177,28 @@ final class AuthRepositoryTests: XCTestCase {
     }
 
     @MainActor
+    func testSignInMethodsReadsProvidersAndDefaultsToAPassword() async throws {
+        let api = FakeWeydaAPI()
+        let session = FakeWeydaAPI.makeSession()
+        let auth = AuthRepository(api: api, session: session)
+        let users = UserRepository(api: api, session: session)
+        api.onLogin = { _ in FakeWeydaAPI.tokens(emailVerified: true) }
+        _ = try await auth.login(email: "amina@example.com", password: "Secret123")
+
+        api.onMe = { MeDTO(id: "user_1", email: "amina@example.com", hasPassword: false, providers: ["google", "apple"]) }
+        let linked = try await users.signInMethods()
+        XCTAssertFalse(linked.hasPassword)
+        XCTAssertEqual(linked.providers, ["google", "apple"])
+
+        // Serveur antérieur au lot A : ni `hasPassword` ni `providers` → mot de passe, comme `User.hasPassword`.
+        api.onMe = { MeDTO(id: "user_1", email: "amina@example.com") }
+        let legacy = try await users.signInMethods()
+        XCTAssertTrue(legacy.hasPassword)
+        XCTAssertNil(legacy.providers)
+        XCTAssertEqual(session.user?.emailVerified, true)
+    }
+
+    @MainActor
     func testUpdateProfileMergesThePartialAnswerAndInvalidatesAChangedEmail() async throws {
         let api = FakeWeydaAPI()
         let session = FakeWeydaAPI.makeSession()

@@ -15,8 +15,64 @@
       "fr": "Publiez votre annonce gratuitement en moins d'une minute.",
       "ar": "انشر إعلانك مجانًا في أقل من دقيقة.",
       "en": "Post your ad for free in less than a minute."
+    },
+    "error_invalid_apple_token": {
+      "fr": "Connexion Apple refusée : jeton invalide ou expiré. Réessayez.",
+      "ar": "رُفض تسجيل الدخول عبر Apple: الرمز غير صالح أو منتهي الصلاحية. أعد المحاولة.",
+      "en": "Apple sign-in rejected: invalid or expired token. Please try again."
+    },
+    "error_apple_email_missing": {
+      "fr": "Votre compte Apple ne fournit pas d'email vérifié.",
+      "ar": "حساب Apple الخاص بك لا يوفر بريدًا إلكترونيًا مؤكدًا.",
+      "en": "Your Apple account does not provide a verified email."
+    },
+    "error_apple_reauth_mismatch": {
+      "fr": "Ce compte Apple ne correspond pas au compte connecté.",
+      "ar": "حساب Apple هذا لا يطابق الحساب المتصل.",
+      "en": "This Apple account doesn't match the signed-in account."
+    },
+    "error_apple_unavailable": {
+      "fr": "Connexion avec Apple impossible pour le moment. Réessayez ou utilisez votre email.",
+      "ar": "تعذّر تسجيل الدخول عبر Apple حاليًا. أعد المحاولة أو استخدم بريدك الإلكتروني.",
+      "en": "Sign in with Apple is unavailable right now. Try again or use your email."
+    },
+    "account_stat_expired": {
+      "fr": "Expirées",
+      "ar": "منتهية",
+      "en": "Expired"
+    },
+    "account_delete_apple_hint": {
+      "fr": "Votre compte est lié à Apple : confirmez votre identité avec Apple pour le supprimer.",
+      "ar": "حسابك مرتبط بـ Apple: أكّد هويتك عبر Apple لحذفه.",
+      "en": "Your account is linked to Apple: confirm your identity with Apple to delete it."
+    },
+    "account_delete_apple_confirm": {
+      "fr": "Confirmer avec Apple et supprimer",
+      "ar": "التأكيد عبر Apple والحذف",
+      "en": "Confirm with Apple and delete"
     }
   },
-  "override": {},
+  "override": {
+    "error_google_no_account": {
+      "fr": "Aucun compte Google choisi. Réessayez, ou connectez-vous avec votre email.",
+      "ar": "لم يتم اختيار أي حساب Google. أعد المحاولة أو سجّل الدخول ببريدك الإلكتروني.",
+      "en": "No Google account was chosen. Try again or sign in with your email."
+    },
+    "language_hint": {
+      "fr": "La langue de Weydaa se choisit dans les Réglages de l'iPhone : touchez « Langue » pour les ouvrir.",
+      "ar": "تُختار لغة ويدا من إعدادات iPhone: اضغط على « اللغة » لفتحها.",
+      "en": "Weydaa's language is set in iPhone Settings: tap “Language” to open them."
+    },
+    "language_legacy_hint": {
+      "fr": "Langue absente de la liste ? Ajoutez-la d'abord dans Réglages › Général › Langue et région.",
+      "ar": "اللغة غير موجودة في القائمة؟ أضفها أولاً من الإعدادات › عام › اللغة والمنطقة.",
+      "en": "Language not listed? Add it first in Settings › General › Language & Region."
+    },
+    "language_open_settings": {
+      "fr": "Ouvrir les Réglages",
+      "ar": "فتح الإعدادات",
+      "en": "Open Settings"
+    }
+  },
   "exclude": []
 }

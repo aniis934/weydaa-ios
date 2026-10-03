@@ -9,4 +9,8 @@ WEYDA_API_HOST = weydaa.com
 WEYDA_SUPABASE_HOST =
 WEYDA_SUPABASE_ANON_KEY =
 
+// Connexion Google (identifiant client OAuth « iOS », public mais propre au projet Google Cloud) : vide = bouton
+// Google masqué. Forme : 123-abc.apps.googleusercontent.com (la CI peut le poser dans Secrets.xcconfig).
+WEYDA_GOOGLE_IOS_CLIENT_ID =
+
 #include? "Secrets.xcconfig"
