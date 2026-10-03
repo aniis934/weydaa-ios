@@ -57,17 +57,16 @@ final class TourAccountTests: TourTestCase {
         let chip = app.descendants(matching: .any)["myListings.filter.rejected"]
         XCTAssertTrue(chip.waitForExistence(timeout: 10), "myListings.filter.rejected introuvable")
         settle()
-        // Libellés plus longs en français : la dernière puce dépasse l'écran → faire défiler la barre d'abord (vers
-        // la fin de la lecture : à gauche en LTR, à droite en arabe).
-        if !chip.isHittable {
-            let bar = app.scrollViews.containing(.any, identifier: "myListings.filter.all").firstMatch
-            if environment["WEYDA_LANG"] == "ar" {
-                bar.swipeRight()
-            } else {
-                bar.swipeLeft()
-            }
-            settle(1)
+        // Libellés plus longs en français : la dernière puce dépasse l'écran → faire défiler la barre jusqu'au bout
+        // d'abord (vers la fin de la lecture : à gauche en LTR, à droite en arabe ; sans effet si tout tient). Pas de
+        // `isHittable` : sur une puce hors écran, la question elle-même échoue (« Activation point invalid »).
+        let bar = app.scrollViews.containing(.any, identifier: "myListings.filter.all").firstMatch
+        if environment["WEYDA_LANG"] == "ar" {
+            bar.swipeRight()
+        } else {
+            bar.swipeLeft()
         }
+        settle(1)
         chip.tap()
         let row = app.descendants(matching: .any)["myListings.row.mock-m6"]
         XCTAssertTrue(row.waitForExistence(timeout: 10), "myListings.row.mock-m6 introuvable")
