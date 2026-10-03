@@ -143,8 +143,9 @@ private struct ChatThreadContent: View {
     /// Lignes du fil et séparateurs de jour, dans le fuseau de l'appareil.
     private var timelineItems: [ChatTimelineItem] {
         let calendar = ChatDayGrouping.deviceCalendar()
-        let rows = ChatTimeline.rows(messages: state.messages, userId: state.userId, now: Date(), calendar: calendar)
-        return ChatTimeline.items(rows: rows, calendar: calendar)
+        let now = Date()
+        let rows = ChatTimeline.rows(messages: state.messages, userId: state.userId, now: now, calendar: calendar)
+        return ChatTimeline.items(rows: rows, calendar: calendar, now: now)
     }
 
     @ViewBuilder

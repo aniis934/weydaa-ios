@@ -706,40 +706,52 @@ nonisolated enum ChatOfferStyle {
     }
 }
 
-/// « Accepter », « Contrer », « Refuser » : sur une ligne si elle suffit, sinon « Accepter » au-dessus des deux autres,
-/// sinon en colonne (texte agrandi, arabe). Hauteur 44 pt au moins.
+/// « Accepter », « Contrer », « Refuser » : TOUJOURS sur deux lignes — « Accepter » pleine largeur, puis « Contrer » et
+/// « Refuser » côte à côte (l'un sous l'autre en très grand texte). Aucun libellé tronqué : il passe à la ligne (2 lignes
+/// au plus, légère réduction si un mot seul ne tient pas). Hauteur 44 pt au moins.
 private struct ChatOfferButtons: View {
-    let actions: [OfferAction]
-    let isBusy: Bool
-    let onRespond: (OfferAction) -> Void
-    let onCounter: () -> Void
+    private let actions: [OfferAction]
+    private let isBusy: Bool
+    private let onRespond: (OfferAction) -> Void
+    private let onCounter: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(actions: [OfferAction], isBusy: Bool, onRespond: @escaping (OfferAction) -> Void, onCounter: @escaping () -> Void) {
+        self.actions = actions
+        self.isBusy = isBusy
+        self.onRespond = onRespond
+        self.onCounter = onCounter
+    }
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: WeydaSpace.sm) {
-                ForEach(actions, id: \.self) { action in
-                    button(action)
-                }
+        VStack(spacing: WeydaSpace.sm) {
+            ForEach(primary, id: \.self) { action in
+                button(action)
             }
-            VStack(spacing: WeydaSpace.sm) {
-                ForEach(primary, id: \.self) { action in
-                    button(action)
-                }
-                HStack(spacing: WeydaSpace.sm) {
-                    ForEach(secondary, id: \.self) { action in
-                        button(action)
-                    }
-                }
-            }
-            VStack(spacing: WeydaSpace.sm) {
-                ForEach(actions, id: \.self) { action in
-                    button(action)
-                }
+            if !secondary.isEmpty {
+                secondRow
             }
         }
         .controlSize(.large)
         .buttonBorderShape(.capsule)
         .disabled(isBusy)
+    }
+
+    @ViewBuilder
+    private var secondRow: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: WeydaSpace.sm) {
+                ForEach(secondary, id: \.self) { action in
+                    button(action)
+                }
+            }
+        } else {
+            HStack(alignment: .top, spacing: WeydaSpace.sm) {
+                ForEach(secondary, id: \.self) { action in
+                    button(action)
+                }
+            }
+        }
     }
 
     private var primary: [OfferAction] {
@@ -787,7 +799,10 @@ private struct ChatOfferButtons: View {
         Text(title)
             .weydaText(.labelLarge)
             .foregroundStyle(color)
-            .lineLimit(1)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .minimumScaleFactor(0.85)
+            .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity)
     }
 }

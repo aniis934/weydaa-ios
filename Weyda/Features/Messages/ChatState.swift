@@ -161,14 +161,19 @@ nonisolated enum ChatTimelineItem: Equatable, Sendable, Identifiable {
 
 /// Mise en lignes du fil (logique pure, testée).
 nonisolated enum ChatTimeline {
-    /// Lignes précédées d'un séparateur à chaque nouveau jour civil (un message sans date reste avec le jour en cours).
-    static func items(rows: [ChatTimelineRow], calendar: Calendar = ChatDayGrouping.deviceCalendar()) -> [ChatTimelineItem] {
+    /// Lignes précédées d'un séparateur à chaque nouveau jour civil (un message sans date reste avec le jour en cours ;
+    /// un message daté dans le futur est rangé sous AUJOURD'HUI, voir `ChatDayGrouping.day`).
+    static func items(
+        rows: [ChatTimelineRow],
+        calendar: Calendar = ChatDayGrouping.deviceCalendar(),
+        now: Date = Date()
+    ) -> [ChatTimelineItem] {
         var items: [ChatTimelineItem] = []
         items.reserveCapacity(rows.count + 4)
         var currentKey: String? = nil
         for row in rows {
             if let date = row.message.createdAt {
-                let current = ChatDayGrouping.day(of: date, calendar: calendar)
+                let current = ChatDayGrouping.day(of: date, calendar: calendar, now: now)
                 if current.key != currentKey {
                     items.append(.day(current))
                     currentKey = current.key
@@ -202,8 +207,8 @@ nonisolated enum ChatTimeline {
                 ChatTimelineRow(
                     message: message,
                     isMine: isMine,
-                    startsGroup: !continues(previous, message, calendar: calendar),
-                    endsGroup: !continues(message, next, calendar: calendar),
+                    startsGroup: !continues(previous, message, calendar: calendar, now: now),
+                    endsGroup: !continues(message, next, calendar: calendar, now: now),
                     showsReadReceipt: isMine && message.id == readId,
                     isOpenOffer: isOpenOffer,
                     isActionableOffer: actionable,
@@ -216,11 +221,12 @@ nonisolated enum ChatTimeline {
 
     /// Deux messages texte consécutifs du même auteur, le même jour, forment une suite ; une carte d'offre est toujours
     /// à part, et un séparateur de jour coupe la suite.
-    private static func continues(_ first: ChatMessage?, _ second: ChatMessage?, calendar: Calendar) -> Bool {
+    private static func continues(_ first: ChatMessage?, _ second: ChatMessage?, calendar: Calendar, now: Date) -> Bool {
         guard let first, let second else { return false }
         guard first.senderId == second.senderId, first.type == .text, second.type == .text else { return false }
         guard let firstDate = first.createdAt, let secondDate = second.createdAt else { return true }
-        return ChatDayGrouping.day(of: firstDate, calendar: calendar).key == ChatDayGrouping.day(of: secondDate, calendar: calendar).key
+        let firstKey = ChatDayGrouping.day(of: firstDate, calendar: calendar, now: now).key
+        return firstKey == ChatDayGrouping.day(of: secondDate, calendar: calendar, now: now).key
     }
 }
 
@@ -252,16 +258,24 @@ nonisolated enum ChatDayGrouping {
         return calendar
     }
 
-    /// Jour civil d'un instant dans `calendar` (minuit pile appartient au nouveau jour).
-    static func day(of date: Date, calendar: Calendar) -> ChatDay {
-        let parts = calendar.dateComponents([.year, .month, .day], from: date)
+    /// Jour civil d'un instant dans `calendar` (minuit pile appartient au nouveau jour), BORNÉ au jour courant : un fil
+    /// n'affiche jamais « Demain ». Un message daté dans le futur (horloge du téléphone en retard sur celle du serveur,
+    /// données simulées) est rangé et libellé comme aujourd'hui ; la clé est celle du jour borné. L'ordre des messages
+    /// (chronologique) n'est pas touché.
+    static func day(of date: Date, calendar: Calendar, now: Date = Date()) -> ChatDay {
+        let bounded: Date = date > now ? now : date
+        let parts = calendar.dateComponents([.year, .month, .day], from: bounded)
         let key = padded(parts.year ?? 0, width: 4) + "-" + padded(parts.month ?? 0, width: 2) + "-" + padded(parts.day ?? 0, width: 2)
-        return ChatDay(key: key, start: calendar.startOfDay(for: date))
+        return ChatDay(key: key, start: calendar.startOfDay(for: bounded))
     }
 
     /// Messages consécutifs regroupés par jour civil, dans l'ordre du fil (ordre chronologique croissant). Un message
     /// sans date reste avec le jour en cours.
-    static func groups(_ messages: [ChatMessage], calendar: Calendar = ChatDayGrouping.deviceCalendar()) -> [ChatDayGroup] {
+    static func groups(
+        _ messages: [ChatMessage],
+        calendar: Calendar = ChatDayGrouping.deviceCalendar(),
+        now: Date = Date()
+    ) -> [ChatDayGroup] {
         var groups: [ChatDayGroup] = []
         for message in messages {
             guard let date = message.createdAt else {
@@ -272,7 +286,7 @@ nonisolated enum ChatDayGrouping {
                 }
                 continue
             }
-            let current = Self.day(of: date, calendar: calendar)
+            let current = Self.day(of: date, calendar: calendar, now: now)
             if let last = groups.last, last.day?.key == current.key {
                 groups[groups.count - 1].messages.append(message)
             } else {
