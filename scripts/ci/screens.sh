@@ -1,18 +1,21 @@
 #!/bin/bash
 # Tour automatique (WeydaUITests) en API simulée → captures par langue × apparence × appareil,
-# plus une vidéo du parcours par appareil. Sortie : screens/<appareil>/<langue>-<apparence>/*.png
-# Prérequis : `xcodebuild build-for-testing` déjà fait dans build/dd.
+# plus une vidéo du premier tour si VIDEO=1. Sortie : screens/<appareil>/<langue>-<apparence>/*.png
+# Prérequis : produits de `xcodebuild build-for-testing` dans build/dd/Build/Products.
 set -uo pipefail
 
 LANGS="${LANGS:-fr ar en}"
 APPEARANCES="${APPEARANCES:-light dark}"
+VIDEO="${VIDEO:-1}"
 IFS=';' read -r -a DEVICE_LIST <<< "${DEVICES:-iPhone 17 Pro Max;iPhone 17e}"
 
-xctestrun=$(find build/dd/Build/Products -name '*.xctestrun' | head -1)
+products=build/dd/Build/Products
+xctestrun=$(find "$products" -maxdepth 1 -name '*.xctestrun' | head -1)
 if [ -z "$xctestrun" ]; then
   echo "::error::aucun .xctestrun : lancer build-for-testing d'abord"
   exit 1
 fi
+app=$(find "$products" -maxdepth 2 -name 'Weyda.app' -type d | head -1)
 runtime=$(xcrun simctl list runtimes available -j \
   | jq -r '[.runtimes[] | select(.platform == "iOS")] | sort_by(.version | split(".") | map(tonumber)) | last | .identifier')
 echo "Runtime : $runtime"
@@ -29,6 +32,15 @@ for device in "${DEVICE_LIST[@]}"; do
   xcrun simctl status_bar "$udid" override --time "9:41" --dataNetwork wifi --wifiMode active \
     --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
 
+  # Préchauffage : premier lancement de l'app sur un simulateur neuf (≈ 60 s d'attente de l'outil de
+  # test au premier tour de la phase 0, absente des tours suivants). On le paie ici, hors du tour filmé.
+  if [ -n "$app" ]; then
+    xcrun simctl install "$udid" "$app" \
+      && xcrun simctl launch "$udid" com.weydaa.app -WeydaMockAPI YES -WeydaSkipLaunch YES > /dev/null \
+      && sleep 8 \
+      && xcrun simctl terminate "$udid" com.weydaa.app || true
+  fi
+
   first=1
   for lang in $LANGS; do
     for appearance in $APPEARANCES; do
@@ -38,13 +50,15 @@ for device in "${DEVICE_LIST[@]}"; do
       mkdir -p "$out"
 
       video_pid=""
-      if [ "$first" = 1 ]; then
+      if [ "$first" = 1 ] && [ "$VIDEO" = 1 ]; then
         xcrun simctl io "$udid" recordVideo --codec=h264 --force "screens/${slug}/tour-${lang}-${appearance}.mp4" &
         video_pid=$!
         sleep 2
       fi
 
-      TEST_RUNNER_WEYDA_LANG="$lang" TEST_RUNNER_WEYDA_SLOW="$first" xcodebuild test-without-building \
+      slow=0
+      [ -n "$video_pid" ] && slow=1
+      TEST_RUNNER_WEYDA_LANG="$lang" TEST_RUNNER_WEYDA_SLOW="$slow" xcodebuild test-without-building \
         -xctestrun "$xctestrun" \
         -destination "id=$udid" \
         -only-testing:WeydaUITests \

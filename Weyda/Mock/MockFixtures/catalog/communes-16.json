@@ -1,0 +1,344 @@
+[
+  {
+    "id": 1601,
+    "nameFr": "Ain Benian",
+    "nameAr": "عين بنيان",
+    "wilayaId": 16
+  },
+  {
+    "id": 1602,
+    "nameFr": "Ain Taya",
+    "nameAr": "عين تايا",
+    "wilayaId": 16
+  },
+  {
+    "id": 1603,
+    "nameFr": "Alger Centre",
+    "nameAr": "الجزائر الوسطى",
+    "wilayaId": 16
+  },
+  {
+    "id": 1604,
+    "nameFr": "Bab El Oued",
+    "nameAr": "باب الواد",
+    "wilayaId": 16
+  },
+  {
+    "id": 1605,
+    "nameFr": "Bab Ezzouar",
+    "nameAr": "باب الزوار",
+    "wilayaId": 16
+  },
+  {
+    "id": 1606,
+    "nameFr": "Baba Hassen",
+    "nameAr": "بابا حسن",
+    "wilayaId": 16
+  },
+  {
+    "id": 1607,
+    "nameFr": "Bachedjerah",
+    "nameAr": "باش جراح",
+    "wilayaId": 16
+  },
+  {
+    "id": 1608,
+    "nameFr": "Baraki",
+    "nameAr": "براقي",
+    "wilayaId": 16
+  },
+  {
+    "id": 1609,
+    "nameFr": "Ben Aknoun",
+    "nameAr": "بن عكنون",
+    "wilayaId": 16
+  },
+  {
+    "id": 1610,
+    "nameFr": "Beni Messous",
+    "nameAr": "بني مسوس",
+    "wilayaId": 16
+  },
+  {
+    "id": 1611,
+    "nameFr": "Bir Mourad Rais",
+    "nameAr": "بئر مراد رايس",
+    "wilayaId": 16
+  },
+  {
+    "id": 1612,
+    "nameFr": "Bir Touta",
+    "nameAr": "بئر توتة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1613,
+    "nameFr": "Birkhadem",
+    "nameAr": "بئر خادم",
+    "wilayaId": 16
+  },
+  {
+    "id": 1614,
+    "nameFr": "Bologhine Ibnou Ziri",
+    "nameAr": "بولوغين إبن زيري",
+    "wilayaId": 16
+  },
+  {
+    "id": 1615,
+    "nameFr": "Bordj El Bahri",
+    "nameAr": "برج البحري",
+    "wilayaId": 16
+  },
+  {
+    "id": 1616,
+    "nameFr": "Bordj El Kiffan",
+    "nameAr": "برج الكيفان",
+    "wilayaId": 16
+  },
+  {
+    "id": 1617,
+    "nameFr": "Bourouba",
+    "nameAr": "بوروبة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1618,
+    "nameFr": "Bouzareah",
+    "nameAr": "بوزريعة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1619,
+    "nameFr": "Casbah",
+    "nameAr": "القصبة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1620,
+    "nameFr": "Cheraga",
+    "nameAr": "شراقة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1621,
+    "nameFr": "Dar El Beida",
+    "nameAr": "دار البيضاء",
+    "wilayaId": 16
+  },
+  {
+    "id": 1622,
+    "nameFr": "Dely Ibrahim",
+    "nameAr": "دالي إبراهيم",
+    "wilayaId": 16
+  },
+  {
+    "id": 1623,
+    "nameFr": "Djasr Kasentina",
+    "nameAr": "جسر قسنطينة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1624,
+    "nameFr": "Douira",
+    "nameAr": "الدويرة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1625,
+    "nameFr": "Draria",
+    "nameAr": "دراريا",
+    "wilayaId": 16
+  },
+  {
+    "id": 1626,
+    "nameFr": "El Achour",
+    "nameAr": "الأشعور",
+    "wilayaId": 16
+  },
+  {
+    "id": 1627,
+    "nameFr": "El Biar",
+    "nameAr": "البيار",
+    "wilayaId": 16
+  },
+  {
+    "id": 1628,
+    "nameFr": "El Harrach",
+    "nameAr": "الحراش",
+    "wilayaId": 16
+  },
+  {
+    "id": 1629,
+    "nameFr": "El Madania",
+    "nameAr": "المدنية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1630,
+    "nameFr": "El Magharia",
+    "nameAr": "المقرية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1631,
+    "nameFr": "El Marsa",
+    "nameAr": "المرسى",
+    "wilayaId": 16
+  },
+  {
+    "id": 1632,
+    "nameFr": "El Mouradia",
+    "nameAr": "المرادية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1633,
+    "nameFr": "Hammamet",
+    "nameAr": "الحمامات",
+    "wilayaId": 16
+  },
+  {
+    "id": 1634,
+    "nameFr": "Herraoua",
+    "nameAr": "هراوة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1635,
+    "nameFr": "Hussein Dey",
+    "nameAr": "حسين داي",
+    "wilayaId": 16
+  },
+  {
+    "id": 1636,
+    "nameFr": "Hydra",
+    "nameAr": "حيدرة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1637,
+    "nameFr": "Khraissia",
+    "nameAr": "الخرايسية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1638,
+    "nameFr": "Kouba",
+    "nameAr": "القبة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1639,
+    "nameFr": "Les Eucalyptus",
+    "nameAr": "الكاليتوس",
+    "wilayaId": 16
+  },
+  {
+    "id": 1640,
+    "nameFr": "Maalma",
+    "nameAr": "المعالمة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1641,
+    "nameFr": "Mohamed Belouzdad",
+    "nameAr": "محمد بلوزداد",
+    "wilayaId": 16
+  },
+  {
+    "id": 1642,
+    "nameFr": "Mohammadia",
+    "nameAr": "المحمدية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1643,
+    "nameFr": "Oued Koriche",
+    "nameAr": "وادي قريش",
+    "wilayaId": 16
+  },
+  {
+    "id": 1644,
+    "nameFr": "Oued Smar",
+    "nameAr": "وادي سمار",
+    "wilayaId": 16
+  },
+  {
+    "id": 1645,
+    "nameFr": "Ouled Chebel",
+    "nameAr": "أولاد شبل",
+    "wilayaId": 16
+  },
+  {
+    "id": 1646,
+    "nameFr": "Ouled Fayet",
+    "nameAr": "أولاد فايت",
+    "wilayaId": 16
+  },
+  {
+    "id": 1647,
+    "nameFr": "Rahmania",
+    "nameAr": "الرحمانية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1648,
+    "nameFr": "Rais Hamidou",
+    "nameAr": "رايس حميدو",
+    "wilayaId": 16
+  },
+  {
+    "id": 1649,
+    "nameFr": "Reghaia",
+    "nameAr": "الرغاية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1650,
+    "nameFr": "Rouiba",
+    "nameAr": "رويبة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1651,
+    "nameFr": "Sehaoula",
+    "nameAr": "السحاولة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1652,
+    "nameFr": "Sidi M'hamed",
+    "nameAr": "سيدي محمد",
+    "wilayaId": 16
+  },
+  {
+    "id": 1653,
+    "nameFr": "Sidi Moussa",
+    "nameAr": "سيدي موسى",
+    "wilayaId": 16
+  },
+  {
+    "id": 1654,
+    "nameFr": "Souidania",
+    "nameAr": "السويدانية",
+    "wilayaId": 16
+  },
+  {
+    "id": 1655,
+    "nameFr": "Staoueli",
+    "nameAr": "سطاوالي",
+    "wilayaId": 16
+  },
+  {
+    "id": 1656,
+    "nameFr": "Tessala El Merdja",
+    "nameAr": "تسالة المرجة",
+    "wilayaId": 16
+  },
+  {
+    "id": 1657,
+    "nameFr": "Zeralda",
+    "nameAr": "زرالدة",
+    "wilayaId": 16
+  }
+]

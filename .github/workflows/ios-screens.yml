@@ -4,13 +4,16 @@ name: ios-screens
 # en fr / ar / en × clair / sombre × 2 tailles d'iPhone, plus une vidéo du parcours.
 # À la demande (fin de phase) : `gh workflow run ios-screens.yml --ref <branche>` (le workflow doit
 # être sur main pour ça), ou depuis n'importe quelle branche : `git tag screens-<x> && git push origin screens-<x>`.
+#
+# Une seule compilation, puis un tour par appareil × langue EN PARALLÈLE (Mac gratuits du dépôt
+# public) : le tour séquentiel de la phase 0 prenait 26 min.
 on:
   push:
     tags: ["screens-*"]
   workflow_dispatch:
     inputs:
       languages:
-        description: Langues
+        description: Langues (séparées par des espaces)
         default: fr ar en
       appearances:
         description: Apparences
@@ -27,10 +30,29 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
 
 jobs:
-  screens:
-    name: Captures et vidéo
+  plan:
+    name: Matrice
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - id: matrix
+        env:
+          LANGS: ${{ inputs.languages || 'fr ar en' }}
+          DEVICES: ${{ inputs.devices || 'iPhone 17 Pro Max;iPhone 17e' }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          langs = os.environ["LANGS"].split()
+          devices = [d.strip() for d in os.environ["DEVICES"].split(";") if d.strip()]
+          include = [{"device": d, "lang": l} for d in devices for l in langs]
+          print("matrix=" + json.dumps({"include": include}))
+          PY
+
+  build:
+    name: Compilation pour les tests
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
 
@@ -61,18 +83,65 @@ jobs:
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee build/logs/build-for-testing.log | xcbeautify --renderer github-actions
 
+      # tar : l'artefact GitHub ne garde pas les droits d'exécution des binaires de l'app.
+      - name: Emballer les produits
+        run: tar -czf products.tgz -C build/dd/Build Products
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ios-products
+          path: products.tgz
+          retention-days: 1
+
+      - name: Journal (échec)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-screens-build-log
+          path: build/logs/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  tour:
+    name: Tour ${{ matrix.device }} · ${{ matrix.lang }}
+    needs: [plan, build]
+    runs-on: macos-26
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: ios-products
+
+      - name: Déballer les produits
+        run: |
+          mkdir -p build/dd/Build
+          tar -xzf products.tgz -C build/dd/Build
+
       - name: Tour (captures + vidéo)
         env:
-          LANGS: ${{ inputs.languages }}
-          APPEARANCES: ${{ inputs.appearances }}
-          DEVICES: ${{ inputs.devices }}
+          LANGS: ${{ matrix.lang }}
+          APPEARANCES: ${{ inputs.appearances || 'light dark' }}
+          DEVICES: ${{ matrix.device }}
+          # Une vidéo par appareil (le tour en français), pas une par langue.
+          VIDEO: ${{ matrix.lang == 'fr' && '1' || '0' }}
         run: bash scripts/ci/screens.sh
+
+      - name: Nom de l'artefact
+        id: name
+        env:
+          DEVICE: ${{ matrix.device }}
+        run: echo "slug=$(echo "$DEVICE" | tr ' ' '-' | tr -cd '[:alnum:]-')" >> "$GITHUB_OUTPUT"
 
       - name: Publier les captures
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: ios-screens
+          name: ios-screens-${{ steps.name.outputs.slug }}-${{ matrix.lang }}
           path: screens/
           retention-days: 14
           if-no-files-found: warn
@@ -81,9 +150,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: ios-screens-results
-          path: |
-            build/logs/
-            build/results/
+          name: ios-screens-results-${{ steps.name.outputs.slug }}-${{ matrix.lang }}
+          path: build/results/
           retention-days: 7
           if-no-files-found: ignore

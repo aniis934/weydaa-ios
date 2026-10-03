@@ -1,0 +1,12 @@
+[
+  { "method": "GET", "path": "/api/categories", "fixture": "catalog/categories.json" },
+  { "method": "GET", "path": "/api/categories/*/attributes", "fixture": "catalog/attributes-empty.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "fixture": "catalog/attributes-vehicules.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "ctx_make": "renault" }, "fixture": "catalog/attributes-vehicules-renault.json" },
+  { "method": "GET", "path": "/api/categories/immobilier/attributes", "fixture": "catalog/attributes-immobilier.json" },
+  { "method": "GET", "path": "/api/categories/electronique/attributes", "fixture": "catalog/attributes-electronique.json" },
+  { "method": "GET", "path": "/api/wilayas", "fixture": "catalog/wilayas.json" },
+  { "method": "GET", "path": "/api/wilayas", "query": { "top": "10" }, "fixture": "catalog/wilayas-top.json" },
+  { "method": "GET", "path": "/api/wilayas", "query": { "wilayaId": "16" }, "fixture": "catalog/communes-16.json" },
+  { "method": "GET", "path": "/api/wilayas", "query": { "wilayaId": "31" }, "fixture": "catalog/communes-31.json" }
+]

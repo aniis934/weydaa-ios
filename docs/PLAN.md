@@ -15,7 +15,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | # | Phase | Contenu | Compte Apple ? | État |
 |---|---|---|---|---|
 | 0 | Fondations | dépôt public, projet XcodeGen, CI `ios-ci` + `ios-screens`, tokens de design, W et icône 1024, icônes Lucide, chaînes converties (+ parité), coquille 5 onglets, lancement animé, socle d'API simulée | non | ✅ close le 2026-10-03 |
-| 1 | Données et réseau | modèles, DTO tolérants, client HTTP, erreurs (~65 codes), session + trousseau + refresh, hors ligne, images, formats (DA, dates, chiffres latins), validations, pagination, suggestions, règles d'offre, protocole Phoenix — tests portés d'Android | non | ⏳ |
+| 1 | Données et réseau | modèles, DTO tolérants, client HTTP, erreurs (~65 codes), session + trousseau + refresh, hors ligne, images, formats (DA, dates, chiffres latins), validations, pagination, suggestions, règles d’offre, protocole Phoenix — tests portés d’Android | non | ✅ close le 2026-10-03 |
 | 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ⏳ |
 | 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ⏳ |
 | 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ⏳ |
@@ -57,6 +57,30 @@ XcodeGen n'est pas préinstallé : version épinglée téléchargée depuis sa r
       RTL inversé correctement, pluriel arabe « إعلانان », « 12 500 دج », barre Liquid Glass, rien ne déborde
 - [x] Clôture : PR `phase-0` → `main`, checkpoint
 
+## Phase 1 — détail (close le 2026-10-03, PR #2)
+Travail en équipe d'agents parallèles (contrats d'interface fixés d'avance, notes partagées), intégré et commité par
+l'orchestrateur ; une CI par lot, pas par fichier.
+- [x] API simulée v2 : routes à jokers (`*`, `**`), contraintes de requête, la plus précise gagne, fichiers
+      `routes-*.json` par domaine ; photos fictives dessinées en Core Graphics (pleine taille + `_thumb`)
+- [x] `ios-screens` parallèle : une compilation, puis un tour par appareil × langue ; préchauffage du simulateur
+      (l'attente ne touche que le tour FILMÉ de chaque appareil : due à l'enregistrement vidéo, pas au simulateur
+      neuf — le préchauffage n'y change rien ; sans gravité, un seul tour par appareil est filmé)
+- [x] `ios-ci` : lancement manuel `live` (passage en lecture seule contre la vraie API)
+- [x] Vague 1 — modèles, DTO tolérants, mappers ; client HTTP, APIError, ErrorMapper (73 codes) ; session +
+      trousseau + refresh unique ; connectivité ; formats, validations, pagination, offres, liens profonds ;
+      préparation des photos ; historique ; pipeline d'images + `RemoteImage` — **CI verte du premier coup :
+      170 tests, 0 avertissement** ; tests unitaires désormais signés ad hoc (`CODE_SIGN_IDENTITY=-`) : les 4 tests du
+      trousseau, sautés sans signature, tournent (170/170)
+- [x] Vague 2 — `WeydaAPI` (66 routes) + `LiveWeydaAPI`, 16 repositories, AppContainer (effets de session, canal
+      temps réel personnel, scène premier plan / arrière-plan), données simulées du catalogue, tests des repositories
+      (fausse API qui enregistre les appels), `LiveAPITests`, démo Debug des données (`-WeydaScreen data`)
+- [x] Vague 2 — temps réel (parseur Phoenix pur + client WebSocket à transport injectable), moteur de suggestions
+- [x] CI : 271 tests, 0 échec, 0 avertissement (une seule correction : isolation de la fausse API des tests)
+- [x] Passage contre la VRAIE API en lecture seule (`ios-ci` manuel, live = true) : catégories, wilayas, annonces,
+      fiche par id et par slug, attributs, suggestions, tendances, vendeur, avis — tout se décode, 0 échec
+- [x] Tour de captures (144 captures, 6 tours en parallèle) et galerie privée :
+      https://claude.ai/artifact/WxiTw2n3mHKn5LP1Hcd6x8 — clôture : PR #2 `phase-1` → `main`
+
 ## À vérifier sur un vrai iPhone (premier TestFlight, fin de phase 2)
 - Démarrage : sur le simulateur de CI (build Debug lancé par XCUITest), le W fantôme reste ≈ 2 s avant le tracé
   (démarrage à froid du simulateur). Sur appareil, en Release, il doit s'enchaîner sans attente visible.
@@ -66,6 +90,14 @@ XcodeGen n'est pas préinstallé : version épinglée téléchargée depuis sa r
 - `String(format:locale:)` groupe les milliers selon la locale (« 1.234 » en ar_DZ, « 1 234 » en fr) : les
   compteurs du catalogue (`%lld`) s'affichent groupés, en chiffres latins. Voulu, et testé.
 - Durées : `ios-ci` 4 à 8 min (13 min avec file d'attente des Mac) ; `ios-screens` ≈ 26 min.
+
+## Constats de la CI (phase 1)
+- Code écrit par 3 agents en parallèle sur des contrats fixés d'avance : vague 1 verte du premier coup, vague 2 à une
+  correction près (piège : une classe MainActor conforme à un protocole `nonisolated` → ses méthodes témoins sont
+  nonisolated ; consigné dans les contrats d'équipe).
+- `ios-screens` parallèle : ≈ 8 min par tour (dont ≈ 5 min de démarrage simulateur + xcodebuild), ≈ 25 min de bout en
+  bout quand les 5 Mac gratuits sont partagés avec d'autres lancements.
+- Tests unitaires signés ad hoc : sinon le trousseau du simulateur refuse l'accès (tests sautés).
 
 ## Décisions techniques (iOS)
 - Pluriels : variations du catalogue `.xcstrings` (résolues par le système, six formes de l'arabe).

@@ -1,3 +1,4 @@
 [
-  { "method": "GET", "path": "/api/_selftest", "fixture": "selftest.json" }
+  { "method": "GET", "path": "/api/_selftest", "fixture": "selftest.json" },
+  { "method": "GET", "host": "photos.mock.weydaa", "path": "/**", "photo": true }
 ]

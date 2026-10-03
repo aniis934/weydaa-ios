@@ -7,6 +7,8 @@ device="${SIM_DEVICE:-iPhone 17 Pro}"
 mkdir -p build/logs build/results
 rm -rf build/results/unit.xcresult
 
+# Signature « ad hoc » du simulateur (CODE_SIGN_IDENTITY=-, sans équipe Apple) : une app non signée
+# n'a pas accès au trousseau, et les tests de la session (KeychainSessionStorageTests) seraient sautés.
 xcodebuild test \
   -project Weyda.xcodeproj \
   -scheme Weyda \
@@ -14,7 +16,9 @@ xcodebuild test \
   -only-testing:WeydaTests \
   -resultBundlePath build/results/unit.xcresult \
   -derivedDataPath build/dd \
-  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGN_IDENTITY=- \
+  CODE_SIGN_STYLE=Manual \
+  DEVELOPMENT_TEAM= \
   COMPILER_INDEX_STORE_ENABLE=NO \
   2>&1 | tee build/logs/xcodebuild.log | xcbeautify --renderer github-actions
 

@@ -25,19 +25,24 @@ quand plus rien n'avance sans le propriétaire.
 - **Fin du mandat** : toutes les phases au maximum de ce qui est faisable → rapport final = ce qui est fait +
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
-## Où on en est (mis à jour à chaque fin de session)
-- **2026-10-03** — **Phase 0 close** (fusionnée dans `main`) : CI verte (17 tests), 132 captures et vidéos relues.
-  **Prochaine : phase 1 — données et réseau** (branche `phase-1`). Porter d'Android, avec leurs tests JVM
-  (`android/app/src/test/`) : modèles + DTO tolérants (`model/Models.kt`, `data/remote/dto/`), client HTTP et
-  erreurs (`SafeCall.kt`, `ui/common/ErrorMapper.kt`), session + trousseau + refresh unique sous verrou
-  (`data/session/SessionManager.kt`, `AuthInterceptor.kt`), réseau hors ligne, pipeline d'images, formats
-  (`ui/common/Format`, prix DA, dates), validations, pagination (`ui/common/Paging.kt`), suggestions
-  (`SuggestionsEngine.kt`), règles d'offre (`model/OfferRules.kt`), protocole Phoenix (`data/realtime/`).
-  Contrat d'API : `android/docs/API-CONTRACT.md` (dépôt privé). Fixtures de l'API simulée : FICTIVES.
-  À traiter au début de la phase 1 : le tour `ios-screens` reste ≈ 60 s sur l'onglet Accueil avant de taper
-  les autres (attente de l'outil de test, à diagnostiquer) — le tour complet fait 26 min.
-  Ordre conseillé pour contourner les blocages : 1 → 2 → 3 (e-mail d'abord ; Apple/Google prêts mais inactifs)
-  → 4 → 5 (push prêt mais inactif) → 6 (dont `ios-compat` iOS 16.4) → 7 (préparé) ; lots serveur en PR non fusionnées.
+## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-03 (matin)** — **Phase 1 close** (PR #2) : 271 tests verts, passage en lecture seule contre la vraie API
+  vert, galerie https://claude.ai/artifact/WxiTw2n3mHKn5LP1Hcd6x8. Lots serveur A/B/C prêts en PR non fusionnées
+  (weyda2026 #5, #6, #7). Préparation App Store faite sur la branche `prep/release` (worktree `../weydaa-ios-release`,
+  `ios-compat` vert sur iOS 16.4) — à fusionner en phase 6.
+- **Phase 2 en cours** — branche `phase-2`, worktree `../weydaa-ios-p2` (créé par `git worktree add`). Socle fait et
+  vert (navigation à une pile par onglet, composants communs, À propos, tour `TourTestCase`, 291 tests) ; écrans
+  Accueil, Annonces, Détail + Vendeur en cours d'écriture (agents HOME, LISTINGS, DETAIL).
+- **Méthode : une équipe d'agents en parallèle** (demandée par le propriétaire). L'orchestrateur fixe les contrats
+  d'interface AVANT le code (`docs/equipe/CONTRACTS*.md`, `SCREEN-BRIEF.md` : règles, pièges Swift 6.2 constatés,
+  noms et signatures imposés, propriété des fichiers), chaque agent écrit SES fichiers et une note d'API, l'orchestrateur
+  intègre, commite et lance UNE CI par lot. Une phase suivante peut être PRÉPARÉE dans son worktree pendant que la
+  précédente passe sa CI ; elle n'est fusionnée qu'après elle.
+- Ordre conseillé pour contourner les blocages : 2 → 3 (e-mail d'abord ; Apple/Google prêts mais inactifs) → 4 → 5
+  (push prêt mais inactif) → 6 (dont `ios-compat` iOS 16.4 + fusion de `prep/release`) → 7 (préparé).
+- À faire en phase 3 : traduire les 4 codes d'erreur Apple du lot A (`invalidAppleToken`, `appleEmailMissing`,
+  `appleReauthMismatch`, `appleSignInUnavailable` → `scripts/ios-strings.json` + `ErrorMapper`) ; remplacer les
+  3 chaînes qui parlent d'Android (signalées par `convert-strings.mjs`).
 
 ## Rappels
 - Pas de Mac : chaque vérification passe par la CI (`gh run watch`, `gh run view --log-failed`).

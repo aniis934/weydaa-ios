@@ -1,0 +1,62 @@
+[
+  {
+    "id": 16,
+    "nameFr": "Alger",
+    "nameAr": "الجزائر",
+    "listingsCount": 1873
+  },
+  {
+    "id": 31,
+    "nameFr": "Oran",
+    "nameAr": "وهران",
+    "listingsCount": 942
+  },
+  {
+    "id": 25,
+    "nameFr": "Constantine",
+    "nameAr": "قسنطينة",
+    "listingsCount": 611
+  },
+  {
+    "id": 19,
+    "nameFr": "Sétif",
+    "nameAr": "سطيف",
+    "listingsCount": 538
+  },
+  {
+    "id": 9,
+    "nameFr": "Blida",
+    "nameAr": "البليدة",
+    "listingsCount": 497
+  },
+  {
+    "id": 15,
+    "nameFr": "Tizi Ouzou",
+    "nameAr": "تيزي وزو",
+    "listingsCount": 455
+  },
+  {
+    "id": 6,
+    "nameFr": "Béjaïa",
+    "nameAr": "بجاية",
+    "listingsCount": 402
+  },
+  {
+    "id": 23,
+    "nameFr": "Annaba",
+    "nameAr": "عنابة",
+    "listingsCount": 377
+  },
+  {
+    "id": 5,
+    "nameFr": "Batna",
+    "nameAr": "باتنة",
+    "listingsCount": 316
+  },
+  {
+    "id": 13,
+    "nameFr": "Tlemcen",
+    "nameAr": "تلمسان",
+    "listingsCount": 289
+  }
+]

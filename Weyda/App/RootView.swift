@@ -26,6 +26,8 @@ struct RootView: View {
         #if DEBUG
         if LaunchOptions.screen == "showcase" {
             NavigationStack { DesignShowcaseView() }
+        } else if LaunchOptions.screen == "data" {
+            NavigationStack { DataShowcaseView() }
         } else {
             MainTabView(selection: $tab)
         }

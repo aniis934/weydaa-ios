@@ -1,0 +1,1766 @@
+[
+  {
+    "id": "cat_vehicules",
+    "slug": "vehicules",
+    "nameFr": "Véhicules",
+    "nameAr": "المركبات",
+    "nameEn": "Vehicles",
+    "icon": "🚗",
+    "color": "#EF4444",
+    "parentId": null,
+    "displayOrder": 1,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 1284
+    },
+    "children": [
+      {
+        "id": "sub_voitures",
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_vehicules",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 330
+        },
+        "children": []
+      },
+      {
+        "id": "sub_utilitaires",
+        "slug": "utilitaires",
+        "nameFr": "Utilitaires",
+        "nameAr": "مركبات نفعية",
+        "nameEn": "Utility Vehicles",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_vehicules",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 275
+        },
+        "children": []
+      },
+      {
+        "id": "sub_camions",
+        "slug": "camions",
+        "nameFr": "Camions",
+        "nameAr": "شاحنات",
+        "nameEn": "Trucks",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_vehicules",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 220
+        },
+        "children": []
+      },
+      {
+        "id": "sub_motos-scooters",
+        "slug": "motos-scooters",
+        "nameFr": "Motos & Scooters",
+        "nameAr": "دراجات نارية وسكوتر",
+        "nameEn": "Motorcycles & Scooters",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_vehicules",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 165
+        },
+        "children": []
+      },
+      {
+        "id": "sub_pieces-detachees",
+        "slug": "pieces-detachees",
+        "nameFr": "Pièces détachées",
+        "nameAr": "قطع غيار",
+        "nameEn": "Spare Parts",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_vehicules",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 110
+        },
+        "children": []
+      },
+      {
+        "id": "sub_location-vehicules",
+        "slug": "location-vehicules",
+        "nameFr": "Location de véhicules",
+        "nameAr": "تأجير المركبات",
+        "nameEn": "Vehicle Rental",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_vehicules",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 55
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_immobilier",
+    "slug": "immobilier",
+    "nameFr": "Immobilier",
+    "nameAr": "العقارات",
+    "nameEn": "Real Estate",
+    "icon": "🏠",
+    "color": "#3B82F6",
+    "parentId": null,
+    "displayOrder": 2,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 963
+    },
+    "children": [
+      {
+        "id": "sub_vente-appartement",
+        "slug": "vente-appartement",
+        "nameFr": "Vente appartement",
+        "nameAr": "بيع شقة",
+        "nameEn": "Apartment for Sale",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_immobilier",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 216
+        },
+        "children": []
+      },
+      {
+        "id": "sub_location-appartement",
+        "slug": "location-appartement",
+        "nameFr": "Location appartement",
+        "nameAr": "إيجار شقة",
+        "nameEn": "Apartment for Rent",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_immobilier",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 185
+        },
+        "children": []
+      },
+      {
+        "id": "sub_vente-maison-villa",
+        "slug": "vente-maison-villa",
+        "nameFr": "Vente maison / villa",
+        "nameAr": "بيع منزل / فيلا",
+        "nameEn": "House / Villa for Sale",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_immobilier",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 154
+        },
+        "children": []
+      },
+      {
+        "id": "sub_location-maison",
+        "slug": "location-maison",
+        "nameFr": "Location maison",
+        "nameAr": "إيجار منزل",
+        "nameEn": "House for Rent",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_immobilier",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 123
+        },
+        "children": []
+      },
+      {
+        "id": "sub_terrain",
+        "slug": "terrain",
+        "nameFr": "Terrain",
+        "nameAr": "أرض",
+        "nameEn": "Land",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_immobilier",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 92
+        },
+        "children": []
+      },
+      {
+        "id": "sub_local-commercial",
+        "slug": "local-commercial",
+        "nameFr": "Local commercial",
+        "nameAr": "محل تجاري",
+        "nameEn": "Commercial Space",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_immobilier",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 61
+        },
+        "children": []
+      },
+      {
+        "id": "sub_bureau",
+        "slug": "bureau",
+        "nameFr": "Bureau",
+        "nameAr": "مكتب",
+        "nameEn": "Office",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_immobilier",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 30
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_electronique",
+    "slug": "electronique",
+    "nameFr": "Électronique",
+    "nameAr": "الإلكترونيات",
+    "nameEn": "Electronics",
+    "icon": "📱",
+    "color": "#8B5CF6",
+    "parentId": null,
+    "displayOrder": 3,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 1517
+    },
+    "children": [
+      {
+        "id": "sub_smartphones",
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 273
+        },
+        "children": []
+      },
+      {
+        "id": "sub_ordinateurs-portables",
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 242
+        },
+        "children": []
+      },
+      {
+        "id": "sub_ordinateurs-bureau",
+        "slug": "ordinateurs-bureau",
+        "nameFr": "Ordinateurs de bureau",
+        "nameAr": "حواسيب مكتبية",
+        "nameEn": "Desktop Computers",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 212
+        },
+        "children": []
+      },
+      {
+        "id": "sub_composants-pc",
+        "slug": "composants-pc",
+        "nameFr": "Composants PC",
+        "nameAr": "مكونات الحاسوب",
+        "nameEn": "PC Components",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 182
+        },
+        "children": []
+      },
+      {
+        "id": "sub_consoles",
+        "slug": "consoles",
+        "nameFr": "Consoles",
+        "nameAr": "أجهزة ألعاب",
+        "nameEn": "Gaming Consoles",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 151
+        },
+        "children": []
+      },
+      {
+        "id": "sub_tv",
+        "slug": "tv",
+        "nameFr": "TV",
+        "nameAr": "تلفاز",
+        "nameEn": "TV",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 121
+        },
+        "children": []
+      },
+      {
+        "id": "sub_audio",
+        "slug": "audio",
+        "nameFr": "Audio",
+        "nameAr": "صوتيات",
+        "nameEn": "Audio",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 91
+        },
+        "children": []
+      },
+      {
+        "id": "sub_tablettes",
+        "slug": "tablettes",
+        "nameFr": "Tablettes",
+        "nameAr": "أجهزة لوحية",
+        "nameEn": "Tablets",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 8,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 60
+        },
+        "children": []
+      },
+      {
+        "id": "sub_appareils-photo",
+        "slug": "appareils-photo",
+        "nameFr": "Appareils photo & Caméras",
+        "nameAr": "كاميرات",
+        "nameEn": "Cameras",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electronique",
+        "displayOrder": 9,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 30
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_emploi",
+    "slug": "emploi",
+    "nameFr": "Emploi",
+    "nameAr": "الوظائف",
+    "nameEn": "Jobs",
+    "icon": "💼",
+    "color": "#6366F1",
+    "parentId": null,
+    "displayOrder": 4,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 214
+    },
+    "children": [
+      {
+        "id": "sub_offres-emploi",
+        "slug": "offres-emploi",
+        "nameFr": "Offres d'emploi",
+        "nameAr": "عروض عمل",
+        "nameEn": "Job Offers",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_emploi",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 77
+        },
+        "children": []
+      },
+      {
+        "id": "sub_demandes-emploi",
+        "slug": "demandes-emploi",
+        "nameFr": "Demandes d'emploi",
+        "nameAr": "طلبات عمل",
+        "nameEn": "Job Seekers",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_emploi",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 57
+        },
+        "children": []
+      },
+      {
+        "id": "sub_stage",
+        "slug": "stage",
+        "nameFr": "Stage",
+        "nameAr": "تدريب",
+        "nameEn": "Internship",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_emploi",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 38
+        },
+        "children": []
+      },
+      {
+        "id": "sub_freelance-mission",
+        "slug": "freelance-mission",
+        "nameFr": "Freelance / Mission",
+        "nameAr": "عمل حر / مهمة",
+        "nameEn": "Freelance / Contract",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_emploi",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 19
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_electromenager",
+    "slug": "electromenager",
+    "nameFr": "Électroménager",
+    "nameAr": "الأجهزة المنزلية",
+    "nameEn": "Home Appliances",
+    "icon": "🏠",
+    "color": "#F59E0B",
+    "parentId": null,
+    "displayOrder": 5,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 642
+    },
+    "children": [
+      {
+        "id": "sub_lave-linge",
+        "slug": "lave-linge",
+        "nameFr": "Lave-linge",
+        "nameAr": "غسالة ملابس",
+        "nameEn": "Washing Machine",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electromenager",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 144
+        },
+        "children": []
+      },
+      {
+        "id": "sub_refrigerateur",
+        "slug": "refrigerateur",
+        "nameFr": "Réfrigérateur / Congélateur",
+        "nameAr": "ثلاجة / مجمد",
+        "nameEn": "Refrigerator / Freezer",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electromenager",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 123
+        },
+        "children": []
+      },
+      {
+        "id": "sub_climatiseur",
+        "slug": "climatiseur",
+        "nameFr": "Climatiseur / Chauffage",
+        "nameAr": "مكيف / تدفئة",
+        "nameEn": "Air Conditioner / Heater",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electromenager",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 103
+        },
+        "children": []
+      },
+      {
+        "id": "sub_cuisiniere-four",
+        "slug": "cuisiniere-four",
+        "nameFr": "Cuisinière / Four",
+        "nameAr": "طباخ / فرن",
+        "nameEn": "Stove / Oven",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electromenager",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 82
+        },
+        "children": []
+      },
+      {
+        "id": "sub_lave-vaisselle",
+        "slug": "lave-vaisselle",
+        "nameFr": "Lave-vaisselle",
+        "nameAr": "غسالة صحون",
+        "nameEn": "Dishwasher",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electromenager",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 61
+        },
+        "children": []
+      },
+      {
+        "id": "sub_petit-electromenager",
+        "slug": "petit-electromenager",
+        "nameFr": "Petit électroménager",
+        "nameAr": "أجهزة صغيرة",
+        "nameEn": "Small Appliances",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electromenager",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 41
+        },
+        "children": []
+      },
+      {
+        "id": "sub_chauffe-eau",
+        "slug": "chauffe-eau",
+        "nameFr": "Chauffe-eau",
+        "nameAr": "سخان مياه",
+        "nameEn": "Water Heater",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_electromenager",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 20
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_mode",
+    "slug": "mode",
+    "nameFr": "Mode & Vêtements",
+    "nameAr": "الموضة والملابس",
+    "nameEn": "Fashion & Clothing",
+    "icon": "👗",
+    "color": "#EC4899",
+    "parentId": null,
+    "displayOrder": 6,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 538
+    },
+    "children": [
+      {
+        "id": "sub_vetements-homme",
+        "slug": "vetements-homme",
+        "nameFr": "Vêtements homme",
+        "nameAr": "ملابس رجال",
+        "nameEn": "Men's Clothing",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_mode",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 121
+        },
+        "children": []
+      },
+      {
+        "id": "sub_vetements-femme",
+        "slug": "vetements-femme",
+        "nameFr": "Vêtements femme",
+        "nameAr": "ملابس نساء",
+        "nameEn": "Women's Clothing",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_mode",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 103
+        },
+        "children": []
+      },
+      {
+        "id": "sub_vetements-enfant",
+        "slug": "vetements-enfant",
+        "nameFr": "Vêtements enfant",
+        "nameAr": "ملابس أطفال",
+        "nameEn": "Kids' Clothing",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_mode",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 86
+        },
+        "children": []
+      },
+      {
+        "id": "sub_chaussures",
+        "slug": "chaussures",
+        "nameFr": "Chaussures",
+        "nameAr": "أحذية",
+        "nameEn": "Shoes",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_mode",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 69
+        },
+        "children": []
+      },
+      {
+        "id": "sub_accessoires-mode",
+        "slug": "accessoires-mode",
+        "nameFr": "Accessoires",
+        "nameAr": "إكسسوارات",
+        "nameEn": "Fashion Accessories",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_mode",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 51
+        },
+        "children": []
+      },
+      {
+        "id": "sub_montres-bijoux",
+        "slug": "montres-bijoux",
+        "nameFr": "Montres & Bijoux",
+        "nameAr": "ساعات ومجوهرات",
+        "nameEn": "Watches & Jewelry",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_mode",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 34
+        },
+        "children": []
+      },
+      {
+        "id": "sub_sacs-bagagerie",
+        "slug": "sacs-bagagerie",
+        "nameFr": "Sacs & Bagagerie",
+        "nameAr": "حقائب وأمتعة",
+        "nameEn": "Bags & Luggage",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_mode",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 17
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_maison",
+    "slug": "maison",
+    "nameFr": "Maison & Jardin",
+    "nameAr": "المنزل والحديقة",
+    "nameEn": "Home & Garden",
+    "icon": "🛋️",
+    "color": "#10B981",
+    "parentId": null,
+    "displayOrder": 7,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 476
+    },
+    "children": [
+      {
+        "id": "sub_meubles",
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_maison",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 122
+        },
+        "children": []
+      },
+      {
+        "id": "sub_decoration",
+        "slug": "decoration",
+        "nameFr": "Décoration",
+        "nameAr": "ديكور",
+        "nameEn": "Decoration",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_maison",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 102
+        },
+        "children": []
+      },
+      {
+        "id": "sub_bricolage-outillage",
+        "slug": "bricolage-outillage",
+        "nameFr": "Bricolage & Outillage",
+        "nameAr": "أدوات وعدة",
+        "nameEn": "DIY & Tools",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_maison",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 81
+        },
+        "children": []
+      },
+      {
+        "id": "sub_jardin-exterieur",
+        "slug": "jardin-exterieur",
+        "nameFr": "Jardin & Extérieur",
+        "nameAr": "حديقة وخارجي",
+        "nameEn": "Garden & Outdoor",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_maison",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 61
+        },
+        "children": []
+      },
+      {
+        "id": "sub_linge-maison",
+        "slug": "linge-maison",
+        "nameFr": "Linge de maison",
+        "nameAr": "مفروشات",
+        "nameEn": "Household Linen",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_maison",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 40
+        },
+        "children": []
+      },
+      {
+        "id": "sub_vaisselle-cuisine",
+        "slug": "vaisselle-cuisine",
+        "nameFr": "Vaisselle & Cuisine",
+        "nameAr": "أواني المطبخ",
+        "nameEn": "Kitchenware",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_maison",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 20
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_services",
+    "slug": "services",
+    "nameFr": "Services",
+    "nameAr": "الخدمات",
+    "nameEn": "Services",
+    "icon": "🔧",
+    "color": "#F97316",
+    "parentId": null,
+    "displayOrder": 8,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 309
+    },
+    "children": [
+      {
+        "id": "sub_cours-formation",
+        "slug": "cours-formation",
+        "nameFr": "Cours & Formation",
+        "nameAr": "دروس وتكوين",
+        "nameEn": "Courses & Training",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 61
+        },
+        "children": []
+      },
+      {
+        "id": "sub_reparation-depannage",
+        "slug": "reparation-depannage",
+        "nameFr": "Réparation & Dépannage",
+        "nameAr": "إصلاح وصيانة",
+        "nameEn": "Repair & Maintenance",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 54
+        },
+        "children": []
+      },
+      {
+        "id": "sub_demenagement-transport",
+        "slug": "demenagement-transport",
+        "nameFr": "Déménagement & Transport",
+        "nameAr": "نقل وترحيل",
+        "nameEn": "Moving & Transport",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 46
+        },
+        "children": []
+      },
+      {
+        "id": "sub_menage-nettoyage",
+        "slug": "menage-nettoyage",
+        "nameFr": "Ménage & Nettoyage",
+        "nameAr": "تنظيف",
+        "nameEn": "Cleaning Services",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 38
+        },
+        "children": []
+      },
+      {
+        "id": "sub_evenements",
+        "slug": "evenements",
+        "nameFr": "Événements",
+        "nameAr": "مناسبات",
+        "nameEn": "Events",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 30
+        },
+        "children": []
+      },
+      {
+        "id": "sub_informatique-web",
+        "slug": "informatique-web",
+        "nameFr": "Informatique & Web",
+        "nameAr": "إعلام آلي وويب",
+        "nameEn": "IT & Web Services",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 23
+        },
+        "children": []
+      },
+      {
+        "id": "sub_travaux-btp",
+        "slug": "travaux-btp",
+        "nameFr": "Travaux & BTP",
+        "nameAr": "أشغال وبناء",
+        "nameEn": "Construction & Building",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 15
+        },
+        "children": []
+      },
+      {
+        "id": "sub_autres-services",
+        "slug": "autres-services",
+        "nameFr": "Autres services",
+        "nameAr": "خدمات أخرى",
+        "nameEn": "Other Services",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_services",
+        "displayOrder": 8,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 7
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_animaux",
+    "slug": "animaux",
+    "nameFr": "Animaux",
+    "nameAr": "الحيوانات",
+    "nameEn": "Animals",
+    "icon": "🐾",
+    "color": "#84CC16",
+    "parentId": null,
+    "displayOrder": 9,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 187
+    },
+    "children": [
+      {
+        "id": "sub_chiens",
+        "slug": "chiens",
+        "nameFr": "Chiens",
+        "nameAr": "كلاب",
+        "nameEn": "Dogs",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_animaux",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 48
+        },
+        "children": []
+      },
+      {
+        "id": "sub_chats",
+        "slug": "chats",
+        "nameFr": "Chats",
+        "nameAr": "قطط",
+        "nameEn": "Cats",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_animaux",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 40
+        },
+        "children": []
+      },
+      {
+        "id": "sub_oiseaux",
+        "slug": "oiseaux",
+        "nameFr": "Oiseaux",
+        "nameAr": "طيور",
+        "nameEn": "Birds",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_animaux",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 32
+        },
+        "children": []
+      },
+      {
+        "id": "sub_poissons",
+        "slug": "poissons",
+        "nameFr": "Poissons & Aquariophilie",
+        "nameAr": "أسماك",
+        "nameEn": "Fish & Aquariums",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_animaux",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 24
+        },
+        "children": []
+      },
+      {
+        "id": "sub_betail",
+        "slug": "betail",
+        "nameFr": "Bétail & Élevage",
+        "nameAr": "مواشي وتربية",
+        "nameEn": "Livestock & Farming",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_animaux",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 16
+        },
+        "children": []
+      },
+      {
+        "id": "sub_accessoires-animaux",
+        "slug": "accessoires-animaux",
+        "nameFr": "Accessoires animaux",
+        "nameAr": "مستلزمات الحيوانات",
+        "nameEn": "Pet Accessories",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_animaux",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 8
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_loisirs",
+    "slug": "loisirs",
+    "nameFr": "Loisirs & Sports",
+    "nameAr": "الترفيه والرياضة",
+    "nameEn": "Leisure & Sports",
+    "icon": "⚽",
+    "color": "#14B8A6",
+    "parentId": null,
+    "displayOrder": 10,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 265
+    },
+    "children": [
+      {
+        "id": "sub_velos",
+        "slug": "velos",
+        "nameFr": "Vélos",
+        "nameAr": "دراجات هوائية",
+        "nameEn": "Bicycles",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_loisirs",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 59
+        },
+        "children": []
+      },
+      {
+        "id": "sub_equipement-sport",
+        "slug": "equipement-sport",
+        "nameFr": "Équipement sportif",
+        "nameAr": "معدات رياضية",
+        "nameEn": "Sports Equipment",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_loisirs",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 51
+        },
+        "children": []
+      },
+      {
+        "id": "sub_instruments-musique",
+        "slug": "instruments-musique",
+        "nameFr": "Instruments de musique",
+        "nameAr": "آلات موسيقية",
+        "nameEn": "Musical Instruments",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_loisirs",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 42
+        },
+        "children": []
+      },
+      {
+        "id": "sub_livres",
+        "slug": "livres",
+        "nameFr": "Livres",
+        "nameAr": "كتب",
+        "nameEn": "Books",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_loisirs",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 34
+        },
+        "children": []
+      },
+      {
+        "id": "sub_jeux-jouets",
+        "slug": "jeux-jouets",
+        "nameFr": "Jeux & Jouets",
+        "nameAr": "ألعاب",
+        "nameEn": "Games & Toys",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_loisirs",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 25
+        },
+        "children": []
+      },
+      {
+        "id": "sub_collection",
+        "slug": "collection",
+        "nameFr": "Collection",
+        "nameAr": "مقتنيات",
+        "nameEn": "Collectibles",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_loisirs",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 17
+        },
+        "children": []
+      },
+      {
+        "id": "sub_camping-plein-air",
+        "slug": "camping-plein-air",
+        "nameFr": "Camping & Plein air",
+        "nameAr": "تخييم ونشاطات",
+        "nameEn": "Camping & Outdoor",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_loisirs",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 8
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_materiel-pro",
+    "slug": "materiel-pro",
+    "nameFr": "Matériel Pro",
+    "nameAr": "المعدات المهنية",
+    "nameEn": "Professional Equipment",
+    "icon": "🏭",
+    "color": "#78716C",
+    "parentId": null,
+    "displayOrder": 11,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 148
+    },
+    "children": [
+      {
+        "id": "sub_materiel-agricole",
+        "slug": "materiel-agricole",
+        "nameFr": "Matériel agricole",
+        "nameAr": "معدات فلاحية",
+        "nameEn": "Agricultural Equipment",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_materiel-pro",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 38
+        },
+        "children": []
+      },
+      {
+        "id": "sub_materiel-btp",
+        "slug": "materiel-btp",
+        "nameFr": "Matériel BTP",
+        "nameAr": "معدات بناء",
+        "nameEn": "Construction Equipment",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_materiel-pro",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 31
+        },
+        "children": []
+      },
+      {
+        "id": "sub_outillage-pro",
+        "slug": "outillage-pro",
+        "nameFr": "Outillage professionnel",
+        "nameAr": "عدة مهنية",
+        "nameEn": "Professional Tools",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_materiel-pro",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 25
+        },
+        "children": []
+      },
+      {
+        "id": "sub_materiel-restauration",
+        "slug": "materiel-restauration",
+        "nameFr": "Matériel de restauration",
+        "nameAr": "معدات مطاعم",
+        "nameEn": "Restaurant Equipment",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_materiel-pro",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 19
+        },
+        "children": []
+      },
+      {
+        "id": "sub_materiel-medical",
+        "slug": "materiel-medical",
+        "nameFr": "Matériel médical",
+        "nameAr": "معدات طبية",
+        "nameEn": "Medical Equipment",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_materiel-pro",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 12
+        },
+        "children": []
+      },
+      {
+        "id": "sub_bureautique-pro",
+        "slug": "bureautique-pro",
+        "nameFr": "Bureautique & Mobilier pro",
+        "nameAr": "مكتبيات ومعدات مكاتب",
+        "nameEn": "Office Equipment",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_materiel-pro",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 6
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_artisanat",
+    "slug": "artisanat",
+    "nameFr": "Artisanat",
+    "nameAr": "حرف يدوية",
+    "nameEn": "Crafts",
+    "icon": "🎨",
+    "color": "#D97706",
+    "parentId": null,
+    "displayOrder": 12,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 96
+    },
+    "children": [
+      {
+        "id": "sub_poterie-ceramique",
+        "slug": "poterie-ceramique",
+        "nameFr": "Poterie & Céramique",
+        "nameAr": "فخار وخزف",
+        "nameEn": "Pottery & Ceramics",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 19
+        },
+        "children": []
+      },
+      {
+        "id": "sub_tissage-tapis",
+        "slug": "tissage-tapis",
+        "nameFr": "Tissage & Tapis",
+        "nameAr": "نسيج وسجاد",
+        "nameEn": "Weaving & Carpets",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 16
+        },
+        "children": []
+      },
+      {
+        "id": "sub_broderie-couture",
+        "slug": "broderie-couture",
+        "nameFr": "Broderie & Couture",
+        "nameAr": "تطريز وخياطة",
+        "nameEn": "Embroidery & Sewing",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 14
+        },
+        "children": []
+      },
+      {
+        "id": "sub_bijoux-artisanaux",
+        "slug": "bijoux-artisanaux",
+        "nameFr": "Bijoux artisanaux",
+        "nameAr": "مجوهرات يدوية",
+        "nameEn": "Handmade Jewelry",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 12
+        },
+        "children": []
+      },
+      {
+        "id": "sub_bois-sculpture",
+        "slug": "bois-sculpture",
+        "nameFr": "Bois & Sculpture",
+        "nameAr": "نحت وأعمال خشبية",
+        "nameEn": "Woodwork & Sculpture",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 9
+        },
+        "children": []
+      },
+      {
+        "id": "sub_vannerie-osier",
+        "slug": "vannerie-osier",
+        "nameFr": "Vannerie & Osier",
+        "nameAr": "سلال وخوص",
+        "nameEn": "Basketry & Wicker",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 7
+        },
+        "children": []
+      },
+      {
+        "id": "sub_cuir-maroquinerie",
+        "slug": "cuir-maroquinerie",
+        "nameFr": "Cuir & Maroquinerie",
+        "nameAr": "جلود ومصنوعات جلدية",
+        "nameEn": "Leather & Leatherwork",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 4
+        },
+        "children": []
+      },
+      {
+        "id": "sub_autres-artisanat",
+        "slug": "autres-artisanat",
+        "nameFr": "Autres artisanat",
+        "nameAr": "حرف أخرى",
+        "nameEn": "Other Crafts",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_artisanat",
+        "displayOrder": 8,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 2
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_voyage",
+    "slug": "voyage",
+    "nameFr": "Voyage",
+    "nameAr": "سفر",
+    "nameEn": "Travel",
+    "icon": "✈️",
+    "color": "#0EA5E9",
+    "parentId": null,
+    "displayOrder": 13,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 73
+    },
+    "children": [
+      {
+        "id": "sub_billets-avion",
+        "slug": "billets-avion",
+        "nameFr": "Billets d'avion",
+        "nameAr": "تذاكر طيران",
+        "nameEn": "Flight Tickets",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 1,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 14
+        },
+        "children": []
+      },
+      {
+        "id": "sub_hotels-hebergement",
+        "slug": "hotels-hebergement",
+        "nameFr": "Hôtels & Hébergement",
+        "nameAr": "فنادق وإقامة",
+        "nameEn": "Hotels & Accommodation",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 2,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 12
+        },
+        "children": []
+      },
+      {
+        "id": "sub_location-vacances",
+        "slug": "location-vacances",
+        "nameFr": "Location vacances",
+        "nameAr": "إيجار عطلات",
+        "nameEn": "Vacation Rentals",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 3,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 10
+        },
+        "children": []
+      },
+      {
+        "id": "sub_excursions-circuits",
+        "slug": "excursions-circuits",
+        "nameFr": "Excursions & Circuits",
+        "nameAr": "رحلات وجولات",
+        "nameEn": "Tours & Excursions",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 4,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 9
+        },
+        "children": []
+      },
+      {
+        "id": "sub_visa-documents",
+        "slug": "visa-documents",
+        "nameFr": "Visa & Documents",
+        "nameAr": "تأشيرة ووثائق",
+        "nameEn": "Visa & Documents",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 5,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 7
+        },
+        "children": []
+      },
+      {
+        "id": "sub_covoiturage",
+        "slug": "covoiturage",
+        "nameFr": "Covoiturage",
+        "nameAr": "مشاركة السيارة",
+        "nameEn": "Carpooling",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 6,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 5
+        },
+        "children": []
+      },
+      {
+        "id": "sub_bagages-accessoires",
+        "slug": "bagages-accessoires",
+        "nameFr": "Bagages & Accessoires",
+        "nameAr": "حقائب سفر ومستلزمات",
+        "nameEn": "Luggage & Accessories",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 7,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 3
+        },
+        "children": []
+      },
+      {
+        "id": "sub_autres-voyage",
+        "slug": "autres-voyage",
+        "nameFr": "Autres voyage",
+        "nameAr": "سفر آخر",
+        "nameEn": "Other Travel",
+        "icon": null,
+        "color": null,
+        "parentId": "cat_voyage",
+        "displayOrder": 8,
+        "isActive": true,
+        "image": null,
+        "_count": {
+          "annonces": 1
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "cat_autres",
+    "slug": "autres",
+    "nameFr": "Autres",
+    "nameAr": "أخرى",
+    "nameEn": "Other",
+    "icon": "📦",
+    "color": "#6B7280",
+    "parentId": null,
+    "displayOrder": 99,
+    "isActive": true,
+    "image": null,
+    "_count": {
+      "annonces": 121
+    },
+    "children": []
+  }
+]
