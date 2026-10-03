@@ -1,5 +1,44 @@
 import SwiftUI
 
+/// Écran d'entrée de la feuille de connexion (`AuthFlowView`, présentée par `RootView`) — les routes `auth/*` de
+/// `Screen.kt` (Android), regroupées dans une feuille comme le veut iOS. Valeur pure : elle sert aussi d'étape à la
+/// pile de navigation de la feuille.
+nonisolated enum AuthEntry: Hashable, Identifiable, Sendable {
+    case login
+    case register
+    case forgotPassword
+    case verifyEmail
+    /// Lien « mot de passe oublié » de l'e-mail : `/{locale}/auth/reinitialiser-mdp?token=…`.
+    case resetPassword(token: String)
+
+    var id: String {
+        switch self {
+        case .login: "login"
+        case .register: "register"
+        case .forgotPassword: "forgot"
+        case .verifyEmail: "verify"
+        case .resetPassword(let token): "reset:\(token)"
+        }
+    }
+
+    /// `-WeydaRoute` du tour de captures : `login`, `register`, `forgot`, `verify`, `reset:<jeton>` ; nil sinon (la
+    /// route est alors une route d'écran, `LaunchRoute.parse`).
+    static func launchEntry(_ raw: String) -> AuthEntry? {
+        let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        if text.lowercased().hasPrefix("reset:") {
+            let token = String(text.dropFirst("reset:".count)).trimmingCharacters(in: .whitespaces)
+            return TextCheck.isBlank(token) ? nil : .resetPassword(token: token)
+        }
+        switch text.lowercased() {
+        case "login": return .login
+        case "register": return .register
+        case "forgot": return .forgotPassword
+        case "verify": return .verifyEmail
+        default: return nil
+        }
+    }
+}
+
 /// Navigation de l'app : l'onglet courant et une pile par onglet — le NavController de `WeydaRoot.kt` (Android),
 /// découpé à la manière d'iOS (chaque onglet garde sa pile quand on passe à un autre). Créé par `WeydaApp`,
 /// posé dans l'environnement : `@EnvironmentObject private var router: AppRouter`.
@@ -12,13 +51,20 @@ final class AppRouter: ObservableObject {
     @Published var listingsLaunch: ListingsLaunch? = nil
     /// Page légale présentée en feuille par `RootView` (SFSafariViewController).
     @Published var presentedWebPage: WebPage? = nil
+    /// Feuille de connexion présentée par `RootView` (nil = fermée ; la feuille la remet à nil en se fermant).
+    @Published var authFlow: AuthEntry? = nil
     /// Pile de chaque onglet (vide = la racine de l'onglet).
     @Published private(set) var stacks: [AppTab: [AppRoute]] = [:]
 
-    /// `launchRoute` : `-WeydaRoute` (tour de captures), appliqué avant le premier écran.
+    /// `launchRoute` : `-WeydaRoute` (tour de captures), appliqué avant le premier écran. Une route de connexion
+    /// (`login`, `register`, `forgot`, `verify`, `reset:<jeton>`) ouvre la feuille au-dessus de l'onglet Profil.
     init(initialTab: AppTab = LaunchOptions.initialTab ?? .home, launchRoute: String? = LaunchOptions.route) {
         selectedTab = initialTab
-        if let launchRoute, let parsed = LaunchRoute.parse(launchRoute) {
+        guard let launchRoute else { return }
+        if let entry = AuthEntry.launchEntry(launchRoute) {
+            selectedTab = .account
+            authFlow = entry
+        } else if let parsed = LaunchRoute.parse(launchRoute) {
             apply(parsed)
         }
     }
@@ -114,22 +160,34 @@ final class AppRouter: ObservableObject {
 
     // MARK: - Connexion
 
-    /// Un visiteur touche une action réservée aux membres (favori, contacter, voir le numéro, signaler). Phase 2 :
-    /// l'onglet Profil, revenu à sa racine, affiche `LoginRequired`. Phase 3 : la feuille de connexion (et la
-    /// reprise de l'action une fois connecté).
+    /// Un visiteur touche une action réservée aux membres (favori, contacter, voir le numéro, signaler), ou « Se
+    /// connecter » : la feuille de connexion s'ouvre par-dessus l'écran courant, qui reste en place dessous — une
+    /// fois connecté, la feuille se ferme et l'action se refait d'un appui (Android : `openLogin`, puis retour à
+    /// l'écran d'origine).
     func requestLogin() {
         presentedWebPage = nil
-        popToRoot(.account)
-        selectedTab = .account
+        authFlow = .login
+    }
+
+    /// « Vérifier » (bandeau e-mail non vérifié du Profil, du dépôt…) : la feuille, directement à l'étape du code.
+    func requestEmailVerification() {
+        presentedWebPage = nil
+        authFlow = .verifyEmail
     }
 
     // MARK: - Liens profonds
 
     /// Lien du site ou du schéma `weydaa://` (DeepLinks) : l'écran visé est empilé sur l'onglet courant (rien n'est
-    /// perdu), les onglets sont sélectionnés — portage de `NavHostController.open` (WeydaRoot.kt). La garde
-    /// « connexion requise » des écrans de compte arrive avec la phase 3.
+    /// perdu), les onglets sont sélectionnés — portage de `NavHostController.open` (WeydaRoot.kt). Le lien « nouveau
+    /// mot de passe » ouvre la feuille de connexion à cette étape ; tout autre lien ferme une feuille ouverte (l'écran
+    /// visé doit être visible).
     func open(_ target: DeepLinkTarget) {
         presentedWebPage = nil
+        if case .resetPassword(let token) = target {
+            authFlow = .resetPassword(token: token)
+            return
+        }
+        authFlow = nil
         switch target {
         case .listing(let idOrSlug):
             push(.detail(idOrSlug: idOrSlug))
@@ -142,8 +200,7 @@ final class AppRouter: ObservableObject {
         case .listings(let params):
             openListings(ListingsLaunch(params: params))
         case .resetPassword:
-            // Écran « nouveau mot de passe » : phase 3 (compte). D'ici là, l'onglet Profil.
-            selectedTab = .account
+            break  // traité plus haut (feuille de connexion)
         case .post:
             selectedTab = .post
         case .messages:

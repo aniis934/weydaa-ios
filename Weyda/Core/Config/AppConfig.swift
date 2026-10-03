@@ -7,15 +7,18 @@ nonisolated struct AppConfig: Sendable {
     let apiBaseURL: URL
     let supabaseURL: URL?
     let supabaseAnonKey: String?
+    /// Identifiant client OAuth « iOS » de Google (`WEYDA_GOOGLE_IOS_CLIENT_ID`) : sans lui, pas de bouton Google.
+    let googleIOSClientID: String?
 
     static let current = AppConfig(info: Bundle.main.infoDictionary ?? [:])
 
     private static let defaultAPIBaseURL = URL(string: "https://weydaa.com/")!
 
-    init(apiBaseURL: URL, supabaseURL: URL?, supabaseAnonKey: String?) {
+    init(apiBaseURL: URL, supabaseURL: URL?, supabaseAnonKey: String?, googleIOSClientID: String? = nil) {
         self.apiBaseURL = apiBaseURL
         self.supabaseURL = supabaseURL
         self.supabaseAnonKey = supabaseAnonKey
+        self.googleIOSClientID = googleIOSClientID
     }
 
     init(info: [String: Any]) {
@@ -29,7 +32,8 @@ nonisolated struct AppConfig: Sendable {
         self.init(
             apiBaseURL: apiHost.flatMap { URL(string: "https://\($0)/") } ?? Self.defaultAPIBaseURL,
             supabaseURL: supabaseHost.flatMap { URL(string: "https://\($0)") },
-            supabaseAnonKey: value("WeydaSupabaseAnonKey")
+            supabaseAnonKey: value("WeydaSupabaseAnonKey"),
+            googleIOSClientID: value("WeydaGoogleIOSClientID")
         )
     }
 }

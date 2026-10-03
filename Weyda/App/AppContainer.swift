@@ -289,11 +289,16 @@ final class AppContainer: ObservableObject {
     }
 
     /// Trousseau, purgé au premier lancement d'une nouvelle installation. En API simulée (Debug) : session
-    /// en mémoire, jamais dans le trousseau — chaque lancement du tour de captures part du même état.
+    /// en mémoire, jamais dans le trousseau — chaque lancement du tour de captures part du même état ; avec
+    /// `-WeydaLoggedIn`, elle est déjà ouverte au nom de l'utilisateur fictif de référence.
     private static func makeSessionStorage(mockAPI: Bool) -> any SessionStorage {
         #if DEBUG
         if mockAPI {
-            return InMemorySessionStorage()
+            guard let mockSession = LaunchOptions.mockSession else { return InMemorySessionStorage() }
+            return InMemorySessionStorage(
+                tokens: MockSessionFixture.tokens(),
+                user: MockSessionFixture.user(emailVerified: mockSession == .verified)
+            )
         }
         #endif
         let keychain = KeychainSessionStorage()
@@ -301,3 +306,38 @@ final class AppContainer: ObservableObject {
         return keychain
     }
 }
+
+#if DEBUG
+/// Session simulée des captures (`-WeydaLoggedIn`, API simulée) : l'utilisateur FICTIF de référence — les réponses
+/// simulées de `GET /api/users/me` le reprennent à l'identique — et des jetons factices valables un an.
+nonisolated enum MockSessionFixture {
+    static let userId = "mock-me"
+
+    static func user(emailVerified: Bool) -> User {
+        User(
+            id: userId,
+            name: "Yacine Benali",
+            email: "yacine.benali@example.com",
+            avatarUrl: nil,
+            role: "USER",
+            emailVerified: emailVerified,
+            phone: "0555000000",
+            phoneCountryCode: "+213",
+            bio: "Particulier à Alger, je vends ce dont je ne me sers plus.",
+            isRecommended: false,
+            memberSince: DateParsing.parseInstant("2025-03-14T10:00:00.000Z"),
+            hasPassword: true
+        )
+    }
+
+    static func tokens(now: Date = Date()) -> AuthTokens {
+        let expiry = now.addingTimeInterval(365 * 86_400)
+        return AuthTokens(
+            accessToken: "mock-access-token",
+            refreshToken: "mock-refresh-token",
+            accessExpiresAt: expiry,
+            refreshExpiresAt: expiry
+        )
+    }
+}
+#endif

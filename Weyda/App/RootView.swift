@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// Racine : la coquille à onglets, recouverte au démarrage par l'animation de lancement. Les pages légales
-/// (`AppRoute.webPage`) s'ouvrent ici en feuille, au-dessus de tout.
+/// (`AppRoute.webPage`) et la connexion (`AppRouter.authFlow` → `AuthFlowView`) s'ouvrent ici en feuille, au-dessus
+/// de tout.
 struct RootView: View {
     @EnvironmentObject private var router: AppRouter
     @State private var launchDone: Bool = LaunchOptions.skipLaunch
@@ -13,6 +14,11 @@ struct RootView: View {
     var body: some View {
         ZStack {
             content
+                // Connexion, inscription, mot de passe, code e-mail : une feuille avec sa propre pile, fermée
+                // d'elle-même une fois connecté (ou glissée vers le bas : `authFlow` revient alors à nil).
+                .sheet(item: $router.authFlow) { entry in
+                    AuthFlowView(entry: entry)
+                }
             if let frame = LaunchOptions.launchFrame {
                 LaunchView(frozenClock: frame, onFinished: {})
             } else if !launchDone && !reduceMotion {
@@ -90,8 +96,8 @@ private struct TabStack: View {
     }
 }
 
-/// Écran racine de chaque onglet. Déposer et Messages restent provisoires (phases 4 et 5) ; Profil montre l'état
-/// visiteur (connexion requise + À propos) jusqu'à la phase 3.
+/// Écran racine de chaque onglet. Déposer et Messages restent provisoires (phases 4 et 5) ; Profil : visiteur
+/// (connexion) ou membre, selon la session (`ProfileView`, phase 3).
 private struct TabRoot: View {
     private let tab: AppTab
 
@@ -108,7 +114,7 @@ private struct TabRoot: View {
         case .post, .messages:
             PlaceholderScreen(tab: tab)
         case .account:
-            GuestProfileView()
+            ProfileView()
         }
     }
 }

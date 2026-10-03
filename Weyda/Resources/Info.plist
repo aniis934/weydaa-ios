@@ -29,5 +29,7 @@
 	<string>$(WEYDA_SUPABASE_HOST)</string>
 	<key>WeydaSupabaseAnonKey</key>
 	<string>$(WEYDA_SUPABASE_ANON_KEY)</string>
+	<key>WeydaGoogleIOSClientID</key>
+	<string>$(WEYDA_GOOGLE_IOS_CLIENT_ID)</string>
 </dict>
 </plist>
