@@ -57,15 +57,18 @@ final class TourAccountTests: TourTestCase {
         let chip = app.descendants(matching: .any)["myListings.filter.rejected"]
         XCTAssertTrue(chip.waitForExistence(timeout: 10), "myListings.filter.rejected introuvable")
         settle()
-        // Libellés plus longs en français : la dernière puce dépasse l'écran → faire défiler la barre jusqu'au bout
-        // d'abord (vers la fin de la lecture : à gauche en LTR, à droite en arabe ; sans effet si tout tient). Pas de
-        // `isHittable` : sur une puce hors écran, la question elle-même échoue (« Activation point invalid »).
-        let bar = app.scrollViews.containing(.any, identifier: "myListings.filter.all").firstMatch
-        if environment["WEYDA_LANG"] == "ar" {
-            bar.swipeRight()
-        } else {
-            bar.swipeLeft()
-        }
+        // Libellés plus longs en français : la dernière puce dépasse l'écran → faire glisser la rangée jusqu'au bout
+        // d'abord (vers la fin de la lecture : à gauche en LTR, à droite en arabe ; sans effet si tout tient). Par
+        // coordonnées, à la hauteur des puces : `isHittable` échoue sur une puce hors écran (« Activation point
+        // invalid »), et `scrollViews.containing(…)` renvoie d'abord un conteneur parent, que le glissement ne fait
+        // pas défiler.
+        let rowY = app.descendants(matching: .any)["myListings.filter.all"].frame.midY
+        let width = app.frame.width
+        let origin = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        let rtl = environment["WEYDA_LANG"] == "ar"
+        let start = origin.withOffset(CGVector(dx: width * (rtl ? 0.15 : 0.85), dy: rowY))
+        let end = origin.withOffset(CGVector(dx: width * (rtl ? 0.85 : 0.15), dy: rowY))
+        start.press(forDuration: 0.1, thenDragTo: end)
         settle(1)
         chip.tap()
         let row = app.descendants(matching: .any)["myListings.row.mock-m6"]
