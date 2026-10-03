@@ -1,0 +1,49 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a16",
+      "title": "Perceuse à percussion Bosch Professional + coffret",
+      "description": "Perceuse à percussion Bosch Professional 600 W, vendue avec son coffret, une poignée supplémentaire et un jeu de 15 forets (béton, bois, métal). Très peu servie, achetée pour un seul chantier. Prix à débattre.",
+      "price": 13500,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 131,
+      "isFeatured": false,
+      "createdAt": "2026-09-26T09:05:00.000Z",
+      "updatedAt": "2026-09-26T09:05:00.000Z",
+      "expiresAt": "2026-11-25T09:05:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_bricolage-outillage",
+      "wilayaId": 5,
+      "communeId": 507,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "perceuse-a-percussion-bosch-professional-coffret-batna",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a16-1",
+          "url": "https://photos.mock.weydaa/annonces/tools-1.webp",
+          "publicId": "annonces/mock-a16/1",
+          "order": 0,
+          "annonceId": "mock-a16"
+        }
+      ],
+      "category": {
+        "slug": "bricolage-outillage",
+        "nameFr": "Bricolage & Outillage",
+        "nameAr": "أدوات وعدة",
+        "nameEn": "DIY & Tools"
+      },
+      "wilaya": {
+        "id": 5,
+        "nameFr": "Batna",
+        "nameAr": "باتنة"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

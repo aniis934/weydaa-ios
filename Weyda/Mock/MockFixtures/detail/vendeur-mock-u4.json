@@ -1,0 +1,15 @@
+{
+  "id": "mock-u4",
+  "name": "Nadia H.",
+  "bio": "Boutique familiale à Blida : électroménager, tenues traditionnelles et bonnes affaires. Livraison possible sur Blida et Alger.",
+  "avatar": null,
+  "createdAt": "2022-09-08T14:20:00.000Z",
+  "emailVerified": "2022-09-08T14:26:00.000Z",
+  "isRecommended": true,
+  "ratingCount": 31,
+  "ratingSum": 152,
+  "responseMinutes": 15,
+  "_count": {
+    "annonces": 5
+  }
+}

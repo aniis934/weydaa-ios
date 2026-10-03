@@ -42,7 +42,10 @@ final class MockAPITests: XCTestCase {
           { "method": "GET", "path": "/api/annonces", "status": 202 },
           { "method": "GET", "path": "/api/annonces", "query": { "featured": "1" }, "status": 203 },
           { "method": "GET", "path": "/api/annonces/featured-car", "status": 204 },
-          { "method": "POST", "path": "/api/annonces/*/view", "status": 205 }
+          { "method": "POST", "path": "/api/annonces/*/view", "status": 205 },
+          { "method": "GET", "path": "/api/wilayas", "query": { "wilayaId": "*" }, "status": 206 },
+          { "method": "GET", "path": "/api/wilayas", "query": { "wilayaId": "16" }, "status": 207 },
+          { "method": "GET", "path": "/api/wilayas", "status": 208 }
         ]
         """.utf8)
         let routes = MockRoutes(routes: try JSONDecoder().decode([MockRoute].self, from: json), root: nil)
@@ -56,6 +59,10 @@ final class MockAPITests: XCTestCase {
         XCTAssertEqual(try status("POST", "/api/annonces/abc/view"), 205)
         XCTAssertEqual(try status("DELETE", "/api/annonces/abc"), 404)
         XCTAssertEqual(try status("GET", "/api/annonces/abc/extra"), 404)
+        // Joker de requête : présent, valeur quelconque ; une valeur exacte reste prioritaire.
+        XCTAssertEqual(try status("GET", "/api/wilayas?wilayaId=9"), 206)
+        XCTAssertEqual(try status("GET", "/api/wilayas?wilayaId=16"), 207)
+        XCTAssertEqual(try status("GET", "/api/wilayas"), 208)
     }
 
     func testPhotosAreDrawnAtFullAndThumbnailSize() throws {

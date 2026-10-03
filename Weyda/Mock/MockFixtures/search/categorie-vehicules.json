@@ -1,0 +1,491 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a2",
+      "title": "Renault Clio 4 GT Line 2019 diesel",
+      "description": "Clio 4 GT Line 1.5 dCi 90 ch, première main, 86 000 km réels. Carnet d'entretien à jour, vidange et filtres faits le mois dernier. Jamais accidentée, carte grise et assurance en règle. Climatisation, GPS, caméra de recul, jantes 17 pouces. Prix légèrement négociable après essai, pas d'échange.",
+      "price": 3150000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 121,
+      "isFeatured": true,
+      "createdAt": "2026-10-03T05:55:00.000Z",
+      "updatedAt": "2026-10-03T05:55:00.000Z",
+      "expiresAt": "2026-12-02T05:55:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_voitures",
+      "wilayaId": 31,
+      "communeId": 3107,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-4-gt-line-2019-diesel-oran",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-4",
+        "year": 2019,
+        "mileage": 86000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5",
+        "exchange_possible": false
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a2-1",
+          "url": "https://photos.mock.weydaa/annonces/car-1.webp",
+          "publicId": "annonces/mock-a2/1",
+          "order": 0,
+          "annonceId": "mock-a2"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a10",
+      "title": "Volkswagen Golf 7 1.6 TDI 2016",
+      "description": "Golf 7 1.6 TDI 110 ch, finition Confortline, 142 000 km. Entretien suivi chez le concessionnaire, distribution faite à 120 000 km. Carrosserie propre, intérieur sans usure. Bluetooth, radar de recul, régulateur de vitesse. Visible à El Eulma, personnes sérieuses uniquement.",
+      "price": 3600000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 528,
+      "isFeatured": false,
+      "createdAt": "2026-09-30T10:40:00.000Z",
+      "updatedAt": "2026-09-30T10:40:00.000Z",
+      "expiresAt": "2026-11-29T10:40:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_voitures",
+      "wilayaId": 19,
+      "communeId": 1932,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "volkswagen-golf-7-16-tdi-2016-setif",
+      "attributes": {
+        "make": "volkswagen",
+        "model": "golf-7",
+        "year": 2016,
+        "mileage": 142000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "grey",
+        "doors": "5"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a10-1",
+          "url": "https://photos.mock.weydaa/annonces/car-2.webp",
+          "publicId": "annonces/mock-a10/1",
+          "order": 0,
+          "annonceId": "mock-a10"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 19,
+        "nameFr": "Sétif",
+        "nameAr": "سطيف"
+      }
+    },
+    {
+      "id": "mock-a14",
+      "title": "Hyundai Accent RB 2017 essence",
+      "description": "Hyundai Accent RB 1.4 essence, boîte manuelle, 98 000 km. Deuxième main, toujours garée au sous-sol. Climatisation, vitres électriques, quatre pneus neufs. Contrôle technique valide. Visible à Blida centre.",
+      "price": 2350000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 455,
+      "isFeatured": false,
+      "createdAt": "2026-09-27T16:50:00.000Z",
+      "updatedAt": "2026-09-27T16:50:00.000Z",
+      "expiresAt": "2026-11-26T16:50:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_voitures",
+      "wilayaId": 9,
+      "communeId": 905,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "hyundai-accent-rb-2017-essence-blida",
+      "attributes": {
+        "make": "hyundai",
+        "model": "accent",
+        "year": 2017,
+        "mileage": 98000,
+        "fuel": "essence",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "silver",
+        "doors": "4",
+        "technical_inspection": true
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a14-1",
+          "url": "https://photos.mock.weydaa/annonces/car-3.webp",
+          "publicId": "annonces/mock-a14/1",
+          "order": 0,
+          "annonceId": "mock-a14"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a20",
+      "title": "Peugeot Partner Tepee 1.6 HDi 2015",
+      "description": "Peugeot Partner Tepee 1.6 HDi 92 ch, 168 000 km, 5 places, idéal pour une famille ou un commerce. Moteur et boîte en très bon état, embrayage changé l'an dernier. Deux portes latérales coulissantes, barres de toit. Papiers en règle, visible à El Khroub.",
+      "price": 2450000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 347,
+      "isFeatured": false,
+      "createdAt": "2026-09-20T21:30:00.000Z",
+      "updatedAt": "2026-09-20T21:30:00.000Z",
+      "expiresAt": "2026-11-19T21:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_utilitaires",
+      "wilayaId": 25,
+      "communeId": 2507,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "peugeot-partner-tepee-16-hdi-2015-constantine",
+      "attributes": {
+        "make": "peugeot",
+        "model": "partner",
+        "year": 2015,
+        "mileage": 168000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a20-1",
+          "url": "https://photos.mock.weydaa/annonces/car-4.webp",
+          "publicId": "annonces/mock-a20/1",
+          "order": 0,
+          "annonceId": "mock-a20"
+        }
+      ],
+      "category": {
+        "slug": "utilitaires",
+        "nameFr": "Utilitaires",
+        "nameAr": "مركبات نفعية",
+        "nameEn": "Utility Vehicles"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    },
+    {
+      "id": "mock-a25",
+      "title": "Renault Clio 5 Intens 1.3 TCe EDC 2021",
+      "description": "Clio 5 Intens 1.3 TCe 140 ch, boîte automatique EDC, achetée neuve en concession en 2021, 41 000 km. Entretien exclusivement chez Renault, factures disponibles. Écran tactile, caméra de recul, régulateur de vitesse. Dédouanée, carte grise à mon nom. Visible à Kouba, essai possible le week-end.",
+      "price": 4250000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 389,
+      "isFeatured": false,
+      "createdAt": "2026-09-10T16:20:00.000Z",
+      "updatedAt": "2026-09-10T16:20:00.000Z",
+      "expiresAt": "2026-11-09T16:20:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_voitures",
+      "wilayaId": 16,
+      "communeId": 1638,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-5-intens-1-3-tce-edc-2021-alger",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-5",
+        "year": 2021,
+        "mileage": 41000,
+        "fuel": "essence",
+        "transmission": "automatic",
+        "condition": "like-new",
+        "color": "red",
+        "doors": "5",
+        "customs_status": "cleared"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a25-1",
+          "url": "https://photos.mock.weydaa/annonces/car-5.webp",
+          "publicId": "annonces/mock-a25/1",
+          "order": 0,
+          "annonceId": "mock-a25"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a26",
+      "title": "Renault Clio 3 1.5 dCi 2010",
+      "description": "Clio 3 1.5 dCi 85 ch, 214 000 km, moteur sain, embrayage changé l'an dernier. Quelques rayures sur le pare-chocs arrière, intérieur propre. Idéale pour un premier véhicule, environ 5 L aux 100. Papiers en règle, prix à discuter raisonnablement.",
+      "price": 1380000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 612,
+      "isFeatured": false,
+      "createdAt": "2026-09-08T09:45:00.000Z",
+      "updatedAt": "2026-09-08T09:45:00.000Z",
+      "expiresAt": "2026-11-07T09:45:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_voitures",
+      "wilayaId": 31,
+      "communeId": 3114,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-3-1-5-dci-2010-oran",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-3",
+        "year": 2010,
+        "mileage": 214000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "fair",
+        "color": "black",
+        "doors": "5"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a26-1",
+          "url": "https://photos.mock.weydaa/annonces/car-6.webp",
+          "publicId": "annonces/mock-a26/1",
+          "order": 0,
+          "annonceId": "mock-a26"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a27",
+      "title": "Dacia Logan 1.5 dCi 2015 première main",
+      "description": "Dacia Logan 1.5 dCi 75 ch, première main, 156 000 km. Climatisation fonctionnelle, vidange faite à 150 000 km, pneus avant neufs. Coffre très spacieux, jamais accidentée, aucun frais à prévoir.",
+      "price": 1650000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 274,
+      "isFeatured": false,
+      "createdAt": "2026-09-05T13:10:00.000Z",
+      "updatedAt": "2026-09-05T13:10:00.000Z",
+      "expiresAt": "2026-11-04T13:10:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_voitures",
+      "wilayaId": 19,
+      "communeId": 1955,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "dacia-logan-1-5-dci-2015-premiere-main-setif",
+      "attributes": {
+        "make": "dacia",
+        "model": "logan",
+        "year": 2015,
+        "mileage": 156000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "grey",
+        "doors": "4",
+        "technical_inspection": true
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a27-1",
+          "url": "https://photos.mock.weydaa/annonces/car-7.webp",
+          "publicId": "annonces/mock-a27/1",
+          "order": 0,
+          "annonceId": "mock-a27"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 19,
+        "nameFr": "Sétif",
+        "nameAr": "سطيف"
+      }
+    }
+  ],
+  "total": 7,
+  "page": 1,
+  "totalPages": 1,
+  "facets": {
+    "make": [
+      {
+        "value": "renault",
+        "count": 3
+      },
+      {
+        "value": "dacia",
+        "count": 1
+      },
+      {
+        "value": "hyundai",
+        "count": 1
+      },
+      {
+        "value": "peugeot",
+        "count": 1
+      },
+      {
+        "value": "volkswagen",
+        "count": 1
+      }
+    ],
+    "model": [
+      {
+        "value": "accent",
+        "count": 1
+      },
+      {
+        "value": "clio-3",
+        "count": 1
+      },
+      {
+        "value": "clio-4",
+        "count": 1
+      },
+      {
+        "value": "clio-5",
+        "count": 1
+      },
+      {
+        "value": "golf-7",
+        "count": 1
+      },
+      {
+        "value": "logan",
+        "count": 1
+      },
+      {
+        "value": "partner",
+        "count": 1
+      }
+    ],
+    "fuel": [
+      {
+        "value": "diesel",
+        "count": 5
+      },
+      {
+        "value": "essence",
+        "count": 2
+      }
+    ],
+    "transmission": [
+      {
+        "value": "manual",
+        "count": 6
+      },
+      {
+        "value": "automatic",
+        "count": 1
+      }
+    ],
+    "condition": [
+      {
+        "value": "good",
+        "count": 5
+      },
+      {
+        "value": "fair",
+        "count": 1
+      },
+      {
+        "value": "like-new",
+        "count": 1
+      }
+    ],
+    "color": [
+      {
+        "value": "grey",
+        "count": 2
+      },
+      {
+        "value": "white",
+        "count": 2
+      },
+      {
+        "value": "black",
+        "count": 1
+      },
+      {
+        "value": "red",
+        "count": 1
+      },
+      {
+        "value": "silver",
+        "count": 1
+      }
+    ],
+    "customs_status": [
+      {
+        "value": "cleared",
+        "count": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a2",
+      "title": "Renault Clio 4 GT Line 2019 diesel",
+      "description": "Clio 4 GT Line 1.5 dCi 90 ch, première main, 86 000 km réels. Carnet d'entretien à jour, vidange et filtres faits le mois dernier. Jamais accidentée, carte grise et assurance en règle. Climatisation, GPS, caméra de recul, jantes 17 pouces. Prix légèrement négociable après essai, pas d'échange.",
+      "price": 3150000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 121,
+      "isFeatured": true,
+      "createdAt": "2026-10-03T05:55:00.000Z",
+      "updatedAt": "2026-10-03T05:55:00.000Z",
+      "expiresAt": "2026-12-02T05:55:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_voitures",
+      "wilayaId": 31,
+      "communeId": 3107,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-4-gt-line-2019-diesel-oran",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-4",
+        "year": 2019,
+        "mileage": 86000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5",
+        "exchange_possible": false
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a2-1",
+          "url": "https://photos.mock.weydaa/annonces/car-1.webp",
+          "publicId": "annonces/mock-a2/1",
+          "order": 0,
+          "annonceId": "mock-a2"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a7",
+      "title": "Location F2 meublé de 60 m² au centre d'Oran",
+      "description": "F2 meublé et équipé de 60 m² au 2e étage, proche du tramway et des commerces. Salon, chambre, cuisine équipée (réfrigérateur, cuisinière, machine à laver), balcon. Loyer de 45 000 DA par mois, 6 mois d'avance. Idéal pour un couple ou un fonctionnaire. Libre à partir du 15 octobre.",
+      "price": 45000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 467,
+      "isFeatured": false,
+      "createdAt": "2026-10-01T19:45:00.000Z",
+      "updatedAt": "2026-10-01T19:45:00.000Z",
+      "expiresAt": "2026-11-30T19:45:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_location-appartement",
+      "wilayaId": 31,
+      "communeId": 3122,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "location-f2-meuble-de-60-m-au-centre-doran-oran",
+      "attributes": {
+        "surface": 60,
+        "rooms": "2",
+        "floor": 2,
+        "furnished": true,
+        "condition": "good",
+        "has_balcony": true
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a7-1",
+          "url": "https://photos.mock.weydaa/annonces/house-2.webp",
+          "publicId": "annonces/mock-a7/1",
+          "order": 0,
+          "annonceId": "mock-a7"
+        }
+      ],
+      "category": {
+        "slug": "location-appartement",
+        "nameFr": "Location appartement",
+        "nameAr": "إيجار شقة",
+        "nameEn": "Apartment for Rent"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a19",
+      "title": "Séjour à Hammamet 8 jours / 7 nuits à céder",
+      "description": "Je cède ma réservation pour 2 adultes à Hammamet (Tunisie) : hôtel 4 étoiles en demi-pension, du 18 au 25 octobre. Désistement pour raison familiale. Prix inférieur au tarif de l'agence, changement de nom pris en charge. Contact par message uniquement.",
+      "price": 89000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 233,
+      "isFeatured": false,
+      "createdAt": "2026-09-22T10:15:00.000Z",
+      "updatedAt": "2026-09-22T10:15:00.000Z",
+      "expiresAt": "2026-11-21T10:15:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_excursions-circuits",
+      "wilayaId": 31,
+      "communeId": 3114,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "sejour-a-hammamet-8-jours-7-nuits-a-ceder-oran",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a19-1",
+          "url": "https://photos.mock.weydaa/annonces/travel-1.webp",
+          "publicId": "annonces/mock-a19/1",
+          "order": 0,
+          "annonceId": "mock-a19"
+        }
+      ],
+      "category": {
+        "slug": "excursions-circuits",
+        "nameFr": "Excursions & Circuits",
+        "nameAr": "رحلات وجولات",
+        "nameEn": "Tours & Excursions"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a23",
+      "title": "HP EliteBook 840 G6 i5 / 16 Go / SSD 512 Go",
+      "description": "PC portable HP EliteBook 840 G6 : Intel Core i5 de 8e génération, 16 Go de RAM, SSD de 512 Go, écran 14 pouces Full HD. Windows 11 Pro activé, batterie qui tient environ 5 heures, clavier AZERTY rétroéclairé. Idéal pour le bureau ou les études.",
+      "price": 68000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 265,
+      "isFeatured": false,
+      "createdAt": "2026-09-14T18:05:00.000Z",
+      "updatedAt": "2026-09-14T18:05:00.000Z",
+      "expiresAt": "2026-11-13T18:05:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_ordinateurs-portables",
+      "wilayaId": 31,
+      "communeId": 3104,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "hp-elitebook-840-g6-i5-16-go-ssd-512-go-oran",
+      "attributes": {
+        "brand": "hp",
+        "model": "elitebook",
+        "condition": "good",
+        "storage_gb": "512",
+        "ram_gb": "16"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a23-1",
+          "url": "https://photos.mock.weydaa/annonces/laptop-2.webp",
+          "publicId": "annonces/mock-a23/1",
+          "order": 0,
+          "annonceId": "mock-a23"
+        }
+      ],
+      "category": {
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a26",
+      "title": "Renault Clio 3 1.5 dCi 2010",
+      "description": "Clio 3 1.5 dCi 85 ch, 214 000 km, moteur sain, embrayage changé l'an dernier. Quelques rayures sur le pare-chocs arrière, intérieur propre. Idéale pour un premier véhicule, environ 5 L aux 100. Papiers en règle, prix à discuter raisonnablement.",
+      "price": 1380000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 612,
+      "isFeatured": false,
+      "createdAt": "2026-09-08T09:45:00.000Z",
+      "updatedAt": "2026-09-08T09:45:00.000Z",
+      "expiresAt": "2026-11-07T09:45:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_voitures",
+      "wilayaId": 31,
+      "communeId": 3114,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-3-1-5-dci-2010-oran",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-3",
+        "year": 2010,
+        "mileage": 214000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "fair",
+        "color": "black",
+        "doors": "5"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a26-1",
+          "url": "https://photos.mock.weydaa/annonces/car-6.webp",
+          "publicId": "annonces/mock-a26/1",
+          "order": 0,
+          "annonceId": "mock-a26"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "totalPages": 1
+}

@@ -1,0 +1,94 @@
+{
+  "id": "mock-a1",
+  "title": "iPhone 15 Pro Max 256 Go Titane naturel",
+  "description": "Vends iPhone 15 Pro Max 256 Go, couleur titane naturel, acheté en janvier. Batterie à 94 %, jamais ouvert ni réparé, toujours sous coque et verre trempé. Livré avec boîte, câble d'origine et facture. Débloqué tous opérateurs. Remise en main propre à Bab Ezzouar ; échange possible contre un Galaxy S24 Ultra avec différence.",
+  "price": 215000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 54,
+  "isFeatured": false,
+  "createdAt": "2026-10-03T07:42:00.000Z",
+  "updatedAt": "2026-10-03T07:42:00.000Z",
+  "expiresAt": "2026-12-02T07:42:00.000Z",
+  "userId": "mock-u1",
+  "categoryId": "sub_smartphones",
+  "wilayaId": 16,
+  "communeId": 1605,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "iphone-15-pro-max-256-go-titane-naturel-alger",
+  "attributes": {
+    "brand": "apple",
+    "model": "iphone-15-pro-max",
+    "condition": "like-new",
+    "storage_gb": "256",
+    "ram_gb": "8",
+    "warranty": false
+  },
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a1-1",
+      "url": "https://photos.mock.weydaa/annonces/phone-1.webp",
+      "publicId": "annonces/mock-a1/1",
+      "order": 0,
+      "annonceId": "mock-a1"
+    },
+    {
+      "id": "img-mock-a1-2",
+      "url": "https://photos.mock.weydaa/annonces/phone-51.webp",
+      "publicId": "annonces/mock-a1/2",
+      "order": 1,
+      "annonceId": "mock-a1"
+    },
+    {
+      "id": "img-mock-a1-3",
+      "url": "https://photos.mock.weydaa/annonces/phone-52.webp",
+      "publicId": "annonces/mock-a1/3",
+      "order": 2,
+      "annonceId": "mock-a1"
+    },
+    {
+      "id": "img-mock-a1-4",
+      "url": "https://photos.mock.weydaa/annonces/phone-53.webp",
+      "publicId": "annonces/mock-a1/4",
+      "order": 3,
+      "annonceId": "mock-a1"
+    }
+  ],
+  "category": {
+    "id": "sub_smartphones",
+    "slug": "smartphones",
+    "nameFr": "Smartphones",
+    "nameAr": "هواتف ذكية",
+    "nameEn": "Smartphones",
+    "parentId": "cat_electronique",
+    "parent": {
+      "slug": "electronique"
+    }
+  },
+  "wilaya": {
+    "id": 16,
+    "nameFr": "Alger",
+    "nameAr": "الجزائر"
+  },
+  "commune": {
+    "id": 1605,
+    "nameFr": "Bab Ezzouar",
+    "nameAr": "باب الزوار"
+  },
+  "user": {
+    "id": "mock-u1",
+    "name": "Karim B.",
+    "avatar": null,
+    "createdAt": "2023-03-14T10:12:00.000Z",
+    "emailVerified": "2023-03-14T10:31:00.000Z",
+    "isRecommended": true,
+    "ratingCount": 23,
+    "ratingSum": 110,
+    "responseMinutes": 20,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

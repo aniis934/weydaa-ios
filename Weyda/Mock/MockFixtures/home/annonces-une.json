@@ -1,0 +1,302 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a2",
+      "title": "Renault Clio 4 GT Line 2019 diesel",
+      "description": "Clio 4 GT Line 1.5 dCi 90 ch, première main, 86 000 km réels. Carnet d'entretien à jour, vidange et filtres faits le mois dernier. Jamais accidentée, carte grise et assurance en règle. Climatisation, GPS, caméra de recul, jantes 17 pouces. Prix légèrement négociable après essai, pas d'échange.",
+      "price": 3150000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 121,
+      "isFeatured": true,
+      "createdAt": "2026-10-03T05:55:00.000Z",
+      "updatedAt": "2026-10-03T05:55:00.000Z",
+      "expiresAt": "2026-12-02T05:55:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_voitures",
+      "wilayaId": 31,
+      "communeId": 3107,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-4-gt-line-2019-diesel-oran",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-4",
+        "year": 2019,
+        "mileage": 86000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5",
+        "exchange_possible": false
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a2-1",
+          "url": "https://photos.mock.weydaa/annonces/car-1.webp",
+          "publicId": "annonces/mock-a2/1",
+          "order": 0,
+          "annonceId": "mock-a2"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a3",
+      "title": "Appartement F3 de 85 m² à Hydra",
+      "description": "Particulier vend F3 de 85 m² au 4e étage d'une résidence calme et gardée, avec ascenseur. Double exposition, deux balcons, cuisine équipée, salle de bain refaite à neuf. Place de parking en sous-sol. Livret foncier. Visites le week-end sur rendez-vous, agences s'abstenir.",
+      "price": 38000000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 176,
+      "isFeatured": true,
+      "createdAt": "2026-10-02T18:20:00.000Z",
+      "updatedAt": "2026-10-02T18:20:00.000Z",
+      "expiresAt": "2026-12-01T18:20:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_vente-appartement",
+      "wilayaId": 16,
+      "communeId": 1636,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "appartement-f3-de-85-m-a-hydra-alger",
+      "attributes": {
+        "surface": 85,
+        "rooms": "3",
+        "floor": 4,
+        "furnished": false,
+        "deed_type": "livret-foncier",
+        "condition": "good",
+        "has_parking": true,
+        "has_elevator": true,
+        "has_balcony": true,
+        "total_floors": 7
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a3-1",
+          "url": "https://photos.mock.weydaa/annonces/house-1.webp",
+          "publicId": "annonces/mock-a3/1",
+          "order": 0,
+          "annonceId": "mock-a3"
+        }
+      ],
+      "category": {
+        "slug": "vente-appartement",
+        "nameFr": "Vente appartement",
+        "nameAr": "بيع شقة",
+        "nameEn": "Apartment for Sale"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a6",
+      "title": "Samsung Galaxy S23 Ultra 512 Go",
+      "description": "Galaxy S23 Ultra 512 Go / 12 Go de RAM, coloris noir, double SIM. Écran sans aucune rayure (protection posée dès l'achat), stylet S Pen fourni. Vendu avec chargeur rapide 45 W et deux coques. Prix ferme, paiement en espèces à la remise.",
+      "price": 148000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 301,
+      "isFeatured": true,
+      "createdAt": "2026-10-02T08:10:00.000Z",
+      "updatedAt": "2026-10-02T08:10:00.000Z",
+      "expiresAt": "2026-12-01T08:10:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 25,
+      "communeId": 2505,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "samsung-galaxy-s23-ultra-512-go-constantine",
+      "attributes": {
+        "brand": "samsung",
+        "model": "galaxy-s23-ultra",
+        "condition": "good",
+        "storage_gb": "512",
+        "ram_gb": "12"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a6-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-2.webp",
+          "publicId": "annonces/mock-a6/1",
+          "order": 0,
+          "annonceId": "mock-a6"
+        }
+      ],
+      "category": {
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    },
+    {
+      "id": "mock-a9",
+      "title": "Canapé d'angle 6 places en velours vert",
+      "description": "Grand canapé d'angle 6 places en velours vert sapin, angle réversible, avec méridienne et deux poufs assortis. Fabriqué sur mesure par un artisan il y a deux ans, structure en bois massif. Très bon état, aucune tache. Dimensions 3,10 × 2,20 m. À enlever à Dely Ibrahim.",
+      "price": 125000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 188,
+      "isFeatured": true,
+      "createdAt": "2026-09-30T21:10:00.000Z",
+      "updatedAt": "2026-09-30T21:10:00.000Z",
+      "expiresAt": "2026-11-29T21:10:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_meubles",
+      "wilayaId": 16,
+      "communeId": 1622,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "canape-dangle-6-places-en-velours-vert-alger",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a9-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-1.webp",
+          "publicId": "annonces/mock-a9/1",
+          "order": 0,
+          "annonceId": "mock-a9"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a13",
+      "title": "Villa R+1 avec jardin à Tizi Ouzou",
+      "description": "Villa R+1 de 240 m² habitables sur un terrain de 400 m², quartier résidentiel calme à 5 minutes du centre. 6 pièces, 2 salles de bain, garage pour deux voitures, jardin arboré (oliviers, figuiers). Construction de 2012, acte notarié. Prix négociable, pas d'échange.",
+      "price": 52000000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 702,
+      "isFeatured": true,
+      "createdAt": "2026-09-28T12:00:00.000Z",
+      "updatedAt": "2026-09-28T12:00:00.000Z",
+      "expiresAt": "2026-11-27T12:00:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_vente-maison-villa",
+      "wilayaId": 15,
+      "communeId": 1563,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "villa-r1-avec-jardin-a-tizi-ouzou-tizi-ouzou",
+      "attributes": {
+        "surface": 240,
+        "rooms": "6-plus",
+        "deed_type": "acte",
+        "condition": "good",
+        "has_parking": true,
+        "has_balcony": true,
+        "construction_year": 2012,
+        "total_floors": 2
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a13-1",
+          "url": "https://photos.mock.weydaa/annonces/house-3.webp",
+          "publicId": "annonces/mock-a13/1",
+          "order": 0,
+          "annonceId": "mock-a13"
+        }
+      ],
+      "category": {
+        "slug": "vente-maison-villa",
+        "nameFr": "Vente maison / villa",
+        "nameAr": "بيع منزل / فيلا",
+        "nameEn": "House / Villa for Sale"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a17",
+      "title": "MacBook Air M1 8 Go / 256 Go",
+      "description": "MacBook Air M1 (2020) gris sidéral, 8 Go de mémoire et SSD de 256 Go, clavier AZERTY. 112 cycles de batterie seulement, état quasi neuf. Livré avec le chargeur d'origine et une housse. Idéal pour les études. Prix ferme.",
+      "price": 135000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 640,
+      "isFeatured": true,
+      "createdAt": "2026-09-24T22:40:00.000Z",
+      "updatedAt": "2026-09-24T22:40:00.000Z",
+      "expiresAt": "2026-11-23T22:40:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_ordinateurs-portables",
+      "wilayaId": 16,
+      "communeId": 1609,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "macbook-air-m1-8-go-256-go-alger",
+      "attributes": {
+        "brand": "apple",
+        "model": "macbook-air-m1",
+        "condition": "like-new",
+        "storage_gb": "256",
+        "ram_gb": "8"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a17-1",
+          "url": "https://photos.mock.weydaa/annonces/laptop-1.webp",
+          "publicId": "annonces/mock-a17/1",
+          "order": 0,
+          "annonceId": "mock-a17"
+        }
+      ],
+      "category": {
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    }
+  ],
+  "total": 6,
+  "page": 1,
+  "totalPages": 1
+}

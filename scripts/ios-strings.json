@@ -5,6 +5,16 @@
       "fr": "%1$s sur 5",
       "ar": "%1$s من 5",
       "en": "%1$s out of 5"
+    },
+    "home_cta_title": {
+      "fr": "Vous vendez quelque chose ?",
+      "ar": "هل تبيع شيئًا؟",
+      "en": "Selling something?"
+    },
+    "home_cta_subtitle": {
+      "fr": "Publiez votre annonce gratuitement en moins d'une minute.",
+      "ar": "انشر إعلانك مجانًا في أقل من دقيقة.",
+      "en": "Post your ad for free in less than a minute."
     }
   },
   "override": {},

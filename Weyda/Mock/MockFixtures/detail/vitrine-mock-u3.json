@@ -1,0 +1,284 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a6",
+      "title": "Samsung Galaxy S23 Ultra 512 Go",
+      "description": "Galaxy S23 Ultra 512 Go / 12 Go de RAM, coloris noir, double SIM. Écran sans aucune rayure (protection posée dès l'achat), stylet S Pen fourni. Vendu avec chargeur rapide 45 W et deux coques. Prix ferme, paiement en espèces à la remise.",
+      "price": 148000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 301,
+      "isFeatured": true,
+      "createdAt": "2026-10-02T08:10:00.000Z",
+      "updatedAt": "2026-10-02T08:10:00.000Z",
+      "expiresAt": "2026-12-01T08:10:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_smartphones",
+      "wilayaId": 25,
+      "communeId": 2505,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "samsung-galaxy-s23-ultra-512-go-constantine",
+      "attributes": {
+        "brand": "samsung",
+        "model": "galaxy-s23-ultra",
+        "condition": "good",
+        "storage_gb": "512",
+        "ram_gb": "12"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a6-1",
+          "url": "https://photos.mock.weydaa/annonces/phone-2.webp",
+          "publicId": "annonces/mock-a6/1",
+          "order": 0,
+          "annonceId": "mock-a6"
+        }
+      ],
+      "category": {
+        "slug": "smartphones",
+        "nameFr": "Smartphones",
+        "nameAr": "هواتف ذكية",
+        "nameEn": "Smartphones"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    },
+    {
+      "id": "mock-a12",
+      "title": "TV Samsung 55 pouces Crystal UHD 4K",
+      "description": "Téléviseur Samsung 55 pouces Crystal UHD 4K, Smart TV (Netflix, YouTube), récepteur satellite intégré. Acheté en mars, encore sous garantie avec la facture. Vendu avec télécommande et pied d'origine. Cause départ à l'étranger.",
+      "price": 82000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 389,
+      "isFeatured": false,
+      "createdAt": "2026-09-29T08:30:00.000Z",
+      "updatedAt": "2026-09-29T08:30:00.000Z",
+      "expiresAt": "2026-11-28T08:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_tv",
+      "wilayaId": 23,
+      "communeId": 2306,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "tv-samsung-55-pouces-crystal-uhd-4k-annaba",
+      "attributes": {
+        "brand": "samsung",
+        "condition": "like-new",
+        "screen_size": 55,
+        "warranty": true
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a12-1",
+          "url": "https://photos.mock.weydaa/annonces/tv-1.webp",
+          "publicId": "annonces/mock-a12/1",
+          "order": 0,
+          "annonceId": "mock-a12"
+        }
+      ],
+      "category": {
+        "slug": "tv",
+        "nameFr": "TV",
+        "nameAr": "تلفاز",
+        "nameEn": "TV"
+      },
+      "wilaya": {
+        "id": 23,
+        "nameFr": "Annaba",
+        "nameAr": "عنابة"
+      }
+    },
+    {
+      "id": "mock-a20",
+      "title": "Peugeot Partner Tepee 1.6 HDi 2015",
+      "description": "Peugeot Partner Tepee 1.6 HDi 92 ch, 168 000 km, 5 places, idéal pour une famille ou un commerce. Moteur et boîte en très bon état, embrayage changé l'an dernier. Deux portes latérales coulissantes, barres de toit. Papiers en règle, visible à El Khroub.",
+      "price": 2450000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 347,
+      "isFeatured": false,
+      "createdAt": "2026-09-20T21:30:00.000Z",
+      "updatedAt": "2026-09-20T21:30:00.000Z",
+      "expiresAt": "2026-11-19T21:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_utilitaires",
+      "wilayaId": 25,
+      "communeId": 2507,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "peugeot-partner-tepee-16-hdi-2015-constantine",
+      "attributes": {
+        "make": "peugeot",
+        "model": "partner",
+        "year": 2015,
+        "mileage": 168000,
+        "fuel": "diesel",
+        "transmission": "manual",
+        "condition": "good",
+        "color": "white",
+        "doors": "5"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a20-1",
+          "url": "https://photos.mock.weydaa/annonces/car-4.webp",
+          "publicId": "annonces/mock-a20/1",
+          "order": 0,
+          "annonceId": "mock-a20"
+        }
+      ],
+      "category": {
+        "slug": "utilitaires",
+        "nameFr": "Utilitaires",
+        "nameAr": "مركبات نفعية",
+        "nameEn": "Utility Vehicles"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    },
+    {
+      "id": "mock-a24",
+      "title": "À donner : canapé 3 places",
+      "description": "Je donne un canapé 3 places en tissu gris, encore confortable, quelques traces d'usure sur les accoudoirs. À récupérer sur place à Annaba (3e étage sans ascenseur), prévoir deux personnes. Premier arrivé, premier servi.",
+      "price": null,
+      "priceType": "FREE",
+      "status": "ACTIVE",
+      "views": 158,
+      "isFeatured": false,
+      "createdAt": "2026-09-12T10:30:00.000Z",
+      "updatedAt": "2026-09-12T10:30:00.000Z",
+      "expiresAt": "2026-11-11T10:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_meubles",
+      "wilayaId": 23,
+      "communeId": 2302,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "a-donner-canape-3-places-annaba",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a24-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-2.webp",
+          "publicId": "annonces/mock-a24/1",
+          "order": 0,
+          "annonceId": "mock-a24"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 23,
+        "nameFr": "Annaba",
+        "nameAr": "عنابة"
+      }
+    },
+    {
+      "id": "mock-a28",
+      "title": "Climatiseur Condor 12000 BTU Inverter",
+      "description": "Climatiseur mural Condor 12000 BTU Inverter, froid et chaud, utilisé un seul été. Classe A++, télécommande et kit de fixation fournis. Vendu pour cause de déménagement ; installation à la charge de l'acheteur.",
+      "price": 58000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 143,
+      "isFeatured": false,
+      "createdAt": "2026-09-03T18:30:00.000Z",
+      "updatedAt": "2026-09-03T18:30:00.000Z",
+      "expiresAt": "2026-11-02T18:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_climatiseur",
+      "wilayaId": 23,
+      "communeId": 2302,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "climatiseur-condor-12000-btu-inverter-annaba",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a28-1",
+          "url": "https://photos.mock.weydaa/annonces/fridge-5.webp",
+          "publicId": "annonces/mock-a28/1",
+          "order": 0,
+          "annonceId": "mock-a28"
+        }
+      ],
+      "category": {
+        "slug": "climatiseur",
+        "nameFr": "Climatiseur / Chauffage",
+        "nameAr": "مكيف / تدفئة",
+        "nameEn": "Air Conditioner / Heater"
+      },
+      "wilaya": {
+        "id": 23,
+        "nameFr": "Annaba",
+        "nameAr": "عنابة"
+      }
+    },
+    {
+      "id": "mock-a29",
+      "title": "PlayStation 5 Slim 1 To + 2 manettes",
+      "description": "PS5 Slim avec lecteur de disque, 1 To, achetée en mars et très peu servie. État comme neuf, boîte d'origine, deux manettes DualSense. Prix ferme, remise en main propre à Constantine.",
+      "price": 95000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 455,
+      "isFeatured": false,
+      "createdAt": "2026-08-30T20:05:00.000Z",
+      "updatedAt": "2026-08-30T20:05:00.000Z",
+      "expiresAt": "2026-10-29T20:05:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_consoles",
+      "wilayaId": 25,
+      "communeId": 2505,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "playstation-5-slim-1-to-2-manettes-constantine",
+      "attributes": {
+        "console_type": "ps5",
+        "condition": "like-new",
+        "warranty": false
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a29-1",
+          "url": "https://photos.mock.weydaa/annonces/tv-5.webp",
+          "publicId": "annonces/mock-a29/1",
+          "order": 0,
+          "annonceId": "mock-a29"
+        }
+      ],
+      "category": {
+        "slug": "consoles",
+        "nameFr": "Consoles",
+        "nameAr": "أجهزة ألعاب",
+        "nameEn": "Gaming Consoles"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    }
+  ],
+  "total": 6,
+  "page": 1,
+  "totalPages": 1
+}

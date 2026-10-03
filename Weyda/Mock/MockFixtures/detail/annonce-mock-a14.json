@@ -1,0 +1,98 @@
+{
+  "id": "mock-a14",
+  "title": "Hyundai Accent RB 2017 essence",
+  "description": "Hyundai Accent RB 1.4 essence, boîte manuelle, 98 000 km. Deuxième main, toujours garée au sous-sol. Climatisation, vitres électriques, quatre pneus neufs. Contrôle technique valide. Visible à Blida centre.",
+  "price": 2350000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 455,
+  "isFeatured": false,
+  "createdAt": "2026-09-27T16:50:00.000Z",
+  "updatedAt": "2026-09-27T16:50:00.000Z",
+  "expiresAt": "2026-11-26T16:50:00.000Z",
+  "userId": "mock-u4",
+  "categoryId": "sub_voitures",
+  "wilayaId": 9,
+  "communeId": 905,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "hyundai-accent-rb-2017-essence-blida",
+  "attributes": {
+    "make": "hyundai",
+    "model": "accent",
+    "year": 2017,
+    "mileage": 98000,
+    "fuel": "essence",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "silver",
+    "doors": "4",
+    "technical_inspection": true
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a14-1",
+      "url": "https://photos.mock.weydaa/annonces/car-3.webp",
+      "publicId": "annonces/mock-a14/1",
+      "order": 0,
+      "annonceId": "mock-a14"
+    },
+    {
+      "id": "img-mock-a14-2",
+      "url": "https://photos.mock.weydaa/annonces/car-62.webp",
+      "publicId": "annonces/mock-a14/2",
+      "order": 1,
+      "annonceId": "mock-a14"
+    },
+    {
+      "id": "img-mock-a14-3",
+      "url": "https://photos.mock.weydaa/annonces/car-63.webp",
+      "publicId": "annonces/mock-a14/3",
+      "order": 2,
+      "annonceId": "mock-a14"
+    },
+    {
+      "id": "img-mock-a14-4",
+      "url": "https://photos.mock.weydaa/annonces/car-64.webp",
+      "publicId": "annonces/mock-a14/4",
+      "order": 3,
+      "annonceId": "mock-a14"
+    }
+  ],
+  "category": {
+    "id": "sub_voitures",
+    "slug": "voitures",
+    "nameFr": "Voitures",
+    "nameAr": "سيارات",
+    "nameEn": "Cars",
+    "parentId": "cat_vehicules",
+    "parent": {
+      "slug": "vehicules"
+    }
+  },
+  "wilaya": {
+    "id": 9,
+    "nameFr": "Blida",
+    "nameAr": "البليدة"
+  },
+  "commune": {
+    "id": 905,
+    "nameFr": "Blida",
+    "nameAr": "البليدة"
+  },
+  "user": {
+    "id": "mock-u4",
+    "name": "Nadia H.",
+    "avatar": null,
+    "createdAt": "2022-09-08T14:20:00.000Z",
+    "emailVerified": "2022-09-08T14:26:00.000Z",
+    "isRecommended": true,
+    "ratingCount": 31,
+    "ratingSum": 152,
+    "responseMinutes": 15,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

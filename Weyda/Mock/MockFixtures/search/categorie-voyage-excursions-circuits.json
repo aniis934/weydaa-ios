@@ -1,0 +1,49 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a19",
+      "title": "Séjour à Hammamet 8 jours / 7 nuits à céder",
+      "description": "Je cède ma réservation pour 2 adultes à Hammamet (Tunisie) : hôtel 4 étoiles en demi-pension, du 18 au 25 octobre. Désistement pour raison familiale. Prix inférieur au tarif de l'agence, changement de nom pris en charge. Contact par message uniquement.",
+      "price": 89000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 233,
+      "isFeatured": false,
+      "createdAt": "2026-09-22T10:15:00.000Z",
+      "updatedAt": "2026-09-22T10:15:00.000Z",
+      "expiresAt": "2026-11-21T10:15:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_excursions-circuits",
+      "wilayaId": 31,
+      "communeId": 3114,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "sejour-a-hammamet-8-jours-7-nuits-a-ceder-oran",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a19-1",
+          "url": "https://photos.mock.weydaa/annonces/travel-1.webp",
+          "publicId": "annonces/mock-a19/1",
+          "order": 0,
+          "annonceId": "mock-a19"
+        }
+      ],
+      "category": {
+        "slug": "excursions-circuits",
+        "nameFr": "Excursions & Circuits",
+        "nameAr": "رحلات وجولات",
+        "nameEn": "Tours & Excursions"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

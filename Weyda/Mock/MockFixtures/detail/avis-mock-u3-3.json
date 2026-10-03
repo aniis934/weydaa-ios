@@ -1,0 +1,45 @@
+{
+  "reviews": [
+    {
+      "id": "mock-rev-u3-1",
+      "rating": 4,
+      "comment": "Téléphone conforme, échange rapide à Constantine.",
+      "createdAt": "2026-09-10T13:35:00.000Z",
+      "updatedAt": "2026-09-10T13:35:00.000Z",
+      "author": {
+        "id": "mock-b1-u3",
+        "name": "Nassim K.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u3-2",
+      "rating": 5,
+      "comment": "Vendeur honnête.",
+      "createdAt": "2026-08-22T20:10:00.000Z",
+      "updatedAt": "2026-08-22T20:10:00.000Z",
+      "author": {
+        "id": "mock-b2-u3",
+        "name": "Amel B.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u3-3",
+      "rating": 4,
+      "comment": "La télé fonctionne parfaitement, merci.",
+      "createdAt": "2026-07-30T16:00:00.000Z",
+      "updatedAt": "2026-07-30T16:00:00.000Z",
+      "author": {
+        "id": "mock-b3-u3",
+        "name": "Fares M.",
+        "avatar": null
+      }
+    }
+  ],
+  "total": 5,
+  "totalPages": 2,
+  "page": 1,
+  "ratingCount": 5,
+  "average": 4.2
+}

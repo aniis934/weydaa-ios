@@ -1,0 +1,67 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a29",
+      "title": "PlayStation 5 Slim 1 To + 2 manettes",
+      "description": "PS5 Slim avec lecteur de disque, 1 To, achetée en mars et très peu servie. État comme neuf, boîte d'origine, deux manettes DualSense. Prix ferme, remise en main propre à Constantine.",
+      "price": 95000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 455,
+      "isFeatured": false,
+      "createdAt": "2026-08-30T20:05:00.000Z",
+      "updatedAt": "2026-08-30T20:05:00.000Z",
+      "expiresAt": "2026-10-29T20:05:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_consoles",
+      "wilayaId": 25,
+      "communeId": 2505,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "playstation-5-slim-1-to-2-manettes-constantine",
+      "attributes": {
+        "console_type": "ps5",
+        "condition": "like-new",
+        "warranty": false
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a29-1",
+          "url": "https://photos.mock.weydaa/annonces/tv-5.webp",
+          "publicId": "annonces/mock-a29/1",
+          "order": 0,
+          "annonceId": "mock-a29"
+        }
+      ],
+      "category": {
+        "slug": "consoles",
+        "nameFr": "Consoles",
+        "nameAr": "أجهزة ألعاب",
+        "nameEn": "Gaming Consoles"
+      },
+      "wilaya": {
+        "id": 25,
+        "nameFr": "Constantine",
+        "nameAr": "قسنطينة"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1,
+  "facets": {
+    "condition": [
+      {
+        "value": "like-new",
+        "count": 1
+      }
+    ],
+    "console_type": [
+      {
+        "value": "ps5",
+        "count": 1
+      }
+    ]
+  }
+}

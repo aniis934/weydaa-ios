@@ -1,0 +1,105 @@
+{
+  "id": "mock-a3",
+  "title": "Appartement F3 de 85 m² à Hydra",
+  "description": "Particulier vend F3 de 85 m² au 4e étage d'une résidence calme et gardée, avec ascenseur. Double exposition, deux balcons, cuisine équipée, salle de bain refaite à neuf. Place de parking en sous-sol. Livret foncier. Visites le week-end sur rendez-vous, agences s'abstenir.",
+  "price": 38000000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 176,
+  "isFeatured": true,
+  "createdAt": "2026-10-02T18:20:00.000Z",
+  "updatedAt": "2026-10-02T18:20:00.000Z",
+  "expiresAt": "2026-12-01T18:20:00.000Z",
+  "userId": "mock-u1",
+  "categoryId": "sub_vente-appartement",
+  "wilayaId": 16,
+  "communeId": 1636,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "appartement-f3-de-85-m-a-hydra-alger",
+  "attributes": {
+    "surface": 85,
+    "rooms": "3",
+    "floor": 4,
+    "furnished": false,
+    "deed_type": "livret-foncier",
+    "condition": "good",
+    "has_parking": true,
+    "has_elevator": true,
+    "has_balcony": true,
+    "total_floors": 7
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a3-1",
+      "url": "https://photos.mock.weydaa/annonces/house-1.webp",
+      "publicId": "annonces/mock-a3/1",
+      "order": 0,
+      "annonceId": "mock-a3"
+    },
+    {
+      "id": "img-mock-a3-2",
+      "url": "https://photos.mock.weydaa/annonces/house-51.webp",
+      "publicId": "annonces/mock-a3/2",
+      "order": 1,
+      "annonceId": "mock-a3"
+    },
+    {
+      "id": "img-mock-a3-3",
+      "url": "https://photos.mock.weydaa/annonces/house-52.webp",
+      "publicId": "annonces/mock-a3/3",
+      "order": 2,
+      "annonceId": "mock-a3"
+    },
+    {
+      "id": "img-mock-a3-4",
+      "url": "https://photos.mock.weydaa/annonces/house-53.webp",
+      "publicId": "annonces/mock-a3/4",
+      "order": 3,
+      "annonceId": "mock-a3"
+    },
+    {
+      "id": "img-mock-a3-5",
+      "url": "https://photos.mock.weydaa/annonces/house-54.webp",
+      "publicId": "annonces/mock-a3/5",
+      "order": 4,
+      "annonceId": "mock-a3"
+    }
+  ],
+  "category": {
+    "id": "sub_vente-appartement",
+    "slug": "vente-appartement",
+    "nameFr": "Vente appartement",
+    "nameAr": "بيع شقة",
+    "nameEn": "Apartment for Sale",
+    "parentId": "cat_immobilier",
+    "parent": {
+      "slug": "immobilier"
+    }
+  },
+  "wilaya": {
+    "id": 16,
+    "nameFr": "Alger",
+    "nameAr": "الجزائر"
+  },
+  "commune": {
+    "id": 1636,
+    "nameFr": "Hydra",
+    "nameAr": "حيدرة"
+  },
+  "user": {
+    "id": "mock-u1",
+    "name": "Karim B.",
+    "avatar": null,
+    "createdAt": "2023-03-14T10:12:00.000Z",
+    "emailVerified": "2023-03-14T10:31:00.000Z",
+    "isRecommended": true,
+    "ratingCount": 23,
+    "ratingSum": 110,
+    "responseMinutes": 20,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "id": "mock-a15",
+  "title": "Chatons persans de 3 mois",
+  "description": "Deux chatons persans, un mâle et une femelle, nés début juillet. Sevrés, propres, vermifugés et vaccinés (carnet de santé fourni). Les parents sont visibles à la maison. Prix par chaton, réservés à des familles qui ont déjà eu des chats.",
+  "price": 15000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 276,
+  "isFeatured": false,
+  "createdAt": "2026-09-26T20:35:00.000Z",
+  "updatedAt": "2026-09-26T20:35:00.000Z",
+  "expiresAt": "2026-11-25T20:35:00.000Z",
+  "userId": "mock-u6",
+  "categoryId": "sub_chats",
+  "wilayaId": 15,
+  "communeId": 1520,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "chatons-persans-de-3-mois-tizi-ouzou",
+  "attributes": null,
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a15-1",
+      "url": "https://photos.mock.weydaa/annonces/pet-1.webp",
+      "publicId": "annonces/mock-a15/1",
+      "order": 0,
+      "annonceId": "mock-a15"
+    },
+    {
+      "id": "img-mock-a15-2",
+      "url": "https://photos.mock.weydaa/annonces/pet-51.webp",
+      "publicId": "annonces/mock-a15/2",
+      "order": 1,
+      "annonceId": "mock-a15"
+    },
+    {
+      "id": "img-mock-a15-3",
+      "url": "https://photos.mock.weydaa/annonces/pet-52.webp",
+      "publicId": "annonces/mock-a15/3",
+      "order": 2,
+      "annonceId": "mock-a15"
+    },
+    {
+      "id": "img-mock-a15-4",
+      "url": "https://photos.mock.weydaa/annonces/pet-53.webp",
+      "publicId": "annonces/mock-a15/4",
+      "order": 3,
+      "annonceId": "mock-a15"
+    }
+  ],
+  "category": {
+    "id": "sub_chats",
+    "slug": "chats",
+    "nameFr": "Chats",
+    "nameAr": "قطط",
+    "nameEn": "Cats",
+    "parentId": "cat_animaux",
+    "parent": {
+      "slug": "animaux"
+    }
+  },
+  "wilaya": {
+    "id": 15,
+    "nameFr": "Tizi Ouzou",
+    "nameAr": "تيزي وزو"
+  },
+  "commune": {
+    "id": 1520,
+    "nameFr": "Azazga",
+    "nameAr": "عزازقة"
+  },
+  "user": {
+    "id": "mock-u6",
+    "name": "Lyes A.",
+    "avatar": null,
+    "createdAt": "2023-04-25T08:30:00.000Z",
+    "emailVerified": "2023-04-25T08:41:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 8,
+    "ratingSum": 36,
+    "responseMinutes": 60,
+    "_count": {
+      "annonces": 4
+    }
+  }
+}

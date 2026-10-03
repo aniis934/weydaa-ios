@@ -1,0 +1,80 @@
+{
+  "id": "mock-a28",
+  "title": "Climatiseur Condor 12000 BTU Inverter",
+  "description": "Climatiseur mural Condor 12000 BTU Inverter, froid et chaud, utilisé un seul été. Classe A++, télécommande et kit de fixation fournis. Vendu pour cause de déménagement ; installation à la charge de l'acheteur.",
+  "price": 58000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 143,
+  "isFeatured": false,
+  "createdAt": "2026-09-03T18:30:00.000Z",
+  "updatedAt": "2026-09-03T18:30:00.000Z",
+  "expiresAt": "2026-11-02T18:30:00.000Z",
+  "userId": "mock-u3",
+  "categoryId": "sub_climatiseur",
+  "wilayaId": 23,
+  "communeId": 2302,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "climatiseur-condor-12000-btu-inverter-annaba",
+  "attributes": null,
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a28-1",
+      "url": "https://photos.mock.weydaa/annonces/fridge-5.webp",
+      "publicId": "annonces/mock-a28/1",
+      "order": 0,
+      "annonceId": "mock-a28"
+    },
+    {
+      "id": "img-mock-a28-2",
+      "url": "https://photos.mock.weydaa/annonces/fridge-53.webp",
+      "publicId": "annonces/mock-a28/2",
+      "order": 1,
+      "annonceId": "mock-a28"
+    },
+    {
+      "id": "img-mock-a28-3",
+      "url": "https://photos.mock.weydaa/annonces/fridge-54.webp",
+      "publicId": "annonces/mock-a28/3",
+      "order": 2,
+      "annonceId": "mock-a28"
+    }
+  ],
+  "category": {
+    "id": "sub_climatiseur",
+    "slug": "climatiseur",
+    "nameFr": "Climatiseur / Chauffage",
+    "nameAr": "مكيف / تدفئة",
+    "nameEn": "Air Conditioner / Heater",
+    "parentId": "cat_electromenager",
+    "parent": {
+      "slug": "electromenager"
+    }
+  },
+  "wilaya": {
+    "id": 23,
+    "nameFr": "Annaba",
+    "nameAr": "عنابة"
+  },
+  "commune": {
+    "id": 2302,
+    "nameFr": "Annaba",
+    "nameAr": "عنابة"
+  },
+  "user": {
+    "id": "mock-u3",
+    "name": "Yacine M.",
+    "avatar": null,
+    "createdAt": "2025-01-20T09:05:00.000Z",
+    "emailVerified": "2025-01-20T09:16:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 5,
+    "ratingSum": 21,
+    "responseMinutes": 180,
+    "_count": {
+      "annonces": 6
+    }
+  }
+}

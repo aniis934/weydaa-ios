@@ -23,7 +23,8 @@ continue ailleurs. Règles complètes : `docs/PROMPT-REPRISE.md`.
 ## Boucle de travail (pas de Mac)
 1. Écrire un lot de code relu (conventions anti-erreurs ci-dessous).
 2. `git push` → `gh run watch` (ios-ci : 5 à 15 min) → échec : `gh run view <id> --log-failed`.
-3. Fin de phase : `gh workflow run ios-screens.yml --ref <branche>` puis `gh run download <id> -n ios-screens`
+3. Fin de phase : `gh workflow run ios-screens.yml --ref <branche>` puis `gh run download <id> -D <dossier>`
+   (un artefact `ios-screens-<appareil>-<langue>` par tour)
    → relire TOUTES les captures (fr/ar/en, clair/sombre, 2 tailles) et la vidéo.
 4. Scripts locaux (Node du poste, sans dépendance) :
    `node scripts/convert-strings.mjs` (catalogue + L10n.swift) · `node scripts/convert-icons.mjs` (icônes Lucide)
@@ -33,21 +34,29 @@ continue ailleurs. Règles complètes : `docs/PROMPT-REPRISE.md`.
 ```
 project.yml              XcodeGen : cibles Weyda, WeydaTests, WeydaUITests (le .xcodeproj n'est JAMAIS commité)
 Config/*.xcconfig        hôte API, Supabase (vide = temps réel coupé) ; Secrets.xcconfig écrit par la CI, ignoré par git
-Weyda/App/               WeydaApp, AppContainer (DI manuelle, environnement), RootView (onglets + lancement),
-                         AppTab (5 onglets = BottomTabs Android), LaunchOptions (arguments des tests)
+Weyda/App/               WeydaApp, AppContainer (DI manuelle : clients, session, 16 repositories, temps réel, images),
+                         RootView (onglets + lancement), AppTab, LaunchOptions (arguments des tests), DeepLinks,
+                         Navigation/ (AppRoute, AppRouter : une pile par onglet, RouteDestinations, LaunchRoute)
 Weyda/Core/              Config, Localization (L10n.swift GÉNÉRÉ, WeydaLocale : langue + chiffres latins),
-                         puis Network, Session, Realtime, Images, Upload, Models, Repositories, Local (phase 1)
+                         Models, Network (APIClient, WeydaAPI/LiveWeydaAPI, DTO/), Mapping, Session (trousseau),
+                         Repositories, Realtime (Phoenix), Images (pipeline + RemoteImage), Upload, Local, Common
+                         (Format, ErrorMapper, Validators, Paging, SuggestionsEngine)
 Weyda/DesignSystem/      Tokens (WeydaColor/Palette/Ramp, WeydaSpace/Size/Radius, WeydaDuration/WeydaCurve,
                          WeydaTextStyle), Brand (WeydaMarkPath = tracé unique du W, WeydaMark/Extruded/Tile/
                          Loader/Wordmark, LaunchView), Components, Showcase (Debug)
-Weyda/Features/          un dossier par domaine (Home, Listings, Detail, Post, Messages, Account…) ; Shell (phase 0)
-Weyda/Mock/              API simulée (Debug) : MockURLProtocol + MockFixtures/ (exclu des builds Release)
+Weyda/Features/          un dossier par domaine : Home, Listings, Detail, Seller, About (phase 2) ; Shell (provisoires)
+Weyda/Mock/              API simulée (Debug) : MockURLProtocol (jokers, `*` de requête), MockPhotos (photos dessinées),
+                         MockFixtures/routes-<domaine>.json + dossiers (exclu des builds Release)
 Weyda/Resources/         Assets.xcassets (AppIcon, SplashMark, LaunchBackground, AccentColor, Categories/ Lucide),
                          Localizable.xcstrings (GÉNÉRÉ), Info.plist (clés non générables), *.lproj/InfoPlist.strings
 WeydaTests/              tests unitaires (logique portée d'Android avec ses cas de test)
-WeydaUITests/            TourTests : tour de captures (langue via TEST_RUNNER_WEYDA_LANG)
+WeydaUITests/            tour de captures : TourSupport (classe de base TourTestCase, `captureRoute`), un fichier
+                         Tour<Écran>Tests par domaine (langue via TEST_RUNNER_WEYDA_LANG)
 scripts/                 conversions (.mjs), scripts/ci/ (install-xcodegen, generate, test, screens)
-.github/workflows/       ios-ci (chaque push) · ios-screens (à la demande) · ios-compat, ios-release (plus tard)
+.github/workflows/       ios-ci (chaque push ; `live` manuel = lecture seule contre la vraie API) · ios-screens (à la
+                         demande : une compilation puis un tour par appareil × langue en parallèle) · ios-compat,
+                         ios-release (branche prep/release, fusion en phase 6)
+docs/equipe/             contrats d'interface de l'équipe d'agents (CONTRACTS*.md, SCREEN-BRIEF.md) : à lire avant d'écrire
 ```
 
 ## Règles OBLIGATOIRES

@@ -34,6 +34,15 @@ nonisolated extension L10n {
     static func tr(_ key: String, _ arguments: CVarArg...) -> String {
         let format = Bundle.main.localizedString(forKey: key, value: nil, table: "Localizable")
         guard !arguments.isEmpty else { return format }
-        return String(format: format, locale: WeydaLocale.formatting, arguments: arguments)
+        return WeydaLocale.visibleGrouping(String(format: format, locale: WeydaLocale.formatting, arguments: arguments))
+    }
+}
+
+nonisolated extension WeydaLocale {
+    /// Le français groupe les milliers par une espace FINE insécable (U+202F) : en gras serré (les prix), elle
+    /// disparaît à l'œil (« 3150000 DA »). On la remplace par l'espace insécable ordinaire (U+00A0), celle du site
+    /// et d'Android : « 3 150 000 DA », jamais coupé en fin de ligne.
+    static func visibleGrouping(_ text: String) -> String {
+        text.replacingOccurrences(of: "\u{202F}", with: "\u{00A0}")
     }
 }
