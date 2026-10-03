@@ -71,18 +71,18 @@ struct MyListingsScreen: View {
         self.onNoticeShown = onNoticeShown
     }
 
+    /// Puces dans une pile, AU-DESSUS de la vue défilante, et non dans un `safeAreaInset` : sur iOS 26, l'effet de bord
+    /// de défilement de la barre de navigation recouvre l'encart du haut — la place des puces restait vide (captures
+    /// de la phase 3).
     var body: some View {
-        content
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(WeydaColor.background)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                VStack(spacing: 0) {
-                    OfflineBanner()
-                    MyListingsFilterBar(selected: state.filter, onSelect: onFilter)
-                }
-                .background(WeydaColor.background)
-            }
-            .navigationTitle(L10n.myListingsTitle)
+        VStack(spacing: 0) {
+            OfflineBanner()
+            MyListingsFilterBar(selected: state.filter, onSelect: onFilter)
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .background(WeydaColor.background)
+        .navigationTitle(L10n.myListingsTitle)
             .navigationBarTitleDisplayMode(.inline)
             .floatingNotice(state.notice, onShown: onNoticeShown)
             .accessibilityElement(children: .contain)

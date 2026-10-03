@@ -17,7 +17,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 0 | Fondations | dépôt public, projet XcodeGen, CI `ios-ci` + `ios-screens`, tokens de design, W et icône 1024, icônes Lucide, chaînes converties (+ parité), coquille 5 onglets, lancement animé, socle d'API simulée | non | ✅ close le 2026-10-03 |
 | 1 | Données et réseau | modèles, DTO tolérants, client HTTP, erreurs (~65 codes), session + trousseau + refresh, hors ligne, images, formats (DA, dates, chiffres latins), validations, pagination, suggestions, règles d’offre, protocole Phoenix — tests portés d’Android | non | ✅ close le 2026-10-03 |
 | 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ✅ close le 2026-10-03 |
-| 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ⏳ |
+| 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | 🔄 en cours |
 | 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ⏳ |
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ⏳ |
 | 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ⏳ |
@@ -98,6 +98,24 @@ par simulation du routeur (52/52 requêtes justes).
 - [x] 612 captures relues (fr/ar/en × clair/sombre × 17 Pro Max + 17e) ; corrigé à la relecture : milliers
       visibles en français (« 3 150 000 DA »), barre d'onglets masquée sur la fiche, libellés de contact entiers sur 17e
 - [x] Galerie privée : https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa
+
+## Phase 3 — détail (en cours, reprise le 2026-10-03)
+Équipe : AUTH et ACCOUNT en parallèle sur des interfaces fixées (`docs/equipe/CONTRACTS-P3.md` : `AuthEntry`,
+`requestLogin`, `requestEmailVerification`, `ProfileView`, session simulée `-WeydaLoggedIn`, utilisateur fictif `mock-me`).
+- [x] Feuille de connexion (`AuthFlowView`, pile propre) : se ferme d'elle-même une fois connecté ; e-mail non vérifié →
+      étape du code dans la même feuille ; l'écran d'origine reste dessous (l'action se refait d'un appui)
+- [x] Connexion, inscription, mot de passe oublié, nouveau mot de passe (lien `/auth/reinitialiser-mdp?token=…`), code
+      e-mail (compte à rebours de renvoi, essais restants) ; bandeau « e-mail à vérifier » (`VerifyEmailBanner`)
+- [x] Sign in with Apple (nonce aléatoire, SHA-256) — échoue proprement tant que la capacité n'est pas posée (compte
+      Apple) ; Google sans SDK (`ASWebAuthenticationSession` + PKCE), bouton masqué sans identifiant client iOS
+- [x] Codes d'erreur Apple du lot A traduits (4 clés) ; les 3 phrases qui parlaient d'Android remplacées
+- [x] Profil visiteur / membre (statistiques, badges, menu), modifier le profil, mot de passe, mes annonces (statuts,
+      motifs de modération, ouverture de la fiche ; actions = phase 4), mes données (export JSON partagé, suppression
+      par mot de passe, Google ou Apple selon `providers`), nous contacter, langue → Réglages de l'app
+- [x] Données simulées `routes-auth.json` + `routes-account.json` (dont les fiches `mock-m1…m6` de « Mes annonces »)
+- [x] CI : 434 tests, 0 échec, 0 avertissement — compilé du premier coup
+- [ ] Tour de captures (5x connexion, 6x compte) relu, galerie, clôture (PR `phase-3` → `main`)
+- [ ] Test sur iPhone de la connexion Apple / Google : attend le compte Apple, les clés et le lot serveur A (EN-ATTENTE)
 
 ## Constats de la CI (phase 2)
 - Le tour filmé saute des passages entiers (l'enregistreur du simulateur perd des images quand le Mac est chargé) :

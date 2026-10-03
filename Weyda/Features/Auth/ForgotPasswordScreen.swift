@@ -73,7 +73,7 @@ struct ForgotPasswordScreen: View {
                 AuthConfirmation(
                     systemImage: "envelope.badge",
                     title: L10n.authForgotSentTitle,
-                    message: L10n.authForgotSentBody(sentTo)
+                    message: L10n.authForgotSentBody(Format.ltrIsolate(sentTo))
                 )
                 ForgotLoginButton(title: L10n.authLoginLink, action: onLogin)
             } else {

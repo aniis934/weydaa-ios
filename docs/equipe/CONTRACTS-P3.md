@@ -70,3 +70,30 @@ AUTH : `POST /api/auth/token` (succès), `/api/auth/register`, `/api/auth/forgot
 `/api/email-verify` (+ `/confirm`), `/api/auth/apple`, `/api/auth/google` — réponses = utilisateur de référence.
 ACCOUNT : `GET/PUT /api/users/me`, `/api/users/me/stats`, `/api/users/me/annonces` (+ `status=…`), `PUT /api/users/me/password`,
 `/api/users/me/export`, `DELETE /api/users/me/account`, `POST /api/contact`.
+---------------------------------------------------------------------------------------------------------------
+## REPRISE DE LA PHASE 3 (2026-10-03, nuit) — prime sur ce qui précède en cas de contradiction
+- Dépôt de travail : `../weydaa-ios-p3` (branche `phase-3`). La phase 2 y est
+  désormais FUSIONNÉE : Accueil, Annonces, Fiche (`DetailView`, route `.detail(idOrSlug:)`), Vendeur, À propos existent ; tu
+  peux t'en servir (ouvrir une fiche depuis « Mes annonces » = `router.push(.detail(idOrSlug: id))` ou `NavigationLink(value:)`).
+- Le travail partiel de la session précédente est commité (commit « wip: phase 3 ») : RELIS-LE d'abord, d'un œil de
+  compilateur Swift 6.2 strict ET de relecteur (parité Android, règles du brief), corrige-le, puis termine.
+- Notes : `<scratchpad>/ios-team/notes/auth.md` et `notes/account.md` (chacun la sienne ; lis celle de l'autre).
+- **Chaînes (NOUVEAU mécanisme)** : chaque agent tient SON fichier `<scratchpad>/ios-team/strings/<agent>.json`, même format
+  que `scripts/ios-strings.json` : `{ "add": { "cle_snake": { "fr": "…", "ar": "…", "en": "…" } }, "override": { "cle_android_existante": { "fr", "ar", "en" } } }`.
+  Tu PEUX utiliser tout de suite dans le code l'accès généré : `L10n.cleSnake` (sans argument) ou `L10n.cleSnake(p1)` avec
+  `%1$s` → `String`, `%1$d` → `Int` (arguments en ordre). L'orchestrateur fusionne et régénère `L10n.swift` avant la CI.
+  Vérifie qu'une clé n'existe pas déjà dans `Weyda/Core/Localization/L10n.swift` (sinon réutilise-la) ; préfixe `auth_` /
+  `account_` pour éviter les collisions entre agents. Arabe soigné (registre neutre, comme les chaînes existantes).
+- Chaînes Android qui parlent d'Android (`error_google_no_account`, `language_hint`, `language_legacy_hint`) : ACCOUNT propose
+  les `override` iOS des deux `language_*` ; AUTH celui d'`error_google_no_account`.
+- Codes d'erreur Apple du lot A (`invalidAppleToken`, `appleEmailMissing`, `appleReauthMismatch`, `appleSignInUnavailable`) :
+  AUTH ajoute 4 vraies clés (`error_invalid_apple_token`, `error_apple_email_missing`, `error_apple_reauth_mismatch`,
+  `error_apple_unavailable`), branche `ErrorMapper` (+ `appleMessage`) et ajoute les cas à `WeydaTests/ErrorMapperTests.swift`.
+- Captures : numéros 5x = connexion (AUTH), 6x = compte (ACCOUNT). Écrans de membre : `captureLaunch(["-WeydaRoute", "<route>",
+  "-WeydaLoggedIn", "YES"], name: "6x-…", screen: "…")` ; l'onglet Profil connecté : route `tab:account` + `-WeydaLoggedIn YES`.
+- Données simulées : chaque agent crée `Weyda/Mock/MockFixtures/routes-<auth|account>.json` + dossier `MockFixtures/<auth|account>/`
+  (lis `Weyda/Mock/MockURLProtocol.swift` et `routes-catalog.json` pour le format : méthode, chemin à jokers, contraintes de
+  requête, statut, fichier). Vérifie comment les fichiers `routes-*.json` sont chargés (tous ? liste explicite ?) et, s'il
+  faut toucher le chargeur, demande-le dans ta note au lieu de l'éditer.
+- Tests unitaires : `FakeWeydaAPI` (à LIRE, ne pas modifier) couvre déjà toutes les routes de connexion et de compte.
+- Rendu final (≤ 40 lignes) : fichiers créés/modifiés, chaînes ajoutées (nombre), captures prévues, points douteux de compilation.

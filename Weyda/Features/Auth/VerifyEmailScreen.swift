@@ -97,7 +97,7 @@ struct VerifyEmailScreen: View {
     private var form: some View {
         AuthHeader(
             title: L10n.authVerifyTitle,
-            subtitle: L10n.authVerifyBody(TextCheck.ifBlank(state.email, "—"))
+            subtitle: L10n.authVerifyBody(Format.ltrIsolate(TextCheck.ifBlank(state.email, "—")))
         )
         AuthCodeField(
             L10n.authVerifyCode,
