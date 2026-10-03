@@ -1,0 +1,455 @@
+{
+  "attributes": [
+    {
+      "key": "make",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "camions",
+        "motos-scooters"
+      ],
+      "options": [
+        "renault",
+        "peugeot",
+        "citroen",
+        "dacia",
+        "ds",
+        "alpine",
+        "volkswagen",
+        "bmw",
+        "mercedes",
+        "audi",
+        "opel",
+        "porsche",
+        "mini",
+        "hyundai",
+        "kia",
+        "ssangyong",
+        "genesis",
+        "toyota",
+        "nissan",
+        "honda",
+        "mazda",
+        "suzuki",
+        "mitsubishi",
+        "subaru",
+        "lexus",
+        "isuzu",
+        "fiat",
+        "alfa-romeo",
+        "jeep",
+        "maserati",
+        "seat",
+        "cupra",
+        "skoda",
+        "ford",
+        "chevrolet",
+        "tesla",
+        "volvo",
+        "land-rover",
+        "jaguar",
+        "chery",
+        "geely",
+        "mg",
+        "byd",
+        "haval",
+        "changan",
+        "dfsk",
+        "jac",
+        "baic",
+        "great-wall",
+        "dongfeng",
+        "mahindra",
+        "tata",
+        "lada",
+        "other"
+      ],
+      "label": "Marque",
+      "optionLabels": {
+        "renault": "Renault",
+        "peugeot": "Peugeot",
+        "citroen": "Citroen",
+        "dacia": "Dacia",
+        "ds": "DS",
+        "alpine": "Alpine",
+        "volkswagen": "Volkswagen",
+        "bmw": "BMW",
+        "mercedes": "Mercedes",
+        "audi": "Audi",
+        "opel": "Opel",
+        "porsche": "Porsche",
+        "mini": "Mini",
+        "hyundai": "Hyundai",
+        "kia": "Kia",
+        "ssangyong": "SsangYong",
+        "genesis": "Genesis",
+        "toyota": "Toyota",
+        "nissan": "Nissan",
+        "honda": "Honda",
+        "mazda": "Mazda",
+        "suzuki": "Suzuki",
+        "mitsubishi": "Mitsubishi",
+        "subaru": "Subaru",
+        "lexus": "Lexus",
+        "isuzu": "Isuzu",
+        "fiat": "Fiat",
+        "alfa-romeo": "Alfa Romeo",
+        "jeep": "Jeep",
+        "maserati": "Maserati",
+        "seat": "Seat",
+        "cupra": "Cupra",
+        "skoda": "Skoda",
+        "ford": "Ford",
+        "chevrolet": "Chevrolet",
+        "tesla": "Tesla",
+        "volvo": "Volvo",
+        "land-rover": "Land Rover",
+        "jaguar": "Jaguar",
+        "chery": "Chery",
+        "geely": "Geely",
+        "mg": "MG",
+        "byd": "BYD",
+        "haval": "Haval",
+        "changan": "Changan",
+        "dfsk": "DFSK",
+        "jac": "JAC",
+        "baic": "BAIC",
+        "great-wall": "Great Wall",
+        "dongfeng": "Dongfeng",
+        "mahindra": "Mahindra",
+        "tata": "Tata",
+        "lada": "Lada",
+        "other": "Other"
+      }
+    },
+    {
+      "key": "model",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "dependsOn": "make",
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "camions",
+        "motos-scooters"
+      ],
+      "options": [],
+      "label": "Modèle",
+      "optionLabels": {}
+    },
+    {
+      "key": "year",
+      "type": "number",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "range",
+      "min": 1970,
+      "max": 2027,
+      "step": 1,
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "camions",
+        "motos-scooters",
+        "location-vehicules"
+      ],
+      "rangePresets": [
+        2000,
+        2005,
+        2010,
+        2015,
+        2020
+      ],
+      "options": [],
+      "label": "Année",
+      "optionLabels": {}
+    },
+    {
+      "key": "mileage",
+      "type": "number",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "range",
+      "min": 0,
+      "max": 999999,
+      "step": 1000,
+      "unit": "km",
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "camions"
+      ],
+      "rangePresets": [
+        50000,
+        100000,
+        150000,
+        200000,
+        300000
+      ],
+      "options": [],
+      "label": "Kilométrage",
+      "optionLabels": {},
+      "unitLabel": "km"
+    },
+    {
+      "key": "fuel",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "essence",
+        "diesel",
+        "gpl",
+        "electrique",
+        "hybride"
+      ],
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "camions"
+      ],
+      "label": "Carburant",
+      "optionLabels": {
+        "essence": "Essence",
+        "diesel": "Diesel",
+        "gpl": "GPL",
+        "electrique": "Électrique",
+        "hybride": "Hybride"
+      }
+    },
+    {
+      "key": "transmission",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "manual",
+        "automatic",
+        "semi-automatic"
+      ],
+      "showFor": [
+        "voitures",
+        "utilitaires"
+      ],
+      "label": "Boîte de vitesses",
+      "optionLabels": {
+        "manual": "Manuelle",
+        "automatic": "Automatique",
+        "semi-automatic": "Semi-automatique"
+      }
+    },
+    {
+      "key": "condition",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "new",
+        "like-new",
+        "good",
+        "fair",
+        "for-parts"
+      ],
+      "label": "État",
+      "optionLabels": {
+        "new": "Neuf",
+        "like-new": "Comme neuf",
+        "good": "Bon état",
+        "fair": "État moyen",
+        "for-parts": "Pour pièces"
+      }
+    },
+    {
+      "key": "color",
+      "type": "select",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "black",
+        "white",
+        "silver",
+        "grey",
+        "red",
+        "blue",
+        "green",
+        "beige",
+        "brown",
+        "orange",
+        "yellow",
+        "gold",
+        "other"
+      ],
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "motos-scooters"
+      ],
+      "label": "Couleur",
+      "optionLabels": {
+        "black": "Noir",
+        "white": "Blanc",
+        "silver": "Argenté",
+        "grey": "Gris",
+        "red": "Rouge",
+        "blue": "Bleu",
+        "green": "Vert",
+        "beige": "Beige",
+        "brown": "Marron",
+        "orange": "Orange",
+        "yellow": "Jaune",
+        "gold": "Doré",
+        "other": "Autre"
+      }
+    },
+    {
+      "key": "doors",
+      "type": "select",
+      "requirement": "optional",
+      "filterable": false,
+      "filterType": "exact",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "showFor": [
+        "voitures"
+      ],
+      "label": "Portes",
+      "optionLabels": {
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5"
+      }
+    },
+    {
+      "key": "exchange_possible",
+      "type": "boolean",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "boolean",
+      "hideFor": [
+        "pieces-detachees"
+      ],
+      "options": [],
+      "label": "Échange possible",
+      "optionLabels": {}
+    },
+    {
+      "key": "customs_status",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "cleared",
+        "bonded",
+        "diplomatic"
+      ],
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "camions"
+      ],
+      "label": "Dédouanement",
+      "optionLabels": {
+        "cleared": "Dédouané",
+        "bonded": "Sous douane",
+        "diplomatic": "Diplomatique"
+      }
+    },
+    {
+      "key": "technical_inspection",
+      "type": "boolean",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "boolean",
+      "showFor": [
+        "voitures",
+        "utilitaires",
+        "camions"
+      ],
+      "options": [],
+      "label": "Visite technique",
+      "optionLabels": {}
+    },
+    {
+      "key": "accident_history",
+      "type": "select",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "none",
+        "minor",
+        "major"
+      ],
+      "showFor": [
+        "voitures",
+        "utilitaires"
+      ],
+      "label": "Historique sinistres",
+      "optionLabels": {
+        "none": "Aucun",
+        "minor": "Léger",
+        "major": "Important"
+      }
+    }
+  ],
+  "subcategories": [
+    {
+      "slug": "voitures",
+      "parentSlug": "vehicules",
+      "nameFr": "Voitures",
+      "nameAr": "سيارات",
+      "nameEn": "Cars"
+    },
+    {
+      "slug": "utilitaires",
+      "parentSlug": "vehicules",
+      "nameFr": "Utilitaires",
+      "nameAr": "مركبات نفعية",
+      "nameEn": "Utility Vehicles"
+    },
+    {
+      "slug": "camions",
+      "parentSlug": "vehicules",
+      "nameFr": "Camions",
+      "nameAr": "شاحنات",
+      "nameEn": "Trucks"
+    },
+    {
+      "slug": "motos-scooters",
+      "parentSlug": "vehicules",
+      "nameFr": "Motos & Scooters",
+      "nameAr": "دراجات نارية وسكوتر",
+      "nameEn": "Motorcycles & Scooters"
+    },
+    {
+      "slug": "pieces-detachees",
+      "parentSlug": "vehicules",
+      "nameFr": "Pièces détachées",
+      "nameAr": "قطع غيار",
+      "nameEn": "Spare Parts"
+    },
+    {
+      "slug": "location-vehicules",
+      "parentSlug": "vehicules",
+      "nameFr": "Location de véhicules",
+      "nameAr": "تأجير المركبات",
+      "nameEn": "Vehicle Rental"
+    }
+  ]
+}

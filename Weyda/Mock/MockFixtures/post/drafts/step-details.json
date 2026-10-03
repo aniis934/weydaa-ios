@@ -1,0 +1,23 @@
+{
+  "ownerId": "mock-me",
+  "dirty": true,
+  "showPhone": true,
+  "step": "DETAILS",
+  "parentCategoryId": "cat_vehicules",
+  "subcategoryId": "sub_voitures",
+  "attributeValues": {
+    "make": "renault",
+    "model": "clio-4",
+    "year": "2019",
+    "mileage": "85000",
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "white",
+    "doors": "5"
+  },
+  "title": "Renault Clio 4 GT Line 2019",
+  "description": "Clio 4 GT Line de 2019, première main, entretien suivi chez le concessionnaire. Moteur diesel 1.5 dCi, boîte manuelle, climatisation automatique et caméra de recul. Pneus neufs, carnet d'entretien disponible.",
+  "priceType": "NEGOTIABLE",
+  "price": "2350000"
+}

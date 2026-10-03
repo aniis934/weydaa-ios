@@ -1,7 +1,7 @@
 import Foundation
 
-/// Action à confirmer (boîte de dialogue) avant l'appel au serveur — `ListingAction` (Android). Les boutons
-/// arrivent avec la phase 4 ; la logique, portée d'Android avec ses tests, est déjà là.
+/// Action à confirmer (boîte de dialogue) avant l'appel au serveur — `ListingAction` (Android), demandée par les
+/// boutons de « Mes annonces » (`MyListingRowAction`, MyListingsView.swift).
 nonisolated enum MyListingAction: Hashable, Sendable {
     case markSold(Listing)
     case delete(Listing)
@@ -150,7 +150,7 @@ final class MyListingsViewModel: ObservableObject {
         return task
     }
 
-    // MARK: - Actions (boutons : phase 4)
+    // MARK: - Actions (boutons de MyListingsView)
 
     func askMarkSold(_ listing: Listing) {
         state.pendingAction = .markSold(listing)

@@ -69,12 +69,13 @@
 - [ ] Test final guidé (~30 min) puis soumission.
 
 ## Problèmes rencontrés en autonomie
-- [ ] **Feu vert pour la phase 4** (2026-10-03, nuit) : arrêt demandé à la fin de la phase 3 pour vérification — galerie
-      https://claude.ai/artifact/RatHcgEgHZHGEzGQhp7VgL (connexion et compte). Phase 4 = déposer une annonce.
+- [x] **Feu vert pour la phase 4** (2026-10-03, nuit) : arrêt demandé à la fin de la phase 3 pour vérification — galerie
+      https://claude.ai/artifact/RatHcgEgHZHGEzGQhp7VgL (connexion et compte). Phase 4 = déposer une annonce. — Reçu le 2026-10-04.
 - [x] **Feu vert pour la phase 3** (2026-10-03) : arrêt demandé à la fin de la phase 2 pour vérification — galerie
       https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa. — Reçu le 2026-10-03 (soir) ; nouvel arrêt demandé à la fin de la phase 3.
 - [ ] **Envoi git (`git push`)** interdit par `weydaa-site/.claude/settings.json` (protection du site) : levé pour la
       phase 2 à ta demande, puis rétabli. À chaque phase : autoriser de nouveau, ou ouvrir la session depuis `weydaa-ios`.
       Phase 3 : autorisé pour la session, sur le dépôt `weydaa-ios` seulement (envois ciblés `git -C <weydaa-ios…> push`).
+      Phase 4 : de nouveau autorisé pour la session (2026-10-04), dépôt `weydaa-ios` seulement.
 - [ ] Site (hors iOS, relevé le 2026-10-03) : `messages/ar.json` et `en.json` ont des clés en double dans la section
       admin (`dashboard`, `users`, `reports` : un texte puis un objet) — la seconde écrase la première.

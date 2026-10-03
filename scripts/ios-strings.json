@@ -50,6 +50,51 @@
       "fr": "Confirmer avec Apple et supprimer",
       "ar": "التأكيد عبر Apple والحذف",
       "en": "Confirm with Apple and delete"
+    },
+    "post_ui_choose": {
+      "fr": "Choisir",
+      "ar": "اختر",
+      "en": "Choose"
+    },
+    "post_ui_search": {
+      "fr": "Rechercher",
+      "ar": "بحث",
+      "en": "Search"
+    },
+    "post_ui_no_match": {
+      "fr": "Aucun résultat",
+      "ar": "لا توجد نتائج",
+      "en": "No results"
+    },
+    "post_ui_required": {
+      "fr": "Obligatoire",
+      "ar": "إلزامي",
+      "en": "Required"
+    },
+    "post_ui_photo_position": {
+      "fr": "Photo %1$d sur %2$d",
+      "ar": "الصورة %1$d من %2$d",
+      "en": "Photo %1$d of %2$d"
+    },
+    "post_ui_photo_uploading": {
+      "fr": "Envoi en cours",
+      "ar": "جارٍ الإرسال",
+      "en": "Uploading"
+    },
+    "post_ui_photo_failed": {
+      "fr": "Échec de l'envoi",
+      "ar": "تعذّر الإرسال",
+      "en": "Upload failed"
+    },
+    "post_ui_edit_section": {
+      "fr": "Modifier : %1$s",
+      "ar": "تعديل: %1$s",
+      "en": "Edit: %1$s"
+    },
+    "post_wiz_camera_unavailable": {
+      "fr": "L'appareil photo n'est pas disponible sur cet appareil. Choisissez vos photos dans la galerie.",
+      "ar": "الكاميرا غير متاحة على هذا الجهاز. اختر صورك من المعرض.",
+      "en": "The camera isn't available on this device. Choose your photos from the gallery."
     }
   },
   "override": {

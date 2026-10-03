@@ -45,6 +45,12 @@ final class AppContainer: ObservableObject {
     let notifications: NotificationsRepository
     let uploads: UploadRepository
 
+    /// Brouillon du NOUVEAU dépôt (`Application Support/PostDrafts/post_draft.json`) : survit à la fermeture de l'app,
+    /// effacé à la déconnexion volontaire (gardé si la session tombe d'elle-même). Android : `postDraftStore`.
+    let postDrafts: FilePostDraftStore
+    /// Photos choisies pour le nouveau dépôt, pas encore publiées (`PostDrafts/new/`).
+    let postPhotos: PostPhotoStore
+
     /// Historique de recherche : UNE instance pour toute l'app (accueil + Annonces), vidée à la déconnexion.
     private let searchHistory: SearchHistoryStore
     private var sessionSubscription: AnyCancellable?
@@ -118,6 +124,10 @@ final class AppContainer: ObservableObject {
         notifications = NotificationsRepository(api: api)
         uploads = UploadRepository(api: api)
 
+        let postStores = Self.makePostDraftStores(mockAPI: mockAPI)
+        postDrafts = postStores.drafts
+        postPhotos = postStores.photos
+
         observeSession()
         observeMemoryWarnings()
         purgeStaleCaptures()
@@ -170,7 +180,14 @@ final class AppContainer: ObservableObject {
         guard hadSession else { return }
         accountData.clearLocalFiles()
         search.clearHistory()
-        // Phase 4 : le brouillon de dépôt sera effacé ici, sauf session expirée (`sessionManager.lastSignOutExpired`).
+        // Brouillon de dépôt et ses photos : effacés à la déconnexion VOLONTAIRE, même si l'assistant n'est plus à
+        // l'écran (règle d'`onAccountChanged`, Android) ; gardés quand la session tombe d'elle-même (refresh refusé) :
+        // le même compte les retrouve en se reconnectant, un autre compte ne les voit jamais (contrôle du propriétaire).
+        if !sessionManager.lastSignOutExpired {
+            postDrafts.clear()
+            postPhotos.purge(keeping: [])
+            PostPhotoStore.standard(namespace: "edit").purge(keeping: [])
+        }
     }
 
     /// Pastille Messages relue, langue du compte enregistrée une fois, puis écoute du canal personnel signé
@@ -287,6 +304,39 @@ final class AppContainer: ObservableObject {
         #endif
         return ImagePipeline.shared
     }
+
+    /// Brouillon de dépôt et photos : `Application Support/PostDrafts/`. En API simulée (Debug) : un dossier temporaire
+    /// VIDÉ à chaque lancement — comme la session en mémoire, chaque capture du tour part du même état et le brouillon
+    /// réel de l'appareil n'est jamais touché ; avec `-WeydaPostDraft <nom>`, le brouillon
+    /// `MockFixtures/post/drafts/<nom>.json` y est écrit tel quel avant la création de l'assistant.
+    private static func makePostDraftStores(mockAPI: Bool) -> (drafts: FilePostDraftStore, photos: PostPhotoStore) {
+        #if DEBUG
+        if mockAPI {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent("WeydaMockPostDrafts", isDirectory: true)
+            try? FileManager.default.removeItem(at: root)
+            let drafts = FilePostDraftStore(fileURL: root.appendingPathComponent("post_draft.json", isDirectory: false))
+            if let name = LaunchOptions.postDraft, let raw = mockPostDraft(named: name) {
+                drafts.write(raw)
+            }
+            return (drafts: drafts, photos: PostPhotoStore(directory: root.appendingPathComponent("new", isDirectory: true)))
+        }
+        #endif
+        return (drafts: FilePostDraftStore.standard(), photos: PostPhotoStore.standard(namespace: "new"))
+    }
+
+    #if DEBUG
+    /// Contenu brut d'un brouillon simulé (même dossier de ressources que `MockRoutes`) ; nom inconnu → nil.
+    private static func mockPostDraft(named name: String) -> String? {
+        guard !name.isEmpty, !name.contains("/"), !name.contains("..") else { return nil }
+        guard let url = Bundle.main.resourceURL?
+            .appendingPathComponent(MockRoutes.directory, isDirectory: true)
+            .appendingPathComponent("post", isDirectory: true)
+            .appendingPathComponent("drafts", isDirectory: true)
+            .appendingPathComponent("\(name).json", isDirectory: false),
+            let data = try? Data(contentsOf: url) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+    #endif
 
     /// Trousseau, purgé au premier lancement d'une nouvelle installation. En API simulée (Debug) : session
     /// en mémoire, jamais dans le trousseau — chaque lancement du tour de captures part du même état ; avec

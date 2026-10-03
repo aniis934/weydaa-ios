@@ -1,0 +1,6 @@
+[
+  {"method": "PUT", "path": "/api/annonces/mock-m1", "fixture": "mylistings/vendue-mock-m1.json"},
+  {"method": "PATCH", "path": "/api/annonces/*", "fixture": "mylistings/renouvelee.json"},
+  {"method": "PATCH", "path": "/api/annonces/mock-m5", "fixture": "mylistings/renouvelee-mock-m5.json"},
+  {"method": "DELETE", "path": "/api/annonces/*", "fixture": "mylistings/supprimee.json"}
+]

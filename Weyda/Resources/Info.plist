@@ -3,6 +3,8 @@
 <!--
     Clés qu'Xcode ne sait pas générer seul (GENERATE_INFOPLIST_FILE complète le reste depuis
     project.yml : nom affiché, version, orientation, scènes).
+    NSCameraUsageDescription : appareil photo de l'assistant de dépôt, texte traduit dans *.lproj/InfoPlist.strings.
+    Pas de clé photothèque : la galerie (PhotosPicker) tourne hors de l'app et n'en demande pas.
 -->
 <plist version="1.0">
 <dict>
@@ -14,6 +16,8 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Weydaa utilise l'appareil photo pour photographier les objets de vos annonces.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

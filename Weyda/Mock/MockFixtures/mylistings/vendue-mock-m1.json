@@ -1,0 +1,35 @@
+{
+  "id": "mock-m1",
+  "slug": "lenovo-thinkpad-t14-i5-16-go-ssd-512-go-alger",
+  "title": "Lenovo ThinkPad T14 — i5, 16 Go, SSD 512 Go",
+  "description": "Ordinateur portable professionnel en très bon état, écran 14 pouces Full HD, clavier AZERTY rétroéclairé. La batterie tient environ 6 h. Chargeur d'origine fourni.",
+  "price": 85000,
+  "priceType": "NEGOTIABLE",
+  "status": "SOLD",
+  "views": 412,
+  "isFeatured": false,
+  "createdAt": "2026-09-21T09:30:00.000Z",
+  "updatedAt": "2026-10-03T18:00:00.000Z",
+  "expiresAt": "2026-11-20T09:30:00.000Z",
+  "userId": "mock-me",
+  "categoryId": "sub_ordinateurs-portables",
+  "wilayaId": 16,
+  "communeId": 1605,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "attributes": {
+    "brand": "lenovo",
+    "condition": "good",
+    "ram_gb": "16"
+  },
+  "images": [
+    {
+      "id": "img-mock-m1-1",
+      "url": "https://photos.mock.weydaa/annonces/laptop-61.webp",
+      "publicId": "annonces/mock-m1/1",
+      "order": 0,
+      "annonceId": "mock-m1"
+    }
+  ],
+  "aiModeration": null
+}

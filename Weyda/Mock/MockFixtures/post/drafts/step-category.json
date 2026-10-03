@@ -1,0 +1,8 @@
+{
+  "ownerId": "mock-me",
+  "dirty": true,
+  "showPhone": true,
+  "step": "CATEGORY",
+  "parentCategoryId": "cat_vehicules",
+  "subcategoryId": "sub_voitures"
+}

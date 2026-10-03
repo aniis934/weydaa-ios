@@ -17,5 +17,11 @@
   { "method": "GET", "path": "/api/categories/immobilier/attributes", "query": { "locale": "en" }, "fixture": "catalog/attributes-immobilier-en.json" },
   { "method": "GET", "path": "/api/categories/electronique/attributes", "query": { "locale": "en" }, "fixture": "catalog/attributes-electronique-en.json" },
   { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "locale": "en", "ctx_make": "renault" }, "fixture": "catalog/attributes-vehicules-renault-en.json" },
-  { "method": "GET", "path": "/api/wilayas", "query": { "wilayaId": "*" }, "fixture": "catalog/communes-empty.json" }
+  { "method": "GET", "path": "/api/wilayas", "query": { "wilayaId": "*" }, "fixture": "catalog/communes-empty.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "subcategory": "voitures" }, "fixture": "catalog/attributes-vehicules-voitures.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "subcategory": "voitures", "ctx_make": "renault" }, "fixture": "catalog/attributes-vehicules-voitures-renault.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "subcategory": "voitures", "locale": "ar" }, "fixture": "catalog/attributes-vehicules-voitures-ar.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "subcategory": "voitures", "locale": "ar", "ctx_make": "renault" }, "fixture": "catalog/attributes-vehicules-voitures-renault-ar.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "subcategory": "voitures", "locale": "en" }, "fixture": "catalog/attributes-vehicules-voitures-en.json" },
+  { "method": "GET", "path": "/api/categories/vehicules/attributes", "query": { "subcategory": "voitures", "locale": "en", "ctx_make": "renault" }, "fixture": "catalog/attributes-vehicules-voitures-renault-en.json" }
 ]
