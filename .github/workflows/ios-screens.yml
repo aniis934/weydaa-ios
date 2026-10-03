@@ -28,6 +28,8 @@ permissions:
 env:
   XCODEGEN_VERSION: "2.46.0"
   DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+  # Paquets Swift clonés (Firebase) : dossier commun à resolve-packages.sh, à la compilation et au cache.
+  SPM_DIR: build/spm
 
 jobs:
   plan:
@@ -70,6 +72,25 @@ jobs:
       - name: Générer le projet Xcode
         run: bash scripts/ci/generate.sh
 
+      # Paquets Swift (Firebase) : même cache et même dossier que ios-ci (scripts/ci/resolve-packages.sh).
+      - name: Paquets Swift en cache
+        id: spm
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.SPM_DIR }}
+          key: spm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('project.yml') }}
+          restore-keys: spm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Résoudre les paquets Swift
+        run: bash scripts/ci/resolve-packages.sh
+
+      - name: Sauver les paquets Swift
+        if: steps.spm.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.SPM_DIR }}
+          key: ${{ steps.spm.outputs.cache-primary-key }}
+
       - name: Compiler pour les tests
         run: |
           set -o pipefail
@@ -79,6 +100,9 @@ jobs:
             -scheme Weyda \
             -destination "platform=iOS Simulator,name=iPhone 17 Pro Max,OS=latest" \
             -derivedDataPath build/dd \
+            -clonedSourcePackagesDirPath "$SPM_DIR" \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee build/logs/build-for-testing.log | xcbeautify --renderer github-actions

@@ -1,0 +1,17 @@
+{
+  "id": "mock-sent-1",
+  "conversationId": "",
+  "senderId": "mock-me",
+  "content": "Merci, c'est noté.",
+  "createdAt": "2026-10-04T09:30:00.000Z",
+  "readAt": null,
+  "deletedAt": null,
+  "deletedBy": null,
+  "type": "TEXT",
+  "metadata": null,
+  "sender": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  }
+}

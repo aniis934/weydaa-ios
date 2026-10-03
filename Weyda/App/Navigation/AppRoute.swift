@@ -22,6 +22,8 @@ nonisolated enum AppRoute: Hashable, Sendable {
     case accountData
     case contact
     case editListing(id: String)
+    /// « Utilisateurs bloqués » (compte, phase 5 — App Store 1.2).
+    case blockedUsers
 }
 
 nonisolated extension AppRoute {
@@ -42,6 +44,7 @@ nonisolated extension AppRoute {
         case .accountData: L10n.accountDataTitle
         case .contact: L10n.contactTitle
         case .editListing: L10n.postEditTitle
+        case .blockedUsers: L10n.blockedUsersTitle
         }
     }
 
@@ -62,6 +65,7 @@ nonisolated extension AppRoute {
         case .accountData: "tray.and.arrow.down"
         case .contact: "envelope"
         case .editListing: "square.and.pencil"
+        case .blockedUsers: "person.crop.circle.badge.minus"
         }
     }
 }

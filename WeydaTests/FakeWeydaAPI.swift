@@ -131,6 +131,8 @@ final class FakeWeydaAPI: WeydaAPI {
     var onBlockUser: @MainActor (String) async throws -> SimpleResponseDTO = { _ in throw Unsupported(endpoint: "blockUser") }
     var onUnblockUser: @MainActor (String) async throws -> SimpleResponseDTO = { _ in throw Unsupported(endpoint: "unblockUser") }
     /// (page, limit)
+    var onGetBlockedUsers: @MainActor (Int, Int) async throws -> BlockedUsersPageDTO = { _, _ in throw Unsupported(endpoint: "getBlockedUsers") }
+    /// (page, limit)
     var onGetNotifications: @MainActor (Int, Int) async throws -> NotificationsPageDTO = { _, _ in throw Unsupported(endpoint: "getNotifications") }
     var onMarkAllNotificationsRead: @MainActor () async throws -> MarkAllReadDTO = { throw Unsupported(endpoint: "markAllNotificationsRead") }
     var onMarkNotificationRead: @MainActor (String) async throws -> SimpleResponseDTO = { _ in throw Unsupported(endpoint: "markNotificationRead") }
@@ -486,6 +488,11 @@ final class FakeWeydaAPI: WeydaAPI {
     func unblockUser(id: String) async throws -> SimpleResponseDTO {
         await record("unblockUser")
         return try await onUnblockUser(id)
+    }
+
+    func getBlockedUsers(page: Int, limit: Int) async throws -> BlockedUsersPageDTO {
+        await record("getBlockedUsers")
+        return try await onGetBlockedUsers(page, limit)
     }
 
     func getNotifications(page: Int, limit: Int) async throws -> NotificationsPageDTO {

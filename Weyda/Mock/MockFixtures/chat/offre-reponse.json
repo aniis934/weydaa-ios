@@ -1,0 +1,20 @@
+{
+  "id": "mock-offer-reply-1",
+  "conversationId": "",
+  "senderId": "mock-me",
+  "content": "✅ 3 050 000 DA",
+  "createdAt": "2026-10-04T09:30:00.000Z",
+  "readAt": null,
+  "deletedAt": null,
+  "deletedBy": null,
+  "type": "OFFER",
+  "metadata": {
+    "kind": "ACCEPTED",
+    "amount": 3050000
+  },
+  "sender": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  }
+}

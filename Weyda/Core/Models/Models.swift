@@ -752,6 +752,23 @@ nonisolated struct ChatThread: Hashable, Sendable {
     var isBlockedByMe: Bool = false
 }
 
+/// Utilisateur que J'AI bloqué (écran « Utilisateurs bloqués », App Store 1.2) ; `name` nil = compte supprimé.
+nonisolated struct BlockedUser: Hashable, Sendable, Identifiable {
+    var id: String
+    var name: String?
+    var avatarUrl: String?
+    var blockedAt: Date?
+}
+
+nonisolated struct BlockedUsersPage: Hashable, Sendable {
+    var items: [BlockedUser]
+    var total: Int
+    var page: Int
+    var totalPages: Int
+
+    var hasMore: Bool { page < totalPages }
+}
+
 /* ───────── Notifications in-app ───────── */
 
 /// Miroir de `NotificationType` (prisma/schema.prisma) ; `unknown` = type ajouté côté serveur.

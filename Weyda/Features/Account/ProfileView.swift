@@ -154,6 +154,8 @@ struct ProfileScreen: View {
                 menuLink(.changePassword, title: L10n.profileChangePassword, symbol: AppRoute.changePassword.symbol, id: "changePassword")
             }
             menuLink(.accountData, title: L10n.profileAccountData, symbol: AppRoute.accountData.symbol, id: "accountData")
+            // Phase 5 (App Store 1.2) : la liste de ceux que j'ai bloqués, avec « Débloquer ».
+            menuLink(.blockedUsers, title: L10n.blockedUsersTitle, symbol: AppRoute.blockedUsers.symbol, id: "blockedUsers")
         }
     }
 

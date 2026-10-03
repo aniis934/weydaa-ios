@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    Capacités de l'app, en Release SEULEMENT (project.yml : CODE_SIGN_ENTITLEMENTS dans configs: Release:) — les builds
+    Debug de la CI (simulateur, signature ad hoc) n'en ont pas. Rien de secret : l'équipe Apple vient du coffre GitHub.
+    - aps-environment : « development » comme l'écrit Xcode en ajoutant la capacité Push. L'archive est signée par la
+      signature automatique avec un profil de DÉVELOPPEMENT (« production » y serait refusé) ; l'export App Store
+      (ios-release) re-signe avec le profil de distribution, qui passe la valeur à « production ».
+    - associated-domains : liens universels (AASA servi par le site, lot A) ; webcredentials = mots de passe du Trousseau
+      partagés avec weydaa.com (bloc `webcredentials` du même AASA).
+    - applesignin : Se connecter avec Apple (phase 3).
+-->
+<plist version="1.0">
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:weydaa.com</string>
+		<string>applinks:www.weydaa.com</string>
+		<string>webcredentials:weydaa.com</string>
+	</array>
+</dict>
+</plist>

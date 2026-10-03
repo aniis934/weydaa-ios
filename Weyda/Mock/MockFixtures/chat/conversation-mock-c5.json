@@ -1,0 +1,144 @@
+{
+  "id": "mock-c5",
+  "buyerId": "mock-u6",
+  "sellerId": "mock-me",
+  "annonceId": "mock-m2",
+  "createdAt": "2026-09-30T20:10:00.000Z",
+  "updatedAt": "2026-09-30T22:47:00.000Z",
+  "annonce": {
+    "id": "mock-m2",
+    "title": "Canapé d'angle 5 places gris anthracite",
+    "status": "ACTIVE",
+    "price": 65000,
+    "priceType": "FIXED",
+    "images": [
+      {
+        "url": "https://photos.mock.weydaa/annonces/sofa-61.webp"
+      }
+    ]
+  },
+  "buyer": {
+    "id": "mock-u6",
+    "name": "Lyes A.",
+    "avatar": null
+  },
+  "seller": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  },
+  "messages": [
+    {
+      "id": "mock-c5-m1",
+      "conversationId": "mock-c5",
+      "senderId": "mock-u6",
+      "content": "Bonsoir, je prends le canapé à 40 000 DA.",
+      "createdAt": "2026-09-30T20:10:00.000Z",
+      "readAt": "2026-09-30T20:20:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u6",
+        "name": "Lyes A.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c5-m2",
+      "conversationId": "mock-c5",
+      "senderId": "mock-me",
+      "content": "Bonsoir, le prix est ferme : 65 000 DA.",
+      "createdAt": "2026-09-30T20:25:00.000Z",
+      "readAt": "2026-09-30T20:29:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c5-m3",
+      "conversationId": "mock-c5",
+      "senderId": "mock-u6",
+      "content": "💰 40 000 DA",
+      "createdAt": "2026-09-30T20:31:00.000Z",
+      "readAt": "2026-09-30T20:38:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "NEW",
+        "amount": 40000
+      },
+      "sender": {
+        "id": "mock-u6",
+        "name": "Lyes A.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c5-m4",
+      "conversationId": "mock-c5",
+      "senderId": "mock-me",
+      "content": "❌ 40 000 DA",
+      "createdAt": "2026-09-30T20:40:00.000Z",
+      "readAt": "2026-09-30T20:44:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "DECLINED",
+        "amount": 40000
+      },
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c5-m5",
+      "conversationId": "mock-c5",
+      "senderId": "mock-u6",
+      "content": "Pourquoi vous refusez ? C'est déjà trop cher.",
+      "createdAt": "2026-09-30T21:15:00.000Z",
+      "readAt": "2026-09-30T22:49:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u6",
+        "name": "Lyes A.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c5-m6",
+      "conversationId": "mock-c5",
+      "senderId": "mock-u6",
+      "content": "Répondez ou je laisse un mauvais avis.",
+      "createdAt": "2026-09-30T22:47:00.000Z",
+      "readAt": "2026-09-30T22:49:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u6",
+        "name": "Lyes A.",
+        "avatar": null
+      }
+    }
+  ],
+  "hasMore": false,
+  "nextCursor": null,
+  "topic": "conv:mock-c5:mock",
+  "isBlockedByMe": true
+}

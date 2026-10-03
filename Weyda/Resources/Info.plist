@@ -5,6 +5,8 @@
     project.yml : nom affiché, version, orientation, scènes).
     NSCameraUsageDescription : appareil photo de l'assistant de dépôt, texte traduit dans *.lproj/InfoPlist.strings.
     Pas de clé photothèque : la galerie (PhotosPicker) tourne hors de l'app et n'en demande pas.
+    Push (phase 5) : UIBackgroundModes remote-notification (messages FCM) ; FirebaseAppDelegateProxyEnabled NO = pas de
+    swizzling, le jeton APNs et les notifications passent à la main (AppDelegate, Core/Push).
 -->
 <plist version="1.0">
 <dict>
@@ -14,10 +16,16 @@
 		<string>ar</string>
 		<string>en</string>
 	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>Weydaa utilise l'appareil photo pour photographier les objets de vos annonces.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

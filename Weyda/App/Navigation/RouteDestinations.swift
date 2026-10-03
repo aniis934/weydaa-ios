@@ -34,7 +34,14 @@ struct RouteDestination: View {
         // Dépôt (phase 4) : modifier une annonce = l'assistant, ouvert sur le récapitulatif (écran de membre).
         case .editListing(let id):
             PostListingView(editingId: id)
-        case .chat, .favorites, .savedSearches, .notifications:
+        // Messagerie et notifications (phase 5) : chaque écran se garde lui-même (membre connecté).
+        case .chat(let conversationId, let archived):
+            ChatView(conversationId: conversationId, archived: archived)
+        case .notifications:
+            NotificationsView()
+        case .blockedUsers:
+            BlockedUsersView()
+        case .favorites, .savedSearches:
             ComingSoonView(route: route)
         }
     }

@@ -1,0 +1,138 @@
+{
+  "id": "mock-c6",
+  "buyerId": "mock-me",
+  "sellerId": "mock-u1",
+  "annonceId": "mock-a17",
+  "createdAt": "2026-09-28T10:05:00.000Z",
+  "updatedAt": "2026-09-28T15:20:00.000Z",
+  "annonce": {
+    "id": "mock-a17",
+    "title": "MacBook Air M1 8 Go / 256 Go",
+    "status": "SOLD",
+    "price": 135000,
+    "priceType": "FIXED",
+    "images": [
+      {
+        "url": "https://photos.mock.weydaa/annonces/laptop-1.webp"
+      }
+    ]
+  },
+  "buyer": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  },
+  "seller": {
+    "id": "mock-u1",
+    "name": "Karim B.",
+    "avatar": null
+  },
+  "messages": [
+    {
+      "id": "mock-c6-m1",
+      "conversationId": "mock-c6",
+      "senderId": "mock-me",
+      "content": "Bonjour, le MacBook est-il encore disponible ? Combien de cycles de batterie ?",
+      "createdAt": "2026-09-28T10:05:00.000Z",
+      "readAt": "2026-09-28T10:31:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c6-m2",
+      "conversationId": "mock-c6",
+      "senderId": "mock-u1",
+      "content": "Bonjour, oui. 180 cycles, état impeccable.",
+      "createdAt": "2026-09-28T10:40:00.000Z",
+      "readAt": "2026-09-28T10:44:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c6-m3",
+      "conversationId": "mock-c6",
+      "senderId": "mock-me",
+      "content": "Il est encore sous garantie ? Vous avez la facture ?",
+      "createdAt": "2026-09-28T10:46:00.000Z",
+      "readAt": "2026-09-28T10:55:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c6-m4",
+      "conversationId": "mock-c6",
+      "senderId": "mock-u1",
+      "content": "Oui, facture de 2024 et AppleCare jusqu'en décembre.",
+      "createdAt": "2026-09-28T10:58:00.000Z",
+      "readAt": "2026-09-28T11:00:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c6-m5",
+      "conversationId": "mock-c6",
+      "senderId": "mock-me",
+      "content": "Je peux passer cet après-midi pour le voir ?",
+      "createdAt": "2026-09-28T11:02:00.000Z",
+      "readAt": "2026-09-28T15:18:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c6-m6",
+      "conversationId": "mock-c6",
+      "senderId": "mock-u1",
+      "content": "Désolé, il vient d'être vendu.",
+      "createdAt": "2026-09-28T15:20:00.000Z",
+      "readAt": "2026-09-28T15:34:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      }
+    }
+  ],
+  "hasMore": false,
+  "nextCursor": null,
+  "topic": "conv:mock-c6:mock",
+  "isBlockedByMe": false
+}

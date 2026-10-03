@@ -16,7 +16,16 @@ final class ConversationsRepository: ObservableObject {
     @Published private(set) var unreadCount = 0
 
     /// Fil affiché à l'écran (`nil` sinon) : un push de ce fil n'est pas notifié, le message arrive en direct.
-    var visibleConversationId: String?
+    var visibleConversationId: String? {
+        didSet {
+            guard visibleConversationId != oldValue else { return }
+            visibleConversationObserver?(visibleConversationId)
+        }
+    }
+
+    /// Recopie du fil visible pour le délégué des notifications système, qui la lit hors du fil principal
+    /// (posé par `AppDelegate.attach`, phase 5).
+    var visibleConversationObserver: ((String?) -> Void)?
 
     /// Une conversation a bougé (message reçu sur le canal personnel) : l'onglet Messages relit sa liste.
     var touched: AnyPublisher<Void, Never> { touchedSubject.eraseToAnyPublisher() }
@@ -112,6 +121,11 @@ final class ConversationsRepository: ObservableObject {
         } else {
             _ = try await api.unblockUser(id: userId)
         }
+    }
+
+    /// Utilisateurs que j'ai bloqués (écran « Utilisateurs bloqués ») ; débloquer = `setBlocked(userId:blocked: false)`.
+    func blockedUsers(page: Int = 1, limit: Int = 20) async throws -> BlockedUsersPage {
+        try await api.getBlockedUsers(page: max(page, 1), limit: RepositorySupport.clamp(limit, 1, 100)).toDomain()
     }
 
     /// Numéro du vendeur quand l'annonce ne l'expose pas (404 `noPhoneNumber`, 401 `loginRequired`).

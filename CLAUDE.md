@@ -7,7 +7,8 @@ confidentialité ci-dessous non négociables.
 
 Stack : Swift 6 (isolation MainActor par défaut + « approachable concurrency ») · SwiftUI (UIKit
 ponctuel) · iOS 16.0 minimum · iPhone seul, portrait · Xcode 26.6 (runner `macos-26`) · XcodeGen 2.46.0
-· aucune dépendance (Firebase accordé pour la phase push seulement).
+· une seule dépendance : Firebase 12.19.2 exact (Messaging + Crashlytics, accordé en phase 5 ; inerte sans
+`GoogleService-Info.plist`, isolé dans `Weyda/Core/Push/FirebasePush.swift`).
 
 ## Références (dépôt PRIVÉ voisin `../weydaa-site/`, jamais copiées telles quelles ici)
 - App Android = la référence fonctionnelle : `android/CLAUDE.md`, `android/app/src/main/java/com/weydaa/app/`

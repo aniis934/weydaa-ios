@@ -45,6 +45,11 @@ final class AppContainer: ObservableObject {
     let notifications: NotificationsRepository
     let uploads: UploadRepository
 
+    /// Notifications push (Firebase → APNs) : jeton de l'appareil rattaché au compte connecté, autorisation de notifier,
+    /// pastille de l'icône. Inerte sans `GoogleService-Info.plist`, en API simulée et pendant les tests unitaires.
+    /// Android : `pushRegistrar`.
+    let push: PushRegistrar
+
     /// Brouillon du NOUVEAU dépôt (`Application Support/PostDrafts/post_draft.json`) : survit à la fermeture de l'app,
     /// effacé à la déconnexion volontaire (gardé si la session tombe d'elle-même). Android : `postDraftStore`.
     let postDrafts: FilePostDraftStore
@@ -54,6 +59,8 @@ final class AppContainer: ObservableObject {
     /// Historique de recherche : UNE instance pour toute l'app (accueil + Annonces), vidée à la déconnexion.
     private let searchHistory: SearchHistoryStore
     private var sessionSubscription: AnyCancellable?
+    /// Pastille de l'icône de l'app = notifications non lues (comme la cloche).
+    private var badgeSubscription: AnyCancellable?
     private var memoryWarningObserver: (any NSObjectProtocol)?
     /// Dernier utilisateur vu : une fermeture de session ne déclenche le ménage que si une session existait.
     private var lastUserId: String?
@@ -123,12 +130,15 @@ final class AppContainer: ObservableObject {
         conversations = ConversationsRepository(api: api)
         notifications = NotificationsRepository(api: api)
         uploads = UploadRepository(api: api)
+        // Avant `observeSession` : une session restaurée au démarrage rattache tout de suite le jeton push.
+        push = PushRegistrar(api: api, services: Self.makePushServices(mockAPI: mockAPI))
 
         let postStores = Self.makePostDraftStores(mockAPI: mockAPI)
         postDrafts = postStores.drafts
         postPhotos = postStores.photos
 
         observeSession()
+        observeBadge()
         observeMemoryWarnings()
         purgeStaleCaptures()
     }
@@ -178,6 +188,11 @@ final class AppContainer: ObservableObject {
         conversations.publishUnread(0)
         notifications.reset()
         guard hadSession else { return }
+        // Plus aucun push de l'ancien compte vers cet appareil : jeton FCM détruit et pastille de l'icône à 0, à TOUTE
+        // fermeture de session comme Android (une session expirée ou révoquée ne doit pas continuer d'afficher les
+        // messages du compte sur un appareil déconnecté).
+        push.unregister()
+        push.updateBadge(0)
         accountData.clearLocalFiles()
         search.clearHistory()
         // Brouillon de dépôt et ses photos : effacés à la déconnexion VOLONTAIRE, même si l'assistant n'est plus à
@@ -196,6 +211,8 @@ final class AppContainer: ObservableObject {
     /// chargent d'eux-mêmes.
     private func sessionOpened(userId: String) {
         syncedLocale = nil
+        // Jeton push rattaché au compte (envoyé dès que le jeton APNs est connu ; sans Firebase : rien).
+        push.registerCurrentToken()
         sessionWork = Task { [weak self] in
             guard let self else { return }
             _ = try? await self.conversations.refreshUnread(userId: userId)
@@ -231,6 +248,26 @@ final class AppContainer: ObservableObject {
         return nil
     }
 
+    // MARK: - Push
+
+    /// Pastille de l'icône = notifications non lues (`notifications.unreadCount`, tenu par la première page et le canal
+    /// personnel) ; remise à 0 avec lui à la fermeture de session. Sans Firebase : sans effet.
+    private func observeBadge() {
+        let push = self.push
+        badgeSubscription = notifications.$unreadCount
+            .removeDuplicates()
+            .sink { count in
+                push.updateBadge(count)
+            }
+    }
+
+    /// Services réels (Firebase, centre de notifications) seulement hors API simulée et hors tests unitaires : ni
+    /// alerte système ni réseau Firebase dans la CI et les tours de captures.
+    private static func makePushServices(mockAPI: Bool) -> PushServices {
+        guard !mockAPI, !LaunchOptions.isRunningUnitTests else { return .unavailable }
+        return FirebasePush.liveServices()
+    }
+
     // MARK: - Premier plan / arrière-plan
 
     /// Appelé par la scène (`WeydaApp`). `.inactive` (centre de contrôle, sélecteur d'apps) ne change rien.
@@ -241,6 +278,8 @@ final class AppContainer: ObservableObject {
             // Retour au premier plan (pas le premier lancement) : ce qui est arrivé pendant l'absence n'est pas
             // passé par la socket, fermée en arrière-plan — les pastilles sont relues (Android : refreshOnForeground).
             if wasInBackground, let userId = sessionManager.user?.id {
+                // Jeton push : renvoyé seulement s'il a changé ou si le dernier envoi a échoué (hors ligne).
+                push.registerCurrentToken()
                 Task { [weak self] in
                     guard let self else { return }
                     _ = try? await self.conversations.refreshUnread(userId: userId)

@@ -1,0 +1,15 @@
+[
+  {"method": "GET", "path": "/api/conversations/mock-c1", "fixture": "chat/conversation-mock-c1.json"},
+  {"method": "GET", "path": "/api/conversations/mock-c2", "fixture": "chat/conversation-mock-c2.json"},
+  {"method": "GET", "path": "/api/conversations/mock-c3", "fixture": "chat/conversation-mock-c3.json"},
+  {"method": "GET", "path": "/api/conversations/mock-c4", "fixture": "chat/conversation-mock-c4.json"},
+  {"method": "GET", "path": "/api/conversations/mock-c5", "fixture": "chat/conversation-mock-c5.json"},
+  {"method": "GET", "path": "/api/conversations/mock-c6", "fixture": "chat/conversation-mock-c6.json"},
+  {"method": "POST", "path": "/api/conversations", "status": 201, "fixture": "chat/conversation-creee.json"},
+  {"method": "POST", "path": "/api/conversations/*/messages", "status": 201, "fixture": "chat/message-envoye.json"},
+  {"method": "DELETE", "path": "/api/conversations/*/messages/*", "fixture": "chat/succes.json"},
+  {"method": "POST", "path": "/api/conversations/*/offers", "status": 201, "fixture": "chat/offre-reponse.json"},
+  {"method": "POST", "path": "/api/annonces/*/offers", "status": 201, "fixture": "chat/offre-initiale.json"},
+  {"method": "POST", "path": "/api/users/*/block", "fixture": "chat/succes.json"},
+  {"method": "POST", "path": "/api/reports", "status": 201, "fixture": "chat/signalement.json"}
+]

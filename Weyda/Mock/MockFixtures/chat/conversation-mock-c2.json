@@ -1,0 +1,138 @@
+{
+  "id": "mock-c2",
+  "buyerId": "mock-u5",
+  "sellerId": "mock-me",
+  "annonceId": "mock-m1",
+  "createdAt": "2026-10-03T16:05:00.000Z",
+  "updatedAt": "2026-10-03T18:40:00.000Z",
+  "annonce": {
+    "id": "mock-m1",
+    "title": "Lenovo ThinkPad T14 — i5, 16 Go, SSD 512 Go",
+    "status": "ACTIVE",
+    "price": 85000,
+    "priceType": "NEGOTIABLE",
+    "images": [
+      {
+        "url": "https://photos.mock.weydaa/annonces/laptop-61.webp"
+      }
+    ]
+  },
+  "buyer": {
+    "id": "mock-u5",
+    "name": "Sofiane T.",
+    "avatar": null
+  },
+  "seller": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  },
+  "messages": [
+    {
+      "id": "mock-c2-m1",
+      "conversationId": "mock-c2",
+      "senderId": "mock-u5",
+      "content": "Bonsoir, le ThinkPad est toujours en vente ?",
+      "createdAt": "2026-10-03T16:05:00.000Z",
+      "readAt": "2026-10-03T16:30:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u5",
+        "name": "Sofiane T.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c2-m2",
+      "conversationId": "mock-c2",
+      "senderId": "mock-me",
+      "content": "Bonsoir, oui. Batterie à 92 %, aucune rayure.",
+      "createdAt": "2026-10-03T16:32:00.000Z",
+      "readAt": "2026-10-03T16:40:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c2-m3",
+      "conversationId": "mock-c2",
+      "senderId": "mock-u5",
+      "content": "Il est livré avec son chargeur d'origine ?",
+      "createdAt": "2026-10-03T16:45:00.000Z",
+      "readAt": "2026-10-03T17:00:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u5",
+        "name": "Sofiane T.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c2-m4",
+      "conversationId": "mock-c2",
+      "senderId": "mock-me",
+      "content": "Oui, le chargeur 65 W d'origine et la boîte.",
+      "createdAt": "2026-10-03T17:02:00.000Z",
+      "readAt": "2026-10-03T17:20:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c2-m5",
+      "conversationId": "mock-c2",
+      "senderId": "mock-u5",
+      "content": "Parfait. Je peux venir le voir aujourd'hui ?",
+      "createdAt": "2026-10-03T18:31:00.000Z",
+      "readAt": "2026-10-03T18:38:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u5",
+        "name": "Sofiane T.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c2-m6",
+      "conversationId": "mock-c2",
+      "senderId": "mock-me",
+      "content": "Oui, toujours disponible. Vous pouvez passer ce soir après 18 h.",
+      "createdAt": "2026-10-03T18:40:00.000Z",
+      "readAt": "2026-10-03T18:52:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    }
+  ],
+  "hasMore": false,
+  "nextCursor": null,
+  "topic": "conv:mock-c2:mock",
+  "isBlockedByMe": false
+}

@@ -342,6 +342,13 @@ nonisolated struct LiveWeydaAPI: WeydaAPI {
         try await client.send(.delete("api/users/\(APIRequest.segment(id))/block"), as: SimpleResponseDTO.self)
     }
 
+    func getBlockedUsers(page: Int, limit: Int) async throws -> BlockedUsersPageDTO {
+        var request = APIRequest.get("api/users/me/blocked")
+        request.addQuery("page", page)
+        request.addQuery("limit", limit)
+        return try await client.send(request, as: BlockedUsersPageDTO.self)
+    }
+
     // MARK: - Notifications
 
     func getNotifications(page: Int, limit: Int) async throws -> NotificationsPageDTO {

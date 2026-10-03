@@ -488,6 +488,24 @@ nonisolated extension ConversationDetailDTO {
     }
 }
 
+nonisolated extension BlockedUsersPageDTO {
+    func toDomain() -> BlockedUsersPage {
+        BlockedUsersPage(
+            items: users.map { user in
+                BlockedUser(
+                    id: user.id,
+                    name: TextCheck.nonBlank(user.name),
+                    avatarUrl: TextCheck.nonBlank(user.avatar),
+                    blockedAt: DateParsing.parseInstant(user.blockedAt)
+                )
+            },
+            total: total,
+            page: page,
+            totalPages: totalPages
+        )
+    }
+}
+
 /* ───────── Notifications ───────── */
 
 nonisolated extension NotificationDTO {

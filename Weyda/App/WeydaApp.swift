@@ -2,6 +2,8 @@ import SwiftUI
 
 @main
 struct WeydaApp: App {
+    /// Firebase, notifications système, jeton APNs et liens entrants (créé avant les `@StateObject` ci-dessous).
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var container = AppContainer()
     @StateObject private var router = AppRouter()
     @Environment(\.scenePhase) private var scenePhase
@@ -13,11 +15,20 @@ struct WeydaApp: App {
                 .environmentObject(container.sessionManager)
                 .environmentObject(container.connectivity)
                 .environmentObject(router)
+                .onAppear {
+                    // Interface prête : l'appui sur une notification reçu au lancement est rejoué, le fil visible est
+                    // suivi pour les bannières.
+                    appDelegate.attach(container: container, router: router)
+                }
                 .onOpenURL { url in
-                    // Lien universel ou schéma `weydaa://` (DeepLinks) : l'écran visé s'empile sur l'onglet
-                    // courant. Un lien du site sans écran natif est ignoré ici (liens universels : phase 5).
-                    guard let target = DeepLinks.resolve(url) else { return }
-                    router.open(target)
+                    // Schéma `weydaa://` (et lien universel si SwiftUI le livre ici) : l'écran visé s'empile sur
+                    // l'onglet courant ; une page du site sans écran natif repart au navigateur.
+                    appDelegate.handleLink(url)
+                }
+                .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+                    // Lien universel (`https://weydaa.com/…`, `https://www.weydaa.com/…`, chemins de l'AASA du site).
+                    guard let url = activity.webpageURL else { return }
+                    appDelegate.handleLink(url)
                 }
         }
         // Premier plan / arrière-plan : socket temps réel ouverte ou fermée, pastilles relues au retour.

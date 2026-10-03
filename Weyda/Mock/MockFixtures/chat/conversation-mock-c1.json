@@ -1,0 +1,178 @@
+{
+  "id": "mock-c1",
+  "buyerId": "mock-me",
+  "sellerId": "mock-u2",
+  "annonceId": "mock-a2",
+  "createdAt": "2026-10-03T17:02:00.000Z",
+  "updatedAt": "2026-10-04T09:12:00.000Z",
+  "annonce": {
+    "id": "mock-a2",
+    "title": "Renault Clio 4 GT Line 2019 diesel",
+    "status": "ACTIVE",
+    "price": 3150000,
+    "priceType": "NEGOTIABLE",
+    "images": [
+      {
+        "url": "https://photos.mock.weydaa/annonces/car-1.webp"
+      }
+    ]
+  },
+  "buyer": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  },
+  "seller": {
+    "id": "mock-u2",
+    "name": "Amina K.",
+    "avatar": null
+  },
+  "messages": [
+    {
+      "id": "mock-c1-m1",
+      "conversationId": "mock-c1",
+      "senderId": "mock-me",
+      "content": "Bonjour, la Clio est-elle toujours disponible ?",
+      "createdAt": "2026-10-03T17:02:00.000Z",
+      "readAt": "2026-10-03T17:14:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c1-m2",
+      "conversationId": "mock-c1",
+      "senderId": "mock-u2",
+      "content": "Bonjour, oui, toujours disponible. Elle est visible à Bir El Djir.",
+      "createdAt": "2026-10-03T17:15:00.000Z",
+      "readAt": "2026-10-03T17:20:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u2",
+        "name": "Amina K.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c1-m3",
+      "conversationId": "mock-c1",
+      "senderId": "mock-me",
+      "content": "Combien de kilomètres exactement ? Le carnet d'entretien est à jour ?",
+      "createdAt": "2026-10-03T17:22:00.000Z",
+      "readAt": "2026-10-03T17:40:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c1-m4",
+      "conversationId": "mock-c1",
+      "senderId": "mock-u2",
+      "content": "87 000 km, carnet complet chez Renault Oran. Première main.",
+      "createdAt": "2026-10-03T17:41:00.000Z",
+      "readAt": "2026-10-03T17:45:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u2",
+        "name": "Amina K.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c1-m5",
+      "conversationId": "mock-c1",
+      "senderId": "mock-me",
+      "content": "",
+      "createdAt": "2026-10-03T17:46:00.000Z",
+      "readAt": "2026-10-03T18:05:00.000Z",
+      "deletedAt": "2026-10-03T17:47:00.000Z",
+      "deletedBy": "mock-me",
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c1-m6",
+      "conversationId": "mock-c1",
+      "senderId": "mock-me",
+      "content": "💰 2 900 000 DA",
+      "createdAt": "2026-10-03T17:48:00.000Z",
+      "readAt": "2026-10-03T18:05:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "NEW",
+        "amount": 2900000
+      },
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c1-m7",
+      "conversationId": "mock-c1",
+      "senderId": "mock-u2",
+      "content": "↩️ 3 050 000 DA",
+      "createdAt": "2026-10-04T09:10:00.000Z",
+      "readAt": null,
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "COUNTER",
+        "amount": 3050000
+      },
+      "sender": {
+        "id": "mock-u2",
+        "name": "Amina K.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c1-m8",
+      "conversationId": "mock-c1",
+      "senderId": "mock-u2",
+      "content": "Je peux descendre à 3 050 000 DA, pas moins. Elle a fait sa vidange le mois dernier.",
+      "createdAt": "2026-10-04T09:12:00.000Z",
+      "readAt": null,
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u2",
+        "name": "Amina K.",
+        "avatar": null
+      }
+    }
+  ],
+  "hasMore": false,
+  "nextCursor": null,
+  "topic": "conv:mock-c1:mock",
+  "isBlockedByMe": false
+}

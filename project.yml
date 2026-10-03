@@ -29,6 +29,14 @@ settings:
     DEAD_CODE_STRIPPING: YES
     CLANG_ENABLE_OBJC_WEAK: YES
 
+# Seule dépendance externe : Firebase (push FCM + Crashlytics), accordée par le propriétaire pour la phase 5, en
+# version EXACTE (aucune mise à jour silencieuse). Inerte sans GoogleService-Info.plist (CI, captures) : voir
+# Weyda/Core/Push/FirebasePush.swift. Paquets mis en cache par la CI (scripts/ci/resolve-packages.sh).
+packages:
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    exactVersion: "12.19.2"
+
 targets:
   Weyda:
     type: application
@@ -43,6 +51,14 @@ targets:
       - path: Weyda/Mock/MockFixtures
         type: folder
         buildPhase: resources
+    # Produits Firebase (Package.swift 12.19.2) ; modules importés par Core/Push/FirebasePush.swift seulement.
+    dependencies:
+      - package: Firebase
+        product: FirebaseCore
+      - package: Firebase
+        product: FirebaseMessaging
+      - package: Firebase
+        product: FirebaseCrashlytics
     settings:
       base:
         PRODUCT_NAME: Weyda
@@ -68,6 +84,9 @@ targets:
       configs:
         Release:
           EXCLUDED_SOURCE_FILE_NAMES: MockFixtures
+          # Push, liens universels, Se connecter avec Apple : archive signée seulement (les builds Debug de la CI, au
+          # simulateur et sans équipe Apple, n'ont pas d'entitlements).
+          CODE_SIGN_ENTITLEMENTS: Config/Weyda.entitlements
 
   WeydaTests:
     type: bundle.unit-test
