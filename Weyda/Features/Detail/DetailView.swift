@@ -55,6 +55,9 @@ private struct DetailHost: View {
 
     var body: some View {
         DetailScreen(state: model.state, isReportPresented: $model.isReportPresented, actions: actions)
+            // La fiche porte sa propre barre d'actions (offre, numéro, contact) : la barre d'onglets s'efface,
+            // comme sur Android et chez Leboncoin, sinon trois rangées de boutons s'empilent en bas d'écran.
+            .toolbar(.hidden, for: .tabBar)
             .task {
                 await model.loadIfNeeded()
                 #if DEBUG

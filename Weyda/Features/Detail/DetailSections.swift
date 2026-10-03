@@ -354,12 +354,17 @@ private struct DetailBarLabel: View {
     let title: String
     let systemImage: String
 
+    // Icône + texte quand la place suffit ; sinon le texte seul (« Contacter le vendeur » sur un iPhone 6,1"
+    // en français), réduit au besoin plutôt que tronqué.
     var body: some View {
-        Label(title, systemImage: systemImage)
-            .weydaText(.labelLarge)
-            .lineLimit(1)
-            .minimumScaleFactor(0.75)
-            .frame(maxWidth: .infinity)
+        ViewThatFits(in: .horizontal) {
+            Label(title, systemImage: systemImage)
+            Text(title)
+        }
+        .weydaText(.labelLarge)
+        .lineLimit(1)
+        .minimumScaleFactor(0.75)
+        .frame(maxWidth: .infinity)
     }
 }
 

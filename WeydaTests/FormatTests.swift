@@ -158,4 +158,15 @@ final class FormatTests: XCTestCase {
         XCTAssertEqual(Format.monthYear(nil), "")
         XCTAssertEqual(Format.time(nil), "")
     }
+
+    /// Le groupe des milliers reste VISIBLE en français : espace insécable ordinaire, jamais l'espace fine
+    /// (U+202F) que le format système produit et qui disparaît dans le gras serré des prix.
+    func testFrenchThousandsUseAVisibleNoBreakSpace() {
+        let french = WeydaLocale.latinDigits(language: "fr", region: "DZ")
+        let price = Format.price(3_150_000, type: .fixed, locale: french)
+        XCTAssertFalse(price.unicodeScalars.contains { $0.value == 0x202F }, price)
+        XCTAssertEqual(price.unicodeScalars.filter { $0.value == 0x00A0 }.count >= 2, true, price)
+        XCTAssertEqual(String(price.filter { $0.isASCII && $0.isNumber }), "3150000")
+        XCTAssertFalse(WeydaLocale.visibleGrouping("1\u{202F}284").unicodeScalars.contains { $0.value == 0x202F })
+    }
 }
