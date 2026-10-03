@@ -1,0 +1,45 @@
+{
+  "reviews": [
+    {
+      "id": "mock-rev-u4-1",
+      "rating": 5,
+      "comment": "Karakou magnifique, finitions impeccables. Nadia est adorable.",
+      "createdAt": "2026-09-25T14:05:00.000Z",
+      "updatedAt": "2026-09-25T14:05:00.000Z",
+      "author": {
+        "id": "mock-b1-u4",
+        "name": "Meriem C.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u4-2",
+      "rating": 5,
+      "comment": "Réfrigérateur livré à Alger le lendemain, nickel.",
+      "createdAt": "2026-09-02T09:40:00.000Z",
+      "updatedAt": "2026-09-02T09:40:00.000Z",
+      "author": {
+        "id": "mock-b2-u4",
+        "name": "Anis G.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u4-3",
+      "rating": 5,
+      "comment": "Toujours un plaisir d'acheter chez elle.",
+      "createdAt": "2026-08-18T17:55:00.000Z",
+      "updatedAt": "2026-08-18T17:55:00.000Z",
+      "author": {
+        "id": "mock-b3-u4",
+        "name": "Houda N.",
+        "avatar": null
+      }
+    }
+  ],
+  "total": 31,
+  "totalPages": 11,
+  "page": 1,
+  "ratingCount": 31,
+  "average": 4.903225806451613
+}

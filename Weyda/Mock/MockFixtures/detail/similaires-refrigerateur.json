@@ -1,0 +1,49 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a4",
+      "title": "Réfrigérateur Condor No Frost 460 L",
+      "description": "Réfrigérateur combiné Condor No Frost 460 litres, couleur inox, acheté il y a un an et demi. Fonctionne parfaitement, aucune rayure sur les portes. Vendu pour cause de déménagement. À récupérer à Boufarik, livraison possible sur Blida avec participation aux frais.",
+      "price": 72000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 87,
+      "isFeatured": false,
+      "createdAt": "2026-10-02T15:05:00.000Z",
+      "updatedAt": "2026-10-02T15:05:00.000Z",
+      "expiresAt": "2026-12-01T15:05:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_refrigerateur",
+      "wilayaId": 9,
+      "communeId": 907,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "refrigerateur-condor-no-frost-460-l-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a4-1",
+          "url": "https://photos.mock.weydaa/annonces/fridge-1.webp",
+          "publicId": "annonces/mock-a4/1",
+          "order": 0,
+          "annonceId": "mock-a4"
+        }
+      ],
+      "category": {
+        "slug": "refrigerateur",
+        "nameFr": "Réfrigérateur / Congélateur",
+        "nameAr": "ثلاجة / مجمد",
+        "nameEn": "Refrigerator / Freezer"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

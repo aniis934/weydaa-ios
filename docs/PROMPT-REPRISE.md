@@ -26,26 +26,31 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
-- **2026-10-03 (matin)** — **Phase 1 close** (PR #2) : 271 tests verts, passage en lecture seule contre la vraie API
-  vert, galerie https://claude.ai/artifact/WxiTw2n3mHKn5LP1Hcd6x8. Lots serveur A/B/C prêts en PR non fusionnées
-  (weyda2026 #5, #6, #7). Préparation App Store faite sur la branche `prep/release` (worktree `../weydaa-ios-release`,
+- **2026-10-03 (soir)** — **Phase 2 close** (PR #3) : 356 tests verts, 612 captures relues, galerie
+  https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa. **ARRÊT DEMANDÉ PAR LE PROPRIÉTAIRE** à la fin de la phase 2
+  pour vérifier : attendre son feu vert avant la phase 3.
+- Phase 1 close (PR #2, galerie https://claude.ai/artifact/WxiTw2n3mHKn5LP1Hcd6x8). Lots serveur A/B/C prêts en PR
+  non fusionnées (weyda2026 #5, #6, #7). Préparation App Store sur `prep/release` (worktree `../weydaa-ios-release`,
   `ios-compat` vert sur iOS 16.4) — à fusionner en phase 6.
-- **Phase 2 en cours** — branche `phase-2`, worktree `../weydaa-ios-p2` (créé par `git worktree add`). Socle fait et
-  vert (navigation à une pile par onglet, composants communs, À propos, tour `TourTestCase`, 291 tests) ; écrans
-  Accueil, Annonces, Détail + Vendeur en cours d'écriture (agents HOME, LISTINGS, DETAIL).
+- **Phase 3 commencée puis mise en pause** (à la demande d'arrêt) : worktree `../weydaa-ios-p3`, branche `phase-3`
+  créée depuis la phase 2 AVANT ses écrans, travail partiel NON commité (connexion : `Weyda/Features/Auth`,
+  `Weyda/Core/Auth`, composants de formulaire, branchements AppRouter/RootView/AppContainer/LaunchOptions/AppConfig ;
+  compte : `Weyda/Features/Account` commencé). Contrat : `docs/equipe/CONTRACTS-P3.md` (interfaces AUTH ↔ ACCOUNT,
+  utilisateur fictif `mock-me`, `-WeydaLoggedIn`). Reprise : fusionner `main` dans `phase-3`, relire le partiel, finir AUTH puis ACCOUNT.
 - **Méthode : une équipe d'agents en parallèle** (demandée par le propriétaire). L'orchestrateur fixe les contrats
-  d'interface AVANT le code (`docs/equipe/CONTRACTS*.md`, `SCREEN-BRIEF.md` : règles, pièges Swift 6.2 constatés,
-  noms et signatures imposés, propriété des fichiers), chaque agent écrit SES fichiers et une note d'API, l'orchestrateur
-  intègre, commite et lance UNE CI par lot. Une phase suivante peut être PRÉPARÉE dans son worktree pendant que la
-  précédente passe sa CI ; elle n'est fusionnée qu'après elle.
-- Ordre conseillé pour contourner les blocages : 2 → 3 (e-mail d'abord ; Apple/Google prêts mais inactifs) → 4 → 5
-  (push prêt mais inactif) → 6 (dont `ios-compat` iOS 16.4 + fusion de `prep/release`) → 7 (préparé).
+  d'interface AVANT le code (`docs/equipe/CONTRACTS*.md`, `SCREEN-BRIEF.md`), chaque agent écrit SES fichiers et une
+  note d'API, l'orchestrateur intègre, commite et lance UNE CI par lot, relit TOUTES les captures en planches
+  contact (ffmpeg) avant la galerie.
+- **Envoi git** : `weydaa-site/.claude/settings.json` interdit `git push` (protection du site : un envoi sur
+  `master` part en production). La session tourne depuis `weydaa-site` → la règle bloque aussi le dépôt iOS. Le
+  propriétaire l'a levée pour la phase 2 puis elle a été rétablie : redemander à la prochaine phase (ou ouvrir la
+  session depuis `weydaa-ios`).
 - À faire en phase 3 : traduire les 4 codes d'erreur Apple du lot A (`invalidAppleToken`, `appleEmailMissing`,
-  `appleReauthMismatch`, `appleSignInUnavailable` → `scripts/ios-strings.json` + `ErrorMapper`) ; remplacer les
-  3 chaînes qui parlent d'Android (signalées par `convert-strings.mjs`).
+  `appleReauthMismatch`, `appleSignInUnavailable`) ; remplacer les 3 chaînes qui parlent d'Android.
 
 ## Rappels
 - Pas de Mac : chaque vérification passe par la CI (`gh run watch`, `gh run view --log-failed`).
-- Captures : `gh workflow run ios-screens.yml --ref <branche>` puis `gh run download <id> -n ios-screens -D <scratchpad>`.
+- Captures : `gh workflow run ios-screens.yml --ref <branche>` puis `gh run download <id> -D <scratchpad>` (un
+  artefact `ios-screens-<appareil>-<langue>` par tour ; vidéos ≈ 150 Mo : télécharger en arrière-plan).
 - Les fichiers générés (`Localizable.xcstrings`, `L10n.swift`, icônes) se régénèrent sur le poste avec Node
   (`scripts/*.mjs`) : la CI n'a pas accès au dépôt privé.

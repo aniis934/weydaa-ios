@@ -1,0 +1,91 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a4",
+      "title": "Réfrigérateur Condor No Frost 460 L",
+      "description": "Réfrigérateur combiné Condor No Frost 460 litres, couleur inox, acheté il y a un an et demi. Fonctionne parfaitement, aucune rayure sur les portes. Vendu pour cause de déménagement. À récupérer à Boufarik, livraison possible sur Blida avec participation aux frais.",
+      "price": 72000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 87,
+      "isFeatured": false,
+      "createdAt": "2026-10-02T15:05:00.000Z",
+      "updatedAt": "2026-10-02T15:05:00.000Z",
+      "expiresAt": "2026-12-01T15:05:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_refrigerateur",
+      "wilayaId": 9,
+      "communeId": 907,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "refrigerateur-condor-no-frost-460-l-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a4-1",
+          "url": "https://photos.mock.weydaa/annonces/fridge-1.webp",
+          "publicId": "annonces/mock-a4/1",
+          "order": 0,
+          "annonceId": "mock-a4"
+        }
+      ],
+      "category": {
+        "slug": "refrigerateur",
+        "nameFr": "Réfrigérateur / Congélateur",
+        "nameAr": "ثلاجة / مجمد",
+        "nameEn": "Refrigerator / Freezer"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    },
+    {
+      "id": "mock-a28",
+      "title": "Climatiseur Condor 12000 BTU Inverter",
+      "description": "Climatiseur mural Condor 12000 BTU Inverter, froid et chaud, utilisé un seul été. Classe A++, télécommande et kit de fixation fournis. Vendu pour cause de déménagement ; installation à la charge de l'acheteur.",
+      "price": 58000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 143,
+      "isFeatured": false,
+      "createdAt": "2026-09-03T18:30:00.000Z",
+      "updatedAt": "2026-09-03T18:30:00.000Z",
+      "expiresAt": "2026-11-02T18:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_climatiseur",
+      "wilayaId": 23,
+      "communeId": 2302,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "climatiseur-condor-12000-btu-inverter-annaba",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a28-1",
+          "url": "https://photos.mock.weydaa/annonces/fridge-5.webp",
+          "publicId": "annonces/mock-a28/1",
+          "order": 0,
+          "annonceId": "mock-a28"
+        }
+      ],
+      "category": {
+        "slug": "climatiseur",
+        "nameFr": "Climatiseur / Chauffage",
+        "nameAr": "مكيف / تدفئة",
+        "nameEn": "Air Conditioner / Heater"
+      },
+      "wilaya": {
+        "id": 23,
+        "nameFr": "Annaba",
+        "nameAr": "عنابة"
+      }
+    }
+  ],
+  "total": 2,
+  "page": 1,
+  "totalPages": 1
+}

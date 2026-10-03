@@ -16,7 +16,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 |---|---|---|---|---|
 | 0 | Fondations | dépôt public, projet XcodeGen, CI `ios-ci` + `ios-screens`, tokens de design, W et icône 1024, icônes Lucide, chaînes converties (+ parité), coquille 5 onglets, lancement animé, socle d'API simulée | non | ✅ close le 2026-10-03 |
 | 1 | Données et réseau | modèles, DTO tolérants, client HTTP, erreurs (~65 codes), session + trousseau + refresh, hors ligne, images, formats (DA, dates, chiffres latins), validations, pagination, suggestions, règles d’offre, protocole Phoenix — tests portés d’Android | non | ✅ close le 2026-10-03 |
-| 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ⏳ |
+| 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ✅ close le 2026-10-03 |
 | 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ⏳ |
 | 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ⏳ |
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ⏳ |
@@ -80,6 +80,32 @@ l'orchestrateur ; une CI par lot, pas par fichier.
       fiche par id et par slug, attributs, suggestions, tendances, vendeur, avis — tout se décode, 0 échec
 - [x] Tour de captures (144 captures, 6 tours en parallèle) et galerie privée :
       https://claude.ai/artifact/WxiTw2n3mHKn5LP1Hcd6x8 — clôture : PR #2 `phase-1` → `main`
+
+## Phase 2 — détail (close le 2026-10-03, PR #3)
+Équipe : SHELL (navigation, composants), puis HOME, LISTINGS, DETAIL en parallèle sur des contrats fixés
+(`docs/equipe/CONTRACTS-P2.md`) ; données simulées partagées (30 annonces `mock-a1…a30`, 6 vendeurs) réconciliées
+par simulation du routeur (52/52 requêtes justes).
+- [x] Navigation : une pile par onglet (`AppRouter`), liens profonds, `-WeydaRoute` pour ouvrir un écran au lancement
+- [x] Composants communs (cartes, ligne, puces, états, squelettes, étoiles, champ de recherche, hors ligne)
+- [x] Accueil (sections en parallèle, feuille des catégories avec recherche fr/ar/en sans accents)
+- [x] Annonces : recherche, suggestions + historique, « vouliez-vous dire », filtres + facettes, pagination, alerte
+- [x] Fiche : galerie et zoom plein écran, caractéristiques traduites, vendeur, avis, similaires, partage,
+      signalement ; profil vendeur (vitrine, avis, signaler, bloquer) ; À propos et pages légales
+- [x] Données simulées : attributs du catalogue en arabe et en anglais (générés par le code du site), joker de
+      requête `*` dans l'API simulée
+- [x] CI : 356 tests, 0 échec, 0 avertissement — compilé du premier coup (une seule correction : un test qui
+      attendait 24 annonces au lieu de 30)
+- [x] 612 captures relues (fr/ar/en × clair/sombre × 17 Pro Max + 17e) ; corrigé à la relecture : milliers
+      visibles en français (« 3 150 000 DA »), barre d'onglets masquée sur la fiche, libellés de contact entiers sur 17e
+- [x] Galerie privée : https://claude.ai/artifact/MtwYSCciJ8Aky6wpfA9GQa
+
+## Constats de la CI (phase 2)
+- Le tour filmé saute des passages entiers (l'enregistreur du simulateur perd des images quand le Mac est chargé) :
+  les captures font foi, la vidéo sert d'aperçu.
+- Un délai « Timed out while requesting screenshot » peut faire échouer un tour sans défaut de l'app : relancer
+  le seul tour en échec (`gh run rerun <id> --failed`).
+- Contact et offre d'un membre connecté : alerte « s'ouvre dans le navigateur » vers la fiche du site en attendant
+  la messagerie (phase 5) — invisible tant que la connexion (phase 3) n'existe pas.
 
 ## À vérifier sur un vrai iPhone (premier TestFlight, fin de phase 2)
 - Démarrage : sur le simulateur de CI (build Debug lancé par XCUITest), le W fantôme reste ≈ 2 s avant le tracé

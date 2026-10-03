@@ -1,10 +1,14 @@
 import SwiftUI
 
-/// Racine : la coquille à onglets, recouverte au démarrage par l'animation de lancement.
+/// Racine : la coquille à onglets, recouverte au démarrage par l'animation de lancement. Les pages légales
+/// (`AppRoute.webPage`) s'ouvrent ici en feuille, au-dessus de tout.
 struct RootView: View {
-    @State private var tab: AppTab = LaunchOptions.initialTab ?? .home
+    @EnvironmentObject private var router: AppRouter
     @State private var launchDone: Bool = LaunchOptions.skipLaunch
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    // Initialiseur explicite : les propriétés `private` rendraient privé l'initialiseur synthétisé.
+    init() {}
 
     var body: some View {
         ZStack {
@@ -19,6 +23,16 @@ struct RootView: View {
         }
         // Chiffres latins partout, y compris en arabe (comme LatinDigits sur Android).
         .environment(\.locale, WeydaLocale.formatting)
+        .sheet(item: $router.presentedWebPage) { page in
+            WebPageView(page: page)
+                .onDisappear {
+                    // « Fermer » de Safari peut fermer la feuille côté UIKit : l'état est remis à zéro dans tous
+                    // les cas, sinon la même page ne se rouvrirait plus.
+                    if router.presentedWebPage == page {
+                        router.presentedWebPage = nil
+                    }
+                }
+        }
     }
 
     @ViewBuilder
@@ -26,32 +40,75 @@ struct RootView: View {
         #if DEBUG
         if LaunchOptions.screen == "showcase" {
             NavigationStack { DesignShowcaseView() }
+        } else if LaunchOptions.screen == "components" {
+            NavigationStack { DesignShowcaseView(componentsOnly: true) }
         } else if LaunchOptions.screen == "data" {
             NavigationStack { DataShowcaseView() }
         } else {
-            MainTabView(selection: $tab)
+            MainTabView()
         }
         #else
-        MainTabView(selection: $tab)
+        MainTabView()
         #endif
     }
 }
 
-/// Barre d'onglets native (Liquid Glass d'elle-même sur iOS 26+) ; une pile de navigation par onglet.
+/// Barre d'onglets native (Liquid Glass d'elle-même sur iOS 26+) ; une pile de navigation par onglet, tenue par
+/// le routeur. Toucher l'onglet déjà actif remonte sa pile à la racine (`AppRouter.tabSelection`).
 struct MainTabView: View {
-    @Binding var selection: AppTab
+    @EnvironmentObject private var router: AppRouter
+
+    init() {}
 
     var body: some View {
-        TabView(selection: $selection) {
+        TabView(selection: router.tabSelection) {
             ForEach(AppTab.allCases) { tab in
-                NavigationStack {
-                    PlaceholderScreen(tab: tab)
-                }
-                .tabItem {
-                    Label(tab.title, systemImage: tab.symbol)
-                }
-                .tag(tab)
+                TabStack(tab: tab)
+                    .tabItem {
+                        Label(tab.title, systemImage: tab.symbol)
+                    }
+                    .tag(tab)
             }
+        }
+    }
+}
+
+/// La pile d'un onglet : sa racine, puis les écrans poussés (`AppRoute`).
+private struct TabStack: View {
+    @EnvironmentObject private var router: AppRouter
+    private let tab: AppTab
+
+    init(tab: AppTab) {
+        self.tab = tab
+    }
+
+    var body: some View {
+        NavigationStack(path: router.path(for: tab)) {
+            TabRoot(tab: tab)
+                .appRouteDestinations()
+        }
+    }
+}
+
+/// Écran racine de chaque onglet. Déposer et Messages restent provisoires (phases 4 et 5) ; Profil montre l'état
+/// visiteur (connexion requise + À propos) jusqu'à la phase 3.
+private struct TabRoot: View {
+    private let tab: AppTab
+
+    init(tab: AppTab) {
+        self.tab = tab
+    }
+
+    var body: some View {
+        switch tab {
+        case .home:
+            HomeView()
+        case .listings:
+            ListingsView()
+        case .post, .messages:
+            PlaceholderScreen(tab: tab)
+        case .account:
+            GuestProfileView()
         }
     }
 }

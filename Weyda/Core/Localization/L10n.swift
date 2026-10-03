@@ -513,6 +513,10 @@ nonisolated enum L10n {
     static var filtersYesOnly: String { tr("filters_yes_only") }
     /// Voir toutes les annonces
     static var homeBrowseAll: String { tr("home_browse_all") }
+    /// Publiez votre annonce gratuitement en moins d'une minute.
+    static var homeCtaSubtitle: String { tr("home_cta_subtitle") }
+    /// Vous vendez quelque chose ?
+    static var homeCtaTitle: String { tr("home_cta_title") }
     /// Pour vous
     static var homeForYou: String { tr("home_for_you") }
     /// D'après vos recherches
@@ -879,6 +883,8 @@ nonisolated enum L10n {
     static var pushChannelOffers: String { tr("push_channel_offers") }
     /// Offres reçues, acceptées, refusées ou contre-offres
     static var pushChannelOffersDesc: String { tr("push_channel_offers_desc") }
+    /// %1$s sur 5
+    static func ratingOutOfFive(_ p1: String) -> String { tr("rating_out_of_five", p1) }
     /// Signaler
     static var reportAction: String { tr("report_action") }
     /// Détails (optionnel)
@@ -1346,6 +1352,8 @@ nonisolated enum L10n {
         "filters_title",
         "filters_yes_only",
         "home_browse_all",
+        "home_cta_subtitle",
+        "home_cta_title",
         "home_for_you",
         "home_for_you_subtitle",
         "home_trending",
@@ -1529,6 +1537,7 @@ nonisolated enum L10n {
         "push_channel_messages_desc",
         "push_channel_offers",
         "push_channel_offers_desc",
+        "rating_out_of_five",
         "report_action",
         "report_details",
         "report_details_placeholder",

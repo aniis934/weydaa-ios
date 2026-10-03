@@ -1,0 +1,126 @@
+{
+  "id": "mock-a2",
+  "title": "Renault Clio 4 GT Line 2019 diesel",
+  "description": "Clio 4 GT Line 1.5 dCi 90 ch, première main, 86 000 km réels. Carnet d'entretien à jour, vidange et filtres faits le mois dernier. Jamais accidentée, carte grise et assurance en règle. Climatisation, GPS, caméra de recul, jantes 17 pouces. Prix légèrement négociable après essai, pas d'échange.",
+  "price": 3150000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 121,
+  "isFeatured": true,
+  "createdAt": "2026-10-03T05:55:00.000Z",
+  "updatedAt": "2026-10-03T05:55:00.000Z",
+  "expiresAt": "2026-12-02T05:55:00.000Z",
+  "userId": "mock-u2",
+  "categoryId": "sub_voitures",
+  "wilayaId": 31,
+  "communeId": 3107,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "renault-clio-4-gt-line-2019-diesel-oran",
+  "attributes": {
+    "make": "renault",
+    "model": "clio-4",
+    "year": 2019,
+    "mileage": 86000,
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "white",
+    "doors": "5",
+    "exchange_possible": false
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a2-1",
+      "url": "https://photos.mock.weydaa/annonces/car-1.webp",
+      "publicId": "annonces/mock-a2/1",
+      "order": 0,
+      "annonceId": "mock-a2"
+    },
+    {
+      "id": "img-mock-a2-2",
+      "url": "https://photos.mock.weydaa/annonces/car-51.webp",
+      "publicId": "annonces/mock-a2/2",
+      "order": 1,
+      "annonceId": "mock-a2"
+    },
+    {
+      "id": "img-mock-a2-3",
+      "url": "https://photos.mock.weydaa/annonces/car-52.webp",
+      "publicId": "annonces/mock-a2/3",
+      "order": 2,
+      "annonceId": "mock-a2"
+    },
+    {
+      "id": "img-mock-a2-4",
+      "url": "https://photos.mock.weydaa/annonces/car-53.webp",
+      "publicId": "annonces/mock-a2/4",
+      "order": 3,
+      "annonceId": "mock-a2"
+    },
+    {
+      "id": "img-mock-a2-5",
+      "url": "https://photos.mock.weydaa/annonces/car-54.webp",
+      "publicId": "annonces/mock-a2/5",
+      "order": 4,
+      "annonceId": "mock-a2"
+    },
+    {
+      "id": "img-mock-a2-6",
+      "url": "https://photos.mock.weydaa/annonces/car-55.webp",
+      "publicId": "annonces/mock-a2/6",
+      "order": 5,
+      "annonceId": "mock-a2"
+    },
+    {
+      "id": "img-mock-a2-7",
+      "url": "https://photos.mock.weydaa/annonces/car-56.webp",
+      "publicId": "annonces/mock-a2/7",
+      "order": 6,
+      "annonceId": "mock-a2"
+    },
+    {
+      "id": "img-mock-a2-8",
+      "url": "https://photos.mock.weydaa/annonces/car-57.webp",
+      "publicId": "annonces/mock-a2/8",
+      "order": 7,
+      "annonceId": "mock-a2"
+    }
+  ],
+  "category": {
+    "id": "sub_voitures",
+    "slug": "voitures",
+    "nameFr": "Voitures",
+    "nameAr": "سيارات",
+    "nameEn": "Cars",
+    "parentId": "cat_vehicules",
+    "parent": {
+      "slug": "vehicules"
+    }
+  },
+  "wilaya": {
+    "id": 31,
+    "nameFr": "Oran",
+    "nameAr": "وهران"
+  },
+  "commune": {
+    "id": 3107,
+    "nameFr": "Bir El Djir",
+    "nameAr": "بئر الجير"
+  },
+  "user": {
+    "id": "mock-u2",
+    "name": "Amina K.",
+    "avatar": null,
+    "createdAt": "2024-06-02T18:45:00.000Z",
+    "emailVerified": "2024-06-02T18:52:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 12,
+    "ratingSum": 55,
+    "responseMinutes": 45,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

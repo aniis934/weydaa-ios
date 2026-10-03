@@ -1,0 +1,60 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a25",
+      "title": "Renault Clio 5 Intens 1.3 TCe EDC 2021",
+      "description": "Clio 5 Intens 1.3 TCe 140 ch, boîte automatique EDC, achetée neuve en concession en 2021, 41 000 km. Entretien exclusivement chez Renault, factures disponibles. Écran tactile, caméra de recul, régulateur de vitesse. Dédouanée, carte grise à mon nom. Visible à Kouba, essai possible le week-end.",
+      "price": 4250000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 389,
+      "isFeatured": false,
+      "createdAt": "2026-09-10T16:20:00.000Z",
+      "updatedAt": "2026-09-10T16:20:00.000Z",
+      "expiresAt": "2026-11-09T16:20:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_voitures",
+      "wilayaId": 16,
+      "communeId": 1638,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "renault-clio-5-intens-1-3-tce-edc-2021-alger",
+      "attributes": {
+        "make": "renault",
+        "model": "clio-5",
+        "year": 2021,
+        "mileage": 41000,
+        "fuel": "essence",
+        "transmission": "automatic",
+        "condition": "like-new",
+        "color": "red",
+        "doors": "5",
+        "customs_status": "cleared"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a25-1",
+          "url": "https://photos.mock.weydaa/annonces/car-5.webp",
+          "publicId": "annonces/mock-a25/1",
+          "order": 0,
+          "annonceId": "mock-a25"
+        }
+      ],
+      "category": {
+        "slug": "voitures",
+        "nameFr": "Voitures",
+        "nameAr": "سيارات",
+        "nameEn": "Cars"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

@@ -5963,6 +5963,52 @@
         }
       }
     },
+    "home_cta_subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انشر إعلانك مجانًا في أقل من دقيقة."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Post your ad for free in less than a minute."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publiez votre annonce gratuitement en moins d'une minute."
+          }
+        }
+      }
+    },
+    "home_cta_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل تبيع شيئًا؟"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selling something?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous vendez quelque chose ?"
+          }
+        }
+      }
+    },
     "home_for_you" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10168,6 +10214,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Offres reçues, acceptées, refusées ou contre-offres"
+          }
+        }
+      }
+    },
+    "rating_out_of_five" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ من 5"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ out of 5"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sur 5"
           }
         }
       }

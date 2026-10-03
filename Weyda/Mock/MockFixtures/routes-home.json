@@ -1,0 +1,6 @@
+[
+  { "method": "GET", "path": "/api/annonces", "fixture": "home/annonces-recentes.json" },
+  { "method": "GET", "path": "/api/annonces", "query": { "featured": "1" }, "fixture": "home/annonces-une.json" },
+  { "method": "GET", "path": "/api/annonces/trending", "fixture": "home/annonces-tendances.json" },
+  { "method": "GET", "path": "/api/recommendations", "fixture": "home/recommandations.json" }
+]

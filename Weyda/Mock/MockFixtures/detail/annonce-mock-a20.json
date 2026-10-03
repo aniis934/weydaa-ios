@@ -1,0 +1,97 @@
+{
+  "id": "mock-a20",
+  "title": "Peugeot Partner Tepee 1.6 HDi 2015",
+  "description": "Peugeot Partner Tepee 1.6 HDi 92 ch, 168 000 km, 5 places, idéal pour une famille ou un commerce. Moteur et boîte en très bon état, embrayage changé l'an dernier. Deux portes latérales coulissantes, barres de toit. Papiers en règle, visible à El Khroub.",
+  "price": 2450000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 347,
+  "isFeatured": false,
+  "createdAt": "2026-09-20T21:30:00.000Z",
+  "updatedAt": "2026-09-20T21:30:00.000Z",
+  "expiresAt": "2026-11-19T21:30:00.000Z",
+  "userId": "mock-u3",
+  "categoryId": "sub_utilitaires",
+  "wilayaId": 25,
+  "communeId": 2507,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "peugeot-partner-tepee-16-hdi-2015-constantine",
+  "attributes": {
+    "make": "peugeot",
+    "model": "partner",
+    "year": 2015,
+    "mileage": 168000,
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "white",
+    "doors": "5"
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a20-1",
+      "url": "https://photos.mock.weydaa/annonces/car-4.webp",
+      "publicId": "annonces/mock-a20/1",
+      "order": 0,
+      "annonceId": "mock-a20"
+    },
+    {
+      "id": "img-mock-a20-2",
+      "url": "https://photos.mock.weydaa/annonces/car-65.webp",
+      "publicId": "annonces/mock-a20/2",
+      "order": 1,
+      "annonceId": "mock-a20"
+    },
+    {
+      "id": "img-mock-a20-3",
+      "url": "https://photos.mock.weydaa/annonces/car-66.webp",
+      "publicId": "annonces/mock-a20/3",
+      "order": 2,
+      "annonceId": "mock-a20"
+    },
+    {
+      "id": "img-mock-a20-4",
+      "url": "https://photos.mock.weydaa/annonces/car-67.webp",
+      "publicId": "annonces/mock-a20/4",
+      "order": 3,
+      "annonceId": "mock-a20"
+    }
+  ],
+  "category": {
+    "id": "sub_utilitaires",
+    "slug": "utilitaires",
+    "nameFr": "Utilitaires",
+    "nameAr": "مركبات نفعية",
+    "nameEn": "Utility Vehicles",
+    "parentId": "cat_vehicules",
+    "parent": {
+      "slug": "vehicules"
+    }
+  },
+  "wilaya": {
+    "id": 25,
+    "nameFr": "Constantine",
+    "nameAr": "قسنطينة"
+  },
+  "commune": {
+    "id": 2507,
+    "nameFr": "El Khroub",
+    "nameAr": "الخروب"
+  },
+  "user": {
+    "id": "mock-u3",
+    "name": "Yacine M.",
+    "avatar": null,
+    "createdAt": "2025-01-20T09:05:00.000Z",
+    "emailVerified": "2025-01-20T09:16:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 5,
+    "ratingSum": 21,
+    "responseMinutes": 180,
+    "_count": {
+      "annonces": 6
+    }
+  }
+}

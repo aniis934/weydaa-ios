@@ -1,0 +1,49 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a5",
+      "title": "VTT Rockrider ST 540 taille L, très bon état",
+      "description": "VTT Rockrider ST 540, cadre aluminium taille L (pour 1,75 m à 1,90 m), roues 27,5 pouces, freins à disque hydrauliques, fourche suspendue. Révisé en septembre : chaîne et plaquettes neuves. Quelques traces d'usage sur le cadre. Idéal pour les sentiers autour de Béjaïa.",
+      "price": 38000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 143,
+      "isFeatured": false,
+      "createdAt": "2026-10-02T11:30:00.000Z",
+      "updatedAt": "2026-10-02T11:30:00.000Z",
+      "expiresAt": "2026-12-01T11:30:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_velos",
+      "wilayaId": 6,
+      "communeId": 610,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "vtt-rockrider-st-540-taille-l-tres-bon-etat-bejaia",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a5-1",
+          "url": "https://photos.mock.weydaa/annonces/bike-1.webp",
+          "publicId": "annonces/mock-a5/1",
+          "order": 0,
+          "annonceId": "mock-a5"
+        }
+      ],
+      "category": {
+        "slug": "velos",
+        "nameFr": "Vélos",
+        "nameAr": "دراجات هوائية",
+        "nameEn": "Bicycles"
+      },
+      "wilaya": {
+        "id": 6,
+        "nameFr": "Béjaïa",
+        "nameAr": "بجاية"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

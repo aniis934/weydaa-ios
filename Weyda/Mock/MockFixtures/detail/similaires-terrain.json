@@ -1,0 +1,53 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a22",
+      "title": "Terrain de 300 m² viabilisé à Bouinan",
+      "description": "Terrain plat de 300 m², viabilisé (eau, électricité, gaz), dans un lotissement calme de Bouinan, façade de 15 m sur une rue goudronnée. Livret foncier, permis de construire possible en R+2. Prix à discuter sur place.",
+      "price": null,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 410,
+      "isFeatured": false,
+      "createdAt": "2026-09-17T08:20:00.000Z",
+      "updatedAt": "2026-09-17T08:20:00.000Z",
+      "expiresAt": "2026-11-16T08:20:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_terrain",
+      "wilayaId": 9,
+      "communeId": 909,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "terrain-de-300-m-viabilise-a-bouinan-blida",
+      "attributes": {
+        "surface": 300,
+        "deed_type": "livret-foncier",
+        "facade": "secondary-road"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a22-1",
+          "url": "https://photos.mock.weydaa/annonces/house-4.webp",
+          "publicId": "annonces/mock-a22/1",
+          "order": 0,
+          "annonceId": "mock-a22"
+        }
+      ],
+      "category": {
+        "slug": "terrain",
+        "nameFr": "Terrain",
+        "nameAr": "أرض",
+        "nameEn": "Land"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

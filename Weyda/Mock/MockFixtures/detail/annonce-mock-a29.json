@@ -1,0 +1,84 @@
+{
+  "id": "mock-a29",
+  "title": "PlayStation 5 Slim 1 To + 2 manettes",
+  "description": "PS5 Slim avec lecteur de disque, 1 To, achetée en mars et très peu servie. État comme neuf, boîte d'origine, deux manettes DualSense. Prix ferme, remise en main propre à Constantine.",
+  "price": 95000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 455,
+  "isFeatured": false,
+  "createdAt": "2026-08-30T20:05:00.000Z",
+  "updatedAt": "2026-08-30T20:05:00.000Z",
+  "expiresAt": "2026-10-29T20:05:00.000Z",
+  "userId": "mock-u3",
+  "categoryId": "sub_consoles",
+  "wilayaId": 25,
+  "communeId": 2505,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "playstation-5-slim-1-to-2-manettes-constantine",
+  "attributes": {
+    "console_type": "ps5",
+    "condition": "like-new",
+    "warranty": false
+  },
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a29-1",
+      "url": "https://photos.mock.weydaa/annonces/tv-5.webp",
+      "publicId": "annonces/mock-a29/1",
+      "order": 0,
+      "annonceId": "mock-a29"
+    },
+    {
+      "id": "img-mock-a29-2",
+      "url": "https://photos.mock.weydaa/annonces/tv-53.webp",
+      "publicId": "annonces/mock-a29/2",
+      "order": 1,
+      "annonceId": "mock-a29"
+    },
+    {
+      "id": "img-mock-a29-3",
+      "url": "https://photos.mock.weydaa/annonces/tv-54.webp",
+      "publicId": "annonces/mock-a29/3",
+      "order": 2,
+      "annonceId": "mock-a29"
+    }
+  ],
+  "category": {
+    "id": "sub_consoles",
+    "slug": "consoles",
+    "nameFr": "Consoles",
+    "nameAr": "أجهزة ألعاب",
+    "nameEn": "Gaming Consoles",
+    "parentId": "cat_electronique",
+    "parent": {
+      "slug": "electronique"
+    }
+  },
+  "wilaya": {
+    "id": 25,
+    "nameFr": "Constantine",
+    "nameAr": "قسنطينة"
+  },
+  "commune": {
+    "id": 2505,
+    "nameFr": "Constantine",
+    "nameAr": "قسنطينة"
+  },
+  "user": {
+    "id": "mock-u3",
+    "name": "Yacine M.",
+    "avatar": null,
+    "createdAt": "2025-01-20T09:05:00.000Z",
+    "emailVerified": "2025-01-20T09:16:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 5,
+    "ratingSum": 21,
+    "responseMinutes": 180,
+    "_count": {
+      "annonces": 6
+    }
+  }
+}

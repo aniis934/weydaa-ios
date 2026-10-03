@@ -1,0 +1,349 @@
+{
+  "attributes": [
+    {
+      "key": "brand",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "samsung",
+        "apple",
+        "xiaomi",
+        "oppo",
+        "realme",
+        "huawei",
+        "honor",
+        "vivo",
+        "oneplus",
+        "google",
+        "motorola",
+        "nokia",
+        "infinix",
+        "tecno",
+        "itel",
+        "nothing",
+        "zte",
+        "other"
+      ],
+      "label": "العلامة التجارية",
+      "optionLabels": {
+        "samsung": "Samsung",
+        "apple": "Apple",
+        "xiaomi": "Xiaomi",
+        "oppo": "Oppo",
+        "realme": "Realme",
+        "huawei": "Huawei",
+        "honor": "Honor",
+        "vivo": "Vivo",
+        "oneplus": "Oneplus",
+        "google": "Google",
+        "motorola": "Motorola",
+        "nokia": "Nokia",
+        "infinix": "Infinix",
+        "tecno": "Tecno",
+        "itel": "Itel",
+        "nothing": "Nothing",
+        "zte": "ZTE",
+        "other": "Other"
+      }
+    },
+    {
+      "key": "model",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "dependsOn": "brand",
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "tablettes"
+      ],
+      "options": [],
+      "label": "الموديل",
+      "optionLabels": {}
+    },
+    {
+      "key": "model",
+      "type": "text",
+      "requirement": "recommended",
+      "filterable": false,
+      "filterType": "exact",
+      "hideFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "tablettes"
+      ],
+      "options": [],
+      "label": "الموديل",
+      "optionLabels": {}
+    },
+    {
+      "key": "condition",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "new",
+        "like-new",
+        "good",
+        "fair"
+      ],
+      "label": "الحالة",
+      "optionLabels": {
+        "new": "جديد",
+        "like-new": "شبه جديد",
+        "good": "حالة جيدة",
+        "fair": "حالة متوسطة"
+      }
+    },
+    {
+      "key": "storage_gb",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "16",
+        "32",
+        "64",
+        "128",
+        "256",
+        "512",
+        "1024",
+        "2048"
+      ],
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "ordinateurs-bureau",
+        "tablettes"
+      ],
+      "label": "سعة التخزين",
+      "optionLabels": {
+        "16": "16 جيجا",
+        "32": "32 جيجا",
+        "64": "64 جيجا",
+        "128": "128 جيجا",
+        "256": "256 جيجا",
+        "512": "512 جيجا",
+        "1024": "1 تيرا",
+        "2048": "2 تيرا"
+      }
+    },
+    {
+      "key": "ram_gb",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "2",
+        "4",
+        "6",
+        "8",
+        "12",
+        "16",
+        "32",
+        "64"
+      ],
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "ordinateurs-bureau",
+        "tablettes"
+      ],
+      "label": "الذاكرة العشوائية",
+      "optionLabels": {
+        "2": "2 جيجا",
+        "4": "4 جيجا",
+        "6": "6 جيجا",
+        "8": "8 جيجا",
+        "12": "12 جيجا",
+        "16": "16 جيجا",
+        "32": "32 جيجا",
+        "64": "64 جيجا"
+      }
+    },
+    {
+      "key": "screen_size",
+      "type": "number",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "range",
+      "min": 3,
+      "max": 100,
+      "step": 0.1,
+      "unit": "inches",
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "tv",
+        "tablettes"
+      ],
+      "rangePresets": [
+        6,
+        13,
+        15,
+        32,
+        50,
+        65
+      ],
+      "options": [],
+      "label": "حجم الشاشة",
+      "optionLabels": {},
+      "unitLabel": "بوصة"
+    },
+    {
+      "key": "warranty",
+      "type": "boolean",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "boolean",
+      "options": [],
+      "label": "الضمان",
+      "optionLabels": {}
+    },
+    {
+      "key": "console_type",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "ps5",
+        "ps4",
+        "ps3",
+        "xbox-series-x",
+        "xbox-series-s",
+        "xbox-one",
+        "nintendo-switch",
+        "nintendo-switch-lite",
+        "steam-deck",
+        "other"
+      ],
+      "showFor": [
+        "consoles"
+      ],
+      "label": "نوع الجهاز",
+      "optionLabels": {
+        "ps5": "بلايستيشن 5",
+        "ps4": "بلايستيشن 4",
+        "ps3": "بلايستيشن 3",
+        "xbox-series-x": "إكس بوكس سيريز إكس",
+        "xbox-series-s": "إكس بوكس سيريز إس",
+        "xbox-one": "إكس بوكس وان",
+        "nintendo-switch": "نينتندو سويتش",
+        "nintendo-switch-lite": "نينتندو سويتش لايت",
+        "steam-deck": "ستيم ديك",
+        "other": "أخرى"
+      }
+    },
+    {
+      "key": "component_type",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "gpu",
+        "cpu",
+        "motherboard",
+        "ram-module",
+        "ssd",
+        "hdd",
+        "psu",
+        "case",
+        "cooler",
+        "monitor",
+        "keyboard-mouse",
+        "other"
+      ],
+      "showFor": [
+        "composants-pc"
+      ],
+      "label": "نوع المكون",
+      "optionLabels": {
+        "gpu": "كارت شاشة",
+        "cpu": "معالج",
+        "motherboard": "لوحة أم",
+        "ram-module": "شريحة رام",
+        "ssd": "قرص SSD",
+        "hdd": "قرص صلب",
+        "psu": "وحدة تغذية",
+        "case": "صندوق الحاسوب",
+        "cooler": "مبرد",
+        "monitor": "شاشة",
+        "keyboard-mouse": "لوحة مفاتيح وفأرة",
+        "other": "أخرى"
+      }
+    }
+  ],
+  "subcategories": [
+    {
+      "slug": "smartphones",
+      "parentSlug": "electronique",
+      "nameFr": "Smartphones",
+      "nameAr": "هواتف ذكية",
+      "nameEn": "Smartphones"
+    },
+    {
+      "slug": "ordinateurs-portables",
+      "parentSlug": "electronique",
+      "nameFr": "Ordinateurs portables",
+      "nameAr": "حواسيب محمولة",
+      "nameEn": "Laptops"
+    },
+    {
+      "slug": "ordinateurs-bureau",
+      "parentSlug": "electronique",
+      "nameFr": "Ordinateurs de bureau",
+      "nameAr": "حواسيب مكتبية",
+      "nameEn": "Desktop Computers"
+    },
+    {
+      "slug": "composants-pc",
+      "parentSlug": "electronique",
+      "nameFr": "Composants PC",
+      "nameAr": "مكونات الحاسوب",
+      "nameEn": "PC Components"
+    },
+    {
+      "slug": "consoles",
+      "parentSlug": "electronique",
+      "nameFr": "Consoles",
+      "nameAr": "أجهزة ألعاب",
+      "nameEn": "Gaming Consoles"
+    },
+    {
+      "slug": "tv",
+      "parentSlug": "electronique",
+      "nameFr": "TV",
+      "nameAr": "تلفاز",
+      "nameEn": "TV"
+    },
+    {
+      "slug": "audio",
+      "parentSlug": "electronique",
+      "nameFr": "Audio",
+      "nameAr": "صوتيات",
+      "nameEn": "Audio"
+    },
+    {
+      "slug": "tablettes",
+      "parentSlug": "electronique",
+      "nameFr": "Tablettes",
+      "nameAr": "أجهزة لوحية",
+      "nameEn": "Tablets"
+    },
+    {
+      "slug": "appareils-photo",
+      "parentSlug": "electronique",
+      "nameFr": "Appareils photo & Caméras",
+      "nameAr": "كاميرات",
+      "nameEn": "Cameras"
+    }
+  ]
+}

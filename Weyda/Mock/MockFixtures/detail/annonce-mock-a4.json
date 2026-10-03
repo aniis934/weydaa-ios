@@ -1,0 +1,80 @@
+{
+  "id": "mock-a4",
+  "title": "Réfrigérateur Condor No Frost 460 L",
+  "description": "Réfrigérateur combiné Condor No Frost 460 litres, couleur inox, acheté il y a un an et demi. Fonctionne parfaitement, aucune rayure sur les portes. Vendu pour cause de déménagement. À récupérer à Boufarik, livraison possible sur Blida avec participation aux frais.",
+  "price": 72000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 87,
+  "isFeatured": false,
+  "createdAt": "2026-10-02T15:05:00.000Z",
+  "updatedAt": "2026-10-02T15:05:00.000Z",
+  "expiresAt": "2026-12-01T15:05:00.000Z",
+  "userId": "mock-u4",
+  "categoryId": "sub_refrigerateur",
+  "wilayaId": 9,
+  "communeId": 907,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "refrigerateur-condor-no-frost-460-l-blida",
+  "attributes": null,
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a4-1",
+      "url": "https://photos.mock.weydaa/annonces/fridge-1.webp",
+      "publicId": "annonces/mock-a4/1",
+      "order": 0,
+      "annonceId": "mock-a4"
+    },
+    {
+      "id": "img-mock-a4-2",
+      "url": "https://photos.mock.weydaa/annonces/fridge-51.webp",
+      "publicId": "annonces/mock-a4/2",
+      "order": 1,
+      "annonceId": "mock-a4"
+    },
+    {
+      "id": "img-mock-a4-3",
+      "url": "https://photos.mock.weydaa/annonces/fridge-52.webp",
+      "publicId": "annonces/mock-a4/3",
+      "order": 2,
+      "annonceId": "mock-a4"
+    }
+  ],
+  "category": {
+    "id": "sub_refrigerateur",
+    "slug": "refrigerateur",
+    "nameFr": "Réfrigérateur / Congélateur",
+    "nameAr": "ثلاجة / مجمد",
+    "nameEn": "Refrigerator / Freezer",
+    "parentId": "cat_electromenager",
+    "parent": {
+      "slug": "electromenager"
+    }
+  },
+  "wilaya": {
+    "id": 9,
+    "nameFr": "Blida",
+    "nameAr": "البليدة"
+  },
+  "commune": {
+    "id": 907,
+    "nameFr": "Boufarik",
+    "nameAr": "بوفاريك"
+  },
+  "user": {
+    "id": "mock-u4",
+    "name": "Nadia H.",
+    "avatar": null,
+    "createdAt": "2022-09-08T14:20:00.000Z",
+    "emailVerified": "2022-09-08T14:26:00.000Z",
+    "isRecommended": true,
+    "ratingCount": 31,
+    "ratingSum": 152,
+    "responseMinutes": 15,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

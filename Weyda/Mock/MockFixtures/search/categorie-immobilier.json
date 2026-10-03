@@ -1,0 +1,244 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a3",
+      "title": "Appartement F3 de 85 m² à Hydra",
+      "description": "Particulier vend F3 de 85 m² au 4e étage d'une résidence calme et gardée, avec ascenseur. Double exposition, deux balcons, cuisine équipée, salle de bain refaite à neuf. Place de parking en sous-sol. Livret foncier. Visites le week-end sur rendez-vous, agences s'abstenir.",
+      "price": 38000000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 176,
+      "isFeatured": true,
+      "createdAt": "2026-10-02T18:20:00.000Z",
+      "updatedAt": "2026-10-02T18:20:00.000Z",
+      "expiresAt": "2026-12-01T18:20:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_vente-appartement",
+      "wilayaId": 16,
+      "communeId": 1636,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "appartement-f3-de-85-m-a-hydra-alger",
+      "attributes": {
+        "surface": 85,
+        "rooms": "3",
+        "floor": 4,
+        "furnished": false,
+        "deed_type": "livret-foncier",
+        "condition": "good",
+        "has_parking": true,
+        "has_elevator": true,
+        "has_balcony": true,
+        "total_floors": 7
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a3-1",
+          "url": "https://photos.mock.weydaa/annonces/house-1.webp",
+          "publicId": "annonces/mock-a3/1",
+          "order": 0,
+          "annonceId": "mock-a3"
+        }
+      ],
+      "category": {
+        "slug": "vente-appartement",
+        "nameFr": "Vente appartement",
+        "nameAr": "بيع شقة",
+        "nameEn": "Apartment for Sale"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a7",
+      "title": "Location F2 meublé de 60 m² au centre d'Oran",
+      "description": "F2 meublé et équipé de 60 m² au 2e étage, proche du tramway et des commerces. Salon, chambre, cuisine équipée (réfrigérateur, cuisinière, machine à laver), balcon. Loyer de 45 000 DA par mois, 6 mois d'avance. Idéal pour un couple ou un fonctionnaire. Libre à partir du 15 octobre.",
+      "price": 45000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 467,
+      "isFeatured": false,
+      "createdAt": "2026-10-01T19:45:00.000Z",
+      "updatedAt": "2026-10-01T19:45:00.000Z",
+      "expiresAt": "2026-11-30T19:45:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_location-appartement",
+      "wilayaId": 31,
+      "communeId": 3122,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "location-f2-meuble-de-60-m-au-centre-doran-oran",
+      "attributes": {
+        "surface": 60,
+        "rooms": "2",
+        "floor": 2,
+        "furnished": true,
+        "condition": "good",
+        "has_balcony": true
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a7-1",
+          "url": "https://photos.mock.weydaa/annonces/house-2.webp",
+          "publicId": "annonces/mock-a7/1",
+          "order": 0,
+          "annonceId": "mock-a7"
+        }
+      ],
+      "category": {
+        "slug": "location-appartement",
+        "nameFr": "Location appartement",
+        "nameAr": "إيجار شقة",
+        "nameEn": "Apartment for Rent"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    },
+    {
+      "id": "mock-a13",
+      "title": "Villa R+1 avec jardin à Tizi Ouzou",
+      "description": "Villa R+1 de 240 m² habitables sur un terrain de 400 m², quartier résidentiel calme à 5 minutes du centre. 6 pièces, 2 salles de bain, garage pour deux voitures, jardin arboré (oliviers, figuiers). Construction de 2012, acte notarié. Prix négociable, pas d'échange.",
+      "price": 52000000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 702,
+      "isFeatured": true,
+      "createdAt": "2026-09-28T12:00:00.000Z",
+      "updatedAt": "2026-09-28T12:00:00.000Z",
+      "expiresAt": "2026-11-27T12:00:00.000Z",
+      "userId": "mock-u6",
+      "categoryId": "sub_vente-maison-villa",
+      "wilayaId": 15,
+      "communeId": 1563,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "villa-r1-avec-jardin-a-tizi-ouzou-tizi-ouzou",
+      "attributes": {
+        "surface": 240,
+        "rooms": "6-plus",
+        "deed_type": "acte",
+        "condition": "good",
+        "has_parking": true,
+        "has_balcony": true,
+        "construction_year": 2012,
+        "total_floors": 2
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a13-1",
+          "url": "https://photos.mock.weydaa/annonces/house-3.webp",
+          "publicId": "annonces/mock-a13/1",
+          "order": 0,
+          "annonceId": "mock-a13"
+        }
+      ],
+      "category": {
+        "slug": "vente-maison-villa",
+        "nameFr": "Vente maison / villa",
+        "nameAr": "بيع منزل / فيلا",
+        "nameEn": "House / Villa for Sale"
+      },
+      "wilaya": {
+        "id": 15,
+        "nameFr": "Tizi Ouzou",
+        "nameAr": "تيزي وزو"
+      }
+    },
+    {
+      "id": "mock-a22",
+      "title": "Terrain de 300 m² viabilisé à Bouinan",
+      "description": "Terrain plat de 300 m², viabilisé (eau, électricité, gaz), dans un lotissement calme de Bouinan, façade de 15 m sur une rue goudronnée. Livret foncier, permis de construire possible en R+2. Prix à discuter sur place.",
+      "price": null,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 410,
+      "isFeatured": false,
+      "createdAt": "2026-09-17T08:20:00.000Z",
+      "updatedAt": "2026-09-17T08:20:00.000Z",
+      "expiresAt": "2026-11-16T08:20:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_terrain",
+      "wilayaId": 9,
+      "communeId": 909,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "terrain-de-300-m-viabilise-a-bouinan-blida",
+      "attributes": {
+        "surface": 300,
+        "deed_type": "livret-foncier",
+        "facade": "secondary-road"
+      },
+      "hasPhone": true,
+      "images": [
+        {
+          "id": "img-mock-a22-1",
+          "url": "https://photos.mock.weydaa/annonces/house-4.webp",
+          "publicId": "annonces/mock-a22/1",
+          "order": 0,
+          "annonceId": "mock-a22"
+        }
+      ],
+      "category": {
+        "slug": "terrain",
+        "nameFr": "Terrain",
+        "nameAr": "أرض",
+        "nameEn": "Land"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    }
+  ],
+  "total": 4,
+  "page": 1,
+  "totalPages": 1,
+  "facets": {
+    "rooms": [
+      {
+        "value": "2",
+        "count": 1
+      },
+      {
+        "value": "3",
+        "count": 1
+      },
+      {
+        "value": "6-plus",
+        "count": 1
+      }
+    ],
+    "deed_type": [
+      {
+        "value": "livret-foncier",
+        "count": 2
+      },
+      {
+        "value": "acte",
+        "count": 1
+      }
+    ],
+    "condition": [
+      {
+        "value": "good",
+        "count": 3
+      }
+    ],
+    "facade": [
+      {
+        "value": "secondary-road",
+        "count": 1
+      }
+    ]
+  }
+}

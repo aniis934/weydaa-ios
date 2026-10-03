@@ -1,0 +1,15 @@
+{
+  "id": "mock-u5",
+  "name": "Sofiane T.",
+  "bio": null,
+  "avatar": null,
+  "createdAt": "2024-11-17T20:40:00.000Z",
+  "emailVerified": null,
+  "isRecommended": false,
+  "ratingCount": 0,
+  "ratingSum": 0,
+  "responseMinutes": null,
+  "_count": {
+    "annonces": 5
+  }
+}

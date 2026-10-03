@@ -1,0 +1,49 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a8",
+      "title": "Montre Casio G-Shock GA-2100 neuve",
+      "description": "Montre Casio G-Shock GA-2100 noire, neuve dans sa boîte avec étiquettes et garantie. Reçue en double pour mon anniversaire. Étanche 200 m, éclairage LED, pile prévue pour 3 ans. Remise en main propre au centre-ville de Sétif.",
+      "price": 14500,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 96,
+      "isFeatured": false,
+      "createdAt": "2026-10-01T09:25:00.000Z",
+      "updatedAt": "2026-10-01T09:25:00.000Z",
+      "expiresAt": "2026-11-30T09:25:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_montres-bijoux",
+      "wilayaId": 19,
+      "communeId": 1955,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "montre-casio-g-shock-ga-2100-neuve-setif",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a8-1",
+          "url": "https://photos.mock.weydaa/annonces/watch-1.webp",
+          "publicId": "annonces/mock-a8/1",
+          "order": 0,
+          "annonceId": "mock-a8"
+        }
+      ],
+      "category": {
+        "slug": "montres-bijoux",
+        "nameFr": "Montres & Bijoux",
+        "nameAr": "ساعات ومجوهرات",
+        "nameEn": "Watches & Jewelry"
+      },
+      "wilaya": {
+        "id": 19,
+        "nameFr": "Sétif",
+        "nameAr": "سطيف"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}

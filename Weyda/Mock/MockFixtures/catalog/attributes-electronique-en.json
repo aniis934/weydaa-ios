@@ -1,0 +1,349 @@
+{
+  "attributes": [
+    {
+      "key": "brand",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "samsung",
+        "apple",
+        "xiaomi",
+        "oppo",
+        "realme",
+        "huawei",
+        "honor",
+        "vivo",
+        "oneplus",
+        "google",
+        "motorola",
+        "nokia",
+        "infinix",
+        "tecno",
+        "itel",
+        "nothing",
+        "zte",
+        "other"
+      ],
+      "label": "Brand",
+      "optionLabels": {
+        "samsung": "Samsung",
+        "apple": "Apple",
+        "xiaomi": "Xiaomi",
+        "oppo": "Oppo",
+        "realme": "Realme",
+        "huawei": "Huawei",
+        "honor": "Honor",
+        "vivo": "Vivo",
+        "oneplus": "Oneplus",
+        "google": "Google",
+        "motorola": "Motorola",
+        "nokia": "Nokia",
+        "infinix": "Infinix",
+        "tecno": "Tecno",
+        "itel": "Itel",
+        "nothing": "Nothing",
+        "zte": "ZTE",
+        "other": "Other"
+      }
+    },
+    {
+      "key": "model",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "dependsOn": "brand",
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "tablettes"
+      ],
+      "options": [],
+      "label": "Model",
+      "optionLabels": {}
+    },
+    {
+      "key": "model",
+      "type": "text",
+      "requirement": "recommended",
+      "filterable": false,
+      "filterType": "exact",
+      "hideFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "tablettes"
+      ],
+      "options": [],
+      "label": "Model",
+      "optionLabels": {}
+    },
+    {
+      "key": "condition",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "new",
+        "like-new",
+        "good",
+        "fair"
+      ],
+      "label": "Condition",
+      "optionLabels": {
+        "new": "New",
+        "like-new": "Like new",
+        "good": "Good condition",
+        "fair": "Fair condition"
+      }
+    },
+    {
+      "key": "storage_gb",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "16",
+        "32",
+        "64",
+        "128",
+        "256",
+        "512",
+        "1024",
+        "2048"
+      ],
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "ordinateurs-bureau",
+        "tablettes"
+      ],
+      "label": "Storage",
+      "optionLabels": {
+        "16": "16 GB",
+        "32": "32 GB",
+        "64": "64 GB",
+        "128": "128 GB",
+        "256": "256 GB",
+        "512": "512 GB",
+        "1024": "1 TB",
+        "2048": "2 TB"
+      }
+    },
+    {
+      "key": "ram_gb",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "2",
+        "4",
+        "6",
+        "8",
+        "12",
+        "16",
+        "32",
+        "64"
+      ],
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "ordinateurs-bureau",
+        "tablettes"
+      ],
+      "label": "RAM",
+      "optionLabels": {
+        "2": "2 GB",
+        "4": "4 GB",
+        "6": "6 GB",
+        "8": "8 GB",
+        "12": "12 GB",
+        "16": "16 GB",
+        "32": "32 GB",
+        "64": "64 GB"
+      }
+    },
+    {
+      "key": "screen_size",
+      "type": "number",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "range",
+      "min": 3,
+      "max": 100,
+      "step": 0.1,
+      "unit": "inches",
+      "showFor": [
+        "smartphones",
+        "ordinateurs-portables",
+        "tv",
+        "tablettes"
+      ],
+      "rangePresets": [
+        6,
+        13,
+        15,
+        32,
+        50,
+        65
+      ],
+      "options": [],
+      "label": "Screen size",
+      "optionLabels": {},
+      "unitLabel": "inches"
+    },
+    {
+      "key": "warranty",
+      "type": "boolean",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "boolean",
+      "options": [],
+      "label": "Warranty",
+      "optionLabels": {}
+    },
+    {
+      "key": "console_type",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "ps5",
+        "ps4",
+        "ps3",
+        "xbox-series-x",
+        "xbox-series-s",
+        "xbox-one",
+        "nintendo-switch",
+        "nintendo-switch-lite",
+        "steam-deck",
+        "other"
+      ],
+      "showFor": [
+        "consoles"
+      ],
+      "label": "Console",
+      "optionLabels": {
+        "ps5": "PlayStation 5",
+        "ps4": "PlayStation 4",
+        "ps3": "PlayStation 3",
+        "xbox-series-x": "Xbox Series X",
+        "xbox-series-s": "Xbox Series S",
+        "xbox-one": "Xbox One",
+        "nintendo-switch": "Nintendo Switch",
+        "nintendo-switch-lite": "Nintendo Switch Lite",
+        "steam-deck": "Steam Deck",
+        "other": "Other"
+      }
+    },
+    {
+      "key": "component_type",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "gpu",
+        "cpu",
+        "motherboard",
+        "ram-module",
+        "ssd",
+        "hdd",
+        "psu",
+        "case",
+        "cooler",
+        "monitor",
+        "keyboard-mouse",
+        "other"
+      ],
+      "showFor": [
+        "composants-pc"
+      ],
+      "label": "Component type",
+      "optionLabels": {
+        "gpu": "Graphics card",
+        "cpu": "Processor",
+        "motherboard": "Motherboard",
+        "ram-module": "RAM module",
+        "ssd": "SSD",
+        "hdd": "Hard drive",
+        "psu": "Power supply",
+        "case": "Case",
+        "cooler": "Cooler",
+        "monitor": "Monitor",
+        "keyboard-mouse": "Keyboard & Mouse",
+        "other": "Other"
+      }
+    }
+  ],
+  "subcategories": [
+    {
+      "slug": "smartphones",
+      "parentSlug": "electronique",
+      "nameFr": "Smartphones",
+      "nameAr": "هواتف ذكية",
+      "nameEn": "Smartphones"
+    },
+    {
+      "slug": "ordinateurs-portables",
+      "parentSlug": "electronique",
+      "nameFr": "Ordinateurs portables",
+      "nameAr": "حواسيب محمولة",
+      "nameEn": "Laptops"
+    },
+    {
+      "slug": "ordinateurs-bureau",
+      "parentSlug": "electronique",
+      "nameFr": "Ordinateurs de bureau",
+      "nameAr": "حواسيب مكتبية",
+      "nameEn": "Desktop Computers"
+    },
+    {
+      "slug": "composants-pc",
+      "parentSlug": "electronique",
+      "nameFr": "Composants PC",
+      "nameAr": "مكونات الحاسوب",
+      "nameEn": "PC Components"
+    },
+    {
+      "slug": "consoles",
+      "parentSlug": "electronique",
+      "nameFr": "Consoles",
+      "nameAr": "أجهزة ألعاب",
+      "nameEn": "Gaming Consoles"
+    },
+    {
+      "slug": "tv",
+      "parentSlug": "electronique",
+      "nameFr": "TV",
+      "nameAr": "تلفاز",
+      "nameEn": "TV"
+    },
+    {
+      "slug": "audio",
+      "parentSlug": "electronique",
+      "nameFr": "Audio",
+      "nameAr": "صوتيات",
+      "nameEn": "Audio"
+    },
+    {
+      "slug": "tablettes",
+      "parentSlug": "electronique",
+      "nameFr": "Tablettes",
+      "nameAr": "أجهزة لوحية",
+      "nameEn": "Tablets"
+    },
+    {
+      "slug": "appareils-photo",
+      "parentSlug": "electronique",
+      "nameFr": "Appareils photo & Caméras",
+      "nameAr": "كاميرات",
+      "nameEn": "Cameras"
+    }
+  ]
+}

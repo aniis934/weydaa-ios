@@ -1,0 +1,175 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a9",
+      "title": "Canapé d'angle 6 places en velours vert",
+      "description": "Grand canapé d'angle 6 places en velours vert sapin, angle réversible, avec méridienne et deux poufs assortis. Fabriqué sur mesure par un artisan il y a deux ans, structure en bois massif. Très bon état, aucune tache. Dimensions 3,10 × 2,20 m. À enlever à Dely Ibrahim.",
+      "price": 125000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 188,
+      "isFeatured": true,
+      "createdAt": "2026-09-30T21:10:00.000Z",
+      "updatedAt": "2026-09-30T21:10:00.000Z",
+      "expiresAt": "2026-11-29T21:10:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_meubles",
+      "wilayaId": 16,
+      "communeId": 1622,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "canape-dangle-6-places-en-velours-vert-alger",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a9-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-1.webp",
+          "publicId": "annonces/mock-a9/1",
+          "order": 0,
+          "annonceId": "mock-a9"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a16",
+      "title": "Perceuse à percussion Bosch Professional + coffret",
+      "description": "Perceuse à percussion Bosch Professional 600 W, vendue avec son coffret, une poignée supplémentaire et un jeu de 15 forets (béton, bois, métal). Très peu servie, achetée pour un seul chantier. Prix à débattre.",
+      "price": 13500,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 131,
+      "isFeatured": false,
+      "createdAt": "2026-09-26T09:05:00.000Z",
+      "updatedAt": "2026-09-26T09:05:00.000Z",
+      "expiresAt": "2026-11-25T09:05:00.000Z",
+      "userId": "mock-u5",
+      "categoryId": "sub_bricolage-outillage",
+      "wilayaId": 5,
+      "communeId": 507,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "perceuse-a-percussion-bosch-professional-coffret-batna",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a16-1",
+          "url": "https://photos.mock.weydaa/annonces/tools-1.webp",
+          "publicId": "annonces/mock-a16/1",
+          "order": 0,
+          "annonceId": "mock-a16"
+        }
+      ],
+      "category": {
+        "slug": "bricolage-outillage",
+        "nameFr": "Bricolage & Outillage",
+        "nameAr": "أدوات وعدة",
+        "nameEn": "DIY & Tools"
+      },
+      "wilaya": {
+        "id": 5,
+        "nameFr": "Batna",
+        "nameAr": "باتنة"
+      }
+    },
+    {
+      "id": "mock-a24",
+      "title": "À donner : canapé 3 places",
+      "description": "Je donne un canapé 3 places en tissu gris, encore confortable, quelques traces d'usure sur les accoudoirs. À récupérer sur place à Annaba (3e étage sans ascenseur), prévoir deux personnes. Premier arrivé, premier servi.",
+      "price": null,
+      "priceType": "FREE",
+      "status": "ACTIVE",
+      "views": 158,
+      "isFeatured": false,
+      "createdAt": "2026-09-12T10:30:00.000Z",
+      "updatedAt": "2026-09-12T10:30:00.000Z",
+      "expiresAt": "2026-11-11T10:30:00.000Z",
+      "userId": "mock-u3",
+      "categoryId": "sub_meubles",
+      "wilayaId": 23,
+      "communeId": 2302,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "a-donner-canape-3-places-annaba",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a24-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-2.webp",
+          "publicId": "annonces/mock-a24/1",
+          "order": 0,
+          "annonceId": "mock-a24"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 23,
+        "nameFr": "Annaba",
+        "nameAr": "عنابة"
+      }
+    },
+    {
+      "id": "mock-a30",
+      "title": "Bureau en bois massif avec 3 tiroirs",
+      "description": "Bureau en bois massif de 120 × 60 cm, trois tiroirs, très solide. Quelques marques d'usage sur le plateau, rien de gênant. Idéal pour un coin étude ou le télétravail, démontable pour le transport.",
+      "price": 24000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 98,
+      "isFeatured": false,
+      "createdAt": "2026-08-27T11:00:00.000Z",
+      "updatedAt": "2026-08-27T11:00:00.000Z",
+      "expiresAt": "2026-10-26T11:00:00.000Z",
+      "userId": "mock-u4",
+      "categoryId": "sub_meubles",
+      "wilayaId": 9,
+      "communeId": 905,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "bureau-en-bois-massif-avec-3-tiroirs-blida",
+      "attributes": null,
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a30-1",
+          "url": "https://photos.mock.weydaa/annonces/sofa-5.webp",
+          "publicId": "annonces/mock-a30/1",
+          "order": 0,
+          "annonceId": "mock-a30"
+        }
+      ],
+      "category": {
+        "slug": "meubles",
+        "nameFr": "Meubles",
+        "nameAr": "أثاث",
+        "nameEn": "Furniture"
+      },
+      "wilaya": {
+        "id": 9,
+        "nameFr": "Blida",
+        "nameAr": "البليدة"
+      }
+    }
+  ],
+  "total": 4,
+  "page": 1,
+  "totalPages": 1
+}

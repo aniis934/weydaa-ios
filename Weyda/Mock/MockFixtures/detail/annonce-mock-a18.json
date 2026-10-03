@@ -1,0 +1,66 @@
+{
+  "id": "mock-a18",
+  "title": "Recrute vendeur(se) pour boutique de prêt-à-porter",
+  "description": "Boutique de prêt-à-porter au centre de Tizi Ouzou recrute un(e) vendeur(se) à temps plein. Expérience dans la vente souhaitée, bonne présentation, maîtrise du kabyle et du français. Horaires 9 h – 18 h, repos le vendredi. Salaire de 45 000 DA net + primes sur objectifs. Envoyez votre CV par message.",
+  "price": 45000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 512,
+  "isFeatured": false,
+  "createdAt": "2026-09-23T19:20:00.000Z",
+  "updatedAt": "2026-09-23T19:20:00.000Z",
+  "expiresAt": "2026-11-22T19:20:00.000Z",
+  "userId": "mock-u6",
+  "categoryId": "sub_offres-emploi",
+  "wilayaId": 15,
+  "communeId": 1563,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "recrute-vendeurse-pour-boutique-de-pret-a-porter-tizi-ouzou",
+  "attributes": null,
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a18-1",
+      "url": "https://photos.mock.weydaa/annonces/job-1.webp",
+      "publicId": "annonces/mock-a18/1",
+      "order": 0,
+      "annonceId": "mock-a18"
+    }
+  ],
+  "category": {
+    "id": "sub_offres-emploi",
+    "slug": "offres-emploi",
+    "nameFr": "Offres d'emploi",
+    "nameAr": "عروض عمل",
+    "nameEn": "Job Offers",
+    "parentId": "cat_emploi",
+    "parent": {
+      "slug": "emploi"
+    }
+  },
+  "wilaya": {
+    "id": 15,
+    "nameFr": "Tizi Ouzou",
+    "nameAr": "تيزي وزو"
+  },
+  "commune": {
+    "id": 1563,
+    "nameFr": "Tizi-Ouzou",
+    "nameAr": "تيزي وزو"
+  },
+  "user": {
+    "id": "mock-u6",
+    "name": "Lyes A.",
+    "avatar": null,
+    "createdAt": "2023-04-25T08:30:00.000Z",
+    "emailVerified": "2023-04-25T08:41:00.000Z",
+    "isRecommended": false,
+    "ratingCount": 8,
+    "ratingSum": 36,
+    "responseMinutes": 60,
+    "_count": {
+      "annonces": 4
+    }
+  }
+}

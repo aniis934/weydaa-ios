@@ -1,0 +1,93 @@
+{
+  "id": "mock-a17",
+  "title": "MacBook Air M1 8 Go / 256 Go",
+  "description": "MacBook Air M1 (2020) gris sidéral, 8 Go de mémoire et SSD de 256 Go, clavier AZERTY. 112 cycles de batterie seulement, état quasi neuf. Livré avec le chargeur d'origine et une housse. Idéal pour les études. Prix ferme.",
+  "price": 135000,
+  "priceType": "FIXED",
+  "status": "ACTIVE",
+  "views": 640,
+  "isFeatured": true,
+  "createdAt": "2026-09-24T22:40:00.000Z",
+  "updatedAt": "2026-09-24T22:40:00.000Z",
+  "expiresAt": "2026-11-23T22:40:00.000Z",
+  "userId": "mock-u1",
+  "categoryId": "sub_ordinateurs-portables",
+  "wilayaId": 16,
+  "communeId": 1609,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "macbook-air-m1-8-go-256-go-alger",
+  "attributes": {
+    "brand": "apple",
+    "model": "macbook-air-m1",
+    "condition": "like-new",
+    "storage_gb": "256",
+    "ram_gb": "8"
+  },
+  "hasPhone": false,
+  "images": [
+    {
+      "id": "img-mock-a17-1",
+      "url": "https://photos.mock.weydaa/annonces/laptop-1.webp",
+      "publicId": "annonces/mock-a17/1",
+      "order": 0,
+      "annonceId": "mock-a17"
+    },
+    {
+      "id": "img-mock-a17-2",
+      "url": "https://photos.mock.weydaa/annonces/laptop-51.webp",
+      "publicId": "annonces/mock-a17/2",
+      "order": 1,
+      "annonceId": "mock-a17"
+    },
+    {
+      "id": "img-mock-a17-3",
+      "url": "https://photos.mock.weydaa/annonces/laptop-52.webp",
+      "publicId": "annonces/mock-a17/3",
+      "order": 2,
+      "annonceId": "mock-a17"
+    },
+    {
+      "id": "img-mock-a17-4",
+      "url": "https://photos.mock.weydaa/annonces/laptop-53.webp",
+      "publicId": "annonces/mock-a17/4",
+      "order": 3,
+      "annonceId": "mock-a17"
+    }
+  ],
+  "category": {
+    "id": "sub_ordinateurs-portables",
+    "slug": "ordinateurs-portables",
+    "nameFr": "Ordinateurs portables",
+    "nameAr": "حواسيب محمولة",
+    "nameEn": "Laptops",
+    "parentId": "cat_electronique",
+    "parent": {
+      "slug": "electronique"
+    }
+  },
+  "wilaya": {
+    "id": 16,
+    "nameFr": "Alger",
+    "nameAr": "الجزائر"
+  },
+  "commune": {
+    "id": 1609,
+    "nameFr": "Ben Aknoun",
+    "nameAr": "بن عكنون"
+  },
+  "user": {
+    "id": "mock-u1",
+    "name": "Karim B.",
+    "avatar": null,
+    "createdAt": "2023-03-14T10:12:00.000Z",
+    "emailVerified": "2023-03-14T10:31:00.000Z",
+    "isRecommended": true,
+    "ratingCount": 23,
+    "ratingSum": 110,
+    "responseMinutes": 20,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "id": "mock-a25",
+  "title": "Renault Clio 5 Intens 1.3 TCe EDC 2021",
+  "description": "Clio 5 Intens 1.3 TCe 140 ch, boîte automatique EDC, achetée neuve en concession en 2021, 41 000 km. Entretien exclusivement chez Renault, factures disponibles. Écran tactile, caméra de recul, régulateur de vitesse. Dédouanée, carte grise à mon nom. Visible à Kouba, essai possible le week-end.",
+  "price": 4250000,
+  "priceType": "NEGOTIABLE",
+  "status": "ACTIVE",
+  "views": 389,
+  "isFeatured": false,
+  "createdAt": "2026-09-10T16:20:00.000Z",
+  "updatedAt": "2026-09-10T16:20:00.000Z",
+  "expiresAt": "2026-11-09T16:20:00.000Z",
+  "userId": "mock-u1",
+  "categoryId": "sub_voitures",
+  "wilayaId": 16,
+  "communeId": 1638,
+  "deletedAt": null,
+  "renewalCount": 0,
+  "slug": "renault-clio-5-intens-1-3-tce-edc-2021-alger",
+  "attributes": {
+    "make": "renault",
+    "model": "clio-5",
+    "year": 2021,
+    "mileage": 41000,
+    "fuel": "essence",
+    "transmission": "automatic",
+    "condition": "like-new",
+    "color": "red",
+    "doors": "5",
+    "customs_status": "cleared"
+  },
+  "hasPhone": true,
+  "images": [
+    {
+      "id": "img-mock-a25-1",
+      "url": "https://photos.mock.weydaa/annonces/car-5.webp",
+      "publicId": "annonces/mock-a25/1",
+      "order": 0,
+      "annonceId": "mock-a25"
+    },
+    {
+      "id": "img-mock-a25-2",
+      "url": "https://photos.mock.weydaa/annonces/car-68.webp",
+      "publicId": "annonces/mock-a25/2",
+      "order": 1,
+      "annonceId": "mock-a25"
+    },
+    {
+      "id": "img-mock-a25-3",
+      "url": "https://photos.mock.weydaa/annonces/car-69.webp",
+      "publicId": "annonces/mock-a25/3",
+      "order": 2,
+      "annonceId": "mock-a25"
+    },
+    {
+      "id": "img-mock-a25-4",
+      "url": "https://photos.mock.weydaa/annonces/car-70.webp",
+      "publicId": "annonces/mock-a25/4",
+      "order": 3,
+      "annonceId": "mock-a25"
+    },
+    {
+      "id": "img-mock-a25-5",
+      "url": "https://photos.mock.weydaa/annonces/car-71.webp",
+      "publicId": "annonces/mock-a25/5",
+      "order": 4,
+      "annonceId": "mock-a25"
+    }
+  ],
+  "category": {
+    "id": "sub_voitures",
+    "slug": "voitures",
+    "nameFr": "Voitures",
+    "nameAr": "سيارات",
+    "nameEn": "Cars",
+    "parentId": "cat_vehicules",
+    "parent": {
+      "slug": "vehicules"
+    }
+  },
+  "wilaya": {
+    "id": 16,
+    "nameFr": "Alger",
+    "nameAr": "الجزائر"
+  },
+  "commune": {
+    "id": 1638,
+    "nameFr": "Kouba",
+    "nameAr": "القبة"
+  },
+  "user": {
+    "id": "mock-u1",
+    "name": "Karim B.",
+    "avatar": null,
+    "createdAt": "2023-03-14T10:12:00.000Z",
+    "emailVerified": "2023-03-14T10:31:00.000Z",
+    "isRecommended": true,
+    "ratingCount": 23,
+    "ratingSum": 110,
+    "responseMinutes": 20,
+    "_count": {
+      "annonces": 5
+    }
+  }
+}

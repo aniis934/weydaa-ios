@@ -1,0 +1,15 @@
+{
+  "id": "mock-u6",
+  "name": "Lyes A.",
+  "bio": "Tizi Ouzou. Annonces sérieuses uniquement, visites sur rendez-vous.",
+  "avatar": null,
+  "createdAt": "2023-04-25T08:30:00.000Z",
+  "emailVerified": "2023-04-25T08:41:00.000Z",
+  "isRecommended": false,
+  "ratingCount": 8,
+  "ratingSum": 36,
+  "responseMinutes": 60,
+  "_count": {
+    "annonces": 4
+  }
+}

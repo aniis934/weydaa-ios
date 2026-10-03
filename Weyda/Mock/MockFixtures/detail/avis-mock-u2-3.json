@@ -1,0 +1,45 @@
+{
+  "reviews": [
+    {
+      "id": "mock-rev-u2-1",
+      "rating": 5,
+      "comment": "Amina est très réactive, la voiture correspondait à l'annonce.",
+      "createdAt": "2026-09-20T17:40:00.000Z",
+      "updatedAt": "2026-09-20T17:40:00.000Z",
+      "author": {
+        "id": "mock-b1-u2",
+        "name": "Walid B.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u2-2",
+      "rating": 4,
+      "comment": "Bonne communication, appartement propre comme décrit.",
+      "createdAt": "2026-08-05T11:15:00.000Z",
+      "updatedAt": "2026-08-05T11:15:00.000Z",
+      "author": {
+        "id": "mock-b2-u2",
+        "name": "Yasmine T.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u2-3",
+      "rating": 5,
+      "comment": "Rien à redire, je recommande.",
+      "createdAt": "2026-07-14T19:00:00.000Z",
+      "updatedAt": "2026-07-14T19:00:00.000Z",
+      "author": {
+        "id": "mock-b3-u2",
+        "name": "Omar F.",
+        "avatar": null
+      }
+    }
+  ],
+  "total": 12,
+  "totalPages": 4,
+  "page": 1,
+  "ratingCount": 12,
+  "average": 4.583333333333333
+}

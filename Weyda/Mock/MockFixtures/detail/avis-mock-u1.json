@@ -1,0 +1,69 @@
+{
+  "reviews": [
+    {
+      "id": "mock-rev-u1-1",
+      "rating": 5,
+      "comment": "Vendeur sérieux et ponctuel, la tablette était exactement comme sur les photos.",
+      "createdAt": "2026-09-28T16:10:00.000Z",
+      "updatedAt": "2026-09-28T16:10:00.000Z",
+      "author": {
+        "id": "mock-b1-u1",
+        "name": "Sarah L.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u1-2",
+      "rating": 5,
+      "comment": "Très bon contact, transaction rapide à Bab Ezzouar. Je recommande.",
+      "createdAt": "2026-09-15T12:45:00.000Z",
+      "updatedAt": "2026-09-15T12:45:00.000Z",
+      "author": {
+        "id": "mock-b2-u1",
+        "name": "Mehdi R.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u1-3",
+      "rating": 4,
+      "comment": "Article conforme, juste un peu de retard au rendez-vous.",
+      "createdAt": "2026-08-30T18:20:00.000Z",
+      "updatedAt": "2026-08-30T18:20:00.000Z",
+      "author": {
+        "id": "mock-b3-u1",
+        "name": "Imane D.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u1-4",
+      "rating": 5,
+      "comment": "بائع محترم والسلعة كيما في الصور. شكرا",
+      "createdAt": "2026-08-12T10:05:00.000Z",
+      "updatedAt": "2026-08-12T10:05:00.000Z",
+      "author": {
+        "id": "mock-b4-u1",
+        "name": "Rachid S.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-rev-u1-5",
+      "rating": 5,
+      "comment": null,
+      "createdAt": "2026-07-21T09:30:00.000Z",
+      "updatedAt": "2026-07-21T09:30:00.000Z",
+      "author": {
+        "id": "mock-b5-u1",
+        "name": "Lina M.",
+        "avatar": null
+      }
+    }
+  ],
+  "total": 23,
+  "totalPages": 5,
+  "page": 1,
+  "ratingCount": 23,
+  "average": 4.782608695652174
+}

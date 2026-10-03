@@ -45,7 +45,8 @@ nonisolated struct MockReply: Sendable {
 
 /// Une route simulée, lue dans `MockFixtures/routes*.json` :
 ///   - `path` : chemin exact, `*` = un segment quelconque, `**` final = tout le reste ;
-///   - `host` (facultatif) : hôte exact ; `query` (facultatif) : paramètres qui doivent avoir CES valeurs ;
+///   - `host` (facultatif) : hôte exact ; `query` (facultatif) : paramètres qui doivent avoir CES valeurs
+///     (`"*"` = présent, valeur quelconque) ;
 ///   - `fixture` : fichier de réponse (sous-dossiers permis), `status` : 200 par défaut ;
 ///   - `photo` : vrai = image fictive dessinée d'après le nom du fichier demandé (`MockPhotos`).
 /// Quand plusieurs routes conviennent, la plus précise gagne (segments littéraux, puis contraintes de requête).
@@ -58,17 +59,22 @@ nonisolated struct MockRoute: Decodable, Sendable {
     let status: Int?
     let photo: Bool?
 
+    /// Segments littéraux d'abord ; puis une contrainte de requête à valeur exacte compte double d'une valeur `*`.
     var specificity: Int {
         let literal = path.split(separator: "/").filter { $0 != "*" && $0 != "**" }.count
-        return literal * 100 + (query?.count ?? 0)
+        let exact = (query ?? [:]).values.filter { $0 != "*" }.count
+        let wildcard = (query ?? [:]).values.filter { $0 == "*" }.count
+        return literal * 100 + exact * 2 + wildcard
     }
 
+    /// Une contrainte de requête `"*"` exige seulement la PRÉSENCE du paramètre (ex. `wilayaId` quelconque).
     func matches(method: String, host: String?, segments: [Substring], query: [String: String]) -> Bool {
         guard self.method.uppercased() == method.uppercased() else { return false }
         if let expectedHost = self.host, expectedHost != host { return false }
         guard Self.pathMatches(pattern: path.split(separator: "/"), segments: segments) else { return false }
-        for (key, value) in self.query ?? [:] where query[key] != value {
-            return false
+        for (key, value) in self.query ?? [:] {
+            guard let actual = query[key] else { return false }
+            if value != "*" && actual != value { return false }
         }
         return true
     }

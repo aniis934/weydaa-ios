@@ -1,0 +1,155 @@
+{
+  "annonces": [
+    {
+      "id": "mock-a17",
+      "title": "MacBook Air M1 8 Go / 256 Go",
+      "description": "MacBook Air M1 (2020) gris sidéral, 8 Go de mémoire et SSD de 256 Go, clavier AZERTY. 112 cycles de batterie seulement, état quasi neuf. Livré avec le chargeur d'origine et une housse. Idéal pour les études. Prix ferme.",
+      "price": 135000,
+      "priceType": "FIXED",
+      "status": "ACTIVE",
+      "views": 640,
+      "isFeatured": true,
+      "createdAt": "2026-09-24T22:40:00.000Z",
+      "updatedAt": "2026-09-24T22:40:00.000Z",
+      "expiresAt": "2026-11-23T22:40:00.000Z",
+      "userId": "mock-u1",
+      "categoryId": "sub_ordinateurs-portables",
+      "wilayaId": 16,
+      "communeId": 1609,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "macbook-air-m1-8-go-256-go-alger",
+      "attributes": {
+        "brand": "apple",
+        "model": "macbook-air-m1",
+        "condition": "like-new",
+        "storage_gb": "256",
+        "ram_gb": "8"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a17-1",
+          "url": "https://photos.mock.weydaa/annonces/laptop-1.webp",
+          "publicId": "annonces/mock-a17/1",
+          "order": 0,
+          "annonceId": "mock-a17"
+        }
+      ],
+      "category": {
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops"
+      },
+      "wilaya": {
+        "id": 16,
+        "nameFr": "Alger",
+        "nameAr": "الجزائر"
+      }
+    },
+    {
+      "id": "mock-a23",
+      "title": "HP EliteBook 840 G6 i5 / 16 Go / SSD 512 Go",
+      "description": "PC portable HP EliteBook 840 G6 : Intel Core i5 de 8e génération, 16 Go de RAM, SSD de 512 Go, écran 14 pouces Full HD. Windows 11 Pro activé, batterie qui tient environ 5 heures, clavier AZERTY rétroéclairé. Idéal pour le bureau ou les études.",
+      "price": 68000,
+      "priceType": "NEGOTIABLE",
+      "status": "ACTIVE",
+      "views": 265,
+      "isFeatured": false,
+      "createdAt": "2026-09-14T18:05:00.000Z",
+      "updatedAt": "2026-09-14T18:05:00.000Z",
+      "expiresAt": "2026-11-13T18:05:00.000Z",
+      "userId": "mock-u2",
+      "categoryId": "sub_ordinateurs-portables",
+      "wilayaId": 31,
+      "communeId": 3104,
+      "deletedAt": null,
+      "renewalCount": 0,
+      "slug": "hp-elitebook-840-g6-i5-16-go-ssd-512-go-oran",
+      "attributes": {
+        "brand": "hp",
+        "model": "elitebook",
+        "condition": "good",
+        "storage_gb": "512",
+        "ram_gb": "16"
+      },
+      "hasPhone": false,
+      "images": [
+        {
+          "id": "img-mock-a23-1",
+          "url": "https://photos.mock.weydaa/annonces/laptop-2.webp",
+          "publicId": "annonces/mock-a23/1",
+          "order": 0,
+          "annonceId": "mock-a23"
+        }
+      ],
+      "category": {
+        "slug": "ordinateurs-portables",
+        "nameFr": "Ordinateurs portables",
+        "nameAr": "حواسيب محمولة",
+        "nameEn": "Laptops"
+      },
+      "wilaya": {
+        "id": 31,
+        "nameFr": "Oran",
+        "nameAr": "وهران"
+      }
+    }
+  ],
+  "total": 2,
+  "page": 1,
+  "totalPages": 1,
+  "facets": {
+    "brand": [
+      {
+        "value": "apple",
+        "count": 1
+      },
+      {
+        "value": "hp",
+        "count": 1
+      }
+    ],
+    "model": [
+      {
+        "value": "elitebook",
+        "count": 1
+      },
+      {
+        "value": "macbook-air-m1",
+        "count": 1
+      }
+    ],
+    "condition": [
+      {
+        "value": "good",
+        "count": 1
+      },
+      {
+        "value": "like-new",
+        "count": 1
+      }
+    ],
+    "storage_gb": [
+      {
+        "value": "256",
+        "count": 1
+      },
+      {
+        "value": "512",
+        "count": 1
+      }
+    ],
+    "ram_gb": [
+      {
+        "value": "16",
+        "count": 1
+      },
+      {
+        "value": "8",
+        "count": 1
+      }
+    ]
+  }
+}

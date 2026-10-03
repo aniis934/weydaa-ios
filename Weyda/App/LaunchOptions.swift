@@ -5,7 +5,11 @@ import Foundation
 ///   -WeydaSkipLaunch YES      saute l'animation de lancement
 ///   -WeydaLaunchFrame 0.62    affiche une image figée de l'animation (capture)
 ///   -WeydaTab messages        onglet ouvert au démarrage
-///   -WeydaScreen showcase     écran de démonstration du système de design (Debug)
+///   -WeydaRoute detail:x      écran ouvert au démarrage (formats : `LaunchRoute.parse`)
+///   -WeydaFreezeMotion YES    fige les animations décoratives sans fin (scintillement des squelettes) :
+///                             captures reproductibles, et l'outil de test n'attend pas un « repos » qui ne vient pas
+///   -WeydaScreen showcase     écran de démonstration du système de design (Debug) ;
+///                components   la démonstration des composants seule
 ///   -WeydaScreen data         démonstration de la couche données : vrais repositories sur l'API simulée (Debug)
 ///   -WeydaMockAPI YES         API simulée : réponses figées de MockFixtures (Debug)
 nonisolated enum LaunchOptions {
@@ -20,6 +24,11 @@ nonisolated enum LaunchOptions {
     static var initialTab: AppTab? {
         defaults.string(forKey: "WeydaTab").flatMap(AppTab.init(rawValue:))
     }
+
+    /// Route de démarrage brute (`detail:mock-a3`, `listings:q=clio`…), analysée par `LaunchRoute.parse`.
+    static var route: String? { defaults.string(forKey: "WeydaRoute") }
+
+    static var freezeMotion: Bool { defaults.bool(forKey: "WeydaFreezeMotion") }
 
     static var screen: String? { defaults.string(forKey: "WeydaScreen") }
 

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Écran provisoire d'un onglet (phase 0 : la coquille). Chaque phase remplace un onglet par son
-/// vrai écran. L'identifiant `screen.<onglet>` sert au tour automatique de captures.
+/// Écran provisoire d'un onglet (la coquille). Chaque phase remplace un onglet par son vrai écran. L'identifiant
+/// `screen.<onglet>` sert au tour automatique de captures. (Profil visiteur : `GuestProfileView`.)
 struct PlaceholderScreen: View {
     let tab: AppTab
 
@@ -14,18 +14,6 @@ struct PlaceholderScreen: View {
             Text(tab.title)
                 .weydaText(.titleLarge)
                 .foregroundStyle(WeydaColor.onBackground)
-            #if DEBUG
-            if tab == .account {
-                NavigationLink {
-                    DesignShowcaseView()
-                } label: {
-                    Text(verbatim: "Design system")
-                        .weydaText(.labelLarge)
-                }
-                .buttonStyle(.bordered)
-                .accessibilityIdentifier("open.showcase")
-            }
-            #endif
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(WeydaColor.background)

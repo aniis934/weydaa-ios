@@ -40,14 +40,14 @@ nonisolated enum Format {
 
     /// Compteur groupé par milliers (vues, annonces, avis) en chiffres latins.
     static func count(_ value: Int, locale: Locale = WeydaLocale.formatting) -> String {
-        latinDigits(value.formatted(.number.locale(locale)))
+        WeydaLocale.visibleGrouping(latinDigits(value.formatted(.number.locale(locale))))
     }
 
     /// Nombre décimal d'un attribut (surface, cylindrée…), trois décimales au plus — comme
     /// `NumberFormat.getInstance()` sur l'écran de relecture Android.
     static func decimal(_ value: Double, locale: Locale = WeydaLocale.formatting) -> String {
         guard value.isFinite else { return "" }
-        return latinDigits(value.formatted(.number.precision(.fractionLength(0...3)).locale(locale)))
+        return WeydaLocale.visibleGrouping(latinDigits(value.formatted(.number.precision(.fractionLength(0...3)).locale(locale))))
     }
 
     /// Pastille plafonnée : « 9+ » pour l'onglet Messages, « 99+ » pour la cloche (Android).

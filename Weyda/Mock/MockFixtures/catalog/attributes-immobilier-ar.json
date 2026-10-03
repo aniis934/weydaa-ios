@@ -1,0 +1,298 @@
+{
+  "attributes": [
+    {
+      "key": "surface",
+      "type": "number",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "range",
+      "min": 1,
+      "max": 99999,
+      "step": 1,
+      "unit": "m2",
+      "rangePresets": [
+        50,
+        80,
+        100,
+        150,
+        200,
+        300,
+        500
+      ],
+      "options": [],
+      "label": "المساحة",
+      "optionLabels": {},
+      "unitLabel": "م²"
+    },
+    {
+      "key": "rooms",
+      "type": "select",
+      "requirement": "required",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6-plus"
+      ],
+      "showFor": [
+        "vente-appartement",
+        "location-appartement",
+        "vente-maison-villa",
+        "location-maison"
+      ],
+      "label": "الغرف",
+      "optionLabels": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6-plus": "+6"
+      }
+    },
+    {
+      "key": "floor",
+      "type": "number",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "range",
+      "min": -1,
+      "max": 30,
+      "step": 1,
+      "showFor": [
+        "vente-appartement",
+        "location-appartement",
+        "bureau"
+      ],
+      "options": [],
+      "label": "الطابق",
+      "optionLabels": {}
+    },
+    {
+      "key": "furnished",
+      "type": "boolean",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "boolean",
+      "showFor": [
+        "location-appartement",
+        "location-maison",
+        "bureau"
+      ],
+      "options": [],
+      "label": "مفروش",
+      "optionLabels": {}
+    },
+    {
+      "key": "deed_type",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "acte",
+        "livret-foncier",
+        "promotion",
+        "cooperatif",
+        "regularisation"
+      ],
+      "showFor": [
+        "vente-appartement",
+        "vente-maison-villa",
+        "terrain"
+      ],
+      "label": "نوع العقد",
+      "optionLabels": {
+        "acte": "عقد توثيقي",
+        "livret-foncier": "دفتر عقاري",
+        "promotion": "ترقية عقارية",
+        "cooperatif": "تعاونية",
+        "regularisation": "في طور التسوية"
+      }
+    },
+    {
+      "key": "condition",
+      "type": "select",
+      "requirement": "recommended",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "new",
+        "good",
+        "to-renovate",
+        "under-construction"
+      ],
+      "hideFor": [
+        "terrain"
+      ],
+      "label": "الحالة",
+      "optionLabels": {
+        "new": "جديد",
+        "good": "حالة جيدة",
+        "to-renovate": "للترميم",
+        "under-construction": "قيد البناء"
+      }
+    },
+    {
+      "key": "has_parking",
+      "type": "boolean",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "boolean",
+      "hideFor": [
+        "terrain"
+      ],
+      "options": [],
+      "label": "موقف سيارات",
+      "optionLabels": {}
+    },
+    {
+      "key": "has_elevator",
+      "type": "boolean",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "boolean",
+      "showFor": [
+        "vente-appartement",
+        "location-appartement",
+        "bureau"
+      ],
+      "options": [],
+      "label": "مصعد",
+      "optionLabels": {}
+    },
+    {
+      "key": "has_balcony",
+      "type": "boolean",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "boolean",
+      "showFor": [
+        "vente-appartement",
+        "location-appartement"
+      ],
+      "options": [],
+      "label": "شرفة",
+      "optionLabels": {}
+    },
+    {
+      "key": "facade",
+      "type": "select",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "exact",
+      "options": [
+        "main-road",
+        "secondary-road",
+        "residential",
+        "other"
+      ],
+      "showFor": [
+        "terrain",
+        "local-commercial"
+      ],
+      "label": "الواجهة",
+      "optionLabels": {
+        "main-road": "طريق رئيسي",
+        "secondary-road": "طريق ثانوي",
+        "residential": "حي سكني",
+        "other": "أخرى"
+      }
+    },
+    {
+      "key": "construction_year",
+      "type": "number",
+      "requirement": "optional",
+      "filterable": true,
+      "filterType": "range",
+      "min": 1900,
+      "max": 2028,
+      "step": 1,
+      "hideFor": [
+        "terrain"
+      ],
+      "rangePresets": [
+        1990,
+        2000,
+        2010,
+        2015,
+        2020
+      ],
+      "options": [],
+      "label": "سنة البناء",
+      "optionLabels": {}
+    },
+    {
+      "key": "total_floors",
+      "type": "number",
+      "requirement": "optional",
+      "filterable": false,
+      "filterType": "range",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "showFor": [
+        "vente-appartement",
+        "location-appartement"
+      ],
+      "options": [],
+      "label": "عدد الطوابق",
+      "optionLabels": {}
+    }
+  ],
+  "subcategories": [
+    {
+      "slug": "vente-appartement",
+      "parentSlug": "immobilier",
+      "nameFr": "Vente appartement",
+      "nameAr": "بيع شقة",
+      "nameEn": "Apartment for Sale"
+    },
+    {
+      "slug": "location-appartement",
+      "parentSlug": "immobilier",
+      "nameFr": "Location appartement",
+      "nameAr": "إيجار شقة",
+      "nameEn": "Apartment for Rent"
+    },
+    {
+      "slug": "vente-maison-villa",
+      "parentSlug": "immobilier",
+      "nameFr": "Vente maison / villa",
+      "nameAr": "بيع منزل / فيلا",
+      "nameEn": "House / Villa for Sale"
+    },
+    {
+      "slug": "location-maison",
+      "parentSlug": "immobilier",
+      "nameFr": "Location maison",
+      "nameAr": "إيجار منزل",
+      "nameEn": "House for Rent"
+    },
+    {
+      "slug": "terrain",
+      "parentSlug": "immobilier",
+      "nameFr": "Terrain",
+      "nameAr": "أرض",
+      "nameEn": "Land"
+    },
+    {
+      "slug": "local-commercial",
+      "parentSlug": "immobilier",
+      "nameFr": "Local commercial",
+      "nameAr": "محل تجاري",
+      "nameEn": "Commercial Space"
+    },
+    {
+      "slug": "bureau",
+      "parentSlug": "immobilier",
+      "nameFr": "Bureau",
+      "nameAr": "مكتب",
+      "nameEn": "Office"
+    }
+  ]
+}
