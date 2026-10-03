@@ -133,6 +133,7 @@ struct ChatMessageList: View {
             }
             .scrollDismissesKeyboard(.interactively)
             .modifier(ChatBottomAnchor())
+            .modifier(ChatTopEdge())
             .onAppear {
                 request(ChatScrollTarget.bottom, anchor: .bottom, animated: false)
             }
@@ -286,6 +287,28 @@ struct ChatMessageList: View {
         } else {
             // Les hauteurs des bulles encore jamais affichées sont estimées : un second passage corrige la position.
             self.request(request.target, anchor: request.anchor, animated: false, delay: Self.correctionDelay, isCorrection: true)
+        }
+    }
+}
+
+/// iOS 26, mode clair : bord haut « dur » sous l'en-tête opaque (barre + bandeau de l'annonce) — l'effet de bord adouci
+/// ne repasse pas par-dessus et la barre ne se teinte pas de la bulle qui défile dessous. Mode sombre et iOS < 26 :
+/// comportement du système, inchangé.
+private struct ChatTopEdge: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    init() {}
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            if colorScheme == .light {
+                content.scrollEdgeEffectStyle(.hard, for: .top)
+            } else {
+                content
+            }
+        } else {
+            content
         }
     }
 }

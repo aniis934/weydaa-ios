@@ -26,6 +26,7 @@ struct ChatScreen: View {
     private let state: ChatState
     private let emailVerified: Bool
     private let actions: ChatActions
+    @Environment(\.colorScheme) private var colorScheme
 
     init(state: ChatState, emailVerified: Bool, actions: ChatActions) {
         self.state = state
@@ -42,11 +43,27 @@ struct ChatScreen: View {
             .toolbar {
                 toolbarContent
             }
+            // En-tête stable, comme une messagerie : en mode clair, barre OPAQUE du fond de l'écran — sinon la barre
+            // (Liquid Glass sur iOS 26) s'adapte à une bulle verte qui passe dessous (barre d'état et nom en blanc).
+            // Mode sombre inchangé (barre système, déjà lisible). Bouton retour et menu gardent leur verre natif.
+            .toolbarBackground(navigationBarStyle, for: .navigationBar)
+            .toolbarBackground(opaqueHeader ? Visibility.visible : Visibility.automatic, for: .navigationBar)
             .safeAreaInset(edge: .top, spacing: 0) {
                 OfflineBanner()
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.chat")
+    }
+
+    /// Barre et bandeau de l'annonce opaques (mode clair seulement).
+    private var opaqueHeader: Bool {
+        colorScheme == .light
+    }
+
+    /// Fond de la barre : celui de l'écran en mode clair ; matériau de barre (celui du système) en mode sombre. Toujours
+    /// le même modificateur : changer d'apparence ne recrée pas le fil (position de défilement gardée).
+    private var navigationBarStyle: AnyShapeStyle {
+        opaqueHeader ? AnyShapeStyle(WeydaColor.background) : AnyShapeStyle(Material.bar)
     }
 
     /// Titre de la barre (bouton retour de l'écran suivant, VoiceOver) ; l'en-tête visible est `ChatHeaderTitle`.
@@ -286,12 +303,21 @@ private struct ChatMenu: View {
 // MARK: - Annonce du fil
 
 /// Bandeau de l'annonce sous la barre (Android : `AnnonceHeader`) : vignette, titre, prix et statut s'il n'est plus en
-/// ligne (« Vendue »…) ; toucher ouvre la fiche. Fond translucide : le fil défile dessous.
+/// ligne (« Vendue »…) ; toucher ouvre la fiche. Le fil défile dessous : fond opaque en mode clair (en-tête stable avec la
+/// barre), matériau de barre en mode sombre.
 private struct ChatListingBanner: View {
-    let annonce: ConversationAnnonce
-    let onOpen: () -> Void
+    private let annonce: ConversationAnnonce
+    private let onOpen: () -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     private static let thumbSide: CGFloat = 44
+    /// Filet sous le bandeau (mode clair).
+    private static let hairline: CGFloat = 0.5
+
+    init(annonce: ConversationAnnonce, onOpen: @escaping () -> Void) {
+        self.annonce = annonce
+        self.onOpen = onOpen
+    }
 
     var body: some View {
         Button(action: onOpen) {
@@ -315,13 +341,37 @@ private struct ChatListingBanner: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(WeydaPressStyle())
-        .background(.bar)
+        .background {
+            bannerBackground
+        }
         .overlay(alignment: .bottom) {
-            Divider()
+            bannerSeparator
         }
         .accessibilityElement(children: .combine)
         .accessibilityHint(Text(L10n.chatViewListing))
         .accessibilityIdentifier("chat.listing")
+    }
+
+    /// Mode clair : fond OPAQUE de l'écran, comme la barre au-dessus (le fil défile dessous sans la teinter) ;
+    /// mode sombre : matériau de barre, inchangé.
+    @ViewBuilder
+    private var bannerBackground: some View {
+        if colorScheme == .light {
+            WeydaColor.background
+        } else {
+            Rectangle().fill(.bar)
+        }
+    }
+
+    @ViewBuilder
+    private var bannerSeparator: some View {
+        if colorScheme == .light {
+            Rectangle()
+                .fill(WeydaColor.outlineVariant)
+                .frame(height: Self.hairline)
+        } else {
+            Divider()
+        }
     }
 
     private var thumbnail: some View {
