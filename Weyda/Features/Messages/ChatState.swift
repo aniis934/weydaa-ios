@@ -138,9 +138,46 @@ nonisolated struct ChatTimelineRow: Equatable, Sendable, Identifiable {
     var id: String { message.id }
 }
 
+/// Élément affiché du fil : séparateur de jour ou message. Identifiants stables : `chat.day.<AAAA-MM-JJ>` pour un jour,
+/// l'id du message sinon (le défilement et la pagination s'appuient sur les messages).
+nonisolated enum ChatTimelineItem: Equatable, Sendable, Identifiable {
+    case day(ChatDay)
+    case message(ChatTimelineRow)
+
+    var id: String {
+        switch self {
+        case .day(let day): day.id
+        case .message(let row): row.id
+        }
+    }
+}
+
 /// Mise en lignes du fil (logique pure, testée).
 nonisolated enum ChatTimeline {
-    static func rows(messages: [ChatMessage], userId: String, now: Date) -> [ChatTimelineRow] {
+    /// Lignes précédées d'un séparateur à chaque nouveau jour civil (un message sans date reste avec le jour en cours).
+    static func items(rows: [ChatTimelineRow], calendar: Calendar = ChatDayGrouping.deviceCalendar()) -> [ChatTimelineItem] {
+        var items: [ChatTimelineItem] = []
+        items.reserveCapacity(rows.count + 4)
+        var currentKey: String? = nil
+        for row in rows {
+            if let date = row.message.createdAt {
+                let current = ChatDayGrouping.day(of: date, calendar: calendar)
+                if current.key != currentKey {
+                    items.append(.day(current))
+                    currentKey = current.key
+                }
+            }
+            items.append(.message(row))
+        }
+        return items
+    }
+
+    static func rows(
+        messages: [ChatMessage],
+        userId: String,
+        now: Date,
+        calendar: Calendar = ChatDayGrouping.deviceCalendar()
+    ) -> [ChatTimelineRow] {
         let readId: String? = messages.last(where: { $0.isMine(userId) && $0.readAt != nil })?.id
         let openOfferId: String? = OfferRules.openOffer(messages)?.id
         let hasUser = !TextCheck.isBlank(userId)
@@ -157,8 +194,8 @@ nonisolated enum ChatTimeline {
                 ChatTimelineRow(
                     message: message,
                     isMine: isMine,
-                    startsGroup: !continues(previous, message),
-                    endsGroup: !continues(message, next),
+                    startsGroup: !continues(previous, message, calendar: calendar),
+                    endsGroup: !continues(message, next, calendar: calendar),
                     showsReadReceipt: isMine && message.id == readId,
                     isActionableOffer: actionable,
                     canDelete: message.isDeletableBy(userId, now: now)
@@ -168,10 +205,93 @@ nonisolated enum ChatTimeline {
         return rows
     }
 
-    /// Deux messages texte consécutifs du même auteur forment une suite ; une carte d'offre est toujours à part.
-    private static func continues(_ first: ChatMessage?, _ second: ChatMessage?) -> Bool {
+    /// Deux messages texte consécutifs du même auteur, le même jour, forment une suite ; une carte d'offre est toujours
+    /// à part, et un séparateur de jour coupe la suite.
+    private static func continues(_ first: ChatMessage?, _ second: ChatMessage?, calendar: Calendar) -> Bool {
         guard let first, let second else { return false }
-        return first.senderId == second.senderId && first.type == .text && second.type == .text
+        guard first.senderId == second.senderId, first.type == .text, second.type == .text else { return false }
+        guard let firstDate = first.createdAt, let secondDate = second.createdAt else { return true }
+        return ChatDayGrouping.day(of: firstDate, calendar: calendar).key == ChatDayGrouping.day(of: secondDate, calendar: calendar).key
+    }
+}
+
+// MARK: - Jours du fil
+
+/// Un jour civil du fil (séparateur « Aujourd'hui », « Hier », « 28 sept. 2026 »).
+nonisolated struct ChatDay: Hashable, Sendable, Identifiable {
+    /// Clé stable du jour dans le calendrier utilisé (« 2026-10-04 »).
+    let key: String
+    /// Minuit du jour, dans le fuseau du calendrier.
+    let start: Date
+
+    /// Identifiant de la ligne du séparateur (jamais égal à un id de message).
+    var id: String { "chat.day.\(key)" }
+}
+
+/// Messages d'un même jour civil, dans l'ordre du fil ; `day` nil = messages sans date en tête de fil.
+nonisolated struct ChatDayGroup: Equatable, Sendable {
+    let day: ChatDay?
+    var messages: [ChatMessage]
+}
+
+/// Regroupement des messages par jour civil (logique pure, testée) et libellé du séparateur.
+nonisolated enum ChatDayGrouping {
+    /// Calendrier grégorien dans le fuseau de l'appareil (comme `Format`) ; les tests injectent le leur.
+    static func deviceCalendar(timeZone: TimeZone = .current) -> Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        return calendar
+    }
+
+    /// Jour civil d'un instant dans `calendar` (minuit pile appartient au nouveau jour).
+    static func day(of date: Date, calendar: Calendar) -> ChatDay {
+        let parts = calendar.dateComponents([.year, .month, .day], from: date)
+        let key = padded(parts.year ?? 0, width: 4) + "-" + padded(parts.month ?? 0, width: 2) + "-" + padded(parts.day ?? 0, width: 2)
+        return ChatDay(key: key, start: calendar.startOfDay(for: date))
+    }
+
+    /// Messages consécutifs regroupés par jour civil, dans l'ordre du fil (ordre chronologique croissant). Un message
+    /// sans date reste avec le jour en cours.
+    static func groups(_ messages: [ChatMessage], calendar: Calendar = ChatDayGrouping.deviceCalendar()) -> [ChatDayGroup] {
+        var groups: [ChatDayGroup] = []
+        for message in messages {
+            guard let date = message.createdAt else {
+                if groups.isEmpty {
+                    groups.append(ChatDayGroup(day: nil, messages: [message]))
+                } else {
+                    groups[groups.count - 1].messages.append(message)
+                }
+                continue
+            }
+            let current = Self.day(of: date, calendar: calendar)
+            if let last = groups.last, last.day?.key == current.key {
+                groups[groups.count - 1].messages.append(message)
+            } else {
+                groups.append(ChatDayGroup(day: current, messages: [message]))
+            }
+        }
+        return groups
+    }
+
+    /// « Aujourd'hui », « Hier », sinon la date moyenne (« 28 sept. 2026 ») : libellés relatifs du SYSTÈME (aucune chaîne
+    /// du catalogue), chiffres latins, fuseau du calendrier. `DateFormatter` n'est pas Sendable : un par appel.
+    static func label(for day: ChatDay, calendar: Calendar = ChatDayGrouping.deviceCalendar(), locale: Locale = WeydaLocale.formatting) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = locale
+        // Après la locale : la changer réinitialise le calendrier du formateur.
+        formatter.calendar = calendar
+        formatter.timeZone = calendar.timeZone
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.doesRelativeDateFormatting = true
+        // « Aujourd'hui » plutôt qu'« aujourd'hui » : le libellé est seul dans sa capsule.
+        formatter.formattingContext = .beginningOfSentence
+        return Format.latinDigits(formatter.string(from: day.start))
+    }
+
+    private static func padded(_ value: Int, width: Int) -> String {
+        let text = String(value)
+        return String(repeating: "0", count: Swift.max(0, width - text.count)) + text
     }
 }
 

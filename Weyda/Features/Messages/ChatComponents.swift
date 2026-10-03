@@ -39,11 +39,13 @@ nonisolated enum ChatScrollTarget {
     static let typing = "chat.scroll.typing"
 }
 
-/// Messages en ordre chronologique dans une `LazyVStack` : ouverture en bas du fil, retour en bas à chaque message
-/// envoyé (ou reçu si l'on y était déjà — sinon l'utilisateur lisait l'historique et la liste lui était arrachée),
-/// pages précédentes chargées en remontant, la position conservée.
+/// Messages en ordre chronologique dans une `LazyVStack`, un séparateur au début de chaque jour : ouverture en bas du
+/// fil, retour en bas à chaque message envoyé (ou reçu si l'on y était déjà — sinon l'utilisateur lisait l'historique et
+/// la liste lui était arrachée), pages précédentes chargées en remontant, la position conservée. Le défilement et la
+/// pagination suivent les MESSAGES (premier / dernier), jamais les séparateurs : une page plus ancienne du même jour
+/// déplace le séparateur sans fausser l'ancre.
 struct ChatMessageList: View {
-    private let rows: [ChatTimelineRow]
+    private let items: [ChatTimelineItem]
     private let partnerName: String
     private let hasMore: Bool
     private let isPartnerTyping: Bool
@@ -75,7 +77,7 @@ struct ChatMessageList: View {
     private static let correctionDelay: UInt64 = 120_000_000
 
     init(
-        rows: [ChatTimelineRow],
+        items: [ChatTimelineItem],
         partnerName: String,
         hasMore: Bool,
         isPartnerTyping: Bool,
@@ -87,7 +89,7 @@ struct ChatMessageList: View {
         onRespond: @escaping (OfferAction) -> Void,
         onCounter: @escaping () -> Void
     ) {
-        self.rows = rows
+        self.items = items
         self.partnerName = partnerName
         self.hasMore = hasMore
         self.isPartnerTyping = isPartnerTyping
@@ -107,18 +109,9 @@ struct ChatMessageList: View {
                     if hasMore {
                         olderLoader
                     }
-                    ForEach(rows) { row in
-                        ChatMessageRow(
-                            row: row,
-                            partnerName: partnerName,
-                            offerActions: offerActions,
-                            isOfferBusy: isOfferBusy,
-                            onDelete: onDelete,
-                            onRespond: onRespond,
-                            onCounter: onCounter
-                        )
-                        .padding(.top, row.startsGroup ? WeydaSpace.md : WeydaSpace.xxs)
-                        .id(row.id)
+                    ForEach(items) { item in
+                        itemView(item)
+                            .id(item.id)
                     }
                     if isPartnerTyping {
                         ChatTypingBubble()
@@ -143,10 +136,10 @@ struct ChatMessageList: View {
             .onAppear {
                 request(ChatScrollTarget.bottom, anchor: .bottom, animated: false)
             }
-            .onChange(of: rows.last?.id) { _ in
+            .onChange(of: lastRow?.id) { _ in
                 lastRowChanged()
             }
-            .onChange(of: rows.first?.id) { _ in
+            .onChange(of: firstRowId) { _ in
                 firstRowChanged()
             }
             .onChange(of: isPartnerTyping) { typing in
@@ -166,6 +159,48 @@ struct ChatMessageList: View {
         }
     }
 
+    /// Séparateur de jour ou ligne de message.
+    @ViewBuilder
+    private func itemView(_ item: ChatTimelineItem) -> some View {
+        switch item {
+        case .day(let day):
+            ChatDaySeparator(title: ChatDayGrouping.label(for: day))
+                .padding(.top, WeydaSpace.lg)
+                .padding(.bottom, WeydaSpace.xs)
+        case .message(let row):
+            ChatMessageRow(
+                row: row,
+                partnerName: partnerName,
+                offerActions: offerActions,
+                isOfferBusy: isOfferBusy,
+                onDelete: onDelete,
+                onRespond: onRespond,
+                onCounter: onCounter
+            )
+            .padding(.top, row.startsGroup ? WeydaSpace.md : WeydaSpace.xxs)
+        }
+    }
+
+    /// Dernier message affiché (les séparateurs ne comptent pas).
+    private var lastRow: ChatTimelineRow? {
+        for item in items.reversed() {
+            if case .message(let row) = item {
+                return row
+            }
+        }
+        return nil
+    }
+
+    /// Premier message affiché : l'ancre de la page précédente.
+    private var firstRowId: String? {
+        for item in items {
+            if case .message(let row) = item {
+                return row.id
+            }
+        }
+        return nil
+    }
+
     /// Haut du fil : indicateur qui demande la page précédente quand il arrive à l'écran.
     private var olderLoader: some View {
         InlineLoader()
@@ -180,13 +215,13 @@ struct ChatMessageList: View {
 
     private func loadOlderIfReady() {
         guard isReady, hasMore else { return }
-        olderAnchor = rows.first?.id
+        olderAnchor = firstRowId
         onLoadOlder()
     }
 
     /// Nouveau dernier message : retour en bas s'il est de moi, ou si j'y étais déjà.
     private func lastRowChanged() {
-        guard let last = rows.last else { return }
+        guard let last = lastRow else { return }
         if last.isMine || isAtBottom {
             request(ChatScrollTarget.bottom, anchor: .bottom, animated: true)
         }
@@ -359,6 +394,24 @@ struct ChatMessageRow: View {
         let message = row.message
         let onDelete = self.onDelete
         return { onDelete(message) }
+    }
+}
+
+/// Séparateur de jour : petite capsule centrée et discrète (« Aujourd'hui », « Hier », « 28 sept. 2026 »). Titre pour
+/// VoiceOver : le rotor « En-têtes » saute d'un jour à l'autre.
+private struct ChatDaySeparator: View {
+    let title: String
+
+    var body: some View {
+        Text(title)
+            .weydaText(.labelSmall)
+            .foregroundStyle(WeydaColor.onSurfaceVariant)
+            .lineLimit(1)
+            .padding(.horizontal, WeydaSpace.md)
+            .padding(.vertical, WeydaSpace.xs)
+            .background(WeydaColor.surfaceContainer, in: Capsule())
+            .frame(maxWidth: .infinity)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 

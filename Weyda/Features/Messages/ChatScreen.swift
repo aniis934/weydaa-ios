@@ -125,7 +125,7 @@ private struct ChatThreadContent: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             ChatMessageList(
-                rows: ChatTimeline.rows(messages: state.messages, userId: state.userId, now: Date()),
+                items: timelineItems,
                 partnerName: state.partnerName,
                 hasMore: state.hasMore,
                 isPartnerTyping: state.isPartnerTyping,
@@ -138,6 +138,13 @@ private struct ChatThreadContent: View {
                 onCounter: actions.counterOffer
             )
         }
+    }
+
+    /// Lignes du fil et séparateurs de jour, dans le fuseau de l'appareil.
+    private var timelineItems: [ChatTimelineItem] {
+        let calendar = ChatDayGrouping.deviceCalendar()
+        let rows = ChatTimeline.rows(messages: state.messages, userId: state.userId, now: Date(), calendar: calendar)
+        return ChatTimeline.items(rows: rows, calendar: calendar)
     }
 
     @ViewBuilder

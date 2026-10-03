@@ -635,7 +635,9 @@ final class ChatViewModelTests: XCTestCase {
             counter,
             Self.domain("d", userId, 1),
         ]
-        let rows = ChatTimeline.rows(messages: messages, userId: userId, now: Self.reference)
+        // Fuseau fixé : les cinq messages (30 dernières minutes) tombent le même jour civil.
+        let utc = ChatDayGrouping.deviceCalendar(timeZone: TimeZone(identifier: "UTC") ?? .current)
+        let rows = ChatTimeline.rows(messages: messages, userId: userId, now: Self.reference, calendar: utc)
         XCTAssertEqual(rows.map { $0.id }, ["a", "b", "c", "o1", "d"])
         // « Lu » une seule fois, sous mon DERNIER message lu.
         XCTAssertEqual(rows.filter { $0.showsReadReceipt }.map { $0.id }, ["b"])
