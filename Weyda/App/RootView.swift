@@ -96,8 +96,9 @@ private struct TabStack: View {
     }
 }
 
-/// Écran racine de chaque onglet. Déposer et Messages restent provisoires (phases 4 et 5) ; Profil : visiteur
-/// (connexion) ou membre, selon la session (`ProfileView`, phase 3).
+/// Écran racine de chaque onglet. Messages reste provisoire (phase 5) ; Déposer : l'assistant de dépôt (phase 4,
+/// invitation à se connecter pour un visiteur) ; Profil : visiteur (connexion) ou membre, selon la session
+/// (`ProfileView`, phase 3).
 private struct TabRoot: View {
     private let tab: AppTab
 
@@ -111,7 +112,9 @@ private struct TabRoot: View {
             HomeView()
         case .listings:
             ListingsView()
-        case .post, .messages:
+        case .post:
+            PostListingView()
+        case .messages:
             PlaceholderScreen(tab: tab)
         case .account:
             ProfileView()

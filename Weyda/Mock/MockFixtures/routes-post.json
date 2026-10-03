@@ -1,0 +1,7 @@
+[
+  {"method": "POST", "path": "/api/annonces", "status": 201, "fixture": "post/annonce-creee.json"},
+  {"method": "PUT", "path": "/api/annonces/*", "fixture": "post/annonce-modifiee.json"},
+  {"method": "POST", "path": "/api/upload", "fixture": "post/upload.json"},
+  {"method": "GET", "path": "/api/annonces/mock-new-1", "fixture": "post/annonce-mock-new-1.json"},
+  {"method": "GET", "path": "/api/annonces/renault-clio-4-gt-line-2019-alger", "fixture": "post/annonce-mock-new-1.json"}
+]

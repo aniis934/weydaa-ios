@@ -1,0 +1,19 @@
+{
+  "ownerId": "mock-me",
+  "dirty": true,
+  "showPhone": true,
+  "step": "ATTRIBUTES",
+  "parentCategoryId": "cat_vehicules",
+  "subcategoryId": "sub_voitures",
+  "attributeValues": {
+    "make": "renault",
+    "model": "clio-4",
+    "year": "2019",
+    "mileage": "85000",
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "white",
+    "doors": "5"
+  }
+}

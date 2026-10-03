@@ -1,8 +1,9 @@
 import SwiftUI
 
 /// « Mes annonces » — portage de `MyListingsRoute` / `MyListingsScreen` (MyListingsScreen.kt) : onglets par statut,
-/// badges, note de modération IA sous une annonce refusée, ouverture de la fiche. Les actions (modifier, vendu,
-/// renouveler, supprimer) arrivent avec la phase 4 : leur logique est dans le ViewModel, pas encore leurs boutons.
+/// badges, note de modération IA sous une annonce refusée, ouverture de la fiche, et sous chaque annonce ses actions
+/// (`ListingActionsRow`) : modifier, marquer vendu, renouveler, supprimer — vendu et suppression après confirmation
+/// (`ConfirmActionDialog`), message bref après chaque action (le Snackbar d'Android).
 struct MyListingsView: View {
     @EnvironmentObject private var container: AppContainer
 
@@ -15,7 +16,8 @@ struct MyListingsView: View {
     }
 }
 
-/// Possède le ViewModel ; recharge en silence à chaque retour sur l'écran.
+/// Possède le ViewModel ; recharge en silence à chaque retour sur l'écran (dont le retour de l'édition d'une
+/// annonce : sa ligne a pu changer, titre ou statut).
 private struct MyListingsHost: View {
     @StateObject private var model: MyListingsViewModel
     @EnvironmentObject private var router: AppRouter
@@ -27,10 +29,14 @@ private struct MyListingsHost: View {
     var body: some View {
         MyListingsScreen(
             state: model.state,
+            isConfirmationPresented: confirmationBinding,
             onFilter: { status in _ = model.setFilter(status) },
             onRetry: { _ = model.load() },
             onLoadMore: { _ = model.loadMore() },
             onPost: { router.select(.post) },
+            onAction: { action, listing in perform(action, on: listing) },
+            onConfirm: { _ = model.confirmAction() },
+            onCancelConfirmation: { model.dismissAction() },
             onNoticeShown: { model.noticeShown() }
         )
         // `@MainActor` explicite : juste, que le SDK fasse hériter cette fermeture de l'acteur de la vue ou non.
@@ -41,15 +47,51 @@ private struct MyListingsHost: View {
             _ = model.appear()
         }
     }
+
+    /// Boutons d'une annonce — `MyListingsActions` (Android) : modifier ouvre l'assistant en édition, vendu et
+    /// suppression demandent confirmation, renouveler part tout de suite.
+    private func perform(_ action: MyListingRowAction, on listing: Listing) {
+        switch action {
+        case .edit:
+            router.push(.editListing(id: listing.id))
+        case .sold:
+            model.askMarkSold(listing)
+        case .renew:
+            _ = model.renew(listing)
+        case .delete:
+            model.askDelete(listing)
+        }
+    }
+
+    /// Boîte de confirmation, ouverte tant qu'une action attend (`pendingAction`). Un appui sur l'un de ses boutons
+    /// la referme et SwiftUI repasse la liaison à « faux » — peut-être AVANT d'exécuter l'action du bouton, qui lit
+    /// encore l'action en attente : l'effacement est donc reporté au tour suivant (sans effet si le bouton l'a fait).
+    private var confirmationBinding: Binding<Bool> {
+        let model = self.model
+        return Binding(
+            get: { MainActor.assumeIsolated { model.state.pendingAction != nil } },
+            set: { presented in
+                guard !presented else { return }
+                Task { @MainActor in
+                    model.dismissAction()
+                }
+            }
+        )
+    }
 }
 
-/// Écran sans état : puces de statut fixées en haut, puis la liste (squelettes, erreur, vide, annonces).
+/// Écran sans état : puces de statut fixées en haut, puis la liste (squelettes, erreur, vide, annonces et leurs
+/// actions), la confirmation d'une action et le message bref qui la suit.
 struct MyListingsScreen: View {
     private let state: MyListingsState
+    private let isConfirmationPresented: Binding<Bool>
     private let onFilter: (ListingStatus?) -> Void
     private let onRetry: () -> Void
     private let onLoadMore: () -> Void
     private let onPost: () -> Void
+    private let onAction: (MyListingRowAction, Listing) -> Void
+    private let onConfirm: () -> Void
+    private let onCancelConfirmation: () -> Void
     private let onNoticeShown: () -> Void
 
     /// La page suivante se demande quand l'une des 4 dernières annonces paraît (Android : même seuil).
@@ -57,17 +99,25 @@ struct MyListingsScreen: View {
 
     init(
         state: MyListingsState,
+        isConfirmationPresented: Binding<Bool>,
         onFilter: @escaping (ListingStatus?) -> Void,
         onRetry: @escaping () -> Void,
         onLoadMore: @escaping () -> Void,
         onPost: @escaping () -> Void,
+        onAction: @escaping (MyListingRowAction, Listing) -> Void,
+        onConfirm: @escaping () -> Void,
+        onCancelConfirmation: @escaping () -> Void,
         onNoticeShown: @escaping () -> Void
     ) {
         self.state = state
+        self.isConfirmationPresented = isConfirmationPresented
         self.onFilter = onFilter
         self.onRetry = onRetry
         self.onLoadMore = onLoadMore
         self.onPost = onPost
+        self.onAction = onAction
+        self.onConfirm = onConfirm
+        self.onCancelConfirmation = onCancelConfirmation
         self.onNoticeShown = onNoticeShown
     }
 
@@ -83,10 +133,32 @@ struct MyListingsScreen: View {
         }
         .background(WeydaColor.background)
         .navigationTitle(L10n.myListingsTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .floatingNotice(state.notice, onShown: onNoticeShown)
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("screen.myListings")
+        .navigationBarTitleDisplayMode(.inline)
+        .floatingNotice(state.notice, onShown: onNoticeShown)
+        .alert(confirmationTitle, isPresented: isConfirmationPresented, presenting: state.pendingAction) { action in
+            confirmationButtons(for: action)
+        } message: { action in
+            Text(MyListingsText.confirmationMessage(for: action))
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("screen.myListings")
+    }
+
+    /// Titre de la confirmation (vide le temps que la boîte se referme).
+    private var confirmationTitle: String {
+        state.pendingAction.map { MyListingsText.confirmationTitle(for: $0) } ?? ""
+    }
+
+    /// `ConfirmActionDialog` (Android) : « Confirmer la vente », ou « Supprimer » en rouge, puis « Annuler ».
+    @ViewBuilder
+    private func confirmationButtons(for action: MyListingAction) -> some View {
+        switch action {
+        case .markSold:
+            Button(L10n.myListingSoldConfirmBtn, action: onConfirm)
+        case .delete:
+            Button(L10n.myListingDelete, role: .destructive, action: onConfirm)
+        }
+        Button(L10n.cancel, role: .cancel, action: onCancelConfirmation)
     }
 
     /// Chaque état a sa propre vue défilante : un nouveau filtre repart du haut de la liste (Android le
@@ -107,16 +179,20 @@ struct MyListingsScreen: View {
         }
     }
 
+    /// Une action à la fois (règle du ViewModel) : pendant qu'elle tourne, les boutons de TOUTES les annonces sont
+    /// désactivés, l'indicateur n'apparaît que sur la sienne.
     private var list: some View {
         let trailing: Set<String> = Set(state.items.suffix(Self.prefetchDistance).map(\.id))
+        let busyId: String? = state.busyId
         return ScrollView {
             LazyVStack(spacing: WeydaSpace.gutter) {
                 ForEach(state.items) { listing in
-                    NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
-                        MyListingRow(listing: listing)
-                    }
-                    .buttonStyle(.weydaCard)
-                    .accessibilityIdentifier("myListings.row.\(listing.id)")
+                    MyListingCard(
+                        listing: listing,
+                        isBusy: busyId == listing.id,
+                        isLocked: busyId != nil,
+                        onAction: { action in onAction(action, listing) }
+                    )
                     .onAppear {
                         if trailing.contains(listing.id) {
                             onLoadMore()
@@ -248,15 +324,219 @@ nonisolated enum MyListingsText {
         }
         return parts.joined(separator: ", ")
     }
+
+    /// Titre de la confirmation d'une action (`ConfirmActionDialog`).
+    static func confirmationTitle(for action: MyListingAction) -> String {
+        switch action {
+        case .markSold: L10n.myListingSoldConfirmTitle
+        case .delete: L10n.myListingDeleteConfirmTitle
+        }
+    }
+
+    static func confirmationMessage(for action: MyListingAction) -> String {
+        switch action {
+        case .markSold: L10n.myListingSoldConfirmBody
+        case .delete: L10n.myListingDeleteConfirmBody
+        }
+    }
 }
 
-/// Carte d'une annonce du membre : vignette, statut, titre, prix, vues et ancienneté ; note de modération dessous.
-/// Une seule entité pour VoiceOver.
+// MARK: - Actions d'une annonce
+
+/// Un bouton sous une annonce — règles de `ListingActionsRow` (Android). Logique pure, testable.
+nonisolated enum MyListingRowAction: String, CaseIterable, Hashable, Sendable {
+    case edit, sold, renew, delete
+
+    /// Boutons proposés, dans l'ordre d'Android : Modifier (sauf vendue), Marquer vendu (en ligne), Renouveler
+    /// (expirée, ou en ligne à moins de 7 jours de l'échéance, s'il reste des renouvellements), Supprimer (toujours).
+    static func available(for listing: Listing, now: Date = Date()) -> [MyListingRowAction] {
+        let status = listing.listingStatus
+        var result: [MyListingRowAction] = []
+        if status != .sold {
+            result.append(.edit)
+        }
+        if status == .active {
+            result.append(.sold)
+        }
+        if listing.isRenewable(now: now) && listing.renewalsLeft > 0 {
+            result.append(.renew)
+        }
+        result.append(.delete)
+        return result
+    }
+
+    /// Renouvelable mais plus aucun renouvellement : une information (`error_renewal_limit`), pas un bouton désactivé.
+    static func showsRenewalLimit(for listing: Listing, now: Date = Date()) -> Bool {
+        listing.isRenewable(now: now) && listing.renewalsLeft == 0
+    }
+
+    func title(for listing: Listing) -> String {
+        switch self {
+        case .edit: L10n.myListingEdit
+        case .sold: L10n.myListingMarkSold
+        case .renew: L10n.myListingRenew(listing.renewalsLeft)
+        case .delete: L10n.myListingDelete
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .edit: "square.and.pencil"
+        case .sold: "checkmark.circle"
+        case .renew: "arrow.clockwise"
+        case .delete: "trash"
+        }
+    }
+
+    var isDestructive: Bool { self == .delete }
+
+    /// Identifiant stable (tour de captures) : `myListing.<edit|sold|renew|delete>.<id>`.
+    func accessibilityIdentifier(for listingId: String) -> String {
+        "myListing.\(rawValue).\(listingId)"
+    }
+}
+
+/// Carte d'une annonce du membre : la partie haute ouvre la fiche, la barre du bas porte ses actions. Deux zones
+/// sœurs (et non des boutons dans le lien) : chaque bouton reste atteignable par VoiceOver et par le tour ; le lien
+/// propose en plus les mêmes actions dans le rotor.
+private struct MyListingCard: View {
+    let listing: Listing
+    let isBusy: Bool
+    let isLocked: Bool
+    let onAction: (MyListingRowAction) -> Void
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
+        let actions = MyListingRowAction.available(for: listing)
+        VStack(alignment: .leading, spacing: 0) {
+            NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
+                MyListingRow(listing: listing)
+            }
+            .buttonStyle(MyListingLinkStyle())
+            .accessibilityIdentifier("myListings.row.\(listing.id)")
+            .accessibilityActions {
+                if !isLocked {
+                    ForEach(actions, id: \.self) { action in
+                        Button(action.title(for: listing)) {
+                            onAction(action)
+                        }
+                    }
+                }
+            }
+            Rectangle()
+                .fill(WeydaPalette.cardOutline)
+                .frame(height: 1)
+            MyListingActionsBar(
+                listing: listing,
+                actions: actions,
+                isBusy: isBusy,
+                isLocked: isLocked,
+                onAction: onAction
+            )
+        }
+        .background(WeydaColor.surface)
+        .clipShape(shape)
+        .overlay {
+            shape.strokeBorder(WeydaPalette.cardOutline, lineWidth: 1)
+        }
+    }
+}
+
+/// Appui sur la partie haute de la carte : un voile léger (le retrait `.weydaCard` rétrécirait le contenu À
+/// L'INTÉRIEUR du cadre, la barre d'actions restant fixe).
+private struct MyListingLinkStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .overlay {
+                WeydaColor.onSurface
+                    .opacity(configuration.isPressed ? 0.06 : 0)
+                    .allowsHitTesting(false)
+            }
+    }
+}
+
+/// Barre d'actions : cellules de même largeur (icône au-dessus du libellé), sur une seule ligne quel que soit leur
+/// nombre — Android passait à la ligne (FlowRow) des boutons texte qui ne tenaient pas. Pendant l'action de CETTE
+/// annonce, l'indicateur remplace les boutons ; pendant celle d'une autre, ils sont seulement désactivés.
+private struct MyListingActionsBar: View {
+    let listing: Listing
+    let actions: [MyListingRowAction]
+    let isBusy: Bool
+    let isLocked: Bool
+    let onAction: (MyListingRowAction) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack {
+                HStack(spacing: 0) {
+                    ForEach(actions, id: \.self) { action in
+                        MyListingActionButton(
+                            action: action,
+                            title: action.title(for: listing),
+                            identifier: action.accessibilityIdentifier(for: listing.id),
+                            onTap: { onAction(action) }
+                        )
+                    }
+                }
+                .opacity(isBusy ? 0 : 1)
+                .accessibilityHidden(isBusy)
+                if isBusy {
+                    WeydaLoader()
+                        .frame(width: WeydaSize.iconLarge, height: WeydaSize.iconLarge)
+                }
+            }
+            .disabled(isLocked)
+            if MyListingRowAction.showsRenewalLimit(for: listing) {
+                Text(L10n.errorRenewalLimit)
+                    .weydaText(.bodySmall)
+                    .foregroundStyle(WeydaColor.onSurfaceVariant)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, WeydaSpace.md)
+                    .padding(.bottom, WeydaSpace.sm)
+            }
+        }
+        .padding(.horizontal, WeydaSpace.xs)
+    }
+}
+
+/// Une cellule de la barre : icône puis libellé (2 lignes au plus), teinte verte — rouge pour « Supprimer ».
+/// Cible d'au moins 44 pt ; grisée quand la barre est désactivée.
+private struct MyListingActionButton: View {
+    let action: MyListingRowAction
+    let title: String
+    let identifier: String
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(spacing: WeydaSpace.xxs) {
+                Image(systemName: action.symbol)
+                    .font(.body.weight(.medium))
+                    .accessibilityHidden(true)
+                Text(title)
+                    .weydaText(.labelMedium)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+            }
+            .frame(maxWidth: .infinity, minHeight: WeydaSize.touchTarget)
+            .padding(.vertical, WeydaSpace.xs)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.borderless)
+        .tint(action.isDestructive ? WeydaColor.error : WeydaColor.primary)
+        .accessibilityIdentifier(identifier)
+    }
+}
+
+/// Haut de la carte d'une annonce du membre : vignette, statut, titre, prix, vues et ancienneté ; note de
+/// modération dessous. Une seule entité pour VoiceOver.
 private struct MyListingRow: View {
     let listing: Listing
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
         let reasons = MyListingsText.moderationReasons(for: listing)
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: WeydaSpace.md) {
@@ -268,12 +548,7 @@ private struct MyListingRow: View {
                 MyListingModerationNote(reasons: reasons)
             }
         }
-        .background(WeydaColor.surface)
-        .clipShape(shape)
-        .overlay {
-            shape.strokeBorder(WeydaPalette.cardOutline, lineWidth: 1)
-        }
-        .contentShape(shape)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(MyListingsText.accessibilityLabel(for: listing))
     }

@@ -4,7 +4,7 @@ import XCTest
 @testable import Weyda
 
 /// Portage de ProfileViewModelsTest.kt (Android) : profil (profil complet + statistiques, déconnexion), mes annonces
-/// (filtre, pagination, actions portées pour la phase 4), modifier le profil, changer le mot de passe — mêmes cas.
+/// (filtre, pagination, actions vendu / renouveler / supprimer), modifier le profil, changer le mot de passe — mêmes cas.
 /// En plus : textes d'une ligne de « Mes annonces » (motifs de modération). Données fictives.
 final class ProfileViewModelsTests: XCTestCase {
     /// Session ouverte au nom d'Amina (`user_1`), e-mail vérifié — le `setUp` d'Android.

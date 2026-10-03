@@ -31,7 +31,10 @@ struct RouteDestination: View {
             AccountDataView()
         case .contact:
             ContactView()
-        case .chat, .favorites, .savedSearches, .notifications, .editListing:
+        // Dépôt (phase 4) : modifier une annonce = l'assistant, ouvert sur le récapitulatif (écran de membre).
+        case .editListing(let id):
+            PostListingView(editingId: id)
+        case .chat, .favorites, .savedSearches, .notifications:
             ComingSoonView(route: route)
         }
     }

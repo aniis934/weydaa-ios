@@ -26,6 +26,10 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-04** — **Phase 4 close** (PR #5) : déposer une annonce (assistant 6 étapes, attributs dynamiques, photos galerie
+  et appareil, envoi photo par photo, brouillon), modifier une annonce, boutons de « Mes annonces » (vendu, renouveler,
+  supprimer). 475 tests verts, tours de captures verts, galerie https://claude.ai/artifact/TcxYfo9YzeUPup9hiYkeAt. **ARRÊT DEMANDÉ PAR LE PROPRIÉTAIRE** à la fin de
+  chaque phase : attendre son feu vert avant la phase 5 (messagerie et notifications + lot serveur B).
 - **2026-10-03 (nuit)** — **Phase 3 close** (PR #4) : connexion (e-mail, inscription, mot de passe oublié, nouveau
   mot de passe, code e-mail, Apple, Google sans SDK) et compte (profil, modifier, mot de passe, mes annonces, mes
   données, contact, langue → Réglages). 434 tests verts, tours de captures verts, galerie
@@ -45,11 +49,11 @@ quand plus rien n'avance sans le propriétaire.
 - **Envoi git** : `weydaa-site/.claude/settings.json` interdit `git push` (protection du site : un envoi sur
   `master` part en production). La session tourne depuis `weydaa-site` → la règle bloque aussi le dépôt iOS. Le
   propriétaire l'a levée pour la phase 2 puis elle a été rétablie ; en phase 3, il a autorisé « pour la session, dépôt
-  iOS seulement » → envois ciblés `git -C <worktree iOS> push`. Redemander à chaque nouvelle session (ou ouvrir la
-  session depuis `weydaa-ios`).
-- Phase 4 (au feu vert) : nouveau worktree `../weydaa-ios-p4` depuis `main` ; contrats `docs/equipe/CONTRACTS-P4.md`
-  à écrire d'abord (assistant 6 étapes, attributs dynamiques, photos, brouillon, actions de « Mes annonces » : le
-  ViewModel porte déjà la logique vendu / renouveler / supprimer, sans bouton). Chaînes des agents : un fichier JSON
+  iOS seulement » → envois ciblés `git -C <worktree iOS> push` (de nouveau accordé en phase 4, le 2026-10-04). Redemander
+  à chaque nouvelle session (ou ouvrir la session depuis `weydaa-ios`).
+- Phase 5 (au feu vert) : nouveau worktree `../weydaa-ios-p5` depuis `main` ; contrats `docs/equipe/CONTRACTS-P5.md`
+  à écrire d'abord (conversations, fil, offres, archives, « écrit… », blocage, signalement, temps réel, cloche et pastilles,
+  push Firebase — dépendance accordée —, liens universels ; lot serveur B = PR weyda2026 #6). Chaînes des agents : un fichier JSON
   par agent fusionné par `node scripts/merge-agent-strings.mjs . <fichiers>` (même format que `scripts/ios-strings.json`),
   clés utilisables tout de suite dans le code ; puis `node scripts/convert-strings.mjs`.
 

@@ -829,6 +829,22 @@ nonisolated enum L10n {
     static var postSuccessTitle: String { tr("post_success_title") }
     /// Déposer une annonce
     static var postTitle: String { tr("post_title") }
+    /// Choisir
+    static var postUiChoose: String { tr("post_ui_choose") }
+    /// Modifier : %1$s
+    static func postUiEditSection(_ p1: String) -> String { tr("post_ui_edit_section", p1) }
+    /// Aucun résultat
+    static var postUiNoMatch: String { tr("post_ui_no_match") }
+    /// Échec de l'envoi
+    static var postUiPhotoFailed: String { tr("post_ui_photo_failed") }
+    /// Photo %1$d sur %2$d
+    static func postUiPhotoPosition(_ p1: Int, _ p2: Int) -> String { tr("post_ui_photo_position", p1, p2) }
+    /// Envoi en cours
+    static var postUiPhotoUploading: String { tr("post_ui_photo_uploading") }
+    /// Obligatoire
+    static var postUiRequired: String { tr("post_ui_required") }
+    /// Rechercher
+    static var postUiSearch: String { tr("post_ui_search") }
     /// Vos modifications seront vérifiées avant d'être publiées.
     static var postUpdatedPending: String { tr("post_updated_pending") }
     /// Vos modifications sont enregistrées.
@@ -839,6 +855,8 @@ nonisolated enum L10n {
     static var postViewListing: String { tr("post_view_listing") }
     /// Wilaya
     static var postWilaya: String { tr("post_wilaya") }
+    /// L'appareil photo n'est pas disponible sur cet appareil. Choisissez vos photos dans la galerie.
+    static var postWizCameraUnavailable: String { tr("post_wiz_camera_unavailable") }
     /// %1$s DA
     static func priceDzd(_ p1: String) -> String { tr("price_dzd", p1) }
     /// Gratuit
@@ -1524,11 +1542,20 @@ nonisolated enum L10n {
         "post_success_published",
         "post_success_title",
         "post_title",
+        "post_ui_choose",
+        "post_ui_edit_section",
+        "post_ui_no_match",
+        "post_ui_photo_failed",
+        "post_ui_photo_position",
+        "post_ui_photo_uploading",
+        "post_ui_required",
+        "post_ui_search",
         "post_updated_pending",
         "post_updated_saved",
         "post_updated_title",
         "post_view_listing",
         "post_wilaya",
+        "post_wiz_camera_unavailable",
         "price_dzd",
         "price_free",
         "price_negotiable",

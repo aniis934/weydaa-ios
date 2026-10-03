@@ -39,14 +39,16 @@ Weyda/App/               WeydaApp, AppContainer (DI manuelle : clients, session,
                          Navigation/ (AppRoute, AppRouter : une pile par onglet, RouteDestinations, LaunchRoute)
 Weyda/Core/              Config, Localization (L10n.swift GÉNÉRÉ, WeydaLocale : langue + chiffres latins),
                          Models, Network (APIClient, WeydaAPI/LiveWeydaAPI, DTO/), Mapping, Session (trousseau),
-                         Repositories, Realtime (Phoenix), Images (pipeline + RemoteImage), Upload, Local, Common
+                         Repositories, Realtime (Phoenix), Images (pipeline + RemoteImage), Upload, Local (historique,
+                         brouillon du dépôt, photos locales), Common
                          (Format, ErrorMapper, Validators, Paging, SuggestionsEngine), Auth (Sign in with Apple +
                          nonce, Google par ASWebAuthenticationSession + PKCE, sans SDK)
 Weyda/DesignSystem/      Tokens (WeydaColor/Palette/Ramp, WeydaSpace/Size/Radius, WeydaDuration/WeydaCurve,
                          WeydaTextStyle), Brand (WeydaMarkPath = tracé unique du W, WeydaMark/Extruded/Tile/
                          Loader/Wordmark, LaunchView), Components, Showcase (Debug)
 Weyda/Features/          un dossier par domaine : Home, Listings, Detail, Seller, About (phase 2) ; Auth (feuille
-                         de connexion `AuthFlowView`), Account (profil et écrans du compte) (phase 3) ; Shell (provisoires)
+                         de connexion `AuthFlowView`), Account (profil et écrans du compte) (phase 3) ; Post (assistant de
+                         dépôt, modification, sélecteurs de photos) (phase 4) ; Shell (provisoires)
 Weyda/Mock/              API simulée (Debug) : MockURLProtocol (jokers, `*` de requête), MockPhotos (photos dessinées),
                          MockFixtures/routes-<domaine>.json + dossiers (exclu des builds Release)
 Weyda/Resources/         Assets.xcassets (AppIcon, SplashMark, LaunchBackground, AccentColor, Categories/ Lucide,

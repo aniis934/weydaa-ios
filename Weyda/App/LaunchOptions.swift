@@ -17,6 +17,8 @@ import Foundation
 ///                  unverified  e-mail vérifié — ou à vérifier avec `unverified`) ; sans effet sur l'API réelle
 ///   -WeydaAuthDemo invalid    (Debug) inscription pré-remplie de valeurs refusées, erreurs de champ affichées :
 ///                             capture d'un formulaire en erreur sans saisie au clavier (fiable dans toutes les langues)
+///   -WeydaPostDraft step-review  (Debug, API simulée) brouillon de dépôt `MockFixtures/post/drafts/<nom>.json` repris par
+///                             l'assistant (step-category…step-review, photos-failed, details-invalid)
 nonisolated enum LaunchOptions {
     /// Session simulée demandée par `-WeydaLoggedIn` (captures des écrans de membre).
     nonisolated enum MockSession: Sendable {
@@ -60,6 +62,15 @@ nonisolated enum LaunchOptions {
     static var authDemo: String? {
         #if DEBUG
         return defaults.string(forKey: "WeydaAuthDemo")
+        #else
+        return nil
+        #endif
+    }
+
+    /// Brouillon de dépôt simulé (`-WeydaPostDraft <nom>`), écrit par `AppContainer` en API simulée ; toujours nil en Release.
+    static var postDraft: String? {
+        #if DEBUG
+        return defaults.string(forKey: "WeydaPostDraft")
         #else
         return nil
         #endif

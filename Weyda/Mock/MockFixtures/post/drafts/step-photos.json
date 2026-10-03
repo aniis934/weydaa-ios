@@ -1,0 +1,43 @@
+{
+  "ownerId": "mock-me",
+  "dirty": true,
+  "showPhone": true,
+  "step": "PHOTOS",
+  "parentCategoryId": "cat_vehicules",
+  "subcategoryId": "sub_voitures",
+  "attributeValues": {
+    "make": "renault",
+    "model": "clio-4",
+    "year": "2019",
+    "mileage": "85000",
+    "fuel": "diesel",
+    "transmission": "manual",
+    "condition": "good",
+    "color": "white",
+    "doors": "5"
+  },
+  "title": "Renault Clio 4 GT Line 2019",
+  "description": "Clio 4 GT Line de 2019, première main, entretien suivi chez le concessionnaire. Moteur diesel 1.5 dCi, boîte manuelle, climatisation automatique et caméra de recul. Pneus neufs, carnet d'entretien disponible.",
+  "priceType": "NEGOTIABLE",
+  "price": "2350000",
+  "photos": [
+    {
+      "localRef": "40980a3e461c381aedcce1ef68abfc2431f7f11bd024a51e33909f7e69648723",
+      "url": "https://photos.mock.weydaa/annonces/car-91.webp",
+      "thumbnailUrl": "https://photos.mock.weydaa/annonces/car-91_thumb.webp",
+      "publicId": "annonces/car-91.webp"
+    },
+    {
+      "localRef": "3c43e111850c9ebeda3414fc8b624d6b194b0fd8342cb3829e76e438921a6b05",
+      "url": "https://photos.mock.weydaa/annonces/car-92.webp",
+      "thumbnailUrl": "https://photos.mock.weydaa/annonces/car-92_thumb.webp",
+      "publicId": "annonces/car-92.webp"
+    },
+    {
+      "localRef": "be0067d97a5bae16dc73c94e5ad4bf2463f895025eba2741b34f19b34f126c87",
+      "url": "https://photos.mock.weydaa/annonces/car-93.webp",
+      "thumbnailUrl": "https://photos.mock.weydaa/annonces/car-93_thumb.webp",
+      "publicId": "annonces/car-93.webp"
+    }
+  ]
+}

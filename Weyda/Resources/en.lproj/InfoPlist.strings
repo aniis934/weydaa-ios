@@ -1,2 +1,5 @@
 /* Display name under the icon (same as app_name on Android). */
 "CFBundleDisplayName" = "Weydaa";
+
+/* Camera access request (listing photos, posting wizard). */
+"NSCameraUsageDescription" = "Weydaa uses the camera to take photos of the items in your listings.";

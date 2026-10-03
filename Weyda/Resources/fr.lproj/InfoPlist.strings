@@ -1,2 +1,5 @@
 /* Nom affiché sous l'icône (comme app_name sur Android). */
 "CFBundleDisplayName" = "Weydaa";
+
+/* Demande d'accès à l'appareil photo (photos d'une annonce, assistant de dépôt). */
+"NSCameraUsageDescription" = "Weydaa utilise l'appareil photo pour photographier les objets de vos annonces.";
