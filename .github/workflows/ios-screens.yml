@@ -21,6 +21,12 @@ on:
       devices:
         description: Appareils (séparés par ;)
         default: iPhone 17 Pro Max;iPhone 17e
+      tests:
+        description: Classes du tour à lancer (séparées par des espaces, ex. TourChatTests TourInboxTests) ; vide = tout le tour
+        default: ""
+      content_size:
+        description: Taille du texte (vide = réglage par défaut ; ex. accessibility-extra-extra-extra-large pour le plus grand)
+        default: ""
 
 permissions:
   contents: read
@@ -130,7 +136,9 @@ jobs:
     name: Tour ${{ matrix.device }} · ${{ matrix.lang }}
     needs: [plan, build]
     runs-on: macos-26
-    timeout-minutes: 45
+    # Le tour complet grandit à chaque phase (≈ 45 min par langue en phase 5 sur un Mac chargé) : marge large ;
+    # pour une relecture ciblée, l'entrée `tests` ne lance que quelques classes.
+    timeout-minutes: 100
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
@@ -153,6 +161,8 @@ jobs:
           DEVICES: ${{ matrix.device }}
           # Une vidéo par appareil (le tour en français), pas une par langue.
           VIDEO: ${{ matrix.lang == 'fr' && '1' || '0' }}
+          TESTS: ${{ inputs.tests || '' }}
+          CONTENT_SIZE: ${{ inputs.content_size || '' }}
         run: bash scripts/ci/screens.sh
 
       - name: Nom de l'artefact

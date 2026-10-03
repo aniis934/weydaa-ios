@@ -7,6 +7,18 @@ set -uo pipefail
 LANGS="${LANGS:-fr ar en}"
 APPEARANCES="${APPEARANCES:-light dark}"
 VIDEO="${VIDEO:-1}"
+# Classes du tour (« TourChatTests TourInboxTests ») ; vide = tout WeydaUITests.
+TESTS="${TESTS:-}"
+# Taille du texte du simulateur (Dynamic Type), ex. accessibility-extra-extra-extra-large ; vide = défaut.
+CONTENT_SIZE="${CONTENT_SIZE:-}"
+only=()
+if [ -n "$TESTS" ]; then
+  for t in $TESTS; do only+=("-only-testing:WeydaUITests/$t"); done
+else
+  only=("-only-testing:WeydaUITests")
+fi
+suffix=""
+[ -n "$CONTENT_SIZE" ] && suffix="-${CONTENT_SIZE}"
 IFS=';' read -r -a DEVICE_LIST <<< "${DEVICES:-iPhone 17 Pro Max;iPhone 17e}"
 
 products=build/dd/Build/Products
@@ -28,6 +40,9 @@ for device in "${DEVICE_LIST[@]}"; do
   udid=$(xcrun simctl create "Weyda $device" "$device" "$runtime")
   xcrun simctl boot "$udid"
   xcrun simctl bootstatus "$udid" -b > /dev/null
+  if [ -n "$CONTENT_SIZE" ]; then
+    xcrun simctl ui "$udid" content_size "$CONTENT_SIZE" || echo "::warning::taille de texte refusée : $CONTENT_SIZE"
+  fi
   # Barre d'état propre (9:41, batterie pleine) : captures dignes de l'App Store.
   xcrun simctl status_bar "$udid" override --time "9:41" --dataNetwork wifi --wifiMode active \
     --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
@@ -45,8 +60,8 @@ for device in "${DEVICE_LIST[@]}"; do
   for lang in $LANGS; do
     for appearance in $APPEARANCES; do
       xcrun simctl ui "$udid" appearance "$appearance"
-      run="${slug}-${lang}-${appearance}"
-      out="screens/${slug}/${lang}-${appearance}"
+      run="${slug}-${lang}-${appearance}${suffix}"
+      out="screens/${slug}/${lang}-${appearance}${suffix}"
       mkdir -p "$out"
 
       video_pid=""
@@ -61,7 +76,7 @@ for device in "${DEVICE_LIST[@]}"; do
       TEST_RUNNER_WEYDA_LANG="$lang" TEST_RUNNER_WEYDA_SLOW="$slow" xcodebuild test-without-building \
         -xctestrun "$xctestrun" \
         -destination "id=$udid" \
-        -only-testing:WeydaUITests \
+        "${only[@]}" \
         -resultBundlePath "build/results/${run}.xcresult" \
         2>&1 | xcbeautify --renderer github-actions
       status=${PIPESTATUS[0]}
