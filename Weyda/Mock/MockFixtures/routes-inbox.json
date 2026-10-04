@@ -1,0 +1,12 @@
+[
+  { "method": "GET", "path": "/api/conversations", "fixture": "inbox/conversations.json" },
+  { "method": "GET", "path": "/api/conversations", "query": { "archived": "true" }, "fixture": "inbox/conversations-archives.json" },
+  { "method": "POST", "path": "/api/conversations/*/archive", "fixture": "inbox/succes.json" },
+  { "method": "DELETE", "path": "/api/conversations/*/archive", "fixture": "inbox/succes.json" },
+  { "method": "GET", "path": "/api/users/me/blocked", "fixture": "inbox/bloques.json" },
+  { "method": "DELETE", "path": "/api/users/*/block", "fixture": "inbox/succes.json" },
+  { "method": "GET", "path": "/api/notifications", "fixture": "inbox/notifications.json" },
+  { "method": "PATCH", "path": "/api/notifications", "fixture": "inbox/tout-lu.json" },
+  { "method": "PATCH", "path": "/api/notifications/*", "fixture": "inbox/succes.json" },
+  { "method": "DELETE", "path": "/api/notifications/*", "fixture": "inbox/succes.json" }
+]

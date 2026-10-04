@@ -1,0 +1,184 @@
+{
+  "id": "mock-c3",
+  "buyerId": "mock-me",
+  "sellerId": "mock-u1",
+  "annonceId": "mock-a1",
+  "createdAt": "2026-10-02T18:10:00.000Z",
+  "updatedAt": "2026-10-02T20:05:00.000Z",
+  "annonce": {
+    "id": "mock-a1",
+    "title": "iPhone 15 Pro Max 256 Go Titane naturel",
+    "status": "ACTIVE",
+    "price": 215000,
+    "priceType": "NEGOTIABLE",
+    "images": [
+      {
+        "url": "https://photos.mock.weydaa/annonces/phone-1.webp"
+      }
+    ]
+  },
+  "buyer": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  },
+  "seller": {
+    "id": "mock-u1",
+    "name": "Karim B.",
+    "avatar": null
+  },
+  "messages": [
+    {
+      "id": "mock-c3-m1",
+      "conversationId": "mock-c3",
+      "senderId": "mock-me",
+      "content": "Bonjour Karim, l'iPhone est encore sous garantie ?",
+      "createdAt": "2026-10-02T18:10:00.000Z",
+      "readAt": "2026-10-02T18:18:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c3-m2",
+      "conversationId": "mock-c3",
+      "senderId": "mock-u1",
+      "content": "Bonjour, oui, garantie jusqu'en mars 2027, facture fournie.",
+      "createdAt": "2026-10-02T18:20:00.000Z",
+      "readAt": "2026-10-02T18:24:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c3-m3",
+      "conversationId": "mock-c3",
+      "senderId": "mock-me",
+      "content": "💰 200 000 DA",
+      "createdAt": "2026-10-02T18:25:00.000Z",
+      "readAt": "2026-10-02T18:38:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "NEW",
+        "amount": 200000
+      },
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c3-m4",
+      "conversationId": "mock-c3",
+      "senderId": "mock-u1",
+      "content": "↩️ 210 000 DA",
+      "createdAt": "2026-10-02T18:40:00.000Z",
+      "readAt": "2026-10-02T18:50:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "COUNTER",
+        "amount": 210000
+      },
+      "sender": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c3-m5",
+      "conversationId": "mock-c3",
+      "senderId": "mock-me",
+      "content": "↩️ 205 000 DA",
+      "createdAt": "2026-10-02T18:52:00.000Z",
+      "readAt": "2026-10-02T19:25:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "COUNTER",
+        "amount": 205000
+      },
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c3-m6",
+      "conversationId": "mock-c3",
+      "senderId": "mock-u1",
+      "content": "✅ 205 000 DA",
+      "createdAt": "2026-10-02T19:30:00.000Z",
+      "readAt": "2026-10-02T19:40:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "OFFER",
+      "metadata": {
+        "kind": "ACCEPTED",
+        "amount": 205000
+      },
+      "sender": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c3-m7",
+      "conversationId": "mock-c3",
+      "senderId": "mock-me",
+      "content": "Super, merci ! Où peut-on se retrouver ?",
+      "createdAt": "2026-10-02T19:45:00.000Z",
+      "readAt": "2026-10-02T20:01:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c3-m8",
+      "conversationId": "mock-c3",
+      "senderId": "mock-u1",
+      "content": "Parfait, on se retrouve demain à Didouche Mourad.",
+      "createdAt": "2026-10-02T20:05:00.000Z",
+      "readAt": "2026-10-02T20:31:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      }
+    }
+  ],
+  "hasMore": false,
+  "nextCursor": null,
+  "topic": "conv:mock-c3:mock",
+  "isBlockedByMe": false
+}

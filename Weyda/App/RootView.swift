@@ -62,9 +62,24 @@ struct RootView: View {
 /// Barre d'onglets native (Liquid Glass d'elle-même sur iOS 26+) ; une pile de navigation par onglet, tenue par
 /// le routeur. Toucher l'onglet déjà actif remonte sa pile à la racine (`AppRouter.tabSelection`).
 struct MainTabView: View {
-    @EnvironmentObject private var router: AppRouter
+    @EnvironmentObject private var container: AppContainer
 
     init() {}
+
+    var body: some View {
+        MainTabBar(conversations: container.conversations)
+    }
+}
+
+/// La barre elle-même, qui observe la messagerie : pastille de l'onglet Messages = conversations non lues
+/// (`ConversationsRepository.unreadCount`, tenu à jour par le canal personnel et au retour au premier plan).
+private struct MainTabBar: View {
+    @EnvironmentObject private var router: AppRouter
+    @ObservedObject private var conversations: ConversationsRepository
+
+    init(conversations: ConversationsRepository) {
+        self.conversations = conversations
+    }
 
     var body: some View {
         TabView(selection: router.tabSelection) {
@@ -73,9 +88,15 @@ struct MainTabView: View {
                     .tabItem {
                         Label(tab.title, systemImage: tab.symbol)
                     }
+                    .badge(badge(for: tab))
                     .tag(tab)
             }
         }
+    }
+
+    /// 0 = pas de pastille (`.badge(0)` n'affiche rien).
+    private func badge(for tab: AppTab) -> Int {
+        tab == .messages ? conversations.unreadCount : 0
     }
 }
 
@@ -96,8 +117,8 @@ private struct TabStack: View {
     }
 }
 
-/// Écran racine de chaque onglet. Messages reste provisoire (phase 5) ; Déposer : l'assistant de dépôt (phase 4,
-/// invitation à se connecter pour un visiteur) ; Profil : visiteur (connexion) ou membre, selon la session
+/// Écran racine de chaque onglet. Messages : les conversations (phase 5, invitation à se connecter pour un visiteur) ;
+/// Déposer : l'assistant de dépôt (phase 4) ; Profil : visiteur (connexion) ou membre, selon la session
 /// (`ProfileView`, phase 3).
 private struct TabRoot: View {
     private let tab: AppTab
@@ -115,7 +136,7 @@ private struct TabRoot: View {
         case .post:
             PostListingView()
         case .messages:
-            PlaceholderScreen(tab: tab)
+            ConversationsView()
         case .account:
             ProfileView()
         }

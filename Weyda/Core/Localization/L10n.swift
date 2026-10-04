@@ -127,6 +127,8 @@ nonisolated enum L10n {
     static var authVerifyTitle: String { tr("auth_verify_title") }
     /// Retour
     static var back: String { tr("back") }
+    /// Utilisateurs bloqués
+    static var blockedUsersTitle: String { tr("blocked_users_title") }
     /// Annuler
     static var cancel: String { tr("cancel") }
     /// Toutes les catégories
@@ -205,6 +207,20 @@ nonisolated enum L10n {
     static var chatTabConversations: String { tr("chat_tab_conversations") }
     /// En train d'écrire…
     static var chatTyping: String { tr("chat_typing") }
+    /// Vous avez bloqué cet utilisateur : il ne peut plus vous écrire. Débloquez-le pour reprendre la conversation.
+    static var chatUiBlockedNotice: String { tr("chat_ui_blocked_notice") }
+    /// Copier
+    static var chatUiCopy: String { tr("chat_ui_copy") }
+    /// Votre interlocuteur pourra accepter, refuser ou faire une nouvelle proposition.
+    static var chatUiCounterHelper: String { tr("chat_ui_counter_helper") }
+    /// %1$s : %2$s
+    static func chatUiMessageFrom(_ p1: String, _ p2: String) -> String { tr("chat_ui_message_from", p1, p2) }
+    /// Messages suggérés
+    static var chatUiSuggestions: String { tr("chat_ui_suggestions") }
+    /// Débloquer
+    static var chatUiUnblock: String { tr("chat_ui_unblock") }
+    /// Voir le profil
+    static var chatUiViewProfile: String { tr("chat_ui_view_profile") }
     /// Désarchiver
     static var chatUnarchive: String { tr("chat_unarchive") }
     /// Conversation désarchivée
@@ -539,6 +555,24 @@ nonisolated enum L10n {
     static var homeTrending: String { tr("home_trending") }
     /// Les plus consultées cette semaine
     static var homeTrendingSubtitle: String { tr("home_trending_subtitle") }
+    /// Pour bloquer quelqu'un, ouvrez votre conversation avec cette personne, puis choisissez « Bloquer cet utilisateur » dans son menu.
+    static var inboxBlockedEmptyBody: String { tr("inbox_blocked_empty_body") }
+    /// Aucun utilisateur bloqué
+    static var inboxBlockedEmptyTitle: String { tr("inbox_blocked_empty_title") }
+    /// Les personnes bloquées ne peuvent plus vous contacter, et l'aperçu de vos conversations avec elles est masqué.
+    static var inboxBlockedFooter: String { tr("inbox_blocked_footer") }
+    /// Bloqué le %1$s
+    static func inboxBlockedOn(_ p1: String) -> String { tr("inbox_blocked_on", p1) }
+    /// Utilisateur bloqué
+    static var inboxBlockedPreview: String { tr("inbox_blocked_preview") }
+    /// Débloquer
+    static var inboxUnblock: String { tr("inbox_unblock") }
+    /// Cette personne pourra de nouveau vous contacter et vous envoyer des messages.
+    static var inboxUnblockConfirmBody: String { tr("inbox_unblock_confirm_body") }
+    /// Débloquer cet utilisateur ?
+    static var inboxUnblockConfirmTitle: String { tr("inbox_unblock_confirm_title") }
+    /// Débloquer %1$s
+    static func inboxUnblockNamed(_ p1: String) -> String { tr("inbox_unblock_named", p1) }
     /// العربية
     static var languageAr: String { tr("language_ar") }
     /// English
@@ -1191,6 +1225,7 @@ nonisolated enum L10n {
         "auth_verify_success_body",
         "auth_verify_title",
         "back",
+        "blocked_users_title",
         "cancel",
         "categories_all_row",
         "categories_empty",
@@ -1230,6 +1265,13 @@ nonisolated enum L10n {
         "chat_tab_archives",
         "chat_tab_conversations",
         "chat_typing",
+        "chat_ui_blocked_notice",
+        "chat_ui_copy",
+        "chat_ui_counter_helper",
+        "chat_ui_message_from",
+        "chat_ui_suggestions",
+        "chat_ui_unblock",
+        "chat_ui_view_profile",
         "chat_unarchive",
         "chat_unarchived",
         "chat_unblock_user",
@@ -1397,6 +1439,15 @@ nonisolated enum L10n {
         "home_for_you_subtitle",
         "home_trending",
         "home_trending_subtitle",
+        "inbox_blocked_empty_body",
+        "inbox_blocked_empty_title",
+        "inbox_blocked_footer",
+        "inbox_blocked_on",
+        "inbox_blocked_preview",
+        "inbox_unblock",
+        "inbox_unblock_confirm_body",
+        "inbox_unblock_confirm_title",
+        "inbox_unblock_named",
         "language_ar",
         "language_en",
         "language_fr",

@@ -30,6 +30,17 @@ nonisolated struct DetailState: Equatable, Sendable {
     var reportError: String? = nil
     /// Message bref à montrer une fois (signalement envoyé, refus du serveur…), effacé par `noticeShown()`.
     var notice: String? = nil
+    /// Premier message au vendeur (`POST /api/conversations`) ; nil = feuille « Contacter » fermée.
+    var contactMessage: String? = nil
+    var isContacting: Bool = false
+    /// Échec de l'envoi : affiché sous le champ, la feuille reste ouverte (le message n'est pas perdu).
+    var contactError: String? = nil
+    /// Offre initiale depuis l'annonce (`POST /api/annonces/{id}/offers`) ; nil = feuille fermée.
+    var offerDialog: OfferDialogState? = nil
+    var isOfferBusy: Bool = false
+    var offerError: String? = nil
+    /// Conversation à ouvrir : consommée par l'écran (`conversationOpened()`) une fois la feuille refermée.
+    var openConversationId: String? = nil
 
     var isLoggedIn: Bool { !TextCheck.isBlank(userId) }
 
@@ -80,7 +91,7 @@ nonisolated struct DetailState: Equatable, Sendable {
 
 /// Fiche d'une annonce — portage de `DetailViewModel` (Android) : détail par id ou par slug, puis, en parallèle,
 /// cœur resynchronisé, vue comptée, libellés des caractéristiques, avis du vendeur et annonces similaires ;
-/// numéro à la demande, signalement. La messagerie (contacter, offre) arrive en phase 5 : `DetailView` s'en charge.
+/// numéro à la demande, signalement, premier message au vendeur et offre initiale (la conversation s'ouvre ensuite).
 final class DetailViewModel: ObservableObject {
     @Published private(set) var state = DetailState()
     /// Feuille « Signaler » ouverte : liée à la présentation (un glissement vers le bas la ferme aussi).
@@ -339,6 +350,141 @@ final class DetailViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Contacter le vendeur
+
+    /// Feuille « Contacter » (membre connecté, annonce active qui n'est pas la mienne ; le visiteur va à la connexion).
+    func openContact() {
+        guard state.canContact, state.contactMessage == nil else { return }
+        var next = state
+        next.contactMessage = ""
+        next.contactError = nil
+        state = next
+    }
+
+    /// Texte de la feuille, coupé à 2000 unités UTF-16 comme le serveur.
+    func updateContactMessage(_ value: String) {
+        guard state.contactMessage != nil else { return }
+        let capped = RepositorySupport.truncatedUTF16(value, max: ChatState.messageMax)
+        guard capped != state.contactMessage || state.contactError != nil else { return }
+        var next = state
+        next.contactMessage = capped
+        next.contactError = nil
+        state = next
+    }
+
+    func dismissContact() {
+        guard state.contactMessage != nil, !state.isContacting else { return }
+        var next = state
+        next.contactMessage = nil
+        next.contactError = nil
+        state = next
+    }
+
+    /// Crée (ou réutilise) la conversation et envoie le premier message, puis demande l'ouverture du fil. Échec : la
+    /// feuille reste ouverte, la raison traduite sous le champ (bloqué, e-mail non vérifié, hors ligne…).
+    @discardableResult
+    func sendFirstMessage() -> Task<Void, Never>? {
+        let message = (state.contactMessage ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let annonceId = state.listing?.id, !message.isEmpty, !state.isContacting else { return nil }
+        var busy = state
+        busy.isContacting = true
+        busy.contactError = nil
+        state = busy
+        let conversations = self.conversations
+        let task: Task<Void, Never> = Task { [weak self] in
+            do {
+                let entry = try await conversations.startConversation(annonceId: annonceId, message: message)
+                guard let self else { return }
+                var next = self.state
+                next.isContacting = false
+                next.contactMessage = nil
+                next.openConversationId = entry.conversationId
+                self.state = next
+            } catch {
+                guard let self else { return }
+                var next = self.state
+                next.isContacting = false
+                next.contactError = ErrorMapper.message(for: error)
+                self.state = next
+            }
+        }
+        return task
+    }
+
+    // MARK: - Faire une offre
+
+    /// Feuille du montant, prix demandé rappelé ; comme le site, jamais sur une annonce gratuite ni sur la mienne.
+    func openOfferDialog() {
+        guard state.canMakeOffer, state.offerDialog == nil else { return }
+        var next = state
+        next.offerDialog = OfferDialogState(action: .new, askingPrice: state.listing?.price)
+        next.offerError = nil
+        state = next
+    }
+
+    func updateOfferAmount(_ value: String) {
+        guard var dialog = state.offerDialog else { return }
+        let clean = OfferDialogState.sanitize(value)
+        guard clean != dialog.amount || state.offerError != nil else { return }
+        dialog.amount = clean
+        var next = state
+        next.offerDialog = dialog
+        next.offerError = nil
+        state = next
+    }
+
+    func dismissOfferDialog() {
+        guard state.offerDialog != nil, !state.isOfferBusy else { return }
+        var next = state
+        next.offerDialog = nil
+        next.offerError = nil
+        state = next
+    }
+
+    /// Envoie l'offre puis demande l'ouverture du fil. 409 `offerAlreadyOpen` (avec l'id du fil) : rien n'a été créé,
+    /// la conversation existante s'ouvre, sans erreur. Échec : la feuille reste ouverte, la raison sous le champ.
+    @discardableResult
+    func confirmOffer() -> Task<Void, Never>? {
+        guard let amount = state.offerDialog?.parsedAmount, let annonceId = state.listing?.id, !state.isOfferBusy else {
+            return nil
+        }
+        var busy = state
+        busy.isOfferBusy = true
+        busy.offerError = nil
+        state = busy
+        let conversations = self.conversations
+        let task: Task<Void, Never> = Task { [weak self] in
+            do {
+                let entry = try await conversations.makeOffer(annonceId: annonceId, amount: amount)
+                guard let self else { return }
+                var next = self.state
+                next.isOfferBusy = false
+                next.offerDialog = nil
+                next.openConversationId = entry.conversationId
+                self.state = next
+            } catch {
+                guard let self else { return }
+                var next = self.state
+                next.isOfferBusy = false
+                next.offerError = ErrorMapper.message(for: error)
+                self.state = next
+            }
+        }
+        return task
+    }
+
+    /// Le fil demandé vient d'être ouvert.
+    func conversationOpened() {
+        guard state.openConversationId != nil else { return }
+        state.openConversationId = nil
+    }
+
+    /// Feuille de messagerie fermée d'un glissement (contact ou offre) ; sans effet pendant un envoi.
+    func dismissMessaging() {
+        dismissContact()
+        dismissOfferDialog()
+    }
+
     // MARK: - Messages brefs
 
     func noticeShown() {
@@ -401,7 +547,7 @@ nonisolated struct DetailAttributeRow: Hashable, Sendable, Identifiable {
 
 /// Adresses tirées d'une annonce (logique pure, testée).
 nonisolated enum DetailLinks {
-    /// Page de l'annonce sur le site, dans la langue de l'app (partage, contact provisoire) — jamais l'hôte de l'API.
+    /// Page de l'annonce sur le site, dans la langue de l'app (partage) — jamais l'hôte de l'API.
     static func webURL(for listing: Listing, language: String = WeydaLocale.language) -> URL? {
         URL(string: listing.webUrl(host: DeepLinks.siteURL.absoluteString, locale: language))
     }

@@ -1,0 +1,138 @@
+{
+  "id": "mock-c4",
+  "buyerId": "mock-me",
+  "sellerId": "mock-u3",
+  "annonceId": "mock-a24",
+  "createdAt": "2026-10-01T09:40:00.000Z",
+  "updatedAt": "2026-10-01T11:30:00.000Z",
+  "annonce": {
+    "id": "mock-a24",
+    "title": "À donner : canapé 3 places",
+    "status": "ACTIVE",
+    "price": null,
+    "priceType": "FREE",
+    "images": [
+      {
+        "url": "https://photos.mock.weydaa/annonces/sofa-2.webp"
+      }
+    ]
+  },
+  "buyer": {
+    "id": "mock-me",
+    "name": "Yacine Benali",
+    "avatar": null
+  },
+  "seller": {
+    "id": "mock-u3",
+    "name": "Yacine M.",
+    "avatar": null
+  },
+  "messages": [
+    {
+      "id": "mock-c4-m1",
+      "conversationId": "mock-c4",
+      "senderId": "mock-me",
+      "content": "Bonjour, le canapé est-il toujours à donner ?",
+      "createdAt": "2026-10-01T09:40:00.000Z",
+      "readAt": "2026-10-01T09:58:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c4-m2",
+      "conversationId": "mock-c4",
+      "senderId": "mock-u3",
+      "content": "Bonjour, oui ! Il faut juste venir le chercher, 2e étage sans ascenseur.",
+      "createdAt": "2026-10-01T10:05:00.000Z",
+      "readAt": "2026-10-01T10:08:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u3",
+        "name": "Yacine M.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c4-m3",
+      "conversationId": "mock-c4",
+      "senderId": "mock-me",
+      "content": "Aucun souci, je viendrai avec un ami. Vous êtes dans quel quartier ?",
+      "createdAt": "2026-10-01T10:12:00.000Z",
+      "readAt": "2026-10-01T10:25:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c4-m4",
+      "conversationId": "mock-c4",
+      "senderId": "mock-u3",
+      "content": "À Annaba, près du cours de la Révolution.",
+      "createdAt": "2026-10-01T10:30:00.000Z",
+      "readAt": "2026-10-01T10:44:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u3",
+        "name": "Yacine M.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c4-m5",
+      "conversationId": "mock-c4",
+      "senderId": "mock-u3",
+      "content": "Samedi matin, ça vous irait ?",
+      "createdAt": "2026-10-01T11:02:00.000Z",
+      "readAt": "2026-10-01T11:20:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-u3",
+        "name": "Yacine M.",
+        "avatar": null
+      }
+    },
+    {
+      "id": "mock-c4-m6",
+      "conversationId": "mock-c4",
+      "senderId": "mock-me",
+      "content": "Merci beaucoup, je passe le récupérer samedi matin.",
+      "createdAt": "2026-10-01T11:30:00.000Z",
+      "readAt": "2026-10-01T11:42:00.000Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "type": "TEXT",
+      "metadata": null,
+      "sender": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      }
+    }
+  ],
+  "hasMore": false,
+  "nextCursor": null,
+  "topic": "conv:mock-c4:mock",
+  "isBlockedByMe": false
+}

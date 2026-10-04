@@ -1,0 +1,44 @@
+{
+  "conversations": [
+    {
+      "id": "mock-c6",
+      "annonceId": "mock-a17",
+      "buyerId": "mock-me",
+      "sellerId": "mock-u1",
+      "createdAt": "2026-09-27T10:00:00.000Z",
+      "updatedAt": "2026-09-28T15:20:00.000Z",
+      "annonce": {
+        "id": "mock-a17",
+        "title": "MacBook Air M1 8 Go / 256 Go",
+        "images": [
+          {
+            "id": "mock-a17-img-1",
+            "url": "https://photos.mock.weydaa/annonces/laptop-1.webp",
+            "order": 0
+          }
+        ]
+      },
+      "buyer": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      },
+      "seller": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      },
+      "messages": [
+        {
+          "content": "Désolé, il vient d'être vendu.",
+          "createdAt": "2026-09-28T15:20:00.000Z",
+          "senderId": "mock-u1",
+          "readAt": "2026-09-28T15:34:00.000Z",
+          "deletedAt": null
+        }
+      ],
+      "topic": "conv:mock-c6:mock"
+    }
+  ],
+  "nextCursor": null
+}

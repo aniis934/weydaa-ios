@@ -28,22 +28,22 @@ struct DetailView: View {
     }
 }
 
-/// Contact provisoire (avant la messagerie de la phase 5) : la page de l'annonce sur le site, où la conversation
-/// et l'offre existent déjà.
-nonisolated struct DetailWebFallback: Equatable, Sendable {
-    let title: String
-    let url: URL
+/// Feuille de messagerie ouverte depuis la fiche (une seule à la fois).
+nonisolated enum DetailMessagingSheet: String, Identifiable, Sendable {
+    case contact
+    case offer
+
+    var id: String { rawValue }
 }
 
 /// Possède le ViewModel (`@StateObject`, créé une fois) et traduit les actions de l'écran : connexion demandée au
-/// visiteur (`router.requestLogin()`), navigation, appel, contact provisoire.
+/// visiteur (`router.requestLogin()`), navigation, appel, feuilles « Contacter » et « Faire une offre » puis ouverture
+/// du fil (`.chat`).
 private struct DetailHost: View {
     @EnvironmentObject private var router: AppRouter
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @StateObject private var model: DetailViewModel
-    @State private var webFallback: DetailWebFallback? = nil
-    @State private var isWebFallbackPresented: Bool = false
     /// Feuille du tour de captures déjà ouverte (Debug) : une seule fois.
     @State private var tourSheetShown: Bool = false
     private let connectivity: ConnectivityMonitor
@@ -67,18 +67,16 @@ private struct DetailHost: View {
             .onReceive(connectivity.$isOnline.dropFirst()) { online in
                 retryIfBackOnline(online)
             }
-            .alert(
-                webFallback?.title ?? "",
-                isPresented: $isWebFallbackPresented,
-                presenting: webFallback
-            ) { fallback in
-                Button(L10n.cancel, role: .cancel) {}
-                Button(L10n.authContinue) {
-                    openURL(fallback.url)
+            // Le fil s'ouvre une fois la feuille refermée (pousser un écran sous une feuille qui se ferme saccade).
+            .sheet(
+                item: messagingSheetBinding,
+                onDismiss: {
+                    openPendingConversation()
+                },
+                content: { sheet in
+                    messagingSheet(sheet)
                 }
-            } message: { _ in
-                Text(L10n.legalOpensBrowser)
-            }
+            )
     }
 
     private var actions: DetailActions {
@@ -121,10 +119,18 @@ private struct DetailHost: View {
                 router.push(.editListing(id: id))
             },
             contact: {
-                openWebFallback(title: L10n.detailContact)
+                guard model.state.isLoggedIn else {
+                    router.requestLogin()
+                    return
+                }
+                model.openContact()
             },
             makeOffer: {
-                openWebFallback(title: L10n.offerMake)
+                guard model.state.isLoggedIn else {
+                    router.requestLogin()
+                    return
+                }
+                model.openOfferDialog()
             },
             phone: {
                 guard model.state.isLoggedIn else {
@@ -146,23 +152,94 @@ private struct DetailHost: View {
         )
     }
 
-    /// « Contacter » / « Faire une offre » : un visiteur va à la connexion. Connecté, la messagerie native n'existe
-    /// pas encore (phase 5) : plutôt qu'un faux « message envoyé » ou un bouton mort, on propose — en le disant
-    /// (« S'ouvre dans le navigateur ») — la page de l'annonce sur le site, où conversation et offre fonctionnent.
-    private func openWebFallback(title: String) {
-        guard model.state.isLoggedIn else {
-            router.requestLogin()
-            return
-        }
-        guard let listing = model.state.listing, let url = DetailLinks.webURL(for: listing) else { return }
-        webFallback = DetailWebFallback(title: title, url: url)
-        isWebFallbackPresented = true
-    }
-
     /// Retour du réseau alors que la fiche est en erreur : nouvel essai, sans attendre « Réessayer ».
     private func retryIfBackOnline(_ online: Bool) {
         guard online, model.state.isError, !model.state.isNotFound else { return }
         Task { await model.load() }
+    }
+
+    // MARK: - Contacter / faire une offre
+
+    /// Feuille ouverte d'après l'état ; un glissement vers le bas la ferme (sauf saisie commencée ou envoi en cours).
+    private var messagingSheetBinding: Binding<DetailMessagingSheet?> {
+        let model = self.model
+        return Binding(
+            get: { MainActor.assumeIsolated { DetailHost.sheetKind(for: model.state) } },
+            set: { value in
+                MainActor.assumeIsolated {
+                    guard value == nil else { return }
+                    model.dismissMessaging()
+                }
+            }
+        )
+    }
+
+    private static func sheetKind(for state: DetailState) -> DetailMessagingSheet? {
+        if state.contactMessage != nil { return .contact }
+        if state.offerDialog != nil { return .offer }
+        return nil
+    }
+
+    @ViewBuilder
+    private func messagingSheet(_ sheet: DetailMessagingSheet) -> some View {
+        switch sheet {
+        case .contact:
+            ContactSellerSheet(
+                listingTitle: model.state.listing?.title ?? "",
+                message: contactMessageBinding,
+                isBusy: model.state.isContacting,
+                errorMessage: model.state.contactError,
+                onSend: {
+                    _ = model.sendFirstMessage()
+                },
+                onCancel: {
+                    model.dismissContact()
+                }
+            )
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("detail.contact.sheet")
+        case .offer:
+            OfferAmountSheet(
+                title: L10n.offerMake,
+                askingPrice: model.state.offerDialog?.askingPrice,
+                currentOffer: nil,
+                amount: offerAmountBinding,
+                isBusy: model.state.isOfferBusy,
+                errorMessage: model.state.offerError,
+                onConfirm: {
+                    _ = model.confirmOffer()
+                },
+                onCancel: {
+                    model.dismissOfferDialog()
+                }
+            )
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("detail.offer.sheet")
+        }
+    }
+
+    /// Lue et écrite sur le fil principal (comme les liaisons d'`AppRouter`).
+    private var contactMessageBinding: Binding<String> {
+        let model = self.model
+        return Binding(
+            get: { MainActor.assumeIsolated { model.state.contactMessage ?? "" } },
+            set: { value in MainActor.assumeIsolated { model.updateContactMessage(value) } }
+        )
+    }
+
+    private var offerAmountBinding: Binding<String> {
+        let model = self.model
+        return Binding(
+            get: { MainActor.assumeIsolated { model.state.offerDialog?.amount ?? "" } },
+            set: { value in MainActor.assumeIsolated { model.updateOfferAmount(value) } }
+        )
+    }
+
+    /// Message envoyé ou offre faite (ou déjà ouverte : 409 avec l'id du fil) : le fil s'ouvre sur l'onglet courant.
+    private func openPendingConversation() {
+        guard let id = model.state.openConversationId else { return }
+        model.conversationOpened()
+        router.push(.chat(conversationId: id, archived: false))
     }
 
     #if DEBUG

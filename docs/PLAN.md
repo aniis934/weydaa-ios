@@ -19,7 +19,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 2 | Parcourir | accueil Leboncoin, annonces (recherche, suggestions, historique, filtres + facettes), détail (galerie + zoom, attributs, vendeur, conseils, similaires, partage), profil vendeur, pages légales | non | ✅ close le 2026-10-03 |
 | 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ✅ close le 2026-10-03 (Apple / Google : test sur iPhone en attente) |
 | 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ✅ close le 2026-10-04 |
-| 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ⏳ |
+| 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ✅ close le 2026-10-04 (push et liens : test sur iPhone en attente) |
 | 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ⏳ |
 | 7 | App Store + lot serveur C | TestFlight final, manifeste de confidentialité, étiquettes App Privacy, âge, textes fr/ar/en, captures 6,9", compte de démo, test final, soumission | oui | ⏳ |
 
@@ -140,6 +140,38 @@ interfaces fixées (`docs/equipe/CONTRACTS-P4.md` : `PostListingState`, `PostLis
 - [x] Corrigé à la relecture : l'année groupée comme un prix dans le récapitulatif (« 2 019 ») — milliers à partir de 10 000
 - [x] Galerie privée : https://claude.ai/artifact/TcxYfo9YzeUPup9hiYkeAt — clôture : PR #5 `phase-4` → `main`
 - [ ] Sur iPhone : appareil photo et sélecteur de photos réels ; première vraie publication avec un compte de test (EN-ATTENTE)
+
+## Phase 5 — détail (close le 2026-10-04, PR #6)
+Équipe : CHAT (fil, offres, contact depuis la fiche), INBOX (conversations, notifications, bloqués), PUSH (Firebase, notifications système,
+liens universels, CI) en parallèle sur des interfaces fixées (`docs/equipe/CONTRACTS-P5.md` : `ChatView`, `OfferAmountSheet`,
+`ContactSellerSheet`, `ConversationsView`, `NotificationsView`, `BlockedUsersView`, `PushRegistrar`) ; pré-travail de l'orchestrateur (route et
+écran des bloqués, `GET /api/users/me/blocked` du lot B, plateforme « ios » du jeton, pastille de l'onglet Messages).
+- [x] Fil de discussion : bulles, séparateurs de jour (jamais « Demain » : une date future vaut aujourd'hui), cartes d'offre (accepter / contre-offre
+      / refuser sur l'offre OUVERTE seulement ; « en attente » seulement sur elle — défaut corrigé, présent aussi sur Android), suppression dans
+      les 5 min (appui long, VoiceOver), anciens messages en remontant, temps réel + « écrit… » + présence, archiver, bloquer / débloquer, signaler
+- [x] Contact et offre depuis la fiche (feuilles natives, 409 → conversation existante) : fin du repli « s'ouvre dans le navigateur »
+- [x] Conversations / Archives (recherche, glisser pour archiver, pagination par curseur), aperçu masqué des utilisateurs bloqués (App Store 1.2),
+      notifications (cible ouverte, tout lu, glisser pour supprimer, temps réel), écran « Utilisateurs bloqués » (Profil), pastille de l'onglet
+- [x] Push : Firebase 12.19.2 exact (Messaging + Crashlytics), inerte sans `GoogleService-Info.plist` (CI, captures) ; autorisation demandée à la
+      première ouverture de Messages ; bannière masquée pour le fil à l'écran ; appui → écran visé (rejoué si l'interface n'est pas prête) ;
+      pastille de l'icône = notifications non lues ; jeton FCM détruit à la fermeture de session
+- [x] Liens universels (`onContinueUserActivity`) : tous les chemins de l'AASA du lot A testés (apex, www, 3 langues) ; entitlements en Release
+- [x] CI : paquets SPM en cache ; `ios-screens` : limite à 100 min, entrées `tests` (classes du tour) et `content_size` (Dynamic Type)
+- [x] CI : 577 tests, 0 échec ; 9 avertissements attendus (6 `@_implementationOnly` des imports Firebase, 3 dépréciations Firebase dont le
+      remplaçant — l'identifiant d'installation — ne convient pas au serveur, qui stocke des jetons FCM) ; compilé vert du premier coup
+- [x] ≈ 250 captures de la phase relues (fr/ar/en × clair/sombre × 17 Pro Max + 17e) + vidéo ; pas de régression des phases 2-4
+- [x] Corrigé à la relecture : offres « en attente » dépassées, séparateur « Demain » (horloge de la CI), boutons d'offre tronqués en arabe, titre
+      « Notific… » (bouton icône), en-tête du fil illisible sur iOS 26 quand une bulle verte passe sous la barre (fond opaque)
+- [x] Galerie privée : https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp — clôture : PR #6 `phase-5` → `main`
+- [ ] Sur iPhone : push (app fermée, au premier plan, appui), lien weydaa.com ouvert depuis Notes ; attend compte Apple, clé APNs, Firebase iOS,
+      lots A et B déployés (EN-ATTENTE)
+
+## Constats de la CI (phase 5)
+- Équipe de 3 agents : ≈ 11 700 lignes, compilées et testées vertes du premier coup, Firebase compris (≈ 10 min de CI avec le cache).
+- iOS 26 : la barre de navigation Liquid Glass s'ADAPTE au contenu qui défile dessous (bulle verte → barre d'état et titre en blanc) ;
+  un en-tête qui doit rester lisible (fil de discussion) prend un fond opaque. À vérifier sur les autres écrans en phase 6.
+- Tour complet > 45 min par langue depuis la messagerie : relectures ciblées par classes (`-f tests="TourChatTests TourInboxTests"`).
+- Les captures prises par le simulateur de la CI suivent son horloge (UTC, la veille au soir) : données simulées datées du jour → « futur ».
 
 ## Constats de la CI (phase 4)
 - Équipe de 3 agents : ≈ 6 200 lignes, compilées et testées vertes du premier coup (contrats fixés d'avance + relecture

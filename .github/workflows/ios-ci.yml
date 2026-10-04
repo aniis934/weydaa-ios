@@ -25,6 +25,8 @@ env:
   XCODEGEN_VERSION: "2.46.0"
   DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
   SIM_DEVICE: iPhone 17 Pro
+  # Paquets Swift clonés (Firebase) : dossier commun à resolve-packages.sh, test.sh et au cache.
+  SPM_DIR: build/spm
 
 jobs:
   build-and-test:
@@ -50,6 +52,26 @@ jobs:
 
       - name: Générer le projet Xcode
         run: bash scripts/ci/generate.sh
+
+      # Paquets Swift (Firebase, version exacte) : restaurés du cache, résolus, puis sauvés AVANT la compilation —
+      # une compilation en échec n'empêche pas le cache d'être écrit (clé = hachage de project.yml).
+      - name: Paquets Swift en cache
+        id: spm
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.SPM_DIR }}
+          key: spm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('project.yml') }}
+          restore-keys: spm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Résoudre les paquets Swift
+        run: bash scripts/ci/resolve-packages.sh
+
+      - name: Sauver les paquets Swift
+        if: steps.spm.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.SPM_DIR }}
+          key: ${{ steps.spm.outputs.cache-primary-key }}
 
       - name: Compiler et tester
         env:

@@ -26,6 +26,10 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-04** — **Phase 5 close** (PR #6) : messagerie (fil, offres, contact et offre depuis la fiche), conversations et archives,
+  notifications, utilisateurs bloqués, push Firebase (inerte sans `GoogleService-Info.plist`), liens universels. 577 tests verts, galerie
+  https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp. Feu vert reçu le 2026-10-04 pour enchaîner les phases 5, 6 et 7 SANS arrêt ; arrêt demandé à la fin de la phase 7 (3 liens de galerie
+  + liste EN-ATTENTE dans l'ordre de traitement). PR serveur A/B/C rebasées sur `master` le 2026-10-04 (non fusionnées).
 - **2026-10-04** — **Phase 4 close** (PR #5) : déposer une annonce (assistant 6 étapes, attributs dynamiques, photos galerie
   et appareil, envoi photo par photo, brouillon), modifier une annonce, boutons de « Mes annonces » (vendu, renouveler,
   supprimer). 475 tests verts, tours de captures verts, galerie https://claude.ai/artifact/TcxYfo9YzeUPup9hiYkeAt. **ARRÊT DEMANDÉ PAR LE PROPRIÉTAIRE** à la fin de
@@ -51,7 +55,7 @@ quand plus rien n'avance sans le propriétaire.
   propriétaire l'a levée pour la phase 2 puis elle a été rétablie ; en phase 3, il a autorisé « pour la session, dépôt
   iOS seulement » → envois ciblés `git -C <worktree iOS> push` (de nouveau accordé en phase 4, le 2026-10-04). Redemander
   à chaque nouvelle session (ou ouvrir la session depuis `weydaa-ios`).
-- Phase 5 (au feu vert) : nouveau worktree `../weydaa-ios-p5` depuis `main` ; contrats `docs/equipe/CONTRACTS-P5.md`
+- (Fait) Phase 5 : worktree `../weydaa-ios-p5` depuis `main` ; contrats `docs/equipe/CONTRACTS-P5.md`
   à écrire d'abord (conversations, fil, offres, archives, « écrit… », blocage, signalement, temps réel, cloche et pastilles,
   push Firebase — dépendance accordée —, liens universels ; lot serveur B = PR weyda2026 #6). Chaînes des agents : un fichier JSON
   par agent fusionné par `node scripts/merge-agent-strings.mjs . <fichiers>` (même format que `scripts/ios-strings.json`),

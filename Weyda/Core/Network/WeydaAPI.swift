@@ -215,6 +215,9 @@ nonisolated protocol WeydaAPI: Sendable {
 
     func unblockUser(id: String) async throws -> SimpleResponseDTO
 
+    /// Utilisateurs que j'ai bloqués, plus récent en tête (lot serveur B ; 404 tant qu'il n'est pas déployé). `limit` 1–100.
+    func getBlockedUsers(page: Int, limit: Int) async throws -> BlockedUsersPageDTO
+
     // MARK: Notifications in-app
 
     /// Liste paginée + `unreadCount` + `topic` (canal personnel signé).

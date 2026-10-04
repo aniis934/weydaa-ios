@@ -5,7 +5,7 @@ import Foundation
 ///   detail:<id> · seller:<id> · about · web:<page> (cgu, terms…) · tab:<onglet> (home, listings, post,
 ///   messages, account ou profile) · listings[:q=…&category=…&subcategory=…&wilaya=16&featured=1]
 ///   et, pour les phases suivantes : chat:<id> · myListings · favorites · savedSearches · notifications
-///   · editProfile · changePassword · accountData · contact · editListing:<id>
+///   · editProfile · changePassword · accountData · contact · editListing:<id> · blockedUsers
 nonisolated enum LaunchRoute: Hashable, Sendable {
     case tab(AppTab)
     case listings(ListingsLaunch)
@@ -53,6 +53,7 @@ nonisolated enum LaunchRoute: Hashable, Sendable {
         case "changepassword": return .route(.changePassword)
         case "accountdata": return .route(.accountData)
         case "contact": return .route(.contact)
+        case "blockedusers": return .route(.blockedUsers)
         default: return nil
         }
     }
@@ -62,7 +63,7 @@ nonisolated enum LaunchRoute: Hashable, Sendable {
     static func preferredTab(for route: AppRoute) -> AppTab? {
         switch route {
         case .about, .myListings, .favorites, .savedSearches, .editProfile, .changePassword, .accountData,
-             .contact, .editListing:
+             .contact, .editListing, .blockedUsers:
             return .account
         case .chat:
             return .messages

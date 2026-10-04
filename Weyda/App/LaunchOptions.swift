@@ -19,6 +19,8 @@ import Foundation
 ///                             capture d'un formulaire en erreur sans saisie au clavier (fiable dans toutes les langues)
 ///   -WeydaPostDraft step-review  (Debug, API simulée) brouillon de dépôt `MockFixtures/post/drafts/<nom>.json` repris par
 ///                             l'assistant (step-category…step-review, photos-failed, details-invalid)
+///   -WeydaChatDemo typing     (Debug, API simulée) fil : l'interlocuteur « en ligne » qui écrit, sans temps réel ;
+///                  archived   fil ouvert comme depuis les Archives (menu « Désarchiver »)
 nonisolated enum LaunchOptions {
     /// Session simulée demandée par `-WeydaLoggedIn` (captures des écrans de membre).
     nonisolated enum MockSession: Sendable {
@@ -71,6 +73,16 @@ nonisolated enum LaunchOptions {
     static var postDraft: String? {
         #if DEBUG
         return defaults.string(forKey: "WeydaPostDraft")
+        #else
+        return nil
+        #endif
+    }
+
+    /// Démonstration du fil pour les captures (`-WeydaChatDemo typing` / `archived`), lue par `ChatView` en API simulée
+    /// seulement ; toujours nil en Release.
+    static var chatDemo: String? {
+        #if DEBUG
+        return defaults.string(forKey: "WeydaChatDemo")
         #else
         return nil
         #endif

@@ -1,6 +1,11 @@
 {
   "_lisezmoi": "Chaînes propres à iOS, fusionnées par scripts/convert-strings.mjs avec les strings.xml d'Android. 'add' = nouvelle clé (fr/ar/en obligatoires ; pluriel = objet {one, other…}) ; 'override' = remplace le texte Android d'une clé existante (ex. une phrase qui parle d'Android) ; 'exclude' = clé Android sans usage sur iOS. Placeholders au format Android (%1$s, %1$d) : le script les convertit.",
   "add": {
+    "blocked_users_title": {
+      "fr": "Utilisateurs bloqués",
+      "ar": "المستخدمون المحظورون",
+      "en": "Blocked users"
+    },
     "rating_out_of_five": {
       "fr": "%1$s sur 5",
       "ar": "%1$s من 5",
@@ -95,6 +100,86 @@
       "fr": "L'appareil photo n'est pas disponible sur cet appareil. Choisissez vos photos dans la galerie.",
       "ar": "الكاميرا غير متاحة على هذا الجهاز. اختر صورك من المعرض.",
       "en": "The camera isn't available on this device. Choose your photos from the gallery."
+    },
+    "chat_ui_view_profile": {
+      "fr": "Voir le profil",
+      "ar": "عرض الملف الشخصي",
+      "en": "View profile"
+    },
+    "chat_ui_copy": {
+      "fr": "Copier",
+      "ar": "نسخ",
+      "en": "Copy"
+    },
+    "chat_ui_blocked_notice": {
+      "fr": "Vous avez bloqué cet utilisateur : il ne peut plus vous écrire. Débloquez-le pour reprendre la conversation.",
+      "ar": "لقد حظرت هذا المستخدم: لم يعد بإمكانه مراسلتك. ألغِ الحظر لاستئناف المحادثة.",
+      "en": "You blocked this user: they can no longer message you. Unblock them to resume the conversation."
+    },
+    "chat_ui_unblock": {
+      "fr": "Débloquer",
+      "ar": "إلغاء الحظر",
+      "en": "Unblock"
+    },
+    "chat_ui_counter_helper": {
+      "fr": "Votre interlocuteur pourra accepter, refuser ou faire une nouvelle proposition.",
+      "ar": "يمكن للطرف الآخر قبول العرض أو رفضه أو تقديم عرض جديد.",
+      "en": "The other person can accept, decline, or make a new proposal."
+    },
+    "chat_ui_message_from": {
+      "fr": "%1$s : %2$s",
+      "ar": "%1$s: %2$s",
+      "en": "%1$s: %2$s"
+    },
+    "chat_ui_suggestions": {
+      "fr": "Messages suggérés",
+      "ar": "رسائل مقترحة",
+      "en": "Suggested messages"
+    },
+    "inbox_blocked_preview": {
+      "fr": "Utilisateur bloqué",
+      "ar": "مستخدم محظور",
+      "en": "Blocked user"
+    },
+    "inbox_unblock": {
+      "fr": "Débloquer",
+      "ar": "إلغاء الحظر",
+      "en": "Unblock"
+    },
+    "inbox_unblock_named": {
+      "fr": "Débloquer %1$s",
+      "ar": "إلغاء حظر %1$s",
+      "en": "Unblock %1$s"
+    },
+    "inbox_unblock_confirm_title": {
+      "fr": "Débloquer cet utilisateur ?",
+      "ar": "إلغاء حظر هذا المستخدم؟",
+      "en": "Unblock this user?"
+    },
+    "inbox_unblock_confirm_body": {
+      "fr": "Cette personne pourra de nouveau vous contacter et vous envoyer des messages.",
+      "ar": "سيتمكن هذا الشخص من التواصل معك وإرسال الرسائل إليك من جديد.",
+      "en": "This person will be able to contact you and send you messages again."
+    },
+    "inbox_blocked_on": {
+      "fr": "Bloqué le %1$s",
+      "ar": "تاريخ الحظر: %1$s",
+      "en": "Blocked on %1$s"
+    },
+    "inbox_blocked_empty_title": {
+      "fr": "Aucun utilisateur bloqué",
+      "ar": "لا يوجد مستخدمون محظورون",
+      "en": "No blocked users"
+    },
+    "inbox_blocked_empty_body": {
+      "fr": "Pour bloquer quelqu'un, ouvrez votre conversation avec cette personne, puis choisissez « Bloquer cet utilisateur » dans son menu.",
+      "ar": "لحظر شخص ما، افتح محادثتك معه، ثم اختر «حظر هذا المستخدم» من قائمتها.",
+      "en": "To block someone, open your conversation with them, then choose “Block this user” from its menu."
+    },
+    "inbox_blocked_footer": {
+      "fr": "Les personnes bloquées ne peuvent plus vous contacter, et l'aperçu de vos conversations avec elles est masqué.",
+      "ar": "لا يمكن للأشخاص المحظورين التواصل معك، ويتم إخفاء معاينة محادثاتك معهم.",
+      "en": "Blocked people can no longer contact you, and the preview of your conversations with them is hidden."
     }
   },
   "override": {

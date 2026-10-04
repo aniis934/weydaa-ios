@@ -206,6 +206,42 @@ nonisolated struct OfferActionRequestDTO: Encodable, Hashable, Sendable {
 }
 
 /// `GET /api/annonces/{id}/contact` : numéro révélé (5 / h / utilisateur, 2 / h / annonce).
+/// `GET /api/users/me/blocked` (lot serveur B, 2026-10) : `{ users: [{ id, name, avatar, blockedAt }], total, page, totalPages }`.
+nonisolated struct BlockedUsersPageDTO: Decodable, Hashable, Sendable {
+    var users: [BlockedUserDTO] = []
+    var total: Int = 0
+    var page: Int = 1
+    var totalPages: Int = 1
+}
+
+nonisolated extension BlockedUsersPageDTO {
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: DTOKey.self)
+        users = container.lenientList(BlockedUserDTO.self, "users")
+        total = container.lenientInt("total") ?? 0
+        page = container.lenientInt("page") ?? 1
+        totalPages = container.lenientInt("totalPages") ?? 1
+    }
+}
+
+/// `name` nul = compte supprimé (le blocage reste listé).
+nonisolated struct BlockedUserDTO: Decodable, Hashable, Sendable {
+    var id: String
+    var name: String? = nil
+    var avatar: String? = nil
+    var blockedAt: String? = nil
+}
+
+nonisolated extension BlockedUserDTO {
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: DTOKey.self)
+        id = try container.requiredString("id")
+        name = container.lenientString("name")
+        avatar = container.lenientString("avatar")
+        blockedAt = container.lenientString("blockedAt")
+    }
+}
+
 nonisolated struct ContactPhoneDTO: Decodable, Hashable, Sendable {
     var phone: String = ""
 }

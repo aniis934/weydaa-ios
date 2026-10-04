@@ -52,7 +52,9 @@ nonisolated struct LocaleUpdateRequestDTO: Encodable, Hashable, Sendable {
 }
 
 /// `POST /api/push/fcm` : jeton FCM de l'appareil, rattaché au compte connecté (langue des notifications).
+/// `platform` (lot serveur B) : "ios" → le serveur ajoute l'alerte APNs traduite ; absent, il suppose "android".
 nonisolated struct FcmTokenRequestDTO: Encodable, Hashable, Sendable {
     var token: String
     var locale: String
+    var platform: String = "ios"
 }

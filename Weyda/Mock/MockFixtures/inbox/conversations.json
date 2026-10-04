@@ -1,0 +1,200 @@
+{
+  "conversations": [
+    {
+      "id": "mock-c1",
+      "annonceId": "mock-a2",
+      "buyerId": "mock-me",
+      "sellerId": "mock-u2",
+      "createdAt": "2026-10-03T16:20:00.000Z",
+      "updatedAt": "2026-10-04T09:12:00.000Z",
+      "annonce": {
+        "id": "mock-a2",
+        "title": "Renault Clio 4 GT Line 2019 diesel",
+        "images": [
+          {
+            "id": "mock-a2-img-1",
+            "url": "https://photos.mock.weydaa/annonces/car-1.webp",
+            "order": 0
+          }
+        ]
+      },
+      "buyer": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      },
+      "seller": {
+        "id": "mock-u2",
+        "name": "Amina K.",
+        "avatar": null
+      },
+      "messages": [
+        {
+          "content": "Je peux descendre à 3 050 000 DA, pas moins. Elle a fait sa vidange le mois dernier.",
+          "createdAt": "2026-10-04T09:12:00.000Z",
+          "senderId": "mock-u2",
+          "readAt": null,
+          "deletedAt": null
+        }
+      ],
+      "topic": "conv:mock-c1:mock"
+    },
+    {
+      "id": "mock-c2",
+      "annonceId": "mock-m1",
+      "buyerId": "mock-u5",
+      "sellerId": "mock-me",
+      "createdAt": "2026-10-03T17:05:00.000Z",
+      "updatedAt": "2026-10-03T18:40:00.000Z",
+      "annonce": {
+        "id": "mock-m1",
+        "title": "Lenovo ThinkPad T14 — i5, 16 Go, SSD 512 Go",
+        "images": [
+          {
+            "id": "mock-m1-img-1",
+            "url": "https://photos.mock.weydaa/annonces/laptop-61.webp",
+            "order": 0
+          }
+        ]
+      },
+      "buyer": {
+        "id": "mock-u5",
+        "name": "Sofiane T.",
+        "avatar": null
+      },
+      "seller": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      },
+      "messages": [
+        {
+          "content": "Oui, toujours disponible. Vous pouvez passer ce soir après 18 h.",
+          "createdAt": "2026-10-03T18:40:00.000Z",
+          "senderId": "mock-me",
+          "readAt": "2026-10-03T18:52:00.000Z",
+          "deletedAt": null
+        }
+      ],
+      "topic": "conv:mock-c2:mock"
+    },
+    {
+      "id": "mock-c3",
+      "annonceId": "mock-a1",
+      "buyerId": "mock-me",
+      "sellerId": "mock-u1",
+      "createdAt": "2026-10-01T19:30:00.000Z",
+      "updatedAt": "2026-10-02T20:05:00.000Z",
+      "annonce": {
+        "id": "mock-a1",
+        "title": "iPhone 15 Pro Max 256 Go Titane naturel",
+        "images": [
+          {
+            "id": "mock-a1-img-1",
+            "url": "https://photos.mock.weydaa/annonces/phone-1.webp",
+            "order": 0
+          }
+        ]
+      },
+      "buyer": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      },
+      "seller": {
+        "id": "mock-u1",
+        "name": "Karim B.",
+        "avatar": null
+      },
+      "messages": [
+        {
+          "content": "Parfait, on se retrouve demain à Didouche Mourad.",
+          "createdAt": "2026-10-02T20:05:00.000Z",
+          "senderId": "mock-u1",
+          "readAt": "2026-10-02T20:31:00.000Z",
+          "deletedAt": null
+        }
+      ],
+      "topic": "conv:mock-c3:mock"
+    },
+    {
+      "id": "mock-c4",
+      "annonceId": "mock-a24",
+      "buyerId": "mock-me",
+      "sellerId": "mock-u3",
+      "createdAt": "2026-09-30T08:10:00.000Z",
+      "updatedAt": "2026-10-01T11:30:00.000Z",
+      "annonce": {
+        "id": "mock-a24",
+        "title": "À donner : canapé 3 places",
+        "images": [
+          {
+            "id": "mock-a24-img-1",
+            "url": "https://photos.mock.weydaa/annonces/sofa-2.webp",
+            "order": 0
+          }
+        ]
+      },
+      "buyer": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      },
+      "seller": {
+        "id": "mock-u3",
+        "name": "Yacine M.",
+        "avatar": null
+      },
+      "messages": [
+        {
+          "content": "Merci beaucoup, je passe le récupérer samedi matin.",
+          "createdAt": "2026-10-01T11:30:00.000Z",
+          "senderId": "mock-me",
+          "readAt": "2026-10-01T11:42:00.000Z",
+          "deletedAt": null
+        }
+      ],
+      "topic": "conv:mock-c4:mock"
+    },
+    {
+      "id": "mock-c5",
+      "annonceId": "mock-m2",
+      "buyerId": "mock-u6",
+      "sellerId": "mock-me",
+      "createdAt": "2026-09-29T21:15:00.000Z",
+      "updatedAt": "2026-09-30T22:47:00.000Z",
+      "annonce": {
+        "id": "mock-m2",
+        "title": "Canapé d'angle 5 places gris anthracite",
+        "images": [
+          {
+            "id": "mock-m2-img-1",
+            "url": "https://photos.mock.weydaa/annonces/sofa-61.webp",
+            "order": 0
+          }
+        ]
+      },
+      "buyer": {
+        "id": "mock-u6",
+        "name": "Lyes A.",
+        "avatar": null
+      },
+      "seller": {
+        "id": "mock-me",
+        "name": "Yacine Benali",
+        "avatar": null
+      },
+      "messages": [
+        {
+          "content": "Répondez ou je laisse un mauvais avis.",
+          "createdAt": "2026-09-30T22:47:00.000Z",
+          "senderId": "mock-u6",
+          "readAt": "2026-09-30T22:49:00.000Z",
+          "deletedAt": null
+        }
+      ],
+      "topic": "conv:mock-c5:mock"
+    }
+  ],
+  "nextCursor": null
+}
