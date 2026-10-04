@@ -41,6 +41,8 @@ nonisolated enum WeydaSize {
     /// Illustration d'une catégorie dans une ligne de liste (feuille des catégories) et dans une puce.
     static let categoryArtworkRow: CGFloat = 40
     static let categoryArtworkChip: CGFloat = 24
+    /// Plafond du disque d'une puce en très grand texte.
+    static let categoryArtworkChipMax: CGFloat = 40
     /// Hauteur du bandeau de marque de l'accueil.
     static let brandHeader: CGFloat = 132
     /// Largeur maximale du contenu (iPad en mode iPhone, paysage) et d'un formulaire.

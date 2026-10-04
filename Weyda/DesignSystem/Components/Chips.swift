@@ -3,7 +3,8 @@ import SwiftUI
 /// Puce unique de l'app (catégories, villes, filtres actifs, tri) — portage de `WeydaChip` (CategoryChip.kt).
 /// Sélectionnée, elle prend le vert de la marque en aplat : le filtre actif se repère d'un coup d'œil. Capsule
 /// visuelle de 36 pt dans une cible de 44 pt. `onRemove` : croix à la fin, bouton séparé (« Retirer ce filtre »).
-/// `artwork` (puces de catégorie) : l'illustration en disque de 24 pt au début, concentrique à la capsule.
+/// `artwork` (puces de catégorie) : l'illustration en disque de 24 pt au début, concentrique à la capsule ; il suit
+/// la taille du texte (40 pt au plus) pour ne pas devenir un point à côté d'un très grand libellé.
 struct WeydaChip: View {
     private let title: String
     private let isSelected: Bool
@@ -11,6 +12,7 @@ struct WeydaChip: View {
     private let artwork: CategoryArtworkContent?
     private let onRemove: (() -> Void)?
     private let action: () -> Void
+    @ScaledMetric(relativeTo: .subheadline) private var scaledArtworkSide: CGFloat = WeydaSize.categoryArtworkChip
 
     /// Retrait du disque d'illustration : (capsule 36 pt − disque 24 pt) / 2 — même écart tout autour.
     private static let artworkInset: CGFloat = WeydaSpace.xs + WeydaSpace.xxs
@@ -68,7 +70,7 @@ struct WeydaChip: View {
     private var label: some View {
         HStack(spacing: WeydaSpace.xs + WeydaSpace.xxs) {
             if let artwork {
-                CategoryArtwork(artwork, size: WeydaSize.categoryArtworkChip, outline: .circle)
+                CategoryArtwork(artwork, size: artworkSide, outline: .circle)
             } else if let iconAsset {
                 CategoryIconImage(assetName: iconAsset, size: WeydaSize.icon - WeydaSpace.xxs)
                     .foregroundStyle(isSelected ? WeydaColor.onPrimary : WeydaColor.primary)
@@ -86,6 +88,10 @@ struct WeydaChip: View {
 
     private var contentColor: Color {
         isSelected ? WeydaColor.onPrimary : WeydaColor.onSurfaceVariant
+    }
+
+    private var artworkSide: CGFloat {
+        min(scaledArtworkSide, WeydaSize.categoryArtworkChipMax)
     }
 }
 
