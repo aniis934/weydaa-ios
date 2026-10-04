@@ -70,8 +70,11 @@ final class TourP8InboxTests: TourTestCase {
 
         // La bannière à « Annuler » vit ~7 s : l'appui n'est tenté que si elle est encore là (jamais une assertion).
         let undo = app.buttons.matching(identifier: "notice.action").firstMatch
-        if undo.exists && undo.isHittable {
-            undo.tap()
+        if undo.exists {
+            // Course possible avec la fermeture automatique : un appui manqué n'est pas un échec du tour.
+            XCTExpectFailure("bannière fermée juste avant l'appui", strict: false) {
+                undo.tap()
+            }
             _ = row.waitForExistence(timeout: 10)
             settle(0.8)
             pause()
@@ -101,8 +104,11 @@ final class TourP8InboxTests: TourTestCase {
 
         // La bannière à « Annuler » vit ~7 s : l'appui n'est tenté que si elle est encore là (jamais une assertion).
         let undo = app.buttons.matching(identifier: "notice.action").firstMatch
-        if undo.exists && undo.isHittable {
-            undo.tap()
+        if undo.exists {
+            // Course possible avec la fermeture automatique : un appui manqué n'est pas un échec du tour.
+            XCTExpectFailure("bannière fermée juste avant l'appui", strict: false) {
+                undo.tap()
+            }
             _ = row.waitForExistence(timeout: 10)
             settle(0.8)
             pause()
