@@ -11,7 +11,7 @@
 | Nom | 30 | 23 |
 | Sous-titre | 30 | 27 |
 | Texte promotionnel | 170 | 130 |
-| Description | 4 000 | 2 194 |
+| Description | 4 000 | 2 354 |
 | Mots-clés | 100 | 97 caractères / 97 octets |
 | Nouveautés | 4 000 | 159 |
 
@@ -51,14 +51,14 @@ FIND EXACTLY WHAT YOU WANT
 • Instant search with suggestions and recent searches.
 • Filter by subcategory, wilaya, commune, price, price type and attributes (make, fuel, year and more).
 • Sort by date, price or relevance.
-• Favorites: keep the ads you like within reach.
-• Alerts: save a search and come back to it in one tap.
+• Favorites: keep the ads you like within reach and get notified when their price drops or they sell.
+• Alerts: save up to 5 searches and get notified of new ads.
 
 TALK AND NEGOTIATE
 • Built-in messaging with the seller, delivered in real time.
 • Make a price offer: the seller accepts, declines or counters, all inside the conversation.
 • Read receipts and conversation archiving.
-• Notifications for new messages, offers and the status of your ads.
+• Notifications, even when the app is closed: messages, offers, alerts, favorites, reviews received and the status of your ads.
 • After contacting a seller, leave them a review: the whole community relies on reviews.
 • Report a listing or a user, block anyone who bothers you: our moderation team reviews every report.
 
@@ -78,9 +78,9 @@ YOUR DATA IS YOURS
 • Delete your account from the app: real erasure, not a simple deactivation.
 • No advertising, no ad trackers, no GPS location.
 
-Weydaa is also weydaa.com: your ads are visible there too, and your email or Google account works on the website just like in the app.
+Weydaa is also weydaa.com: your ads are visible there too, your email or Google account works on the website just like in the app, and weydaa.com links open straight in the app.
 ```
-2 194 caractères. Mêmes différences avec la fiche Play que la version française (voir `fiche-fr.md`).
+2 354 caractères (compté par script en phase 7). Mêmes différences avec la fiche Play et mêmes conditions du build que la version française (voir `fiche-fr.md`).
 
 ## Keywords (100 max, commas without spaces)
 

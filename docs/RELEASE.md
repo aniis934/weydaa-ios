@@ -14,8 +14,13 @@
 | 3 | Clé API **d'équipe**, accès **Admin** → secrets `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` + `APPLE_TEAM_ID` | App Store Connect → Utilisateurs et accès → Intégrations | `ios-release` |
 | 4 | iPhone enregistré (UDID) dans Certificates, IDs & Profiles → Devices | portail développeur | probablement la signature automatique de l'archive (voir Dépannage) |
 | 5 | Secrets `SUPABASE_HOST`, `SUPABASE_ANON_KEY` (mêmes valeurs que le site) | GitHub → Settings → Secrets | le temps réel dans les builds (sans eux : HTTP seul) |
-| 6 | Secret `GOOGLE_SERVICE_INFO_PLIST` + clé APNs déposée dans Firebase | Firebase, phase 5 | push et Crashlytics |
-| 7 | Branche `prep/release` fusionnée dans `main` | GitHub | le bouton « Run workflow » des deux workflows |
+| 6 | App ID `com.weydaa.app` avec les capacités Sign in with Apple, Push Notifications, Associated Domains | portail développeur → Identifiers | la signature de l'archive (entitlements de Release, voir plus bas) |
+| 7 | App iOS dans Firebase + clé APNs déposée → secret `GOOGLE_SERVICE_INFO_PLIST` | Firebase (projet `weydaa-964df`) | push et Crashlytics (code prêt depuis la phase 5, inerte sans ce fichier) |
+| 8 | Secret `GOOGLE_IOS_CLIENT_ID` : identifiant du client OAuth « iOS » (`123…-abc.apps.googleusercontent.com`), écrit par `ios-release` dans `Config/Secrets.xcconfig` (`WEYDA_GOOGLE_IOS_CLIENT_ID`) | Google Cloud | le bouton « Continuer avec Google » (masqué sans lui, avertissement dans le résumé) |
+| 9 | Lots serveur A, B, C déployés | dépôt du site | connexion Apple, liens universels, push iOS, liste des bloqués, textes légaux |
+
+La branche `prep/release` est fusionnée dans `main` depuis la phase 6 : les deux workflows ont leur bouton
+« Run workflow ». Ordre complet, côté Apple, Firebase, Google et Vercel : `store/checklist-soumission.md`.
 
 Facultatif : variable de dépôt `IOS_BUILD_OFFSET` (100 par défaut, voir « Numéro de build »).
 
@@ -42,7 +47,7 @@ gh secret set ASC_KEY_ID -R aniis934/weydaa-ios
 | `APPLE_TEAM_ID` | Team ID, 10 caractères | developer.apple.com → Membership | oui |
 | `SUPABASE_HOST` | hôte Supabase **sans** `https://` (le script l'enlève au besoin) | `.env` du site (`NEXT_PUBLIC_SUPABASE_URL`) | recommandé |
 | `SUPABASE_ANON_KEY` | clé publique Supabase | `.env` du site (`NEXT_PUBLIC_SUPABASE_ANON_KEY`) | recommandé |
-| `GOOGLE_SERVICE_INFO_PLIST` | contenu XML de `GoogleService-Info.plist` (ou base64) | console Firebase, app iOS `com.weydaa.app` | phase 5 |
+| `GOOGLE_SERVICE_INFO_PLIST` | contenu XML de `GoogleService-Info.plist` (ou base64) | console Firebase, app iOS `com.weydaa.app` | pour la soumission (sans lui : ni push ni rapports de plantage) |
 
 La clé doit être une clé **d'équipe** (« Team key », la seule qui a un Issuer ID) avec l'accès **Admin** :
 la signature automatique crée certificats et profils, ce qu'un rôle plus faible ne peut pas faire.
@@ -62,15 +67,16 @@ Une clé révoquée ou perdue se remplace par une nouvelle (mêmes trois secrets
    1. vérifie les secrets (message clair s'il en manque ou s'ils sont mal formés, sans jamais les
       afficher) et calcule le numéro de build ;
    2. parité du catalogue de chaînes, XcodeGen ;
-   3. écrit la clé `.p8` dans `RUNNER_TEMP`, `Config/Secrets.xcconfig` (Supabase) et, à partir de la
-      phase 5, `Weyda/Resources/GoogleService-Info.plist` — avant XcodeGen ;
+   3. écrit la clé `.p8` dans `RUNNER_TEMP`, `Config/Secrets.xcconfig` (Supabase) et
+      `Weyda/Resources/GoogleService-Info.plist` (si le secret existe ; `BUNDLE_ID` vérifié) — avant XcodeGen ;
    4. tests unitaires (désactivables) ;
    5. `xcodebuild archive` en Release, signature automatique « dans le nuage » : `-allowProvisioningUpdates`
       + `-authenticationKeyPath/-authenticationKeyID/-authenticationKeyIssuerID`, `DEVELOPMENT_TEAM` passé
       en argument (pas dans `project.yml`), `CURRENT_PROJECT_VERSION` = numéro de build ;
    6. `xcodebuild -exportArchive` avec `Config/ExportOptions.plist` (méthode `app-store-connect`,
       destination `upload`, symboles envoyés à Apple) : le build part directement vers App Store Connect ;
-   7. dSYM en artefact (30 jours) ; efface la clé et les fichiers de secrets, même après un échec.
+   7. dSYM envoyés à Crashlytics (si Firebase est dans le build) et publiés en artefact (30 jours) ; efface la
+      clé et les fichiers de secrets, même après un échec.
 4. Le job `notes` (Linux, au mieux) attend que le build apparaisse chez Apple (40 min au plus) et écrit
    les notes dans « À tester » (TestFlight, langue fr-FR) par l'API App Store Connect. S'il échoue, le
    build reste bon : saisir les notes à la main.
@@ -92,8 +98,8 @@ jour recréé ou renommé (le compteur repart à 1), ou après des envois faits 
 
 Tout est dans [`store/checklist-soumission.md`](store/checklist-soumission.md) : textes
 ([`fiche-fr.md`](store/fiche-fr.md), [`fiche-ar.md`](store/fiche-ar.md), [`fiche-en.md`](store/fiche-en.md)),
-[`app-privacy.md`](store/app-privacy.md) et le brouillon de manifeste
-[`PrivacyInfo.xcprivacy`](store/PrivacyInfo.xcprivacy), [`age-rating.md`](store/age-rating.md),
+[`app-privacy.md`](store/app-privacy.md) et le manifeste de l'app
+[`Weyda/Resources/PrivacyInfo.xcprivacy`](../Weyda/Resources/PrivacyInfo.xcprivacy), [`age-rating.md`](store/age-rating.md),
 [`review-notes.md`](store/review-notes.md), [`screenshots.md`](store/screenshots.md). La version de la
 page App Store doit être identique à `MARKETING_VERSION` (1.0.0).
 
@@ -119,7 +125,11 @@ page App Store doit être identique à `MARKETING_VERSION` (1.0.0).
 | limite de certificats atteinte | chaque exécution peut créer un certificat « Apple Development: Created via API » | révoquer les anciens (Certificates) : sans effet sur les builds publiés |
 | `No suitable application records were found` | app absente d'App Store Connect | créer l'app (checklist, étape 4) |
 | `The bundle version must be higher…` | numéro de build déjà envoyé | augmenter `IOS_BUILD_OFFSET` |
-| e-mail `ITMS-91053: Missing API declaration` | API à raison obligatoire non déclarée | compléter `PrivacyInfo.xcprivacy` (`store/app-privacy.md`) |
+| e-mail `ITMS-91053: Missing API declaration` | API à raison obligatoire non déclarée | compléter `Weyda/Resources/PrivacyInfo.xcprivacy` et `store/app-privacy.md` (commande de contrôle dans ce dernier) |
+| avertissement « Manifeste de confidentialité absent » | `PrivacyInfo.xcprivacy` exclu de la cible ou déplacé | le remettre dans `Weyda/Resources/`, vérifier `excludes` dans `project.yml` |
+| `doesn't support the … capability` ou `doesn't include the … entitlement` | capacité absente de l'App ID (Push, Sign in with Apple, Associated Domains) | la cocher sur l'App ID (Identifiers), relancer |
+| push reçu sans alerte, ou aucun push sur l'iPhone | clé APNs absente de Firebase, lot B pas en ligne (jeton enregistré comme Android), notifications refusées | clé APNs dans Firebase → Cloud Messaging ; déployer le lot B ; Réglages → Weydaa → Notifications |
+| « Crashlytics : upload-symbols introuvable » ou « envoi des dSYM en échec » | chemin du paquet Firebase changé, réseau | le build est bon ; envoyer les dSYM de l'artefact `ios-dsyms-<build>` depuis un Mac (section Firebase) |
 | e-mail `ITMS-90683: Missing purpose string` | texte d'autorisation absent (appareil photo…) | ajouter la clé `NS…UsageDescription` (phase 4), dans les trois langues |
 | notes TestFlight non écrites | build trop long à traiter, langue fr-FR absente de TestFlight | saisie manuelle, le build est bon |
 
@@ -194,10 +204,52 @@ de progression.
 
 Règle retenue pour tous les scripts de CI : `${VAR}` (avec accolades) devant tout caractère non ASCII.
 
-## À ajouter à la phase 5 (Firebase)
+## Firebase : push et rapports de plantage
 
-- Secret `GOOGLE_SERVICE_INFO_PLIST` : déjà pris en charge (écrit avant XcodeGen, `BUNDLE_ID` vérifié).
-- Envoi des dSYM à Crashlytics après l'archive, avec l'outil du paquet Firebase :
-  `<SourcePackages>/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols -gsp Weyda/Resources/GoogleService-Info.plist -p ios build/release/Weyda.xcarchive/dSYMs`.
-- Droits (entitlements) Sign in with Apple, Push (`aps-environment`), Associated Domains : la signature
-  automatique active les capacités correspondantes sur l'App ID (clé Admin).
+- **Code** : `Weyda/Core/Push/FirebasePush.swift` (seul fichier qui importe Firebase 12.19.2, version exacte de
+  `project.yml`). Firebase ne démarre que si `GoogleService-Info.plist` est dans l'app, hors API simulée et hors
+  tests unitaires : les builds de la CI et des captures n'en ont pas, tout y est inerte.
+- **Fichier de configuration** : jamais dans le dépôt. `release.sh prepare` écrit le contenu du secret
+  `GOOGLE_SERVICE_INFO_PLIST` dans `Weyda/Resources/GoogleService-Info.plist` AVANT XcodeGen (il entre ainsi dans
+  les ressources), refuse un plist invalide ou d'une autre app (`BUNDLE_ID` différent de `com.weydaa.app`), puis
+  l'efface en fin de job. Le résumé du run dit « Firebase (push, plantages) : oui ».
+- **Push** : Firebase Cloud Messaging, relayé par APNs ; `FirebaseAppDelegateProxyEnabled = NO` (pas de
+  swizzling : le jeton APNs passe à la main), `UIBackgroundModes` = `remote-notification` (Info.plist).
+  Autorisation demandée à la première ouverture de Messages par un membre ; jeton envoyé au serveur
+  (`POST /api/push/fcm`, plateforme « ios », lot B) et détruit à la déconnexion. Côté Firebase : clé APNs
+  (`.p8`, Key ID, Team ID) dans Paramètres du projet → Cloud Messaging → app iOS ; une seule clé sert au
+  développement et à la production (TestFlight et App Store utilisent la production).
+- **Crashlytics** : collecte activée en Release seulement (`setCrashlyticsCollectionEnabled`, coupée en Debug),
+  sans identifiant d'utilisateur (`setUserID` jamais appelé : les plantages restent « non liés », voir
+  `store/app-privacy.md`). Les rapports arrivent au relancement qui suit un plantage.
+- **Symboles (dSYM)** : l'étape `symbols` de `release.sh` zippe les dSYM de l'archive (artefact
+  `ios-dsyms-<build>`, 30 jours) puis, si Firebase est dans le build, les envoie avec l'outil livré dans le
+  paquet, même version que l'app :
+  `build/release/dd/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols -gsp Weyda/Resources/GoogleService-Info.plist -p ios build/release/Weyda.xcarchive/dSYMs`.
+  Un échec n'est qu'un avertissement (le build TestFlight est déjà parti) : sur un Mac, refaire la même
+  commande avec le dossier `dSYMs` de l'artefact dézippé et le `GoogleService-Info.plist` téléchargé de Firebase.
+  Apple reçoit aussi les symboles (`uploadSymbols` dans `Config/ExportOptions.plist`).
+
+## Entitlements de Release et capacités de l'App ID
+
+`Config/Weyda.entitlements` n'est appliqué qu'à la configuration **Release** (`project.yml` :
+`configs: Release: CODE_SIGN_ENTITLEMENTS`) : les builds Debug de la CI (simulateur, sans équipe Apple) n'en
+ont pas, l'archive signée de `ios-release` les a tous.
+
+| Entitlement | Valeur dans le fichier | Capacité à cocher sur l'App ID | Sert à |
+|---|---|---|---|
+| `aps-environment` | `development` | Push Notifications | push (APNs) |
+| `com.apple.developer.applesignin` | `Default` | Sign in with Apple (« primary App ID ») | « Continuer avec Apple » (lot A côté serveur) |
+| `com.apple.developer.associated-domains` | `applinks:weydaa.com`, `applinks:www.weydaa.com`, `webcredentials:weydaa.com` | Associated Domains | liens universels et mots de passe du Trousseau partagés avec le site |
+
+- **`aps-environment` = `development`, c'est voulu** : c'est la valeur qu'écrit Xcode en ajoutant la capacité
+  Push, et l'archive est signée automatiquement avec un profil de **développement** (« production » y serait
+  refusé). L'export App Store Connect (`ios-release`, étape `upload`) re-signe avec le profil de distribution,
+  qui passe la valeur à `production` : les builds TestFlight et App Store parlent à l'APNs de production.
+- **Capacités** : cocher les trois sur l'App ID `com.weydaa.app` (Certificates, Identifiers & Profiles →
+  Identifiers) avant le premier `ios-release`. La signature automatique avec une clé Admin sait les activer,
+  mais un App ID déjà prêt évite l'erreur « doesn't support the … capability » (Dépannage).
+- **Liens universels** : le fichier `/.well-known/apple-app-site-association` est servi par le site (lot A), à
+  partir de la variable `APPLE_TEAM_ID` de Vercel (404 tant qu'elle est vide), sur `weydaa.com` et
+  `www.weydaa.com`. Apple le récupère par son propre réseau à l'installation de l'app : après une correction du
+  fichier, réinstaller l'app pour la tester.

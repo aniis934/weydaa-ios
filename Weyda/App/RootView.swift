@@ -39,6 +39,9 @@ struct RootView: View {
                     }
                 }
         }
+        // Captures de la fiche App Store (Debug, API simulée, `-WeydaStoreCaption <n>`) : légende de marque au-dessus de
+        // l'app réduite. Sans l'argument, et toujours en Release, la racine telle quelle.
+        .storeFrame()
     }
 
     @ViewBuilder

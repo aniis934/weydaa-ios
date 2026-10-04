@@ -54,6 +54,7 @@ jobs:
           SUPABASE_HOST: ${{ secrets.SUPABASE_HOST }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+          GOOGLE_IOS_CLIENT_ID: ${{ secrets.GOOGLE_IOS_CLIENT_ID }}
           IOS_BUILD_OFFSET: ${{ vars.IOS_BUILD_OFFSET }}
           NOTES: ${{ inputs.notes }}
         run: bash scripts/ci/release.sh check
@@ -80,6 +81,7 @@ jobs:
           SUPABASE_HOST: ${{ secrets.SUPABASE_HOST }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+          GOOGLE_IOS_CLIENT_ID: ${{ secrets.GOOGLE_IOS_CLIENT_ID }}
         run: bash scripts/ci/release.sh prepare
 
       - name: Générer le projet Xcode

@@ -12,7 +12,8 @@
 #
 # Environnement : ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 (contenu du .p8, brut ou en base64), APPLE_TEAM_ID
 # — obligatoires ; SUPABASE_HOST + SUPABASE_ANON_KEY (temps réel ; absents = HTTP seul) ;
-# GOOGLE_SERVICE_INFO_PLIST (Firebase, phase 5 ; XML brut ou base64) ; IOS_BUILD_OFFSET (100 par défaut) ;
+# GOOGLE_SERVICE_INFO_PLIST (Firebase, phase 5 ; XML brut ou base64) ; GOOGLE_IOS_CLIENT_ID (client OAuth « iOS »
+# de Google Cloud, forme 123-abc.apps.googleusercontent.com ; absent = bouton Google masqué) ; IOS_BUILD_OFFSET (100 par défaut) ;
 # NOTES (affichées dans le résumé). Écrit pour le bash 3.2 de macOS : ni tableaux associatifs ni ${!x}.
 set -euo pipefail
 
@@ -46,6 +47,7 @@ ASC_KEY_P8="${ASC_KEY_P8:-}"
 SUPABASE_HOST=$(clean "${SUPABASE_HOST:-}")
 SUPABASE_ANON_KEY=$(clean "${SUPABASE_ANON_KEY:-}")
 GOOGLE_SERVICE_INFO_PLIST="${GOOGLE_SERVICE_INFO_PLIST:-}"
+GOOGLE_IOS_CLIENT_ID=$(clean "${GOOGLE_IOS_CLIENT_ID:-}")
 
 # Contenu PEM de la clé .p8 : le secret peut être collé tel quel ou encodé en base64.
 p8_pem() {
@@ -138,6 +140,13 @@ cmd_check() {
     echo "::warning title=Temps réel désactivé::secrets SUPABASE_HOST / SUPABASE_ANON_KEY absents : ce build fonctionnera en HTTP seul."
   fi
   [ -n "$GOOGLE_SERVICE_INFO_PLIST" ] || firebase="non (attendu à partir de la phase 5)"
+  local google="oui"
+  if [ -z "$GOOGLE_IOS_CLIENT_ID" ]; then
+    google="non : secret GOOGLE_IOS_CLIENT_ID absent (bouton Google masqué)"
+    echo "::warning title=Connexion Google masquée::secret GOOGLE_IOS_CLIENT_ID absent : ce build n'aura pas « Continuer avec Google »."
+  elif ! printf '%s' "$GOOGLE_IOS_CLIENT_ID" | grep -E '^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$' > /dev/null; then
+    die "Google" "GOOGLE_IOS_CLIENT_ID mal formé : attendu 123456789-abc….apps.googleusercontent.com (client OAuth « iOS », Google Cloud)"
+  fi
   if [ "$branch" != "main" ]; then
     echo "::warning title=Branche::publication lancée depuis « $branch » et non depuis main."
   fi
@@ -151,7 +160,8 @@ cmd_check() {
     "| Branche | \`$branch\` (\`${sha:0:7}\`) |" \
     "| Numéro de build | $build (exécution ${run} + décalage ${offset}) |" \
     "| Temps réel (Supabase) | $realtime |" \
-    "| Firebase (push, plantages) | $firebase |" ""
+    "| Firebase (push, plantages) | $firebase |" \
+    "| Connexion Google | $google |" ""
   if [ -n "${NOTES:-}" ]; then
     summary "**Notes de version :**" ""
     printf '%s\n' "$NOTES" | sed 's/^/> /' >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
@@ -170,6 +180,9 @@ cmd_prepare() {
   set_env ASC_KEY_PATH "$key"
   echo "Clé API écrite dans RUNNER_TEMP (droits 600) ; effacée en fin de job."
 
+  # Secrets.xcconfig : temps réel (Supabase) et connexion Google, chacun seulement s'il est fourni.
+  rm -f "$SECRETS_XCCONFIG"
+  echo "// Écrit par scripts/ci/release.sh depuis le coffre GitHub — ignoré par git, effacé en fin de job." > "$SECRETS_XCCONFIG"
   if [ -n "$SUPABASE_HOST" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
     # Hôte seul : « // » (de https://) ouvrirait un commentaire dans un .xcconfig.
     local host="$SUPABASE_HOST"
@@ -177,14 +190,18 @@ cmd_prepare() {
     host="${host#http://}"
     host="${host%%/*}"
     {
-      echo "// Écrit par scripts/ci/release.sh depuis le coffre GitHub — ignoré par git, effacé en fin de job."
       echo "WEYDA_SUPABASE_HOST = $host"
       echo "WEYDA_SUPABASE_ANON_KEY = $SUPABASE_ANON_KEY"
-    } > "$SECRETS_XCCONFIG"
-    echo "Temps réel : $SECRETS_XCCONFIG écrit."
+    } >> "$SECRETS_XCCONFIG"
+    echo "Temps réel : activé ($SECRETS_XCCONFIG)."
   else
-    rm -f "$SECRETS_XCCONFIG"
     echo "Temps réel : désactivé (secrets Supabase absents)."
+  fi
+  if [ -n "$GOOGLE_IOS_CLIENT_ID" ]; then
+    echo "WEYDA_GOOGLE_IOS_CLIENT_ID = $GOOGLE_IOS_CLIENT_ID" >> "$SECRETS_XCCONFIG"
+    echo "Connexion Google : activée ($SECRETS_XCCONFIG)."
+  else
+    echo "Connexion Google : bouton masqué (secret GOOGLE_IOS_CLIENT_ID absent)."
   fi
 
   if [ -n "$GOOGLE_SERVICE_INFO_PLIST" ]; then
@@ -246,7 +263,7 @@ cmd_archive() {
   build=$(/usr/libexec/PlistBuddy -c "Print :ApplicationProperties:CFBundleVersion" "$plist")
   [ "$build" = "$BUILD_NUMBER" ] || die "Archive" "numéro de build inattendu dans l'archive ($build au lieu de $BUILD_NUMBER)"
   if [ ! -f "$ARCHIVE/Products/Applications/Weyda.app/PrivacyInfo.xcprivacy" ]; then
-    echo "::warning title=Manifeste de confidentialité absent::PrivacyInfo.xcprivacy n'est pas dans l'app (brouillon : docs/store/, à placer dans Weyda/Resources à la phase 7)."
+    echo "::warning title=Manifeste de confidentialité absent::PrivacyInfo.xcprivacy n'est pas à la racine de l'app : vérifier Weyda/Resources/PrivacyInfo.xcprivacy et les exclusions de la cible Weyda dans project.yml (sinon refus ITMS-91053 à l'envoi)."
   fi
   set_output version "$version"
   echo "Archive signée : Weydaa $version ($build)"

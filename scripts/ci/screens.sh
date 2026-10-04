@@ -73,7 +73,7 @@ for device in "${DEVICE_LIST[@]}"; do
 
       slow=0
       [ -n "$video_pid" ] && slow=1
-      TEST_RUNNER_WEYDA_LANG="$lang" TEST_RUNNER_WEYDA_SLOW="$slow" xcodebuild test-without-building \
+      TEST_RUNNER_WEYDA_LANG="$lang" TEST_RUNNER_WEYDA_SLOW="$slow" TEST_RUNNER_WEYDA_APPEARANCE="$appearance" xcodebuild test-without-building \
         -xctestrun "$xctestrun" \
         -destination "id=$udid" \
         "${only[@]}" \

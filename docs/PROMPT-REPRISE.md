@@ -26,6 +26,11 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-04 (fin de journée)** — **Phase 7 préparée** (PR #8) : captures de la fiche (24, fr/ar/en), manifeste de confidentialité,
+  App Privacy, fiches, notes de revue, check-list, `ios-release` complet. **Toutes les phases de code sont faites (0 à 7, 612 tests).**
+  ARRÊT demandé par le propriétaire à la fin de la phase 7 : la suite est à lui, dans l'ordre de `docs/EN-ATTENTE.md` (section « Ordre de
+  traitement ») — compte Apple, secrets, lots serveur A/B/C, TestFlight, test final guidé, soumission. Galeries : phase 5 https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp,
+  phase 6 https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo, phase 7 https://claude.ai/artifact/B9meNggA7FGCi6JyV1ee5G. Prochaine session iOS = accompagner ces étapes (test final guidé sur iPhone, corrections, soumission).
 - **2026-10-04** — **Phase 6 close** (PR #7) : favoris, alertes, avis ; finition (très grand texte, hors ligne sur iOS 26, VoiceOver,
   haptique, Liquid Glass du composeur) ; `prep/release` fusionnée ; iOS 16.4 vert. 608 tests verts, galerie https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo. Suite : phase 7
   (préparation App Store) enchaînée sans arrêt.

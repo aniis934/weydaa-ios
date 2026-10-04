@@ -1117,6 +1117,22 @@ nonisolated enum L10n {
     static var statusRejected: String { tr("status_rejected") }
     /// Vendue
     static var statusSold: String { tr("status_sold") }
+    /// Achetez et vendez près de chez vous
+    static var storeCaption1: String { tr("store_caption_1") }
+    /// Trouvez vite grâce aux filtres
+    static var storeCaption2: String { tr("store_caption_2") }
+    /// Photos en grand, tous les détails
+    static var storeCaption3: String { tr("store_caption_3") }
+    /// Discutez et négociez en direct
+    static var storeCaption4: String { tr("store_caption_4") }
+    /// Votre annonce en quelques minutes
+    static var storeCaption5: String { tr("store_caption_5") }
+    /// Des vendeurs notés par les acheteurs
+    static var storeCaption6: String { tr("store_caption_6") }
+    /// Favoris et alertes : rien ne vous échappe
+    static var storeCaption7: String { tr("store_caption_7") }
+    /// Clair ou sombre, en 3 langues
+    static var storeCaption8: String { tr("store_caption_8") }
     /// Catégorie
     static var suggestionCategory: String { tr("suggestion_category") }
     /// Annonce
@@ -1744,6 +1760,14 @@ nonisolated enum L10n {
         "status_pending",
         "status_rejected",
         "status_sold",
+        "store_caption_1",
+        "store_caption_2",
+        "store_caption_3",
+        "store_caption_4",
+        "store_caption_5",
+        "store_caption_6",
+        "store_caption_7",
+        "store_caption_8",
         "suggestion_category",
         "suggestion_listing",
         "suggestion_wilaya",

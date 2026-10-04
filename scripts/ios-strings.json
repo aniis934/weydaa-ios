@@ -253,6 +253,46 @@
       "fr": "Votre nouvel avis remplacera le précédent.",
       "ar": "سيحلّ تقييمك الجديد محلّ تقييمك السابق.",
       "en": "Your new review will replace the previous one."
+    },
+    "store_caption_1": {
+      "fr": "Achetez et vendez près de chez vous",
+      "ar": "بيع وشراء بالقرب منك",
+      "en": "Buy and sell near you"
+    },
+    "store_caption_2": {
+      "fr": "Trouvez vite grâce aux filtres",
+      "ar": "اعثر بسرعة بفضل الفلاتر",
+      "en": "Find it fast with filters"
+    },
+    "store_caption_3": {
+      "fr": "Photos en grand, tous les détails",
+      "ar": "صور كبيرة وكل التفاصيل",
+      "en": "Big photos, every detail"
+    },
+    "store_caption_4": {
+      "fr": "Discutez et négociez en direct",
+      "ar": "تحدّث وتفاوض مباشرة",
+      "en": "Chat and negotiate live"
+    },
+    "store_caption_5": {
+      "fr": "Votre annonce en quelques minutes",
+      "ar": "إعلانك في دقائق",
+      "en": "Post an ad in minutes"
+    },
+    "store_caption_6": {
+      "fr": "Des vendeurs notés par les acheteurs",
+      "ar": "بائعون يقيّمهم المشترون",
+      "en": "Sellers rated by buyers"
+    },
+    "store_caption_7": {
+      "fr": "Favoris et alertes : rien ne vous échappe",
+      "ar": "المفضلة والتنبيهات: لا يفوتك شيء",
+      "en": "Favorites and alerts"
+    },
+    "store_caption_8": {
+      "fr": "Clair ou sombre, en 3 langues",
+      "ar": "فاتح أو داكن، بثلاث لغات",
+      "en": "Light or dark, in 3 languages"
     }
   },
   "override": {
