@@ -22,6 +22,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ✅ close le 2026-10-04 (push et liens : test sur iPhone en attente) |
 | 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ✅ close le 2026-10-04 |
 | 7 | App Store + lot serveur C | TestFlight final, manifeste de confidentialité, étiquettes App Privacy, âge, textes fr/ar/en, captures 6,9", compte de démo, test final, soumission | oui | ✅ préparée le 2026-10-04 (TestFlight, test final et soumission : compte Apple) |
+| 8 | Finition « à la Apple » (lots 1 et 2) | fiche (barre au défilement, actions sur une rangée), transition zoom, onglet touché deux fois, grands titres, bannières + Annuler, feuilles d'actions, haptique, feuilles protégées, appuis longs, raccourcis de l'icône, notifications à actions, note App Store, partage avec photo | non | ⏳ préparée le 2026-10-04 (feu vert donné ; à exécuter) |
 
 Jalons TestFlight sur l'iPhone du propriétaire : fin de phase 2, fin de phase 5, test final.
 
@@ -200,6 +201,23 @@ Deux agents (`docs/equipe/CONTRACTS-P7.md`) ; tout ce qui demande le compte Appl
 
 ## Galeries des phases 5 à 7 (2026-10-04)
 Phase 5 (messagerie, notifications) https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp · phase 6 (favoris, alertes, avis, finition) https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo · phase 7 (fiche App Store) https://claude.ai/artifact/B9meNggA7FGCi6JyV1ee5G.
+
+## Phase 8 — finition « à la Apple » (préparée le 2026-10-04, à exécuter)
+Feu vert du propriétaire le 2026-10-04 pour les lots 1 et 2 de l'audit « app parfaite à la Apple » ; exécution à la session suivante.
+Contrat complet (prétravail, 2 vagues d'agents, règles par point, chaînes fr/ar/en, captures) : `docs/equipe/CONTRACTS-P8.md`.
+- [ ] Prétravail de l'orchestrateur (une CI) : chaînes, `WeydaBanner`, haptique `error`/`warning`, signal « haut de page », zoom
+      (`AppRoute.detail(…, zoomSource:)`, espaces de noms), `listingContextMenu`, `Listing.sellerId`, `SellerLinks`, `ReviewPrompter`,
+      `ShortcutAction` + `-WeydaShortcut`
+- [ ] Vague 1 (DETAIL, BROWSE, ACCOUNT) puis vague 2 (INBOX, SYSTEM), une CI par vague
+- [ ] Lot 1 : fiche (barre au défilement + titre, actions sur une rangée), zoom carte → fiche (iOS 18), onglet touché deux fois = haut
+      de page, grands titres (Messages, Favoris, Alertes, Mes annonces), bannières iOS + « Annuler », feuilles d'actions, haptique,
+      Filtres et connexion protégés contre la fermeture par glissement
+- [ ] Lot 2 : appuis longs (annonces, conversations, Mes annonces), raccourcis de l'icône, notifications à actions (répondre,
+      accepter / refuser ; `aps.category` à ajouter à la PR B avec l'accord du propriétaire), note App Store, partage avec photo,
+      partage du profil vendeur
+- [ ] Captures relues (fr/ar/en, clair/sombre, 2 iPhone, très grand texte), galerie, PR fusionnée
+- Écarts décidés à la préparation : pas de « lu / non lu » (aucune route serveur), menu d'appui long au lieu des glissements dans
+  « Mes annonces », photo dans la notification après le premier TestFlight, pastille de l'icône inchangée (compteur du serveur).
 
 ## Après la phase 7 — illustrations des catégories (2026-10-04, PR #9)
 Demande du propriétaire : les icônes de catégorie de l'app = les illustrations 3D en couleur du site.
