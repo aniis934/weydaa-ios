@@ -26,7 +26,14 @@ final class TourChatTests: TourTestCase {
     @MainActor
     func test9c02CounterSheet() {
         let app = launchChat("mock-c1")
+        // Le fil descend tout seul en bas à l'ouverture : un appui pendant ce défilement tombe à côté (17e, constaté
+        // deux fois). On attend qu'il soit posé, puis un second appui si la feuille n'est pas venue.
+        settle()
         tap("chat.offer.counter", in: app)
+        if !waitForSheet(["chat.offer.sheet", "offer.amount"], in: app, timeout: 4) {
+            settle(0.8)
+            tap("chat.offer.counter", in: app)
+        }
         XCTAssertTrue(waitForSheet(["chat.offer.sheet", "offer.amount"], in: app), "feuille de contre-offre absente")
         settle()
         pause()
