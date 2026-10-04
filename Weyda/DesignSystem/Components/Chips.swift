@@ -3,23 +3,30 @@ import SwiftUI
 /// Puce unique de l'app (catégories, villes, filtres actifs, tri) — portage de `WeydaChip` (CategoryChip.kt).
 /// Sélectionnée, elle prend le vert de la marque en aplat : le filtre actif se repère d'un coup d'œil. Capsule
 /// visuelle de 36 pt dans une cible de 44 pt. `onRemove` : croix à la fin, bouton séparé (« Retirer ce filtre »).
+/// `artwork` (puces de catégorie) : l'illustration en disque de 24 pt au début, concentrique à la capsule.
 struct WeydaChip: View {
     private let title: String
     private let isSelected: Bool
     private let iconAsset: String?
+    private let artwork: CategoryArtworkContent?
     private let onRemove: (() -> Void)?
     private let action: () -> Void
+
+    /// Retrait du disque d'illustration : (capsule 36 pt − disque 24 pt) / 2 — même écart tout autour.
+    private static let artworkInset: CGFloat = WeydaSpace.xs + WeydaSpace.xxs
 
     init(
         title: String,
         isSelected: Bool = false,
         iconAsset: String? = nil,
+        artwork: CategoryArtworkContent? = nil,
         onRemove: (() -> Void)? = nil,
         action: @escaping () -> Void
     ) {
         self.title = title
         self.isSelected = isSelected
         self.iconAsset = iconAsset
+        self.artwork = artwork
         self.onRemove = onRemove
         self.action = action
     }
@@ -60,7 +67,9 @@ struct WeydaChip: View {
 
     private var label: some View {
         HStack(spacing: WeydaSpace.xs + WeydaSpace.xxs) {
-            if let iconAsset {
+            if let artwork {
+                CategoryArtwork(artwork, size: WeydaSize.categoryArtworkChip, outline: .circle)
+            } else if let iconAsset {
                 CategoryIconImage(assetName: iconAsset, size: WeydaSize.icon - WeydaSpace.xxs)
                     .foregroundStyle(isSelected ? WeydaColor.onPrimary : WeydaColor.primary)
             }
@@ -69,7 +78,7 @@ struct WeydaChip: View {
                 .foregroundStyle(contentColor)
                 .lineLimit(1)
         }
-        .padding(.leading, WeydaSpace.md)
+        .padding(.leading, artwork == nil ? WeydaSpace.md : Self.artworkInset)
         .padding(.trailing, onRemove == nil ? WeydaSpace.md : WeydaSpace.xxs)
         .frame(minHeight: WeydaSize.touchTarget)
         .contentShape(Rectangle())
@@ -80,30 +89,24 @@ struct WeydaChip: View {
     }
 }
 
-/// Pastille ronde d'une catégorie — la rangée de l'accueil (CategoryCircle, Android) : cercle teinté portant
-/// l'icône Lucide, libellé sur deux lignes, largeur fixe pour un pas de défilement régulier ; l'appui enfonce la
-/// pastille (la rangée se parcourt au pouce).
-struct CategoryCircle: View {
+/// Raccourci de catégorie — la rangée de l'accueil, comme sur le site (`HomeCategoryBar`) : l'illustration 3D en
+/// tuile arrondie de 64 pt, libellé sur deux lignes, largeur fixe pour un pas de défilement régulier ; l'appui
+/// enfonce la tuile (la rangée se parcourt au pouce).
+struct CategoryShortcut: View {
     private let title: String
-    private let iconAsset: String
+    private let artwork: CategoryArtworkContent
     private let action: () -> Void
 
-    init(title: String, iconAsset: String, action: @escaping () -> Void) {
+    init(title: String, artwork: CategoryArtworkContent, action: @escaping () -> Void) {
         self.title = title
-        self.iconAsset = iconAsset
+        self.artwork = artwork
         self.action = action
     }
 
     var body: some View {
         Button(action: action) {
             VStack(spacing: WeydaSpace.sm) {
-                Circle()
-                    .fill(WeydaPalette.categoryTile)
-                    .frame(width: WeydaSize.categoryCircle, height: WeydaSize.categoryCircle)
-                    .overlay {
-                        CategoryIconImage(assetName: iconAsset, size: WeydaSize.iconLarge)
-                            .foregroundStyle(WeydaColor.primary)
-                    }
+                CategoryArtwork(artwork, size: WeydaSize.categoryArtwork)
                 CategoryLabel(title: title)
             }
             .padding(.vertical, WeydaSpace.sm)
@@ -115,17 +118,17 @@ struct CategoryCircle: View {
     }
 }
 
-/// Tuile de catégorie (feuille des catégories, grille) : carré teinté portant l'icône, libellé, puis le nombre
-/// d'annonces quand il est connu (« 1 234 annonces »).
+/// Tuile de catégorie (grille) : l'illustration 3D, libellé, puis le nombre d'annonces quand il est connu
+/// (« 1 234 annonces »).
 struct CategoryTile: View {
     private let title: String
-    private let iconAsset: String
+    private let artwork: CategoryArtworkContent
     private let count: Int?
     private let action: () -> Void
 
-    init(title: String, iconAsset: String, count: Int?, action: @escaping () -> Void) {
+    init(title: String, artwork: CategoryArtworkContent, count: Int?, action: @escaping () -> Void) {
         self.title = title
-        self.iconAsset = iconAsset
+        self.artwork = artwork
         self.count = count
         self.action = action
     }
@@ -133,13 +136,7 @@ struct CategoryTile: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: WeydaSpace.sm) {
-                RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
-                    .fill(WeydaPalette.categoryTile)
-                    .frame(width: WeydaSize.avatar, height: WeydaSize.avatar)
-                    .overlay {
-                        CategoryIconImage(assetName: iconAsset, size: WeydaSize.iconLarge)
-                            .foregroundStyle(WeydaColor.primary)
-                    }
+                CategoryArtwork(artwork, size: WeydaSize.avatar)
                 VStack(spacing: WeydaSpace.xxs) {
                     CategoryLabel(title: title)
                     if let count {

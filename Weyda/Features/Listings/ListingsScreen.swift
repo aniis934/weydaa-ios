@@ -172,6 +172,7 @@ struct ListingsScreen: View {
                     WeydaChip(
                         title: L10n.allCategories,
                         isSelected: state.categorySlug == nil,
+                        artwork: .all,
                         action: { actions.onCategorySelect(nil) }
                     )
                     .id(Self.allCategoriesID)
@@ -195,7 +196,7 @@ struct ListingsScreen: View {
         return WeydaChip(
             title: category.name.resolve(),
             isSelected: selected,
-            iconAsset: CategoryIcon.assetName(forSlug: category.slug),
+            artwork: .category(slug: category.slug),
             action: { actions.onCategorySelect(selected ? nil : category.slug) }
         )
         .id(category.slug)

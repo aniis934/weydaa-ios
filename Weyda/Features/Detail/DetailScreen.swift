@@ -209,59 +209,94 @@ private struct DetailPills: View {
     var body: some View {
         let category: String? = listing.category.map { $0.resolve() }
         let place: String? = ListingText.place(wilaya: listing.wilaya, commune: listing.commune)
-        let icon: String = CategoryIcon.assetName(forSlug: listing.parentCategorySlug ?? listing.categorySlug)
+        let artwork = CategoryArtworkContent.category(slug: listing.parentCategorySlug ?? listing.categorySlug)
         if category != nil || place != nil {
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: WeydaSpace.sm) {
-                    pills(category: category, place: place, icon: icon)
+                    pills(category: category, place: place, artwork: artwork)
                 }
                 VStack(alignment: .leading, spacing: WeydaSpace.sm) {
-                    pills(category: category, place: place, icon: icon)
+                    pills(category: category, place: place, artwork: artwork)
                 }
             }
         }
     }
 
     @ViewBuilder
-    private func pills(category: String?, place: String?, icon: String) -> some View {
+    private func pills(category: String?, place: String?, artwork: CategoryArtworkContent) -> some View {
         if let category {
-            DetailPill(iconAsset: icon, text: category)
+            DetailPill(leading: .artwork(artwork), text: category)
         }
         if let place {
-            DetailPill(iconAsset: CategoryIcon.place, text: place)
+            DetailPill(leading: .glyph(CategoryIcon.place), text: place)
         }
     }
 }
 
-/// Pastille de catégorie ou de lieu : une ligne aux tailles normales ; en très grand texte, le lieu entier
-/// (« Bab Ezzouar, Alger ») passe à la ligne plutôt que d'être tronqué.
+/// Pastille de catégorie (l'illustration en disque, concentrique à la capsule) ou de lieu (pictogramme) : une ligne
+/// aux tailles normales ; en très grand texte, le lieu entier (« Bab Ezzouar, Alger ») passe à la ligne plutôt que
+/// d'être tronqué. Les deux pastilles ont la même hauteur (disque 20 + 2 × 4 = ligne 16 + 2 × 6).
 private struct DetailPill: View {
-    private let iconAsset: String
+    enum Leading {
+        case artwork(CategoryArtworkContent)
+        case glyph(String)
+    }
+
+    private let leading: Leading
     private let text: String
     @ScaledMetric(relativeTo: .caption) private var iconSide: CGFloat = 14
+    @ScaledMetric(relativeTo: .caption) private var artworkSide: CGFloat = 20
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    init(iconAsset: String, text: String) {
-        self.iconAsset = iconAsset
+    init(leading: Leading, text: String) {
+        self.leading = leading
         self.text = text
     }
 
     var body: some View {
-        HStack(spacing: WeydaSpace.xs) {
-            CategoryIconImage(assetName: iconAsset, size: iconSide)
-                .foregroundStyle(WeydaColor.primary)
+        HStack(spacing: contentSpacing) {
+            leadingView
             Text(text)
                 .weydaText(.labelMedium)
                 .foregroundStyle(WeydaColor.onSurfaceVariant)
                 .lineLimit(textLineLimit)
         }
-        .padding(.horizontal, WeydaSpace.md)
-        .padding(.vertical, WeydaSpace.xs + WeydaSpace.xxs)
+        .padding(.leading, leadingInset)
+        .padding(.trailing, WeydaSpace.md)
+        .padding(.vertical, verticalInset)
         .background(WeydaColor.surface, in: Capsule())
         .overlay {
             Capsule().strokeBorder(WeydaColor.outlineVariant, lineWidth: 1)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private var leadingView: some View {
+        switch leading {
+        case .artwork(let artwork):
+            CategoryArtwork(artwork, size: artworkSide, outline: .circle)
+        case .glyph(let name):
+            CategoryIconImage(assetName: name, size: iconSide)
+                .foregroundStyle(WeydaColor.primary)
+        }
+    }
+
+    private var isArtwork: Bool {
+        if case .artwork = leading { return true }
+        return false
+    }
+
+    private var contentSpacing: CGFloat {
+        isArtwork ? WeydaSpace.xs + WeydaSpace.xxs : WeydaSpace.xs
+    }
+
+    private var leadingInset: CGFloat {
+        isArtwork ? WeydaSpace.xs : WeydaSpace.md
+    }
+
+    private var verticalInset: CGFloat {
+        isArtwork ? WeydaSpace.xs : WeydaSpace.xs + WeydaSpace.xxs
     }
 
     /// nil = autant de lignes qu'il faut (tailles d'accessibilité).

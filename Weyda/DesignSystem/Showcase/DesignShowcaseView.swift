@@ -94,20 +94,22 @@ struct DesignShowcaseView: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: WeydaSize.categoryCell), spacing: WeydaSpace.sm)], spacing: WeydaSpace.md) {
                 ForEach(CategoryIcon.knownSlugs + ["all"], id: \.self) { slug in
                     VStack(spacing: WeydaSpace.xs) {
-                        Circle()
-                            .fill(WeydaPalette.categoryTile)
-                            .frame(width: WeydaSize.categoryCircle, height: WeydaSize.categoryCircle)
-                            .overlay {
-                                CategoryIconImage(
-                                    assetName: slug == "all" ? CategoryIcon.all : CategoryIcon.assetName(forSlug: slug),
-                                    size: WeydaSize.iconLarge
-                                )
-                                .foregroundStyle(WeydaColor.primary)
-                            }
-                        Text(verbatim: slug)
-                            .weydaText(.labelSmall)
-                            .foregroundStyle(WeydaColor.onSurfaceVariant)
-                            .lineLimit(1)
+                        CategoryArtwork(
+                            slug == "all" ? .all : .category(slug: slug),
+                            size: WeydaSize.categoryArtwork
+                        )
+                        HStack(spacing: WeydaSpace.xxs) {
+                            CategoryIconImage(
+                                assetName: slug == "all" ? CategoryIcon.all : CategoryIcon.assetName(forSlug: slug),
+                                size: WeydaSize.icon - WeydaSpace.xs
+                            )
+                            .foregroundStyle(WeydaColor.primary)
+                            Text(verbatim: slug)
+                                .weydaText(.labelSmall)
+                                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
+                        }
                     }
                 }
             }

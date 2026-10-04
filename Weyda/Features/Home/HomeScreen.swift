@@ -85,8 +85,8 @@ struct HomeScreen: View {
 
 /// Mesures propres à l'accueil.
 private nonisolated enum HomeLayout {
-    /// Gouttière moins le retrait de la pastille dans sa cellule : le premier cercle tombe sous le titre de section.
-    static let categoryInset: CGFloat = WeydaSpace.screen - (WeydaSize.categoryCell - WeydaSize.categoryCircle) / 2
+    /// Gouttière moins le retrait de l'illustration dans sa cellule : la première tuile tombe sous le titre de section.
+    static let categoryInset: CGFloat = WeydaSpace.screen - (WeydaSize.categoryCell - WeydaSize.categoryArtwork) / 2
     /// Le W à côté du mot « Weydaa », dans la barre.
     static let markSide: CGFloat = 24
     /// Tuile de l'icône de l'app dans l'invitation à déposer.
@@ -173,14 +173,14 @@ private struct HomeCategoryRow: View {
     private var regularCells: some View {
         HStack(alignment: .top, spacing: WeydaSpace.xs) {
             ForEach(categories) { category in
-                CategoryCircle(
+                CategoryShortcut(
                     title: category.name.resolve(),
-                    iconAsset: CategoryIcon.assetName(forSlug: category.slug),
+                    artwork: .category(slug: category.slug),
                     action: { onOpen(category) }
                 )
                 .accessibilityIdentifier("home.category.\(category.slug)")
             }
-            CategoryCircle(title: L10n.categoryAllTile, iconAsset: CategoryIcon.all, action: onShowAll)
+            CategoryShortcut(title: L10n.categoryAllTile, artwork: .all, action: onShowAll)
                 .accessibilityIdentifier("home.categories.all")
         }
         .padding(.horizontal, HomeLayout.categoryInset)
@@ -192,44 +192,38 @@ private struct HomeCategoryRow: View {
             ForEach(categories) { category in
                 HomeCategoryBubble(
                     title: category.name.resolve(),
-                    iconAsset: CategoryIcon.assetName(forSlug: category.slug),
+                    artwork: .category(slug: category.slug),
                     action: { onOpen(category) }
                 )
                 .accessibilityIdentifier("home.category.\(category.slug)")
             }
-            HomeCategoryBubble(title: L10n.categoryAllTile, iconAsset: CategoryIcon.all, action: onShowAll)
+            HomeCategoryBubble(title: L10n.categoryAllTile, artwork: .all, action: onShowAll)
                 .accessibilityIdentifier("home.categories.all")
         }
         .padding(.horizontal, HomeLayout.categoryInset)
     }
 }
 
-/// Pastille de catégorie en très grand texte — celle de `CategoryCircle` (cercle teinté, icône, appui), dans une
+/// Raccourci de catégorie en très grand texte — celui de `CategoryShortcut` (illustration, appui), dans une
 /// cellule dont la largeur suit la taille du texte (76 pt à la taille par défaut, comme la cellule normale) : dans
 /// 76 pt fixes, « Véhicules » / « المركبات » finissaient en « Véhic… » / « …المركبا ». Libellé : une ligne par mot
 /// au plus (deux lignes), réduit jusqu'à 70 % plutôt que tronqué — jamais un mot coupé en deux.
 private struct HomeCategoryBubble: View {
     private let title: String
-    private let iconAsset: String
+    private let artwork: CategoryArtworkContent
     private let action: () -> Void
     @ScaledMetric(relativeTo: .caption) private var cellWidth: CGFloat = WeydaSize.categoryCell
 
-    init(title: String, iconAsset: String, action: @escaping () -> Void) {
+    init(title: String, artwork: CategoryArtworkContent, action: @escaping () -> Void) {
         self.title = title
-        self.iconAsset = iconAsset
+        self.artwork = artwork
         self.action = action
     }
 
     var body: some View {
         Button(action: action) {
             VStack(spacing: WeydaSpace.sm) {
-                Circle()
-                    .fill(WeydaPalette.categoryTile)
-                    .frame(width: WeydaSize.categoryCircle, height: WeydaSize.categoryCircle)
-                    .overlay {
-                        CategoryIconImage(assetName: iconAsset, size: WeydaSize.iconLarge)
-                            .foregroundStyle(WeydaColor.primary)
-                    }
+                CategoryArtwork(artwork, size: WeydaSize.categoryArtwork)
                 Text(title)
                     .weydaText(.labelMedium)
                     .foregroundStyle(WeydaColor.onSurface)
@@ -540,7 +534,7 @@ private struct HomeSkeleton: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SectionHeader(title: L10n.sectionCategories)
-            CategoryCircleSkeletonRow()
+            CategoryShortcutSkeletonRow()
             SectionHeader(title: L10n.sectionFeatured)
             ListingCardSkeletonRow()
             SectionHeader(title: L10n.sectionRecent)

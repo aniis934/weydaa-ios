@@ -109,7 +109,7 @@ struct ComponentsShowcase: View {
                     WeydaChip(
                         title: ShowcaseFixtures.vehicles.resolve(),
                         isSelected: selectedChip == 1,
-                        iconAsset: CategoryIcon.assetName(forSlug: "vehicules"),
+                        artwork: .category(slug: "vehicules"),
                         action: { selectedChip = 1 }
                     )
                     WeydaChip(
@@ -128,13 +128,13 @@ struct ComponentsShowcase: View {
     }
 
     private var categories: some View {
-        DemoGroup(title: "CategoryCircle · CategoryTile") {
+        DemoGroup(title: "CategoryShortcut · CategoryTile") {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: WeydaSpace.sm) {
                     ForEach(ShowcaseFixtures.categories) { category in
-                        CategoryCircle(
+                        CategoryShortcut(
                             title: category.name.resolve(),
-                            iconAsset: CategoryIcon.assetName(forSlug: category.slug),
+                            artwork: .category(slug: category.slug),
                             action: {}
                         )
                     }
@@ -150,7 +150,7 @@ struct ComponentsShowcase: View {
                 ForEach(Array(ShowcaseFixtures.categories.prefix(4))) { category in
                     CategoryTile(
                         title: category.name.resolve(),
-                        iconAsset: CategoryIcon.assetName(forSlug: category.slug),
+                        artwork: .category(slug: category.slug),
                         count: category.count,
                         action: {}
                     )
@@ -205,7 +205,7 @@ struct ComponentsShowcase: View {
         DemoGroup(title: "Skeletons") {
             VStack(alignment: .leading, spacing: WeydaSpace.md) {
                 ChipSkeletonRow()
-                CategoryCircleSkeletonRow()
+                CategoryShortcutSkeletonRow()
                 ListingCardSkeletonRow()
                 ListingRowSkeletons(count: 2)
             }
