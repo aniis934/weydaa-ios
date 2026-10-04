@@ -241,7 +241,7 @@ final class SavedSearchesViewModelTests: XCTestCase {
         await model.pullToRefresh()
         XCTAssertEqual(model.state.items.map { $0.id }, ["s2", "s1"])
         XCTAssertNil(model.state.errorMessage)
-        XCTAssertNotNil(model.state.notice)
+        XCTAssertEqual(model.state.banner?.kind, .error)
         XCTAssertFalse(model.state.isRefreshing)
     }
 
