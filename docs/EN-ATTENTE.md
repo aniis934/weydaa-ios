@@ -80,7 +80,9 @@
 - [ ] Phase 4 : appareil photo (demande d'autorisation, photo prise → envoyée), sélecteur de photos réel (HEIC, plusieurs
       photos), brouillon retrouvé après fermeture de l'app ; première vraie annonce avec un compte de test (feu vert).
 - [ ] Fin de phase 2 : parcourir (fluidité, démarrage : le W fantôme ne doit pas traîner).
-- [ ] Fin de phase 5 : messagerie + push.
+- [ ] Fin de phase 5 : messagerie (envoyer, offre, contre-offre, supprimer, bloquer) avec un second compte (toi sur le site) ;
+      push app fermée / au premier plan / appui → le bon fil ; lien weydaa.com ouvert depuis Notes → l'app s'ouvre sur l'annonce
+      (attend : compte Apple, clé APNs dans Firebase, app iOS Firebase + secret `GOOGLE_SERVICE_INFO_PLIST`, lots A et B déployés).
 - [ ] Test final guidé (~30 min) puis soumission.
 
 ## Problèmes rencontrés en autonomie
