@@ -22,7 +22,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ✅ close le 2026-10-04 (push et liens : test sur iPhone en attente) |
 | 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ✅ close le 2026-10-04 |
 | 7 | App Store + lot serveur C | TestFlight final, manifeste de confidentialité, étiquettes App Privacy, âge, textes fr/ar/en, captures 6,9", compte de démo, test final, soumission | oui | ✅ préparée le 2026-10-04 (TestFlight, test final et soumission : compte Apple) |
-| 8 | Finition « à la Apple » (lots 1 et 2) | fiche (barre au défilement, actions sur une rangée), transition zoom, onglet touché deux fois, grands titres, bannières + Annuler, feuilles d'actions, haptique, feuilles protégées, appuis longs, raccourcis de l'icône, notifications à actions, note App Store, partage avec photo | non | ⏳ préparée le 2026-10-04 (feu vert donné ; à exécuter) |
+| 8 | Finition « à la Apple » (lots 1 et 2) | fiche (barre au défilement, actions sur une rangée), transition zoom, onglet touché deux fois, grands titres, bannières + Annuler, feuilles d'actions, haptique, feuilles protégées, appuis longs, raccourcis de l'icône, notifications à actions, note App Store, partage avec photo | non | ✅ close le 2026-10-04 (boutons de notification, raccourcis, note : test sur iPhone en attente) |
 
 Jalons TestFlight sur l'iPhone du propriétaire : fin de phase 2, fin de phase 5, test final.
 
@@ -202,22 +202,52 @@ Deux agents (`docs/equipe/CONTRACTS-P7.md`) ; tout ce qui demande le compte Appl
 ## Galeries des phases 5 à 7 (2026-10-04)
 Phase 5 (messagerie, notifications) https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp · phase 6 (favoris, alertes, avis, finition) https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo · phase 7 (fiche App Store) https://claude.ai/artifact/B9meNggA7FGCi6JyV1ee5G.
 
-## Phase 8 — finition « à la Apple » (préparée le 2026-10-04, à exécuter)
-Feu vert du propriétaire le 2026-10-04 pour les lots 1 et 2 de l'audit « app parfaite à la Apple » ; exécution à la session suivante.
-Contrat complet (prétravail, 2 vagues d'agents, règles par point, chaînes fr/ar/en, captures) : `docs/equipe/CONTRACTS-P8.md`.
-- [ ] Prétravail de l'orchestrateur (une CI) : chaînes, `WeydaBanner`, haptique `error`/`warning`, signal « haut de page », zoom
-      (`AppRoute.detail(…, zoomSource:)`, espaces de noms), `listingContextMenu`, `Listing.sellerId`, `SellerLinks`, `ReviewPrompter`,
-      `ShortcutAction` + `-WeydaShortcut`
-- [ ] Vague 1 (DETAIL, BROWSE, ACCOUNT) puis vague 2 (INBOX, SYSTEM), une CI par vague
-- [ ] Lot 1 : fiche (barre au défilement + titre, actions sur une rangée), zoom carte → fiche (iOS 18), onglet touché deux fois = haut
-      de page, grands titres (Messages, Favoris, Alertes, Mes annonces), bannières iOS + « Annuler », feuilles d'actions, haptique,
+## Phase 8 — finition « à la Apple » (close le 2026-10-04, PR #11)
+Feu vert du propriétaire le 2026-10-04 pour les lots 1 et 2 de l'audit « app parfaite à la Apple ». Contrat :
+`docs/equipe/CONTRACTS-P8.md`. Exécutée le 2026-10-04 (après-midi) : prétravail de l'orchestrateur, lot SYSTEM écrit par
+l'orchestrateur, 3 agents en vague 1 (DETAIL, BROWSE, ACCOUNT) puis INBOX ; 647 tests verts.
+- [x] Prétravail (une CI, verte du premier coup) : 16 chaînes fr/ar/en, `WeydaBanner` (verre sur iOS 26, matériau avant ;
+      « Annuler », haptique selon la nature, VoiceOver, glisser pour fermer ; `floatingNotice` = enveloppe fine), haptique
+      `error`/`warning`, signal « haut de page » (`AppRouter.scrollToTopRequests`, `\.scrollToTopSignal`), zoom
+      (`AppRoute.detail(…, zoomSource:)`, un espace de noms par onglet), `listingContextMenu`, `Listing.sellerId`, `SellerLinks`,
+      `ReviewPrompter` + `.requestsReview(when:)`, `ShortcutAction` + `-WeydaShortcut` (`ListingsLaunch.focusSearch`)
+- [x] Lot 1 : fiche (barre système transparente sur la photo, voile ; matériau + titre une fois la photo dépassée — iOS 18
+      `onScrollGeometryChange`, iOS 16-17 repère de défilement ; actions sur une rangée : téléphone rond → menu Appeler / Copier,
+      Faire une offre, Contacter), zoom carte → fiche (iOS 18 ; accueil, Annonces, Favoris, vendeur, similaires), onglet touché
+      deux fois = haut de page (5 racines), grands titres (Messages, Favoris, Alertes, Mes annonces, Profil visiteur, porte de
+      connexion), bannières + « Annuler » (favori retiré, alerte et notification supprimées en différé, conversation archivée),
+      feuilles d'actions (déconnexion, vendu, supprimer, abandon, bloquer, supprimer un message), haptique à l'aboutissement,
       Filtres et connexion protégés contre la fermeture par glissement
-- [ ] Lot 2 : appuis longs (annonces, conversations, Mes annonces), raccourcis de l'icône, notifications à actions (répondre,
-      accepter / refuser ; `aps.category` à ajouter à la PR B avec l'accord du propriétaire), note App Store, partage avec photo,
-      partage du profil vendeur
-- [ ] Captures relues (fr/ar/en, clair/sombre, 2 iPhone, très grand texte), galerie, PR fusionnée
-- Écarts décidés à la préparation : pas de « lu / non lu » (aucune route serveur), menu d'appui long au lieu des glissements dans
-  « Mes annonces », photo dans la notification après le premier TestFlight, pastille de l'icône inchangée (compteur du serveur).
+- [x] Lot 2 : appuis longs (cartes : favori / Partager / Voir le vendeur ; conversations : Voir l'annonce / Archiver ;
+      Mes annonces : les actions de la carte, avec aperçu), raccourcis de l'icône dynamiques (Déposer, Rechercher, Messages —
+      `SceneDelegate` déclaré par l'`AppDelegate`), notifications à actions (MESSAGE : Répondre ; OFFER : Accepter avec appareil
+      déverrouillé, Refuser ; envoi avec la session de l'app, échec → notification locale), note App Store (2e moment positif,
+      une fois par version), partage de la fiche avec aperçu photo, partage du profil vendeur. `aps.category` ajouté à la PR B
+      (weyda2026 #6, commit 5bddd63, NON fusionnée)
+- [x] Le conteneur appartient à l'`AppDelegate` (une action de notification peut lancer l'app sans scène ; une seule session)
+- [x] Captures relues (fr/ar/en, clair/sombre, 2 iPhone, très grand texte fr/ar), 24 captures App Store refaites, iOS 16.4 vert
+      (tests unitaires + tour), galerie https://claude.ai/artifact/7LVhnEtgq5WriMZzTUZ5wm
+- Écarts décidés : pas de « lu / non lu » (aucune route serveur), menu d'appui long au lieu des glissements dans « Mes annonces »,
+  photo dans la notification après le premier TestFlight, pastille de l'icône inchangée (compteur du serveur ; après une
+  suppression différée de notification, elle baisse à l'envoi réel). Écarts d'exécution : clés d'environnement écrites à la main
+  (`nonisolated`) au lieu de `@Entry` ; bannière à grands coins arrondis (pas une capsule stricte : un message sur deux lignes
+  n'est pas rogné) ; bannières à « Annuler » de nature `.info` (le glissement plein vibre déjà) ; haptique aussi après une
+  modification d'annonce (l'écran de résultat n'a pas de bannière) ; une suppression différée (alerte, notification) est perdue
+  si l'app est tuée pendant les ~7 s de la bannière.
+
+## Constats de la CI (phase 8)
+- Prétravail, SYSTEM et INBOX verts du premier coup ; vague 1 : une seule erreur (un test qui lisait encore `state.notice`).
+- iOS 26 : les feuilles d'actions (`confirmationDialog`) s'affichent en popover ancré au bouton, et un bouton peut figurer deux
+  fois dans l'arbre d'accessibilité → requête `matching(identifier:).firstMatch` ; aide de repli `sheets` → `popovers` → `alerts`.
+- Bannière à « Annuler » (~7 s) : un appui de test peut arriver juste après sa fermeture (tour filmé, plus lent) → appui dans
+  `XCTExpectFailure(strict: false)`, jamais une assertion.
+- Clavier du simulateur : le premier champ focalisé affiche l'astuce système « glisser pour écrire » (capture du raccourci
+  « Rechercher ») — interface système, sans rapport avec l'app.
+- iOS 16.4 : la feuille d'actions de SwiftUI s'affiche bien, mais XCUITest ne la range ni dans `sheets`, ni dans `popovers`, ni
+  dans `alerts` → aide commune `confirmationDialog(in:)` (TourSupport) : repli sur son bouton d'annulation, boutons cherchés
+  par libellé.
+- Pannes du simulateur sans rapport avec le code (« Timed out while launching application », « Failed to install or launch
+  the test runner ») : relancer le seul job en échec (`gh run rerun <id> --failed`).
 
 ## Après la phase 7 — illustrations des catégories (2026-10-04, PR #9)
 Demande du propriétaire : les icônes de catégorie de l'app = les illustrations 3D en couleur du site.

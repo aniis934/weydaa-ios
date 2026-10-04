@@ -5,14 +5,15 @@
 > récente en haut de sa section. Une fois traité : cocher, dater, ne pas effacer.
 > Aucun secret ici (dépôt public) : on nomme ce qu'il faut saisir, jamais sa valeur.
 
-## ➜ Ordre de traitement (fin de la phase 7, 2026-10-04)
+## ➜ Ordre de traitement (fin de la phase 7, 2026-10-04 ; inchangé après la phase 8)
 
 > L'app est terminée côté code (phases 0 à 7, 600+ tests, captures relues) ; tout ce qui reste passe par toi. Suis cet ordre :
 > chaque étape débloque la suivante. Détails pas à pas : `docs/store/checklist-soumission.md` et `docs/RELEASE.md`.
 
 **A. Tout de suite, sans compte Apple (≈ 45 min)**
 1. **Relire puis fusionner les PR serveur B et C** (https://github.com/aniis934/weyda2026/pull/6 et /pull/7) : textes à relire = §5
-   des CGU « tolérance zéro, 24 h » (B), section iOS n° 14 et ligne Apple des prestataires de la confidentialité (C). Sans risque
+   des CGU « tolérance zéro, 24 h » (B), section iOS n° 14 et ligne Apple des prestataires de la confidentialité (C). La PR B porte
+   aussi, depuis la phase 8, la catégorie APNs des boutons de notification (Répondre, Accepter, Refuser). Sans risque
    avant la sortie de l'app (Android inchangé). Puis déployer (`master` → Vercel).
 2. **Trancher la révocation Apple quand un admin supprime un compte** (section Décisions), puis relire l'e-mail « Connexion avec Apple
    ajoutée » (fr/ar/en, `src/lib/mailer.ts`) et **fusionner la PR A** (https://github.com/aniis934/weyda2026/pull/5) — sans
@@ -73,10 +74,11 @@
       adresses relais Apple ne partent pas ; 7) feux verts ci-dessous, puis vérifier l'AASA sur les deux domaines.
 
 ## Feux verts
-- [ ] **Phase 8 — PR serveur B (weyda2026 #6) : ajouter `aps.category`** aux notifications iOS (`src/lib/fcm.ts`,
+- [x] **Phase 8 — PR serveur B (weyda2026 #6) : ajouter `aps.category`** aux notifications iOS (`src/lib/fcm.ts`,
       `buildFcmMessage` : `MESSAGE` → « MESSAGE », `OFFER_RECEIVED` / `OFFER_COUNTER` → « OFFER »). Sans ça, les boutons
-      « Répondre », « Accepter », « Refuser » des notifications n'apparaissent pas (l'app marche quand même). Petit ajout, PR toujours
-      NON fusionnée. Autorisation incluse dans le message de lancement de la phase 8 (`PROMPT-REPRISE.md`).
+      « Répondre », « Accepter », « Refuser » des notifications n'apparaissent pas (l'app marche quand même). — Fait le 2026-10-04
+      (commit 5bddd63 sur la PR #6, 401 tests serveur verts, description de la PR complétée) ; la PR reste NON fusionnée : elle part
+      avec le reste du lot B (étape A.1 de l'ordre de traitement).
 - [ ] (Plus tard, facultatif) **Marquer une conversation comme non lue** : demande une route serveur qui n'existe pas
       (`PATCH /api/conversations/[id]`). Écarté de la phase 8.
 - [ ] (Après le premier TestFlight) **Photo de l'annonce dans les notifications** : extension Notification Service = nouvel
@@ -134,8 +136,11 @@
 - [ ] Fin de phase 5 : messagerie (envoyer, offre, contre-offre, supprimer, bloquer) avec un second compte (toi sur le site) ;
       push app fermée / au premier plan / appui → le bon fil ; lien weydaa.com ouvert depuis Notes → l'app s'ouvre sur l'annonce
       (attend : compte Apple, clé APNs dans Firebase, app iOS Firebase + secret `GOOGLE_SERVICE_INFO_PLIST`, lots A et B déployés).
-- [ ] Phase 8 : depuis une notification, répondre à un message, accepter / refuser une offre (app fermée, écran verrouillé) ;
-      raccourcis de l'icône (appui long) ; demande de note (ne s'affiche pas dans TestFlight : normal).
+- [ ] Phase 8 : depuis une notification, répondre à un message, accepter / refuser une offre (app fermée, écran verrouillé ;
+      « Accepter » demande de déverrouiller) — un échec affiche « Action impossible depuis la notification » ; raccourcis de
+      l'icône (appui long : Déposer, Rechercher, Messages ; à froid et app ouverte) ; zoom carte → fiche (iOS 18+) ; barre de
+      la fiche au défilement ; vibrations (publication, offre, avis, erreurs) ; partage de la fiche avec la photo ; demande de
+      note (ne s'affiche pas dans TestFlight : normal).
 - [ ] Test final guidé (~30 min) puis soumission.
 
 ## Problèmes rencontrés en autonomie
@@ -152,5 +157,7 @@
       Phase 4 : de nouveau autorisé pour la session (2026-10-04), dépôt `weydaa-ios` seulement.
       Phases 5 à 7 : autorisé pour la session (2026-10-04) sur `weydaa-ios` (branches, PR, fusion dans `main`) + mise à jour des
       PR serveur A/B/C (rebasage, sans fusion) ; jamais vers `weyda2026` autrement sans demander.
+      Phase 8 : autorisé pour la session (2026-10-04) sur `weydaa-ios` (branche `phase-8`, PR #11, fusion) + ajout de
+      `aps.category` à la PR B (sans fusion).
 - [ ] Site (hors iOS, relevé le 2026-10-03) : `messages/ar.json` et `en.json` ont des clés en double dans la section
       admin (`dashboard`, `users`, `reports` : un texte puis un objet) — la seconde écrase la première.

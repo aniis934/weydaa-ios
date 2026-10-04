@@ -98,6 +98,11 @@ docs/equipe/             contrats d'interface de l'équipe d'agents (CONTRACTS*.
 - **Visuels de catégorie** : toute vignette (accueil, feuille, dépôt, puces, fiche) = `CategoryArtwork(.category(slug:))`,
   l'illustration 3D du site ; le pictogramme `CategoryIcon.assetName(forSlug:)` seulement pour un petit repère
   (≤ 16 pt, critères d'alerte) ; jamais l'emoji `category.icon`.
+- **Finition « à la Apple » (phase 8)** : message bref = `weydaBanner` (`WeydaBanner` créé dans le ViewModel, `kind` juste :
+  `.success` vibre déjà, `.error`, `.info` ; « Annuler » = `BannerAction.undo`, suppression différée commise à l'expiration,
+  à la suivante et en quittant l'écran) ; confirmer = feuille d'actions `confirmationDialog` (l'alerte reste pour supprimer le
+  compte et débloquer) ; carte d'annonce = `listingZoomSource` + `AppRoute.detail(…, zoomSource:)` et `listingContextMenu` ;
+  racine d'onglet = `scrollsToTop(on: \.scrollToTopSignal…)` ; haptique à l'aboutissement (`Haptics`), jamais à l'appui.
 - **Accessibilité / tests** : chaque écran racine porte `.accessibilityElement(children: .contain)` +
   `.accessibilityIdentifier("screen.<nom>")` (le tour de captures s'en sert).
 - JAMAIS de dépendance sans accord · JAMAIS changer bundle ID (`com.weydaa.app`) / iOS minimum sans demande ·
