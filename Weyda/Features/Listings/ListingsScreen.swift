@@ -88,9 +88,7 @@ struct ListingsScreen: View {
             }
         }
         .background(WeydaColor.background)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            OfflineBanner()
-        }
+        .weydaOfflineBanner()
         .overlay(alignment: .bottom) {
             noticeOverlay
         }

@@ -15,10 +15,12 @@ final class TourInboxTests: TourTestCase {
     // MARK: - Conversations
 
     /// Boîte de réception : c1 non lue en tête (pastille, gras), c5 dont l'interlocuteur est bloqué (aperçu masqué).
+    /// On n'attend que la PREMIÈRE rangée : en très grand texte, c5 est hors écran et la liste ne crée pas les rangées
+    /// invisibles (attendre c5 échouait alors que l'écran était juste).
     @MainActor
     func test9i01Conversations() {
         let app = launch(route: "tab:messages", screen: "conversations")
-        waitFor("conversation.row.mock-c5", in: app)
+        waitFor("conversation.row.mock-c1", in: app)
         settle()
         pause()
         capture("9i-01-conversations-1")

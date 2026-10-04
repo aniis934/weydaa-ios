@@ -1,0 +1,5 @@
+[
+  { "method": "GET", "path": "/api/reviews/eligibility", "query": {"targetId": "mock-u1"}, "fixture": "reviews/eligibilite-mock-u1.json" },
+  { "method": "GET", "path": "/api/reviews/eligibility", "query": {"targetId": "mock-u2"}, "fixture": "reviews/eligibilite-mock-u2.json" },
+  { "method": "POST", "path": "/api/reviews", "status": 201, "fixture": "reviews/avis-publie.json" }
+]

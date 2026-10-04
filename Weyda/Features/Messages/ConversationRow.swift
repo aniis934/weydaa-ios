@@ -123,7 +123,7 @@ struct ConversationRow: View {
                     Text(title)
                         .weydaText(.labelMedium)
                         .foregroundStyle(WeydaColor.onSurfaceVariant)
-                        .lineLimit(1)
+                        .lineLimit(listingTitleLines)
                 }
                 ConversationPreviewLine(
                     preview: ConversationsText.preview(for: conversation, userId: userId, isBlocked: isBlocked),
@@ -139,30 +139,62 @@ struct ConversationRow: View {
         .padding(.vertical, WeydaSpace.xxs)
         .contentShape(Rectangle())
     }
+
+    /// Titre de l'annonce : une ligne aux tailles normales, deux en très grand texte.
+    private var listingTitleLines: Int {
+        typeSize.isAccessibilitySize ? 2 : 1
+    }
 }
 
-/// Nom de l'interlocuteur (gras si non lue) et ancienneté du dernier message (verte si non lue).
+/// Nom de l'interlocuteur (gras si non lue) et ancienneté du dernier message (verte si non lue). Très grand texte :
+/// l'ancienneté passe SOUS le nom — sur la même ligne, le nom se tronquait (« Ami… », « Sofian… »).
 private struct ConversationRowHeader: View {
-    let name: String
-    let date: String
-    let unread: Bool
+    private let name: String
+    private let date: String
+    private let unread: Bool
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(name: String, date: String, unread: Bool) {
+        self.name = name
+        self.date = date
+        self.unread = unread
+    }
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: WeydaSpace.sm) {
-            Text(name)
-                .weydaText(.titleMedium)
-                .fontWeight(unread ? Font.Weight.bold : Font.Weight.semibold)
-                .foregroundStyle(WeydaColor.onSurface)
-                .lineLimit(1)
-            Spacer(minLength: WeydaSpace.xs)
-            if !date.isEmpty {
-                Text(date)
-                    .weydaText(.labelMedium)
-                    .foregroundStyle(unread ? WeydaColor.primary : WeydaColor.onSurfaceVariant)
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+                nameText
+                    .lineLimit(2)
+                if !date.isEmpty {
+                    dateText
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        } else {
+            HStack(alignment: .firstTextBaseline, spacing: WeydaSpace.sm) {
+                nameText
                     .lineLimit(1)
-                    .layoutPriority(1)
+                Spacer(minLength: WeydaSpace.xs)
+                if !date.isEmpty {
+                    dateText
+                        .lineLimit(1)
+                        .layoutPriority(1)
+                }
             }
         }
+    }
+
+    private var nameText: some View {
+        Text(name)
+            .weydaText(.titleMedium)
+            .fontWeight(unread ? Font.Weight.bold : Font.Weight.semibold)
+            .foregroundStyle(WeydaColor.onSurface)
+    }
+
+    private var dateText: some View {
+        Text(date)
+            .weydaText(.labelMedium)
+            .foregroundStyle(unread ? WeydaColor.primary : WeydaColor.onSurfaceVariant)
     }
 }
 

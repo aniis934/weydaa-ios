@@ -254,15 +254,8 @@ struct PostStepProgress: View {
         let count = max(total, 1)
         let current = min(max(index, 0) + 1, count)
         VStack(spacing: WeydaSpace.sm) {
-            HStack(alignment: .firstTextBaseline, spacing: WeydaSpace.sm) {
-                Text(PostFormText.stepTitle(step))
-                    .weydaText(.titleMedium)
-                    .foregroundStyle(WeydaColor.onBackground)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(L10n.postStepOf(current, count))
-                    .weydaText(.labelMedium)
-                    .foregroundStyle(WeydaColor.onSurfaceVariant)
-            }
+            // Titre et « Étape n sur N » : sur une ligne, ou empilés aux tailles d'accessibilité (PostComponents).
+            PostStepTitleRow(title: PostFormText.stepTitle(step), counter: L10n.postStepOf(current, count))
             ProgressView(value: Double(current), total: Double(count))
                 .tint(WeydaColor.primary)
                 .weydaAnimation(.easeOut(duration: WeydaDuration.medium), value: current)

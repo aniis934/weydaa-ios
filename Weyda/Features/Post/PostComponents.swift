@@ -461,6 +461,7 @@ struct PostFormPicker: View {
     private let identifier: String
     private let onSelect: (String?) -> Void
     @State private var showsSheet: Bool = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(
         _ label: String,
@@ -565,12 +566,17 @@ struct PostFormPicker: View {
         }
     }
 
+    /// Valeur choisie : deux lignes aux tailles normales ; entière en très grand texte (nil).
+    private var valueLineLimit: Int? {
+        dynamicTypeSize.isAccessibilitySize ? nil : 2
+    }
+
     private func fieldBox(symbol: String) -> some View {
         HStack(spacing: WeydaSpace.sm) {
             Text(valueText)
                 .weydaText(.bodyLarge)
                 .foregroundStyle(textColor)
-                .lineLimit(2)
+                .lineLimit(valueLineLimit)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
             if isLoading {
@@ -805,6 +811,50 @@ struct PostFormSectionLabel: View {
             .foregroundStyle(WeydaColor.onBackground)
             .accessibilityLabel(title)
             .accessibilityAddTraits(.isHeader)
+    }
+}
+
+/// Titre de l'étape et compteur (« Caractéristiques » — « Étape 2 sur 6 », dans `PostStepProgress`) : sur une
+/// ligne aux tailles normales (le rendu validé) ; en très grand texte, le compteur passe SOUS le titre — à côté, le
+/// titre se coupait d'un trait d'union (« Caractéris-tiques »).
+struct PostStepTitleRow: View {
+    private let title: String
+    private let counter: String
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(title: String, counter: String) {
+        self.title = title
+        self.counter = counter
+    }
+
+    var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+                titleText
+                    .fixedSize(horizontal: false, vertical: true)
+                counterText
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            HStack(alignment: .firstTextBaseline, spacing: WeydaSpace.sm) {
+                titleText
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                counterText
+            }
+        }
+    }
+
+    private var titleText: some View {
+        Text(title)
+            .weydaText(.titleMedium)
+            .foregroundStyle(WeydaColor.onBackground)
+    }
+
+    private var counterText: some View {
+        Text(counter)
+            .weydaText(.labelMedium)
+            .foregroundStyle(WeydaColor.onSurfaceVariant)
     }
 }
 

@@ -180,6 +180,79 @@
       "fr": "Les personnes bloquées ne peuvent plus vous contacter, et l'aperçu de vos conversations avec elles est masqué.",
       "ar": "لا يمكن للأشخاص المحظورين التواصل معك، ويتم إخفاء معاينة محادثاتك معهم.",
       "en": "Blocked people can no longer contact you, and the preview of your conversations with them is hidden."
+    },
+    "lists_browse": {
+      "fr": "Parcourir les annonces",
+      "ar": "تصفّح الإعلانات",
+      "en": "Browse listings"
+    },
+    "lists_favorites_unverified_title": {
+      "fr": "Vérifiez votre email",
+      "ar": "تحقّق من بريدك الإلكتروني",
+      "en": "Verify your email"
+    },
+    "lists_favorites_unverified_body": {
+      "fr": "Vos favoris s'afficheront ici dès que votre adresse email sera vérifiée.",
+      "ar": "ستظهر مفضلاتك هنا بمجرد التحقق من بريدك الإلكتروني.",
+      "en": "Your favorites will appear here as soon as your email address is verified."
+    },
+    "lists_alerts_usage": {
+      "fr": "Alertes : %1$s",
+      "ar": "التنبيهات: %1$s",
+      "en": "Alerts: %1$s"
+    },
+    "lists_alerts_search": {
+      "fr": "Lancer une recherche",
+      "ar": "ابدأ بحثًا",
+      "en": "Start a search"
+    },
+    "lists_alert_keyword": {
+      "fr": "« %1$s »",
+      "ar": "«%1$s»",
+      "en": "“%1$s”"
+    },
+    "lists_alert_more_filters": {
+      "fr": {
+        "one": "+%d filtre",
+        "other": "+%d filtres"
+      },
+      "ar": {
+        "zero": "+%d فلتر",
+        "one": "+%d فلتر",
+        "two": "+%d فلتر",
+        "few": "+%d فلاتر",
+        "many": "+%d فلترًا",
+        "other": "+%d فلتر"
+      },
+      "en": {
+        "one": "+%d filter",
+        "other": "+%d filters"
+      }
+    },
+    "lists_alert_open_hint": {
+      "fr": "Affiche les annonces de cette alerte",
+      "ar": "يعرض إعلانات هذا التنبيه",
+      "en": "Shows the listings for this alert"
+    },
+    "lists_alert_delete_confirm_title": {
+      "fr": "Supprimer cette alerte ?",
+      "ar": "حذف هذا التنبيه؟",
+      "en": "Delete this alert?"
+    },
+    "lists_alert_delete_confirm_body": {
+      "fr": "Vous ne serez plus prévenu des nouvelles annonces pour « %1$s ».",
+      "ar": "لن يتم إعلامك بعد الآن بالإعلانات الجديدة الخاصة بـ «%1$s».",
+      "en": "You will no longer be notified of new listings for “%1$s”."
+    },
+    "lists_alert_deleted": {
+      "fr": "Alerte supprimée.",
+      "ar": "تم حذف التنبيه.",
+      "en": "Alert deleted."
+    },
+    "reviews_edit_hint": {
+      "fr": "Votre nouvel avis remplacera le précédent.",
+      "ar": "سيحلّ تقييمك الجديد محلّ تقييمك السابق.",
+      "en": "Your new review will replace the previous one."
     }
   },
   "override": {

@@ -21,6 +21,9 @@ import Foundation
 ///                             l'assistant (step-category…step-review, photos-failed, details-invalid)
 ///   -WeydaChatDemo typing     (Debug, API simulée) fil : l'interlocuteur « en ligne » qui écrit, sans temps réel ;
 ///                  archived   fil ouvert comme depuis les Archives (menu « Désarchiver »)
+///   -WeydaReviewDemo open     (Debug, API simulée, membre) profil vendeur : feuille « Laisser un avis » ouverte une
+///                    filled   fois le profil chargé ; `filled` la remplit (4 étoiles + commentaire fictif), sans clavier
+///   -WeydaForceOffline YES    (Debug, API simulée) `ConnectivityMonitor` annonce « hors ligne » : captures du bandeau
 nonisolated enum LaunchOptions {
     /// Session simulée demandée par `-WeydaLoggedIn` (captures des écrans de membre).
     nonisolated enum MockSession: Sendable {
@@ -85,6 +88,26 @@ nonisolated enum LaunchOptions {
         return defaults.string(forKey: "WeydaChatDemo")
         #else
         return nil
+        #endif
+    }
+
+    /// Démonstration de la feuille d'avis pour les captures (`-WeydaReviewDemo open` / `filled`), lue par `SellerView`
+    /// en API simulée seulement ; toujours nil en Release.
+    static var reviewDemo: String? {
+        #if DEBUG
+        return defaults.string(forKey: "WeydaReviewDemo")
+        #else
+        return nil
+        #endif
+    }
+
+    /// Hors ligne simulé pour les captures (`-WeydaForceOffline YES`), lu par `ConnectivityMonitor` ; seulement avec l'API
+    /// simulée (l'API réelle doit toujours mesurer le vrai réseau) ; toujours faux en Release.
+    static var forceOffline: Bool {
+        #if DEBUG
+        return mockAPI && defaults.bool(forKey: "WeydaForceOffline")
+        #else
+        return false
         #endif
     }
 

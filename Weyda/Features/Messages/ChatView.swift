@@ -149,6 +149,16 @@ private struct ChatHost: View {
     }
 
     private func appear() {
+        // Retours haptiques quand l'action aboutit (pas à l'appui) : petit choc pour un message, réussite pour une
+        // offre envoyée, une contre-offre ou une acceptation ; rien pour un refus.
+        model.onMessageSent = {
+            Haptics.impact()
+        }
+        model.onOfferSent = { action in
+            if action != .decline {
+                Haptics.success()
+            }
+        }
         let loading = model.appear()
         #if DEBUG
         showDemoIfRequested(after: loading)

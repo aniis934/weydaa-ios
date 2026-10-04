@@ -140,9 +140,7 @@ struct EditProfileScreen: View {
             )
             .padding(.top, WeydaSpace.sm)
         }
-        .safeAreaInset(edge: .top, spacing: 0) {
-            OfflineBanner()
-        }
+        .weydaOfflineBanner()
         .navigationTitle(L10n.editProfileTitle)
         .navigationBarTitleDisplayMode(.inline)
     }

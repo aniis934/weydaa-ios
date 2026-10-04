@@ -14,27 +14,42 @@ struct SellerActions {
     var block: () -> Void
     var unblock: () -> Void
     var noticeShown: () -> Void
+    /// « Laisser un avis » / « Modifier mon avis » touché (mon avis courant est relu, puis la feuille s'ouvre).
+    var openReview: () -> Void
+    /// « Publier » dans la feuille d'avis.
+    var submitReview: () -> Void
+    /// « Annuler » dans la feuille d'avis.
+    var cancelReview: () -> Void
 }
 
 /// Profil public d'un vendeur, sans état — portage de `SellerScreen` (Android) : en-tête (portrait, nom, ancienneté,
-/// note, badges, présentation), avis reçus, puis sa vitrine d'annonces en ligne, paginée. Menu « Signaler cet
-/// utilisateur / Bloquer » (exigence des magasins pour le contenu publié par les utilisateurs).
-/// « Laisser un avis » (ReviewDialog) : phase 6.
+/// note, badges, présentation), avis reçus et « Laisser un avis » / « Modifier mon avis » (`ReviewSheet`) pour un
+/// membre éligible, puis sa vitrine d'annonces en ligne, paginée. Menu « Signaler cet utilisateur / Bloquer »
+/// (exigence des magasins pour le contenu publié par les utilisateurs).
 struct SellerScreen: View {
     private let state: SellerState
     @Binding private var isReportPresented: Bool
     @Binding private var isBlockConfirmPresented: Bool
+    @Binding private var isReviewPresented: Bool
+    @Binding private var reviewRating: Int
+    @Binding private var reviewComment: String
     private let actions: SellerActions
 
     init(
         state: SellerState,
         isReportPresented: Binding<Bool>,
         isBlockConfirmPresented: Binding<Bool>,
+        isReviewPresented: Binding<Bool>,
+        reviewRating: Binding<Int>,
+        reviewComment: Binding<String>,
         actions: SellerActions
     ) {
         self.state = state
         self._isReportPresented = isReportPresented
         self._isBlockConfirmPresented = isBlockConfirmPresented
+        self._isReviewPresented = isReviewPresented
+        self._reviewRating = reviewRating
+        self._reviewComment = reviewComment
         self.actions = actions
     }
 
@@ -47,9 +62,7 @@ struct SellerScreen: View {
             .toolbar {
                 toolbarContent
             }
-            .safeAreaInset(edge: .top, spacing: 0) {
-                OfflineBanner()
-            }
+            .weydaOfflineBanner()
             .sheet(isPresented: $isReportPresented) {
                 ReportSheet(
                     targetsUser: true,
@@ -57,6 +70,18 @@ struct SellerScreen: View {
                     errorMessage: state.reportError,
                     onSubmit: actions.submitReport,
                     onCancel: { isReportPresented = false }
+                )
+            }
+            .sheet(isPresented: $isReviewPresented) {
+                ReviewSheet(
+                    sellerName: state.seller?.name ?? "",
+                    isEditing: state.isReviewEditing,
+                    rating: $reviewRating,
+                    comment: $reviewComment,
+                    isBusy: state.isReviewBusy,
+                    errorMessage: state.reviewError,
+                    onSubmit: actions.submitReview,
+                    onCancel: actions.cancelReview
                 )
             }
             .alert(L10n.chatBlockUser, isPresented: $isBlockConfirmPresented) {
@@ -92,9 +117,16 @@ struct SellerScreen: View {
                 if let reviews = state.reviews, !reviews.reviews.isEmpty {
                     ReviewsHeader(summary: reviews)
                         .padding(.top, WeydaSpace.sm)
+                    if state.canReview {
+                        reviewButton
+                    }
                     ForEach(reviews.reviews) { review in
                         ReviewCard(review: review)
                     }
+                } else if state.canReview {
+                    // Aucun avis encore : la section s'ouvre quand même pour le membre qui peut en laisser un.
+                    emptyReviewsHeader
+                    reviewButton
                 }
                 showcaseHeader
                 if state.items.isEmpty {
@@ -116,6 +148,23 @@ struct SellerScreen: View {
             await actions.refresh()
         }
         .floatingNotice(state.notice, onShown: actions.noticeShown)
+    }
+
+    /// « Laisser un avis » / « Modifier mon avis » (Android : OutlinedButton sous l'en-tête, toute la largeur).
+    private var reviewButton: some View {
+        SellerReviewButton(isEditing: state.hasMyReview, isBusy: state.isReviewOpening, action: actions.openReview)
+    }
+
+    /// « Avis — Aucun avis pour le moment » : la section des avis, encore vide.
+    private var emptyReviewsHeader: some View {
+        VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+            DetailSectionTitle(L10n.reviewsTitle)
+            Text(L10n.reviewsEmpty)
+                .weydaText(.bodyMedium)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.top, WeydaSpace.sm)
     }
 
     /// « 14 annonces en ligne », sous un filet.
@@ -227,6 +276,40 @@ private struct SellerHeader: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("seller.header")
+    }
+}
+
+/// Bouton « Laisser un avis » / « Modifier mon avis » : contour vert, toute la largeur ; le libellé passe à la ligne
+/// plutôt que d'être tronqué (texte agrandi) ; un indicateur pendant que mon avis courant est relu.
+private struct SellerReviewButton: View {
+    let isEditing: Bool
+    let isBusy: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Label(title, systemImage: isEditing ? "square.and.pencil" : "star")
+                    .weydaText(.labelLarge)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .opacity(isBusy ? 0 : 1)
+                if isBusy {
+                    ProgressView()
+                }
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        .controlSize(.large)
+        .tint(WeydaColor.primary)
+        .accessibilityLabel(isBusy ? L10n.loading : title)
+        .accessibilityIdentifier("seller.review.open")
+    }
+
+    private var title: String {
+        isEditing ? L10n.reviewEdit : L10n.reviewLeave
     }
 }
 

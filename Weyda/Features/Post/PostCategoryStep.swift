@@ -6,10 +6,16 @@ import SwiftUI
 struct PostCategoryStep: View {
     private let state: PostListingState
     private let actions: PostListingActions
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let columns: [GridItem] = Array(
         repeating: GridItem(.flexible(), spacing: WeydaSpace.sm, alignment: .top),
         count: 3
+    )
+    /// Très grand texte : deux colonnes (à trois, « الإلكترونيات » se coupait en « الإلكترونيا / ت »).
+    private static let largeColumns: [GridItem] = Array(
+        repeating: GridItem(.flexible(), spacing: WeydaSpace.sm, alignment: .top),
+        count: 2
     )
     /// Hauteur réservée au chargement et à l'erreur (Android : 240 dp).
     private static let placeholderHeight: CGFloat = 240
@@ -29,7 +35,7 @@ struct PostCategoryStep: View {
         } else {
             VStack(alignment: .leading, spacing: 0) {
                 PostFormSectionLabel(L10n.postChooseCategory, isRequired: true)
-                LazyVGrid(columns: Self.columns, spacing: WeydaSpace.sm) {
+                LazyVGrid(columns: gridColumns, spacing: WeydaSpace.sm) {
                     ForEach(state.categories) { category in
                         PostCategoryTile(
                             category: category,
@@ -64,29 +70,37 @@ struct PostCategoryStep: View {
             .weydaAnimation(.easeOut(duration: WeydaDuration.short), value: state.parentCategoryId)
         }
     }
+
+    private var gridColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize ? Self.largeColumns : Self.columns
+    }
 }
 
 /// Tuile d'une catégorie racine : pastille teintée portant l'icône, nom sur deux lignes (place réservée : les
 /// tuiles d'une rangée gardent la même hauteur). Choisie : pastille cerclée de vert, nom en vert.
 private struct PostCategoryTile: View {
-    let category: Category
-    let isSelected: Bool
-    let action: () -> Void
+    private let category: Category
+    private let isSelected: Bool
+    private let action: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let badgeSide: CGFloat = 56
     private static let iconSide: CGFloat = 26
+    /// Très grand texte : réduction permise au nom plutôt qu'un mot coupé en deux.
+    private static let largeTitleMinScale: CGFloat = 0.7
+
+    init(category: Category, isSelected: Bool, action: @escaping () -> Void) {
+        self.category = category
+        self.isSelected = isSelected
+        self.action = action
+    }
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
         Button(action: action) {
             VStack(spacing: WeydaSpace.xs + WeydaSpace.xxs) {
                 badge
-                Text(category.name.resolve())
-                    .weydaText(.labelMedium)
-                    .foregroundStyle(titleColor)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2, reservesSpace: true)
-                    .minimumScaleFactor(0.85)
+                title
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, WeydaSpace.sm + WeydaSpace.xxs)
@@ -98,6 +112,35 @@ private struct PostCategoryTile: View {
         .accessibilityLabel(category.name.resolve())
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .accessibilityIdentifier("post.category.\(category.slug)")
+    }
+
+    /// Tailles normales : deux lignes réservées (inchangé). Très grand texte : une ligne par mot au plus (deux
+    /// lignes), réduite jusqu'à 70 % — jamais « الإلكترونيا / ت » ; deux lignes toujours réservées (texte caché),
+    /// pour que les tuiles d'une rangée gardent la même hauteur.
+    @ViewBuilder
+    private var title: some View {
+        let name: String = category.name.resolve()
+        if dynamicTypeSize.isAccessibilitySize {
+            ZStack(alignment: .top) {
+                Text(verbatim: " ")
+                    .weydaText(.labelMedium)
+                    .lineLimit(2, reservesSpace: true)
+                    .hidden()
+                Text(name)
+                    .weydaText(.labelMedium)
+                    .foregroundStyle(titleColor)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(LabelLines.limit(for: name, maxLines: 2))
+                    .minimumScaleFactor(Self.largeTitleMinScale)
+            }
+        } else {
+            Text(name)
+                .weydaText(.labelMedium)
+                .foregroundStyle(titleColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(2, reservesSpace: true)
+                .minimumScaleFactor(0.85)
+        }
     }
 
     private var badge: some View {

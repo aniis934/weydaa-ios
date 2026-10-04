@@ -456,30 +456,69 @@ private struct MyListingLinkStyle: ButtonStyle {
 }
 
 /// Barre d'actions : cellules de même largeur (icône au-dessus du libellé), sur une seule ligne quel que soit leur
-/// nombre — Android passait à la ligne (FlowRow) des boutons texte qui ne tenaient pas. Pendant l'action de CETTE
+/// nombre — Android passait à la ligne (FlowRow) des boutons texte qui ne tenaient pas. Très grand texte : deux
+/// cellules par ligne (à quatre sur une ligne, « Renouveler (60 j) » se tronquait). Pendant l'action de CETTE
 /// annonce, l'indicateur remplace les boutons ; pendant celle d'une autre, ils sont seulement désactivés.
 private struct MyListingActionsBar: View {
-    let listing: Listing
-    let actions: [MyListingRowAction]
-    let isBusy: Bool
-    let isLocked: Bool
-    let onAction: (MyListingRowAction) -> Void
+    private let listing: Listing
+    private let actions: [MyListingRowAction]
+    private let isBusy: Bool
+    private let isLocked: Bool
+    private let onAction: (MyListingRowAction) -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    /// Très grand texte : deux colonnes égales (une action seule sur sa ligne garde la largeur d'une colonne).
+    private static let largeColumns: [GridItem] = [
+        GridItem(.flexible(), spacing: 0, alignment: .top),
+        GridItem(.flexible(), spacing: 0, alignment: .top),
+    ]
+
+    init(
+        listing: Listing,
+        actions: [MyListingRowAction],
+        isBusy: Bool,
+        isLocked: Bool,
+        onAction: @escaping (MyListingRowAction) -> Void
+    ) {
+        self.listing = listing
+        self.actions = actions
+        self.isBusy = isBusy
+        self.isLocked = isLocked
+        self.onAction = onAction
+    }
+
+    @ViewBuilder
+    private var buttons: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            LazyVGrid(columns: Self.largeColumns, spacing: 0) {
+                ForEach(actions, id: \.self) { action in
+                    button(for: action)
+                }
+            }
+        } else {
+            HStack(spacing: 0) {
+                ForEach(actions, id: \.self) { action in
+                    button(for: action)
+                }
+            }
+        }
+    }
+
+    private func button(for action: MyListingRowAction) -> some View {
+        MyListingActionButton(
+            action: action,
+            title: action.title(for: listing),
+            identifier: action.accessibilityIdentifier(for: listing.id),
+            onTap: { onAction(action) }
+        )
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack {
-                HStack(spacing: 0) {
-                    ForEach(actions, id: \.self) { action in
-                        MyListingActionButton(
-                            action: action,
-                            title: action.title(for: listing),
-                            identifier: action.accessibilityIdentifier(for: listing.id),
-                            onTap: { onAction(action) }
-                        )
-                    }
-                }
-                .opacity(isBusy ? 0 : 1)
-                .accessibilityHidden(isBusy)
+                buttons
+                    .opacity(isBusy ? 0 : 1)
+                    .accessibilityHidden(isBusy)
                 if isBusy {
                     WeydaLoader()
                         .frame(width: WeydaSize.iconLarge, height: WeydaSize.iconLarge)
@@ -502,12 +541,40 @@ private struct MyListingActionsBar: View {
 }
 
 /// Une cellule de la barre : icône puis libellé (2 lignes au plus), teinte verte — rouge pour « Supprimer ».
-/// Cible d'au moins 44 pt ; grisée quand la barre est désactivée.
+/// Cible d'au moins 44 pt ; grisée quand la barre est désactivée. Très grand texte : une ligne par mot au plus
+/// (3 lignes), réduite jusqu'à 70 % — jamais un mot coupé ni tronqué.
 private struct MyListingActionButton: View {
-    let action: MyListingRowAction
-    let title: String
-    let identifier: String
-    let onTap: () -> Void
+    private let action: MyListingRowAction
+    private let title: String
+    private let identifier: String
+    private let onTap: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private static let largeLabelMinScale: CGFloat = 0.7
+
+    init(action: MyListingRowAction, title: String, identifier: String, onTap: @escaping () -> Void) {
+        self.action = action
+        self.title = title
+        self.identifier = identifier
+        self.onTap = onTap
+    }
+
+    @ViewBuilder
+    private var label: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            Text(title)
+                .weydaText(.labelMedium)
+                .multilineTextAlignment(.center)
+                .lineLimit(LabelLines.limit(for: title, maxLines: 3))
+                .minimumScaleFactor(Self.largeLabelMinScale)
+        } else {
+            Text(title)
+                .weydaText(.labelMedium)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
+        }
+    }
 
     var body: some View {
         Button(action: onTap) {
@@ -515,11 +582,7 @@ private struct MyListingActionButton: View {
                 Image(systemName: action.symbol)
                     .font(.body.weight(.medium))
                     .accessibilityHidden(true)
-                Text(title)
-                    .weydaText(.labelMedium)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.85)
+                label
             }
             .frame(maxWidth: .infinity, minHeight: WeydaSize.touchTarget)
             .padding(.vertical, WeydaSpace.xs)
@@ -532,18 +595,21 @@ private struct MyListingActionButton: View {
 }
 
 /// Haut de la carte d'une annonce du membre : vignette, statut, titre, prix, vues et ancienneté ; note de
-/// modération dessous. Une seule entité pour VoiceOver.
+/// modération dessous. Une seule entité pour VoiceOver. Très grand texte : vignette AU-DESSUS du texte (comme
+/// `ListingRow`), titre sur 3 lignes, vues et ancienneté entières.
 private struct MyListingRow: View {
-    let listing: Listing
+    private let listing: Listing
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(listing: Listing) {
+        self.listing = listing
+    }
 
     var body: some View {
         let reasons = MyListingsText.moderationReasons(for: listing)
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top, spacing: WeydaSpace.md) {
-                MyListingThumbnail(listing: listing)
-                details
-            }
-            .padding(WeydaSpace.sm)
+            header
+                .padding(WeydaSpace.sm)
             if !reasons.isEmpty {
                 MyListingModerationNote(reasons: reasons)
             }
@@ -553,6 +619,21 @@ private struct MyListingRow: View {
         .accessibilityLabel(MyListingsText.accessibilityLabel(for: listing))
     }
 
+    @ViewBuilder
+    private var header: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: WeydaSpace.sm) {
+                MyListingThumbnail(listing: listing)
+                details
+            }
+        } else {
+            HStack(alignment: .top, spacing: WeydaSpace.md) {
+                MyListingThumbnail(listing: listing)
+                details
+            }
+        }
+    }
+
     private var details: some View {
         VStack(alignment: .leading, spacing: WeydaSpace.xs) {
             MyListingStatusBadge(status: listing.listingStatus)
@@ -560,14 +641,30 @@ private struct MyListingRow: View {
                 .weydaText(.titleSmall)
                 .foregroundStyle(WeydaColor.onSurface)
                 .multilineTextAlignment(.leading)
-                .lineLimit(2)
+                .lineLimit(titleLines)
             PriceText(price: listing.price, priceType: listing.priceType)
+            meta
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var meta: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            Text(MyListingsText.meta(for: listing))
+                .weydaText(.bodySmall)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
             Text(MyListingsText.meta(for: listing))
                 .weydaText(.bodySmall)
                 .foregroundStyle(WeydaColor.onSurfaceVariant)
                 .lineLimit(1)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var titleLines: Int {
+        dynamicTypeSize.isAccessibilitySize ? 3 : 2
     }
 }
 

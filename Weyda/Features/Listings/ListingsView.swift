@@ -121,6 +121,10 @@ private struct ListingsHost: View {
             onDidYouMean: { model.onDidYouMean($0) },
             onToggleFavorite: { listing in
                 if session.isLoggedIn {
+                    // Favori optimiste : petit choc avec le cœur qui se remplit (ajout seulement).
+                    if !model.favoriteIds.contains(listing.id) {
+                        Haptics.impact()
+                    }
                     model.toggleFavorite(listing)
                 } else {
                     router.requestLogin()

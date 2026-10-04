@@ -265,13 +265,15 @@ struct DetailSimilarSection: View {
 // MARK: - Barre d'actions
 
 /// Barre du bas — celle d'Android : « Faire une offre » sur toute la largeur, puis le numéro et « Contacter le
-/// vendeur » (ou « Modifier » pour le propriétaire). Rien du tout pour une annonce vendue ou expirée.
+/// vendeur » (ou « Modifier » pour le propriétaire). Rien du tout pour une annonce vendue ou expirée. Très grand
+/// texte (tailles d'accessibilité) : un bouton par ligne — côte à côte, « Contacter le vendeur » était coupé.
 struct DetailActionBar: View {
     private let state: DetailState
     private let onOffer: () -> Void
     private let onPhone: () -> Void
     private let onEdit: () -> Void
     private let onContact: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(
         state: DetailState,
@@ -296,23 +298,13 @@ struct DetailActionBar: View {
                 .buttonStyle(.bordered)
                 .accessibilityIdentifier("detail.offer")
             }
-            HStack(spacing: WeydaSpace.md) {
-                if state.canShowPhone {
-                    phoneButton
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: WeydaSpace.sm) {
+                    secondaryButtons
                 }
-                if state.canEdit {
-                    Button(action: onEdit) {
-                        DetailBarLabel(title: L10n.myListingEdit, systemImage: "square.and.pencil")
-                    }
-                    .buttonStyle(.bordered)
-                    .accessibilityIdentifier("detail.edit")
-                }
-                if state.canContact {
-                    Button(action: onContact) {
-                        DetailBarLabel(title: L10n.detailContact, systemImage: "envelope")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .accessibilityIdentifier("detail.contact")
+            } else {
+                HStack(spacing: WeydaSpace.md) {
+                    secondaryButtons
                 }
             }
         }
@@ -329,6 +321,28 @@ struct DetailActionBar: View {
         }
     }
 
+    /// Numéro, Modifier, Contacter : côte à côte aux tailles normales, empilés en très grand texte.
+    @ViewBuilder
+    private var secondaryButtons: some View {
+        if state.canShowPhone {
+            phoneButton
+        }
+        if state.canEdit {
+            Button(action: onEdit) {
+                DetailBarLabel(title: L10n.myListingEdit, systemImage: "square.and.pencil")
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("detail.edit")
+        }
+        if state.canContact {
+            Button(action: onContact) {
+                DetailBarLabel(title: L10n.detailContact, systemImage: "envelope")
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("detail.contact")
+        }
+    }
+
     /// « Afficher le numéro », puis le numéro lui-même : le toucher appelle.
     private var phoneButton: some View {
         Button(action: onPhone) {
@@ -337,7 +351,8 @@ struct DetailActionBar: View {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                 } else if let phone = state.revealedPhone {
-                    DetailBarLabel(title: Format.ltrIsolate(phone), systemImage: "phone.fill")
+                    // Un numéro ne passe jamais à la ligne : il se réduit au besoin.
+                    DetailBarLabel(title: Format.ltrIsolate(phone), systemImage: "phone.fill", wraps: false)
                 } else {
                     DetailBarLabel(title: L10n.detailShowPhone, systemImage: "phone")
                 }
@@ -349,10 +364,19 @@ struct DetailActionBar: View {
     }
 }
 
-/// Libellé d'un bouton de la barre : pictogramme et texte sur une ligne, toute la largeur du bouton.
+/// Libellé d'un bouton de la barre : pictogramme et texte sur une ligne, toute la largeur du bouton. Très grand
+/// texte : deux lignes au plus, coupées entre les mots (`wraps`, sauf pour un numéro de téléphone).
 private struct DetailBarLabel: View {
-    let title: String
-    let systemImage: String
+    private let title: String
+    private let systemImage: String
+    private let wraps: Bool
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(title: String, systemImage: String, wraps: Bool = true) {
+        self.title = title
+        self.systemImage = systemImage
+        self.wraps = wraps
+    }
 
     // Icône + texte quand la place suffit ; sinon le texte seul (« Contacter le vendeur » sur un iPhone 6,1"
     // en français), réduit au besoin plutôt que tronqué.
@@ -362,9 +386,15 @@ private struct DetailBarLabel: View {
             Text(title)
         }
         .weydaText(.labelLarge)
-        .lineLimit(1)
+        .lineLimit(labelLines)
         .minimumScaleFactor(0.75)
+        .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
+    }
+
+    private var labelLines: Int {
+        guard wraps && dynamicTypeSize.isAccessibilitySize else { return 1 }
+        return LabelLines.limit(for: title, maxLines: 2)
     }
 }
 

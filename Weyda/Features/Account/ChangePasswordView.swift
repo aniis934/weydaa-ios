@@ -117,9 +117,7 @@ struct ChangePasswordScreen: View {
             )
             .padding(.top, WeydaSpace.sm)
         }
-        .safeAreaInset(edge: .top, spacing: 0) {
-            OfflineBanner()
-        }
+        .weydaOfflineBanner()
         .navigationTitle(L10n.changePasswordTitle)
         .navigationBarTitleDisplayMode(.inline)
     }

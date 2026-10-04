@@ -20,7 +20,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 3 | Compte et connexion + lot serveur A | e-mail, inscription, mot de passe oublié, code e-mail, Apple, Google, profil, mes annonces, mes données (export, suppression), réglages, contact | Apple sign-in | ✅ close le 2026-10-03 (Apple / Google : test sur iPhone en attente) |
 | 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ✅ close le 2026-10-04 |
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ✅ close le 2026-10-04 (push et liens : test sur iPhone en attente) |
-| 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ⏳ |
+| 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ✅ close le 2026-10-04 |
 | 7 | App Store + lot serveur C | TestFlight final, manifeste de confidentialité, étiquettes App Privacy, âge, textes fr/ar/en, captures 6,9", compte de démo, test final, soumission | oui | ⏳ |
 
 Jalons TestFlight sur l'iPhone du propriétaire : fin de phase 2, fin de phase 5, test final.
@@ -165,6 +165,29 @@ liens universels, CI) en parallèle sur des interfaces fixées (`docs/equipe/CON
 - [x] Galerie privée : https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp — clôture : PR #6 `phase-5` → `main`
 - [ ] Sur iPhone : push (app fermée, au premier plan, appui), lien weydaa.com ouvert depuis Notes ; attend compte Apple, clé APNs, Firebase iOS,
       lots A et B déployés (EN-ATTENTE)
+
+## Phase 6 — détail (close le 2026-10-04, PR #7)
+Branche `prep/release` fusionnée (workflows `ios-release` / `ios-compat`, `docs/store/`) et adaptée à Firebase (paquets SPM, envoi des dSYM
+à Crashlytics par `upload-symbols`). Deux lots, quatre agents (`docs/equipe/CONTRACTS-P6.md`).
+- [x] Lot 1 — LISTS : « Mes favoris » (retrait optimiste, suivi des cœurs retirés ailleurs, e-mail à vérifier) et « Mes alertes » (critères
+      lisibles en puces, compteur n / 5, ouverture dans l'onglet Annonces filtré, suppression confirmée) ; REVIEWS : « Laisser un avis » /
+      « Modifier mon avis » sur le profil vendeur (éligibilité, 5 étoiles réglables sous VoiceOver, commentaire avec compteur)
+- [x] `ios-compat` : compilation, tests et tour complet VERTS sur iOS 16.4 (iPhone SE 3e génération, Xcode 26.6, Firebase compris)
+- [x] Tour en très grand texte (taille d'accessibilité AX3, 17e, ar + fr) relu → lot 2
+- [x] Lot 2 — LAYOUT : aux tailles d'accessibilité, plus aucun prix ni libellé utile tronqué (rangées d'annonce empilées, prix jamais
+      coupés, actions empilées, statistiques sur 2 colonnes, grille du dépôt sans mot arabe coupé, en-têtes empilés) ; rendu inchangé aux
+      tailles normales ; A11Y : bandeau hors ligne au-dessus du contenu (il passait sous la barre d'iOS 26), `-WeydaForceOffline`, badge
+      « À la une » lu par VoiceOver, retours haptiques (message, offre, favori), composeur du fil en capsule Liquid Glass (iOS 26)
+- [x] « Réduire les animations » : déjà respecté partout (audit) ; VoiceOver : un seul défaut trouvé et corrigé
+- [x] CI : 608 tests, 0 échec, verts du premier coup (lots 1 et 2)
+- [x] Captures relues : tour complet fr + ar × clair/sombre × 17 Pro Max + 17e, très grand texte fr + ar, iOS 16.4 ; galerie https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo
+- [ ] Sur iPhone : fluidité, haptique, Liquid Glass réel (TestFlight)
+
+## Constats de la CI (phase 6)
+- Firebase + 4 agents : tous les lots compilés verts du premier coup ; `ios-compat` (iOS 16.4) vert sans correction.
+- Très grand texte : les dispositions en ligne (prix à côté d'une vignette, 3-4 boutons côte à côte, titre + « Voir tout ») cassent aux
+  tailles d'accessibilité ; règle retenue : `dynamicTypeSize.isAccessibilitySize` → disposition empilée, un prix ne se tronque jamais.
+- `workflow_dispatch` d'`ios-compat` accepté depuis une branche avant même la fusion dans `main` (le workflow existait déjà sur une branche).
 
 ## Constats de la CI (phase 5)
 - Équipe de 3 agents : ≈ 11 700 lignes, compilées et testées vertes du premier coup, Firebase compris (≈ 10 min de CI avec le cache).

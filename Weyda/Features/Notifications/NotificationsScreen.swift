@@ -29,9 +29,7 @@ struct NotificationsScreen: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(WeydaColor.surface)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                OfflineBanner()
-            }
+            .weydaOfflineBanner()
             .navigationTitle(L10n.notificationsTitle)
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -149,30 +147,72 @@ private struct NotificationRow: View {
     }
 }
 
-/// Libellé du type (vert si non lue), ancienneté, point « non lu ».
+/// Libellé du type (vert si non lue), ancienneté, point « non lu ». Aux tailles d'accessibilité, l'ancienneté passe
+/// SOUS le libellé (sur une ligne, elle réduisait le libellé à « No… ») et le libellé va à la ligne au lieu d'être coupé.
 private struct NotificationRowHeader: View {
-    let kind: NotificationKind
-    let date: String
-    let unread: Bool
+    private let kind: NotificationKind
+    private let date: String
+    private let unread: Bool
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(kind: NotificationKind, date: String, unread: Bool) {
+        self.kind = kind
+        self.date = date
+        self.unread = unread
+    }
 
     var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            stacked
+        } else {
+            inline
+        }
+    }
+
+    /// Tailles ordinaires : tout sur une ligne (rendu d'origine).
+    private var inline: some View {
         HStack(alignment: .center, spacing: WeydaSpace.sm) {
-            Text(NotificationsText.kindLabel(kind))
-                .weydaText(.labelMedium)
-                .foregroundStyle(unread ? WeydaColor.primary : WeydaColor.onSurfaceVariant)
+            kindText
                 .lineLimit(1)
             Spacer(minLength: WeydaSpace.xs)
             if !date.isEmpty {
-                Text(date)
-                    .weydaText(.labelSmall)
-                    .foregroundStyle(WeydaColor.onSurfaceVariant)
-                    .lineLimit(1)
+                dateText
                     .layoutPriority(1)
             }
             if unread {
                 InboxUnreadDot()
             }
         }
+    }
+
+    /// Tailles d'accessibilité : libellé (et point « non lu ») puis l'ancienneté dessous.
+    private var stacked: some View {
+        VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+            HStack(alignment: .center, spacing: WeydaSpace.sm) {
+                kindText
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: WeydaSpace.xs)
+                if unread {
+                    InboxUnreadDot()
+                }
+            }
+            if !date.isEmpty {
+                dateText
+            }
+        }
+    }
+
+    private var kindText: some View {
+        Text(NotificationsText.kindLabel(kind))
+            .weydaText(.labelMedium)
+            .foregroundStyle(unread ? WeydaColor.primary : WeydaColor.onSurfaceVariant)
+    }
+
+    private var dateText: some View {
+        Text(date)
+            .weydaText(.labelSmall)
+            .foregroundStyle(WeydaColor.onSurfaceVariant)
+            .lineLimit(1)
     }
 }
 

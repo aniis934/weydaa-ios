@@ -1,0 +1,13 @@
+{
+  "id": "mock-rev-me-u1",
+  "authorId": "mock-me",
+  "targetId": "mock-u1",
+  "rating": 4,
+  "comment": "Vendeur ponctuel et arrangeant, l'article était conforme à l'annonce. Je recommande.",
+  "createdAt": "2026-10-04T09:41:00.000Z",
+  "updatedAt": "2026-10-04T09:41:00.000Z",
+  "author": {
+    "name": "Yacine Benali"
+  },
+  "isNew": true
+}

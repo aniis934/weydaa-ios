@@ -69,10 +69,12 @@ struct ListingCard: View {
 }
 
 /// Carte du carrousel « À la une » : la carte de grille, à largeur fixe (≈ 70 % d'un iPhone, comme le site).
+/// Très grand texte : un quart plus large, pour que le prix tienne (nombre entier sur une ligne, devise dessous).
 struct ListingCarouselCard: View {
     private let listing: Listing
     private let isFavorite: Bool?
     private let onFavorite: (() -> Void)?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(listing: Listing, isFavorite: Bool? = nil, onFavorite: (() -> Void)? = nil) {
         self.listing = listing
@@ -82,16 +84,29 @@ struct ListingCarouselCard: View {
 
     var body: some View {
         ListingCard(listing: listing, isFavorite: isFavorite, onFavorite: onFavorite)
-            .frame(width: WeydaSize.carouselCard)
+            .frame(width: width)
+    }
+
+    private var width: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? ListingCardMetrics.wideCarouselCard : WeydaSize.carouselCard
     }
 }
 
+/// Mesures des cartes en très grand texte (tailles d'accessibilité).
+private nonisolated enum ListingCardMetrics {
+    /// Carte du carrousel élargie (≈ 290 pt) : la suivante dépasse encore du bord, le défilement reste visible.
+    static let wideCarouselCard: CGFloat = WeydaSize.carouselCard * 1.25
+}
+
 /// Ligne de résultat (Annonces, vitrine du vendeur, favoris) : miniature au début, texte ensuite, cœur au bout.
-/// Hauteur MINIMALE = celle de la vignette, jamais figée (texte agrandi : rien n'est rogné).
+/// Hauteur MINIMALE = celle de la vignette, jamais figée (texte agrandi : rien n'est rogné). Très grand texte
+/// (tailles d'accessibilité) : vignette AU-DESSUS du texte, qui prend toute la largeur — à côté d'une vignette de
+/// 116 pt, le prix se tronquait (« …215.000 ») ; le cœur passe dans le coin.
 struct ListingRow: View {
     private let listing: Listing
     private let isFavorite: Bool?
     private let onFavorite: (() -> Void)?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(listing: Listing, isFavorite: Bool? = nil, onFavorite: (() -> Void)? = nil) {
         self.listing = listing
@@ -100,8 +115,57 @@ struct ListingRow: View {
     }
 
     var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            stackedRow
+        } else {
+            regularRow
+        }
+    }
+
+    /// Très grand texte : vignette, puis titre, prix, lieu et ancienneté sur toute la largeur ; cœur dans le coin de fin.
+    private var stackedRow: some View {
         let shape = RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
-        HStack(alignment: .top, spacing: WeydaSpace.xxs) {
+        return VStack(alignment: .leading, spacing: WeydaSpace.sm) {
+            thumbnail
+            stackedDetails
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .listingAccessibility(listing, isFavorite: isFavorite ?? false, onFavorite: onFavorite)
+        .padding(WeydaSpace.sm)
+        .background(WeydaColor.surface, in: shape)
+        .overlay {
+            shape.strokeBorder(WeydaPalette.cardOutline, lineWidth: 1)
+        }
+        .overlay(alignment: .topTrailing) {
+            if let onFavorite {
+                FavoriteButton(isFavorite: isFavorite ?? false, action: onFavorite)
+                    .padding(WeydaSpace.xxs)
+            }
+        }
+        .contentShape(shape)
+        .accessibilityElement(children: .contain)
+    }
+
+    private var stackedDetails: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(listing.title)
+                .weydaText(.bodyMedium)
+                .foregroundStyle(WeydaColor.onSurface)
+                .multilineTextAlignment(.leading)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+            PriceText(price: listing.price, priceType: listing.priceType)
+                .padding(.top, WeydaSpace.sm)
+            ListingMetaLine(listing: listing)
+                .padding(.top, WeydaSpace.xxs)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Tailles normales : la ligne validée des phases 2 à 5, inchangée.
+    private var regularRow: some View {
+        let shape = RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
+        return HStack(alignment: .top, spacing: WeydaSpace.xxs) {
             HStack(alignment: .top, spacing: WeydaSpace.md) {
                 thumbnail
                 details
@@ -274,12 +338,13 @@ struct FeaturedBadge: View {
 
 /// Prix (« 12 500 DA », « Gratuit », « Prix sur demande » : `Format.price`) + mention « Négociable » à côté.
 /// Si la mention ne tient pas sur la ligne, elle passe dessous (Android : FlowRow) — dans une ligne de résultat,
-/// la colonne de texte est étroite.
+/// la colonne de texte est étroite. Très grand texte : le prix ne se tronque JAMAIS (voir `amountText`).
 struct PriceText: View {
     private let price: Double?
     private let priceType: PriceType
     private let style: WeydaTextStyle
     private let overflow: PriceOverflow
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(price: Double?, priceType: PriceType, style: WeydaTextStyle = .price) {
         self.init(price: price, priceType: priceType, style: style, overflow: .wrap)
@@ -319,20 +384,56 @@ struct PriceText: View {
         .accessibilityLabel(mention.map { "\(amount), \($0)" } ?? amount)
     }
 
+    /// Tailles normales : une ligne, réduite au besoin (inchangé). Très grand texte : passage à la ligne ENTRE les
+    /// mots (la devise sous le nombre), une ligne par mot au plus, puis réduction jusqu'à 70 % — jamais de « … »,
+    /// jamais un nombre coupé en deux.
+    @ViewBuilder
     private func amountText(_ text: String) -> some View {
-        Text(text)
-            .weydaText(style)
-            .foregroundStyle(WeydaColor.primary)
-            .lineLimit(1)
-            .minimumScaleFactor(0.8)
+        if dynamicTypeSize.isAccessibilitySize {
+            Text(text)
+                .weydaText(style)
+                .foregroundStyle(WeydaColor.primary)
+                .lineLimit(LabelLines.limit(for: text, maxLines: 3))
+                .minimumScaleFactor(0.7)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            Text(text)
+                .weydaText(style)
+                .foregroundStyle(WeydaColor.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
     }
 
+    @ViewBuilder
     private func mentionText(_ text: String) -> some View {
-        Text(text)
-            .weydaText(.labelSmall)
-            .foregroundStyle(WeydaColor.onSurfaceVariant)
-            .lineLimit(1)
-            .fixedSize()
+        if dynamicTypeSize.isAccessibilitySize {
+            Text(text)
+                .weydaText(.labelSmall)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .lineLimit(LabelLines.limit(for: text, maxLines: 2))
+                .minimumScaleFactor(0.7)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            Text(text)
+                .weydaText(.labelSmall)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .lineLimit(1)
+                .fixedSize()
+        }
+    }
+}
+
+/// Lignes permises à un LIBELLÉ COURT (prix, tuile, cellule, bouton) en très grand texte : jamais plus que de mots
+/// (et au plus `maxLines`). Avec `minimumScaleFactor`, un mot trop long pour la largeur se réduit au lieu d'être
+/// coupé en deux — deux lignes permises à un mot seul le coupaient (« الإلكترونيا / ت »). Seules les espaces
+/// ordinaires comptent : les espaces insécables (milliers d'un prix) ne coupent pas une ligne. Logique pure.
+nonisolated enum LabelLines {
+    static func limit(for text: String, maxLines: Int) -> Int {
+        let words: Int = text.split(whereSeparator: { (character: Character) -> Bool in
+            character == " " || character == "\n"
+        }).count
+        return max(1, min(words, maxLines))
     }
 }
 
@@ -408,14 +509,29 @@ private struct NoPhoto: View {
 }
 
 /// « Bab Ezzouar, Alger · il y a 2 h » sous le prix (lieu et ancienneté, les morceaux vides disparaissent).
+/// Une ligne aux tailles normales ; en très grand texte, entière sur autant de lignes qu'il faut.
 private struct ListingMetaLine: View {
-    let listing: Listing
+    private let listing: Listing
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(listing: Listing) {
+        self.listing = listing
+    }
 
     var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            line
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            line
+                .lineLimit(1)
+        }
+    }
+
+    private var line: some View {
         Text(ListingText.meta(for: listing))
             .weydaText(.bodySmall)
             .foregroundStyle(WeydaColor.onSurfaceVariant)
-            .lineLimit(1)
     }
 }
 

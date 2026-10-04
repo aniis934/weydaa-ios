@@ -186,7 +186,7 @@ final class SellerViewModelTests: XCTestCase {
         await model.load()
         XCTAssertEqual(model.state.reviews?.reviews.count, 1)
         XCTAssertEqual(model.state.reviews?.average ?? 0, 4, accuracy: 1e-9)
-        // L'éligibilité (bouton « Laisser un avis ») n'est pas demandée avant la phase 6.
+        // Visiteur : l'éligibilité (bouton « Laisser un avis ») n'est jamais demandée (membre seulement, phase 6).
         XCTAssertEqual(api.count("reviewEligibility"), 0)
     }
 
