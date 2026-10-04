@@ -70,12 +70,16 @@ final class DetailMessagingTests: XCTestCase {
             return ConversationCreatedDTO(conversationId: "c1")
         }
         let model = makeModel(api)
+        let sentSignals = FakeWeydaAPI.Box<Int>(0)
+        model.onMessageSent = { sentSignals.value += 1 }
         await model.load()
 
         model.openContact()
         XCTAssertEqual(model.state.contactMessage, "")
         model.updateContactMessage("  Bonjour, est-ce encore disponible ?  ")
         await model.sendFirstMessage()?.value
+        // Retour haptique de réussite branché par l'écran : une fois, la réponse du serveur reçue.
+        XCTAssertEqual(sentSignals.value, 1)
 
         XCTAssertEqual(body.value?.annonceId, "cm_real_id")
         XCTAssertEqual(body.value?.message, "Bonjour, est-ce encore disponible ?")
@@ -147,6 +151,8 @@ final class DetailMessagingTests: XCTestCase {
             return ConversationCreatedDTO(conversationId: "c5")
         }
         let model = makeModel(api)
+        let offerSignals = FakeWeydaAPI.Box<Int>(0)
+        model.onOfferSent = { offerSignals.value += 1 }
         await model.load()
 
         model.openOfferDialog()
@@ -161,6 +167,7 @@ final class DetailMessagingTests: XCTestCase {
         XCTAssertNil(model.state.offerDialog)
         XCTAssertFalse(model.state.isOfferBusy)
         XCTAssertEqual(model.state.openConversationId, "c5")
+        XCTAssertEqual(offerSignals.value, 1)
     }
 
     @MainActor
@@ -170,6 +177,8 @@ final class DetailMessagingTests: XCTestCase {
             throw FakeWeydaAPI.apiError(409, #"{"error":"offerAlreadyOpen","conversationId":"c9"}"#)
         }
         let model = makeModel(api)
+        let offerSignals = FakeWeydaAPI.Box<Int>(0)
+        model.onOfferSent = { offerSignals.value += 1 }
         await model.load()
 
         model.openOfferDialog()
@@ -178,6 +187,8 @@ final class DetailMessagingTests: XCTestCase {
         XCTAssertEqual(model.state.openConversationId, "c9")
         XCTAssertNil(model.state.offerError)
         XCTAssertNil(model.state.offerDialog)
+        // Rien n'a été envoyé (offre déjà ouverte) : pas de vibration de réussite.
+        XCTAssertEqual(offerSignals.value, 0)
     }
 
     @MainActor

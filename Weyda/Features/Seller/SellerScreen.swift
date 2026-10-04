@@ -13,6 +13,7 @@ struct SellerActions {
     /// Blocage confirmé.
     var block: () -> Void
     var unblock: () -> Void
+    /// Bannière fermée (délai écoulé ou glissement).
     var noticeShown: () -> Void
     /// « Laisser un avis » / « Modifier mon avis » touché (mon avis courant est relu, puis la feuille s'ouvre).
     var openReview: () -> Void
@@ -20,12 +21,15 @@ struct SellerActions {
     var submitReview: () -> Void
     /// « Annuler » dans la feuille d'avis.
     var cancelReview: () -> Void
+    /// Feuille d'avis refermée, quelle qu'en soit la raison (la note sur l'App Store se demande après).
+    var reviewSheetDismissed: () -> Void
 }
 
 /// Profil public d'un vendeur, sans état — portage de `SellerScreen` (Android) : en-tête (portrait, nom, ancienneté,
 /// note, badges, présentation), avis reçus et « Laisser un avis » / « Modifier mon avis » (`ReviewSheet`) pour un
-/// membre éligible, puis sa vitrine d'annonces en ligne, paginée. Menu « Signaler cet utilisateur / Bloquer »
-/// (exigence des magasins pour le contenu publié par les utilisateurs).
+/// membre éligible, puis sa vitrine d'annonces en ligne, paginée (zoom depuis la carte sur iOS 18, appui long = favori,
+/// Partager). Barre : « Partager le profil », menu « Signaler cet utilisateur / Bloquer » (exigence des magasins pour
+/// le contenu publié par les utilisateurs) ; « Bloquer » se confirme dans une feuille d'actions.
 struct SellerScreen: View {
     private let state: SellerState
     @Binding private var isReportPresented: Bool
@@ -72,7 +76,7 @@ struct SellerScreen: View {
                     onCancel: { isReportPresented = false }
                 )
             }
-            .sheet(isPresented: $isReviewPresented) {
+            .sheet(isPresented: $isReviewPresented, onDismiss: actions.reviewSheetDismissed) {
                 ReviewSheet(
                     sellerName: state.seller?.name ?? "",
                     isEditing: state.isReviewEditing,
@@ -84,8 +88,10 @@ struct SellerScreen: View {
                     onCancel: actions.cancelReview
                 )
             }
-            .alert(L10n.chatBlockUser, isPresented: $isBlockConfirmPresented) {
+            // Feuille d'actions iOS, à la place de l'alerte d'avant (sur iPhone : `app.sheets` dans les tests).
+            .confirmationDialog(L10n.chatBlockUser, isPresented: $isBlockConfirmPresented, titleVisibility: .visible) {
                 Button(L10n.chatBlockUser, role: .destructive, action: actions.block)
+                    .accessibilityIdentifier("seller.block.confirm")
                 Button(L10n.cancel, role: .cancel) {}
             } message: {
                 Text(L10n.chatBlockConfirmBody)
@@ -147,7 +153,7 @@ struct SellerScreen: View {
         .refreshable { @MainActor in
             await actions.refresh()
         }
-        .floatingNotice(state.notice, onShown: actions.noticeShown)
+        .weydaBanner(state.banner, onAction: { _ in }, onDismiss: actions.noticeShown)
     }
 
     /// « Laisser un avis » / « Modifier mon avis » (Android : OutlinedButton sous l'en-tête, toute la largeur).
@@ -176,16 +182,28 @@ struct SellerScreen: View {
         .padding(.top, WeydaSpace.sm)
     }
 
-    /// Une annonce de la vitrine ; les deux dernières lignes affichées demandent la page suivante.
+    /// Une annonce de la vitrine ; les deux dernières lignes affichées demandent la page suivante. Zoom depuis la carte
+    /// (clé `seller.<id>`, la même dans la route) ; appui long : favori, Partager (pas « Voir le vendeur » : on y est).
     private func row(_ listing: Listing) -> some View {
-        NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
+        let zoomKey: String = "seller.\(listing.id)"
+        let isFavorite: Bool = state.favoriteIds.contains(listing.id)
+        return NavigationLink(value: AppRoute.detail(idOrSlug: listing.id, zoomSource: zoomKey)) {
             ListingRow(
                 listing: listing,
-                isFavorite: state.favoriteIds.contains(listing.id),
+                isFavorite: isFavorite,
                 onFavorite: { actions.toggleFavorite(listing) }
             )
+            .listingZoomSource(id: zoomKey)
         }
         .buttonStyle(.weydaCard)
+        .accessibilityIdentifier("seller.row.\(listing.id)")
+        .listingContextMenu(
+            listing,
+            menu: ListingCardMenu(listing: listing, currentUserId: state.isLoggedIn ? state.userId : nil),
+            isFavorite: isFavorite,
+            onFavorite: { actions.toggleFavorite(listing) },
+            onSeller: nil
+        )
         .onAppear {
             if SellerPaging.isNearEnd(listing.id, in: state.items) {
                 actions.loadMore()
@@ -197,7 +215,14 @@ struct SellerScreen: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .primaryAction) {
+        ToolbarItemGroup(placement: .primaryAction) {
+            if state.seller != nil, let url = SellerLinks.webURL(sellerId: state.sellerId) {
+                ShareLink(item: url, subject: Text(title)) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .accessibilityLabel(L10n.sellerShare)
+                .accessibilityIdentifier("seller.share")
+            }
             if state.canModerate {
                 Menu {
                     Button(action: actions.report) {
@@ -224,6 +249,7 @@ struct SellerScreen: View {
             Button(role: .destructive, action: actions.requestBlock) {
                 Label(L10n.chatBlockUser, systemImage: "hand.raised")
             }
+            .accessibilityIdentifier("seller.block")
         }
     }
 }

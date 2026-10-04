@@ -28,8 +28,8 @@ nonisolated struct SellerState: Equatable, Sendable {
     var isReportBusy: Bool = false
     /// Panne réseau pendant l'envoi d'un signalement : affichée DANS la feuille, restée ouverte.
     var reportError: String? = nil
-    /// Message bref à montrer une fois, effacé par `noticeShown()`.
-    var notice: String? = nil
+    /// Bannière à montrer une fois (avis publié, signalement envoyé, refus du serveur…), effacée par `noticeShown()`.
+    var banner: WeydaBanner? = nil
     /// Droit de noter ce vendeur (contact avéré, e-mail vérifié) : bouton « Laisser un avis ». Demandé pour un membre
     /// qui n'est pas le vendeur ; un échec ne le change pas (au premier chargement : bouton masqué).
     var canReview: Bool = false
@@ -73,6 +73,9 @@ final class SellerViewModel: ObservableObject {
     /// Note et commentaire de la feuille d'avis (liaisons de `ReviewSheet`) ; bornés par le repository à l'envoi.
     @Published var reviewRating: Int = SellerViewModel.defaultRating
     @Published var reviewComment: String = ""
+    /// Demande de note sur l'App Store (`.requestsReview(when:)`) : passe à vrai une fois la feuille d'avis refermée
+    /// après un avis publié, si `ReviewPrompter` juge le moment venu.
+    @Published private(set) var asksForReview: Bool = false
 
     let sellerId: String
 
@@ -81,6 +84,9 @@ final class SellerViewModel: ObservableObject {
     private let reviewsRepository: ReviewsRepository
     private let reports: ReportsRepository
     private let conversations: ConversationsRepository
+    private let reviewPrompter: ReviewPrompter
+    /// Avis publié et moment jugé bon : la note sera demandée à la fermeture de la feuille.
+    private var reviewRequestPending: Bool = false
     private var subscriptions: Set<AnyCancellable> = []
     private var loadTask: Task<Void, Never>?
     private var eligibilityTask: Task<Void, Never>?
@@ -93,7 +99,8 @@ final class SellerViewModel: ObservableObject {
         reviews: ReviewsRepository,
         reports: ReportsRepository,
         conversations: ConversationsRepository,
-        sessionUser: AnyPublisher<User?, Never>
+        sessionUser: AnyPublisher<User?, Never>,
+        reviewPrompter: ReviewPrompter = ReviewPrompter(isEnabled: false)
     ) {
         self.sellerId = id
         self.sellers = sellers
@@ -101,6 +108,7 @@ final class SellerViewModel: ObservableObject {
         self.reviewsRepository = reviews
         self.reports = reports
         self.conversations = conversations
+        self.reviewPrompter = reviewPrompter
         state.sellerId = id
         sessionUser
             .map { $0?.id ?? "" }
@@ -151,7 +159,7 @@ final class SellerViewModel: ObservableObject {
             _ = await (firstPage, sellerReviews)
         } catch {
             if let message = ErrorMapper.message(for: error) {
-                state.notice = message
+                state.banner = DetailBanner.error(message)
             }
         }
     }
@@ -285,7 +293,7 @@ final class SellerViewModel: ObservableObject {
             next.hasMyReview = eligibility.existing != nil
             guard eligibility.canReview else {
                 // Droit perdu depuis le chargement (blocage…) : le bouton disparaît, la raison s'affiche.
-                next.notice = L10n.errorReviewNotEligible
+                next.banner = DetailBanner.error(L10n.errorReviewNotEligible)
                 state = next
                 return
             }
@@ -299,10 +307,18 @@ final class SellerViewModel: ObservableObject {
             var next = state
             next.isReviewOpening = false
             if let message = ErrorMapper.message(for: error) {
-                next.notice = message
+                next.banner = DetailBanner.error(message)
             }
             state = next
         }
+    }
+
+    /// Feuille d'avis refermée (après l'envoi, « Annuler » ou un glissement) : la note sur l'App Store est demandée
+    /// maintenant si un avis vient d'être publié — jamais par-dessus la feuille.
+    func reviewSheetDismissed() {
+        guard reviewRequestPending else { return }
+        reviewRequestPending = false
+        asksForReview = true
     }
 
     /// « Annuler » ou glissement : la saisie est abandonnée (la prochaine ouverture repart de mon avis courant).
@@ -329,8 +345,13 @@ final class SellerViewModel: ObservableObject {
             next.isReviewBusy = false
             next.canReview = true
             next.hasMyReview = true
-            next.notice = L10n.reviewSent
+            // Bannière de réussite : elle porte l'haptique (pas de `Haptics.success()` en plus).
+            next.banner = DetailBanner.success(L10n.reviewSent)
             state = next
+            // Note sur l'App Store : demandée une fois la feuille refermée (`reviewSheetDismissed()`).
+            if reviewPrompter.record(.reviewSent) {
+                reviewRequestPending = true
+            }
             isReviewPresented = false
             await reloadAfterReview()
         } catch {
@@ -341,7 +362,7 @@ final class SellerViewModel: ObservableObject {
                 return
             }
             if error is APIError {
-                next.notice = message
+                next.banner = DetailBanner.error(message)
                 state = next
                 isReviewPresented = false
             } else {
@@ -380,7 +401,7 @@ final class SellerViewModel: ObservableObject {
             _ = try await favorites.toggle(listing.id)
         } catch {
             if let message = ErrorMapper.message(for: error) {
-                state.notice = message
+                state.banner = DetailBanner.error(message)
             }
         }
     }
@@ -403,13 +424,14 @@ final class SellerViewModel: ObservableObject {
             try await reports.reportUser(userId: sellerId, conversationId: nil, reason: reason, details: details)
             state.isReportBusy = false
             isReportPresented = false
-            state.notice = L10n.reportSent
+            // Bannière de réussite : elle porte l'haptique (pas de `Haptics.success()` en plus).
+            state.banner = DetailBanner.success(L10n.reportSent)
         } catch {
             state.isReportBusy = false
             guard let message = ErrorMapper.message(for: error) else { return }
             if error is APIError {
                 isReportPresented = false
-                state.notice = message
+                state.banner = DetailBanner.error(message)
             } else {
                 state.reportError = message
             }
@@ -430,20 +452,24 @@ final class SellerViewModel: ObservableObject {
             var next = state
             next.isBlockBusy = false
             next.isBlocked = blocked
-            next.notice = blocked ? L10n.chatBlockedDone : L10n.chatUnblockedDone
+            next.banner = DetailBanner.success(blocked ? L10n.chatBlockedDone : L10n.chatUnblockedDone)
             state = next
         } catch {
             var next = state
             next.isBlockBusy = false
-            next.notice = ErrorMapper.message(for: error) ?? next.notice
+            if let message = ErrorMapper.message(for: error) {
+                next.banner = DetailBanner.error(message)
+            }
             state = next
         }
     }
 
-    // MARK: - Messages brefs
+    // MARK: - Bannières
 
+    /// Bannière fermée (délai écoulé ou glissée vers le bas).
     func noticeShown() {
-        state.notice = nil
+        guard state.banner != nil else { return }
+        state.banner = nil
     }
 }
 

@@ -19,7 +19,8 @@ struct SellerView: View {
                 reviews: container.reviews,
                 reports: container.reports,
                 conversations: container.conversations,
-                sessionUser: container.sessionManager.$user.eraseToAnyPublisher()
+                sessionUser: container.sessionManager.$user.eraseToAnyPublisher(),
+                reviewPrompter: container.reviewPrompter
             ),
             connectivity: container.connectivity
         )
@@ -50,6 +51,8 @@ private struct SellerHost: View {
             reviewComment: $model.reviewComment,
             actions: actions
         )
+        // Note sur l'App Store après un avis publié, la feuille refermée (inerte en API simulée et en test).
+        .requestsReview(when: model.asksForReview)
         .task {
             await model.loadIfNeeded()
             #if DEBUG
@@ -126,6 +129,9 @@ private struct SellerHost: View {
             },
             cancelReview: {
                 model.dismissReview()
+            },
+            reviewSheetDismissed: {
+                model.reviewSheetDismissed()
             }
         )
     }

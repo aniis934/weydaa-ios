@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 // Vues partagées par la fiche d'une annonce et le profil public d'un vendeur : feuille « Signaler », portrait,
-// badges de confiance, avis, titre de section et message bref.
+// badges de confiance, avis, titre de section et bannières.
 
 // MARK: - Signalement
 
@@ -358,5 +358,19 @@ struct DetailSectionTitle: View {
             .weydaText(.titleMedium)
             .foregroundStyle(WeydaColor.onBackground)
             .accessibilityAddTraits(.isHeader)
+    }
+}
+
+// MARK: - Bannières
+
+/// Bannières de la fiche et du profil vendeur, créées par les ViewModels (logique pure) : un refus ou une panne en
+/// `.error`, une confirmation en `.success` — la nature pilote l'haptique à l'apparition (`WeydaBanner`).
+nonisolated enum DetailBanner {
+    static func error(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "exclamationmark.circle.fill", kind: .error)
+    }
+
+    static func success(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "checkmark.circle.fill", kind: .success)
     }
 }
