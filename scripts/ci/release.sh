@@ -223,6 +223,8 @@ cmd_archive() {
     -destination "generic/platform=iOS" \
     -archivePath "$ARCHIVE" \
     -derivedDataPath "$RELEASE_DIR/dd" \
+    -skipPackagePluginValidation \
+    -skipMacroValidation \
     -allowProvisioningUpdates \
     -authenticationKeyPath "$ASC_KEY_PATH" \
     -authenticationKeyID "$ASC_KEY_ID" \
@@ -291,6 +293,23 @@ cmd_symbols() {
     echo "dSYM : $RELEASE_DIR/dSYMs.zip ($(du -h "$RELEASE_DIR/dSYMs.zip" | cut -f1))"
   else
     echo "::warning::aucun dSYM dans l'archive"
+    return 0
+  fi
+  # Crashlytics (phase 5) : symboles envoyés avec l'outil livré dans le paquet Firebase (même version que l'app),
+  # seulement si l'app embarque Firebase (GoogleService-Info.plist écrit par `prepare`). Un échec n'annule pas le
+  # build déjà envoyé à TestFlight : les plantages arriveront simplement non symbolisés (dSYM aussi en artefact).
+  local uploader="$RELEASE_DIR/dd/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols"
+  if [ ! -f "$FIREBASE_PLIST" ]; then
+    echo "Crashlytics : pas de GoogleService-Info.plist, dSYM non envoyés."
+  elif [ ! -f "$uploader" ]; then
+    echo "::warning::Crashlytics : upload-symbols introuvable ($uploader), dSYM non envoyés"
+  else
+    chmod +x "$uploader" || true
+    if "$uploader" -gsp "$FIREBASE_PLIST" -p ios "$ARCHIVE/dSYMs"; then
+      summary "- dSYM envoyés à Crashlytics"
+    else
+      echo "::warning::Crashlytics : envoi des dSYM en échec (le build TestFlight n'est pas touché)"
+    fi
   fi
 }
 

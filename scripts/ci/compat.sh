@@ -242,6 +242,9 @@ cmd_run() {
     -scheme Weyda \
     -destination "id=$udid" \
     -derivedDataPath build/dd \
+    -clonedSourcePackagesDirPath "${SPM_DIR:-build/spm}" \
+    -skipPackagePluginValidation \
+    -skipMacroValidation \
     CODE_SIGNING_ALLOWED=NO \
     COMPILER_INDEX_STORE_ENABLE=NO \
     2>&1 | tee build/logs/build-for-testing.log | xcbeautify --renderer github-actions
