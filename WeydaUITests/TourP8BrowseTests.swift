@@ -49,7 +49,7 @@ final class TourP8BrowseTests: TourTestCase {
 
         revealTrailingActions(of: row)
         settle(0.6)
-        tapFirstButton(labeled: Self.removeLabels, in: app)
+        tapFirstButton(labeled: Self.removeLabels, in: app, retrying: row)
         waitUntilGone(row)
         let notice = app.descendants(matching: .any)["notice"]
         _ = notice.waitForExistence(timeout: 10)
@@ -86,7 +86,7 @@ final class TourP8BrowseTests: TourTestCase {
 
         revealTrailingActions(of: row)
         settle(0.6)
-        tapFirstButton(labeled: Self.deleteLabels, in: app)
+        tapFirstButton(labeled: Self.deleteLabels, in: app, retrying: row)
         waitUntilGone(row)
         let notice = app.descendants(matching: .any)["notice"]
         _ = notice.waitForExistence(timeout: 10)
@@ -195,10 +195,17 @@ final class TourP8BrowseTests: TourTestCase {
 
     /// Premier bouton dont le libellé est l'un de ceux-ci (bouton révélé par un glissement).
     @MainActor
-    private func tapFirstButton(labeled labels: [String], in app: XCUIApplication) {
+    private func tapFirstButton(labeled labels: [String], in app: XCUIApplication, retrying row: XCUIElement? = nil) {
         let button = app.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [labels])).firstMatch
-        XCTAssertTrue(button.waitForExistence(timeout: 10), "bouton \(labels.first ?? "") introuvable")
-        if button.exists {
+        // Un glissement lent ne révèle pas toujours l'action (vu en arabe, très grand texte) : second essai plus long.
+        if !button.waitForExistence(timeout: 4), let row, row.exists {
+            revealTrailingActions(of: row, distance: 0.5)
+        }
+        let found: Bool = button.waitForExistence(timeout: 8)
+        // Le second glissement, plus long, peut déclencher l'action d'emblée (rangée partie) : c'est aussi le but.
+        let rowGone: Bool = row.map { !$0.exists } ?? false
+        XCTAssertTrue(found || rowGone, "bouton \(labels.first ?? "") introuvable")
+        if found && button.exists {
             button.tap()
         }
     }
@@ -213,10 +220,10 @@ final class TourP8BrowseTests: TourTestCase {
     /// Glissement lent vers le bord de FIN (gauche en français / anglais, droite en arabe), sur un tiers de la
     /// largeur : l'action du bord apparaît et reste ouverte, sans le glissement complet qui la déclencherait.
     @MainActor
-    private func revealTrailingActions(of row: XCUIElement) {
+    private func revealTrailingActions(of row: XCUIElement, distance: CGFloat = 0.35) {
         let rtl = environment["WEYDA_LANG"] == "ar"
         let start = row.coordinate(withNormalizedOffset: CGVector(dx: rtl ? 0.1 : 0.9, dy: 0.5))
-        let end = row.coordinate(withNormalizedOffset: CGVector(dx: rtl ? 0.45 : 0.55, dy: 0.5))
+        let end = row.coordinate(withNormalizedOffset: CGVector(dx: rtl ? 0.1 + distance : 0.9 - distance, dy: 0.5))
         start.press(forDuration: 0.05, thenDragTo: end)
     }
 }
