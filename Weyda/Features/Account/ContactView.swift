@@ -86,9 +86,7 @@ struct ContactScreen: View {
                 form
             }
         }
-        .safeAreaInset(edge: .top, spacing: 0) {
-            OfflineBanner()
-        }
+        .weydaOfflineBanner()
         .navigationTitle(L10n.contactTitle)
         .navigationBarTitleDisplayMode(.inline)
     }

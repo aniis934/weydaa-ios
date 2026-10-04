@@ -8,12 +8,19 @@ import Network
 /// privée, qui suit le chemin réseau que l'app utilise réellement (passer du Wi-Fi aux données mobiles ne
 /// fait pas clignoter le bandeau). Démarre « en ligne » (comme Android) : pas de bandeau à tort avant la
 /// première mesure. Le moniteur vit aussi longtemps que l'app (jamais arrêté).
+///
+/// Tour de captures (`-WeydaForceOffline YES`, Debug + API simulée seulement) : « hors ligne » d'emblée et pour toute la
+/// session, sans démarrer le moniteur (sa première mesure remettrait « en ligne ») ; l'API simulée répond quand même.
 final class ConnectivityMonitor: ObservableObject {
     @Published private(set) var isOnline = true
 
     private let monitor = NWPathMonitor()
 
     init() {
+        if LaunchOptions.forceOffline {
+            isOnline = false
+            return
+        }
         // Appelé sur la file du moniteur : closure explicitement @Sendable (sinon elle hériterait de
         // l'isolation MainActor de l'initialiseur, et Swift 6 l'arrêterait hors du fil principal).
         monitor.pathUpdateHandler = { @Sendable [weak self] path in

@@ -81,6 +81,10 @@ private struct SellerHost: View {
                     router.requestLogin()
                     return
                 }
+                // Retour discret à l'AJOUT d'un favori (comme l'accueil, les annonces et la fiche).
+                if !model.state.favoriteIds.contains(listing.id) {
+                    Haptics.impact()
+                }
                 Task { await model.toggleFavorite(listing) }
             },
             report: {

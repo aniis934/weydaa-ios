@@ -95,9 +95,7 @@ struct ProfileScreen: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(WeydaColor.background)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            OfflineBanner()
-        }
+        .weydaOfflineBanner()
         .navigationTitle(L10n.profileTitle)
         .navigationBarTitleDisplayMode(.large)
         .alert(L10n.profileLogoutConfirmTitle, isPresented: $confirmsLogout) {
@@ -189,40 +187,82 @@ struct ProfileScreen: View {
 
 // MARK: - En-tête
 
-/// Avatar (ou initiale), nom, e-mail, badges (e-mail vérifié ou non, vendeur recommandé), ancienneté.
+/// Avatar (ou initiale), nom, e-mail, badges (e-mail vérifié ou non, vendeur recommandé), ancienneté. Très grand
+/// texte : avatar AU-DESSUS du texte, qui prend toute la largeur ; e-mail et badges entiers (passage à la ligne).
 private struct ProfileHeader: View {
-    let user: User
+    private let user: User
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let avatarSide: CGFloat = 64
 
+    init(user: User) {
+        self.user = user
+    }
+
     var body: some View {
-        HStack(alignment: .center, spacing: WeydaSpace.lg) {
-            ProfileAvatar(user: user, side: Self.avatarSide)
-            VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
-                Text(user.displayName)
-                    .weydaText(.titleLarge)
-                    .foregroundStyle(WeydaColor.onSurface)
-                    .lineLimit(2)
-                // Une adresse e-mail se lit de gauche à droite, même dans une interface en arabe.
-                Text(Format.ltrIsolate(user.email))
-                    .weydaText(.bodySmall)
-                    .foregroundStyle(WeydaColor.onSurfaceVariant)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                ProfileBadges(user: user)
-                    .padding(.top, WeydaSpace.xs)
-                if let since = user.memberSince {
-                    Text(L10n.memberSince(Format.monthYear(since)))
-                        .weydaText(.bodySmall)
-                        .foregroundStyle(WeydaColor.onSurfaceVariant)
-                        .padding(.top, WeydaSpace.xxs)
-                }
+        layout
+            .padding(.vertical, WeydaSpace.sm)
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("profile.header")
+    }
+
+    @ViewBuilder
+    private var layout: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: WeydaSpace.md) {
+                ProfileAvatar(user: user, side: Self.avatarSide)
+                identity
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            HStack(alignment: .center, spacing: WeydaSpace.lg) {
+                ProfileAvatar(user: user, side: Self.avatarSide)
+                identity
+            }
         }
-        .padding(.vertical, WeydaSpace.sm)
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("profile.header")
+    }
+
+    private var identity: some View {
+        VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+            Text(user.displayName)
+                .weydaText(.titleLarge)
+                .foregroundStyle(WeydaColor.onSurface)
+                .lineLimit(nameLineLimit)
+            email
+            ProfileBadges(user: user)
+                .padding(.top, WeydaSpace.xs)
+            if let since = user.memberSince {
+                Text(L10n.memberSince(Format.monthYear(since)))
+                    .weydaText(.bodySmall)
+                    .foregroundStyle(WeydaColor.onSurfaceVariant)
+                    .padding(.top, WeydaSpace.xxs)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Une adresse e-mail se lit de gauche à droite, même dans une interface en arabe. Tailles normales : une ligne,
+    /// coupée au milieu ; très grand texte : entière (« yacine.b…ple.com » ne disait plus rien).
+    @ViewBuilder
+    private var email: some View {
+        let text = Text(Format.ltrIsolate(user.email))
+        if dynamicTypeSize.isAccessibilitySize {
+            text
+                .weydaText(.bodySmall)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            text
+                .weydaText(.bodySmall)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .lineLimit(1)
+                .truncationMode(.middle)
+        }
+    }
+
+    /// Deux lignes aux tailles normales ; nil = autant qu'il faut en très grand texte.
+    private var nameLineLimit: Int? {
+        dynamicTypeSize.isAccessibilitySize ? nil : 2
     }
 }
 
@@ -281,10 +321,19 @@ private struct ProfileBadges: View {
     }
 }
 
+/// Un badge : une ligne aux tailles normales ; en très grand texte, entier sur autant de lignes qu'il faut
+/// (« E-mail vérifié » se tronquait).
 private struct ProfileBadge: View {
-    let systemImage: String
-    let text: String
-    let tint: Color
+    private let systemImage: String
+    private let text: String
+    private let tint: Color
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(systemImage: String, text: String, tint: Color) {
+        self.systemImage = systemImage
+        self.text = text
+        self.tint = tint
+    }
 
     var body: some View {
         HStack(spacing: WeydaSpace.xs) {
@@ -293,9 +342,13 @@ private struct ProfileBadge: View {
                 .accessibilityHidden(true)
             Text(text)
                 .weydaText(.labelSmall)
-                .lineLimit(1)
+                .lineLimit(textLineLimit)
         }
         .foregroundStyle(tint)
+    }
+
+    private var textLineLimit: Int? {
+        dynamicTypeSize.isAccessibilitySize ? nil : 1
     }
 }
 
@@ -309,15 +362,29 @@ nonisolated struct ProfileStat: Identifiable, Hashable, Sendable {
 }
 
 /// Les vues en grand chiffre, puis six compteurs en grille (actives, en attente, vendues, expirées, favoris
-/// reçus, messages reçus) — « gros chiffres, peu de mots ».
+/// reçus, messages reçus) — « gros chiffres, peu de mots ». Très grand texte : deux colonnes au lieu de trois
+/// (dans un tiers de largeur, « En attente » / « قيد المراجعة » se tronquait).
 private struct ProfileStatsGrid: View {
-    let stats: UserStats
+    private let stats: UserStats
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let columns: [GridItem] = [
         GridItem(.flexible(), spacing: WeydaSpace.sm, alignment: .top),
         GridItem(.flexible(), spacing: WeydaSpace.sm, alignment: .top),
         GridItem(.flexible(), spacing: WeydaSpace.sm, alignment: .top),
     ]
+    private static let largeColumns: [GridItem] = [
+        GridItem(.flexible(), spacing: WeydaSpace.sm, alignment: .top),
+        GridItem(.flexible(), spacing: WeydaSpace.sm, alignment: .top),
+    ]
+
+    init(stats: UserStats) {
+        self.stats = stats
+    }
+
+    private var gridColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize ? Self.largeColumns : Self.columns
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: WeydaSpace.md) {
@@ -332,7 +399,7 @@ private struct ProfileStatsGrid: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(L10n.statViews)
             .accessibilityValue(Format.count(stats.totalViews))
-            LazyVGrid(columns: Self.columns, alignment: .leading, spacing: WeydaSpace.sm) {
+            LazyVGrid(columns: gridColumns, alignment: .leading, spacing: WeydaSpace.sm) {
                 ForEach(cells) { cell in
                     ProfileStatCell(stat: cell)
                 }
@@ -354,8 +421,17 @@ private struct ProfileStatsGrid: View {
     }
 }
 
+/// Une cellule : le chiffre, puis le libellé sur deux lignes au plus. Très grand texte : une ligne par mot au plus,
+/// réduite jusqu'à 70 % — jamais un mot coupé en deux ni tronqué (« قيد المرا… »).
 private struct ProfileStatCell: View {
-    let stat: ProfileStat
+    private let stat: ProfileStat
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private static let largeLabelMinScale: CGFloat = 0.7
+
+    init(stat: ProfileStat) {
+        self.stat = stat
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
@@ -364,11 +440,7 @@ private struct ProfileStatCell: View {
                 .foregroundStyle(WeydaColor.onSurface)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-            Text(stat.label)
-                .weydaText(.labelSmall)
-                .foregroundStyle(WeydaColor.onSurfaceVariant)
-                .lineLimit(2)
-                .minimumScaleFactor(0.85)
+            label
         }
         .padding(WeydaSpace.md)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -377,12 +449,36 @@ private struct ProfileStatCell: View {
         .accessibilityLabel(stat.label)
         .accessibilityValue(Format.count(stat.value))
     }
+
+    @ViewBuilder
+    private var label: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            Text(stat.label)
+                .weydaText(.labelSmall)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .lineLimit(LabelLines.limit(for: stat.label, maxLines: 2))
+                .minimumScaleFactor(Self.largeLabelMinScale)
+        } else {
+            Text(stat.label)
+                .weydaText(.labelSmall)
+                .foregroundStyle(WeydaColor.onSurfaceVariant)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
+        }
+    }
 }
 
-/// Fantôme de la grille pendant le premier chargement (lu une fois « Chargement… »).
+/// Fantôme de la grille pendant le premier chargement (lu une fois « Chargement… ») ; deux colonnes en très grand
+/// texte, comme la grille.
 private struct ProfileStatsSkeleton: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     private static let columns: [GridItem] = [
         GridItem(.flexible(), spacing: WeydaSpace.sm),
+        GridItem(.flexible(), spacing: WeydaSpace.sm),
+        GridItem(.flexible(), spacing: WeydaSpace.sm),
+    ]
+    private static let largeColumns: [GridItem] = [
         GridItem(.flexible(), spacing: WeydaSpace.sm),
         GridItem(.flexible(), spacing: WeydaSpace.sm),
     ]
@@ -390,10 +486,16 @@ private struct ProfileStatsSkeleton: View {
     private static let heroHeight: CGFloat = 28
     private static let cellHeight: CGFloat = 64
 
+    init() {}
+
+    private var gridColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize ? Self.largeColumns : Self.columns
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: WeydaSpace.md) {
             SkeletonBlock(width: Self.heroWidth, height: Self.heroHeight)
-            LazyVGrid(columns: Self.columns, spacing: WeydaSpace.sm) {
+            LazyVGrid(columns: gridColumns, spacing: WeydaSpace.sm) {
                 ForEach(0..<6, id: \.self) { _ in
                     SkeletonBlock(height: Self.cellHeight, radius: WeydaRadius.thumb)
                 }

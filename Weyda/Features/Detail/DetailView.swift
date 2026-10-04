@@ -99,6 +99,10 @@ private struct DetailHost: View {
                     router.requestLogin()
                     return
                 }
+                // Favori optimiste : le cœur se remplit tout de suite, le petit choc l'accompagne (ajout seulement).
+                if !model.state.isFavorite {
+                    Haptics.impact()
+                }
                 Task { await model.toggleFavorite() }
             },
             report: {

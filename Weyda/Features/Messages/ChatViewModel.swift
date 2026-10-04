@@ -19,6 +19,10 @@ final class ChatViewModel: ObservableObject {
     @Published private(set) var state: ChatState
     /// Feuille « Signaler » (liée à la présentation : un glissement vers le bas la ferme aussi).
     @Published var isReportPresented: Bool = false
+    /// Message parti (réponse du serveur reçue) : retour haptique branché par `ChatView` ; nil dans les tests.
+    var onMessageSent: (() -> Void)?
+    /// Offre envoyée, contre-offre, acceptation ou refus aboutis (action en paramètre) : retour haptique de `ChatView`.
+    var onOfferSent: ((OfferAction) -> Void)?
 
     let conversationId: String
 
@@ -261,6 +265,7 @@ final class ChatViewModel: ObservableObject {
                     }
                     s.messages = ChatViewModel.mergeMessages(s.messages, [message])
                 }
+                self.onMessageSent?()
             } catch {
                 let message = ErrorMapper.message(for: error)
                 self.mutate { s in
@@ -382,6 +387,7 @@ final class ChatViewModel: ObservableObject {
                         s.offerDialog = nil
                     }
                 }
+                self.onOfferSent?(action)
             } catch {
                 self.offerFailed(error, fromDialog: fromDialog)
             }

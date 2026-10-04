@@ -40,9 +40,7 @@ struct DetailScreen: View {
             .toolbar {
                 toolbarContent
             }
-            .safeAreaInset(edge: .top, spacing: 0) {
-                OfflineBanner()
-            }
+            .weydaOfflineBanner()
             .sheet(isPresented: $isReportPresented) {
                 ReportSheet(
                     targetsUser: false,
@@ -235,10 +233,13 @@ private struct DetailPills: View {
     }
 }
 
+/// Pastille de catégorie ou de lieu : une ligne aux tailles normales ; en très grand texte, le lieu entier
+/// (« Bab Ezzouar, Alger ») passe à la ligne plutôt que d'être tronqué.
 private struct DetailPill: View {
     private let iconAsset: String
     private let text: String
     @ScaledMetric(relativeTo: .caption) private var iconSide: CGFloat = 14
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(iconAsset: String, text: String) {
         self.iconAsset = iconAsset
@@ -252,7 +253,7 @@ private struct DetailPill: View {
             Text(text)
                 .weydaText(.labelMedium)
                 .foregroundStyle(WeydaColor.onSurfaceVariant)
-                .lineLimit(1)
+                .lineLimit(textLineLimit)
         }
         .padding(.horizontal, WeydaSpace.md)
         .padding(.vertical, WeydaSpace.xs + WeydaSpace.xxs)
@@ -261,6 +262,11 @@ private struct DetailPill: View {
             Capsule().strokeBorder(WeydaColor.outlineVariant, lineWidth: 1)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// nil = autant de lignes qu'il faut (tailles d'accessibilité).
+    private var textLineLimit: Int? {
+        dynamicTypeSize.isAccessibilitySize ? nil : 1
     }
 }
 

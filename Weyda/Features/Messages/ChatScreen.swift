@@ -48,9 +48,9 @@ struct ChatScreen: View {
             // Mode sombre inchangé (barre système, déjà lisible). Bouton retour et menu gardent leur verre natif.
             .toolbarBackground(navigationBarStyle, for: .navigationBar)
             .toolbarBackground(opaqueHeader ? Visibility.visible : Visibility.automatic, for: .navigationBar)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                OfflineBanner()
-            }
+            // Hors ligne : bandeau dans une pile, sous la barre et AU-DESSUS de l'annonce du fil (un encart du haut passait
+            // sous l'effet de bord de la barre sur iOS 26).
+            .weydaOfflineBanner()
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.chat")
     }

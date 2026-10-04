@@ -45,7 +45,6 @@ struct DetailGallery: View {
                 }
                 .background(WeydaPalette.imagePlaceholder)
                 .clipped()
-                .overlay(alignment: .topLeading) { featuredBadge }
                 .overlay(alignment: .bottomTrailing) { counter }
                 // Un seul élément VoiceOver : « Photo 2 sur 8 », balayer vers le haut / le bas change de photo,
                 // toucher deux fois ouvre le plein écran.
@@ -60,6 +59,9 @@ struct DetailGallery: View {
                     adjust(direction)
                 }
                 .accessibilityIdentifier("detail.gallery")
+                // Posé APRÈS l'élément VoiceOver de la galerie : « À la une » est lu à part (il disparaissait avec les
+                // enfants ignorés). Même rendu : coin opposé au compteur, au-dessus de la photo.
+                .overlay(alignment: .topLeading) { featuredBadge }
         }
     }
 

@@ -78,3 +78,61 @@ besoin, `-WeydaReviewDemo`), envoi → message, profil `mock-u2` « Modifier mon
 
 ## Rendu (≤ 40 lignes) + note `<scratchpad>/ios-team/notes/<lists|reviews>.md`
 Fichiers, API, écarts avec Android, demandes, points douteux pour la compilation.
+
+---
+
+# Phase 6 — lot 2 : finition (2 agents en parallèle, après le lot 1)
+
+Constats d'entrée : tour en TRÈS GRAND TEXTE (`accessibility-extra-large`, AX3) sur iPhone 17e en arabe, relu par l'orchestrateur ;
+captures dans `<scratchpad>/xxl/ar/iPhone-17e/ar-light-accessibility-extra-large/` (PNG, lisibles avec l'outil de lecture d'images).
+Constat de la phase 3 : sur iOS 26, ce qui est posé dans `.safeAreaInset(edge: .top)` d'une vue défilante passe SOUS l'effet de bord
+de la barre de navigation (rendu invisible) ; constat de la phase 5 : la barre Liquid Glass s'adapte au contenu coloré qui défile dessous.
+
+## API FIXÉE (A11Y l'écrit dans `Weyda/DesignSystem/Components/OfflineBanner.swift`, LAYOUT s'en sert)
+```swift
+extension View {
+    /// Bandeau « hors ligne » AU-DESSUS du contenu (pile verticale, jamais dans `.safeAreaInset(edge: .top)` : sur iOS 26 il passerait sous
+    /// l'effet de bord de la barre). Remplace `.safeAreaInset(edge: .top, spacing: 0) { OfflineBanner() }` dans chaque écran.
+    func weydaOfflineBanner() -> some View
+}
+```
+
+## LAYOUT (Dynamic Type jusqu'aux tailles d'accessibilité : rien de tronqué qui porte une information)
+Fichiers : `Weyda/DesignSystem/Components/ListingCards.swift`, `Weyda/Features/Detail/DetailScreen.swift` (+ `DetailSections.swift` si la barre
+d'actions y vit), `Weyda/Features/Home/HomeScreen.swift`, `Weyda/Features/Account/{ProfileView,AccountComponents,MyListingsView}.swift`,
+`Weyda/Features/Post/{PostCategoryStep,PostComponents}.swift`, `Weyda/Features/Account/BlockedUsersView.swift`, `WeydaUITests/TourInboxTests.swift`.
+- Prix des rangées d'annonce tronqués (« …215.000 ») : un prix ne se tronque JAMAIS (réduction modérée `minimumScaleFactor` puis passage à la
+  ligne, ou disposition empilée aux tailles d'accessibilité — `@Environment(\.dynamicTypeSize)` + `isAccessibilitySize`).
+- Fiche : barre d'actions du bas (« Contacter le vendeur » coupé) → boutons empilés aux tailles d'accessibilité.
+- Profil : statistiques (« قيد المرا… ») → moins de colonnes, libellés sur 2 lignes.
+- Accueil : rangée des catégories (« …المركبا ») → libellés sur 2 lignes.
+- Dépôt : grille des catégories (mot arabe coupé en deux : « الإلكترونيا / ت ») → 2 colonnes aux tailles d'accessibilité, jamais de coupure
+  au milieu d'un mot.
+- Mes annonces : 4 boutons d'action (« تجديد 60 يو… ») → 2 lignes aux tailles d'accessibilité.
+- Utilisateurs bloqués : « Débloquer » et la date coupés → bouton sous le nom aux tailles d'accessibilité.
+- Remplacer, dans tes fichiers, `.safeAreaInset(edge: .top, spacing: 0) { OfflineBanner() }` par `.weydaOfflineBanner()`.
+- `TourInboxTests.test9i01Conversations` : en très grand texte, `conversation.row.mock-c5` est hors écran (la liste ne crée pas les rangées
+  invisibles) → ne vérifier que la première rangée, ou faire défiler avant de chercher.
+- Aux tailles normales, RIEN ne change visuellement (les galeries des phases 2 à 5 ont été validées par le propriétaire).
+
+## A11Y (accessibilité, animations, hors ligne, finitions iOS 26)
+Fichiers : `Weyda/DesignSystem/Components/OfflineBanner.swift`, `Weyda/Core/Network/Connectivity.swift`, `Weyda/App/LaunchOptions.swift`
+(`-WeydaForceOffline YES`, Debug + API simulée : le moniteur annonce « hors ligne » pour les captures), tous les AUTRES écrans qui utilisent
+l'ancien bandeau (`AccountDataView`, `ChangePasswordView`, `ContactView`, `EditProfileView`, `ListingsScreen`, `ChatScreen`, `NotificationsScreen`,
+`SellerScreen`), `Weyda/Features/Detail/{DetailGallery,DetailFullscreenGallery}.swift`, `Weyda/Features/Messages/ChatComponents.swift`,
+nouveau `Weyda/DesignSystem/Components/Haptics.swift`, nouveau tour `WeydaUITests/TourPolishTests.swift` (captures `10p-…`).
+- `weydaOfflineBanner()` (API ci-dessus) + `-WeydaForceOffline` ; captures hors ligne : accueil, annonces, fiche, fil (le bandeau doit se voir sur iOS 26).
+- « Réduire les animations » : les `withAnimation(...)` restants (DetailGallery ×2, DetailFullscreenGallery, ChatComponents) passent par
+  `weydaAnimation` / la lecture de `accessibilityReduceMotion` ; les `TimelineView(.animation…)` décoratifs (indicateur « écrit… ») se figent.
+- VoiceOver : passe sur les boutons icône sans étiquette, images décoratives non masquées, éléments à regrouper (rangées), dans TOUT le
+  code SAUF les fichiers de LAYOUT (pour eux : liste dans ta note, LAYOUT ou l'orchestrateur appliquera). `grep` des `Image(systemName:` dans
+  des `Button` sans `accessibilityLabel`.
+- Retours haptiques discrets (`Haptics.swift` : `UIImpactFeedbackGenerator` / `UINotificationFeedbackGenerator`, rien si l'utilisateur l'a
+  coupé côté système — c'est automatique) : message envoyé, offre envoyée/acceptée, favori ajouté (seulement là où l'écran est à toi ou via une
+  closure existante : pas d'édition des fichiers de LAYOUT).
+- Touches Liquid Glass (iOS 26 seulement, `if #available(iOS 26.0, *)`, repli inchangé) : composeur du fil (champ + bouton d'envoi en
+  capsule de verre, comme Messages), et c'est tout — sobriété.
+- Rien ne change sur iOS 16-25 hormis le bandeau hors ligne et les animations sous « Réduire les animations ».
+
+Chaînes : `<scratchpad>/ios-team/strings/<layout|a11y>.json` (préfixes `layout_` / `a11y_`) si nécessaire. Rendu ≤ 40 lignes + note
+`notes/<layout|a11y>.md`.

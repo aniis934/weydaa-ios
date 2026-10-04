@@ -129,9 +129,7 @@ struct AccountDataScreen: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .background(WeydaColor.background)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            OfflineBanner()
-        }
+        .weydaOfflineBanner()
         .navigationTitle(L10n.accountDataTitle)
         .navigationBarTitleDisplayMode(.inline)
         .alert(L10n.deleteAccountConfirmTitle, isPresented: $confirmDelete) {

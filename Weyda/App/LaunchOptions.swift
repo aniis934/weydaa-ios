@@ -23,6 +23,7 @@ import Foundation
 ///                  archived   fil ouvert comme depuis les Archives (menu « Désarchiver »)
 ///   -WeydaReviewDemo open     (Debug, API simulée, membre) profil vendeur : feuille « Laisser un avis » ouverte une
 ///                    filled   fois le profil chargé ; `filled` la remplit (4 étoiles + commentaire fictif), sans clavier
+///   -WeydaForceOffline YES    (Debug, API simulée) `ConnectivityMonitor` annonce « hors ligne » : captures du bandeau
 nonisolated enum LaunchOptions {
     /// Session simulée demandée par `-WeydaLoggedIn` (captures des écrans de membre).
     nonisolated enum MockSession: Sendable {
@@ -97,6 +98,16 @@ nonisolated enum LaunchOptions {
         return defaults.string(forKey: "WeydaReviewDemo")
         #else
         return nil
+        #endif
+    }
+
+    /// Hors ligne simulé pour les captures (`-WeydaForceOffline YES`), lu par `ConnectivityMonitor` ; seulement avec l'API
+    /// simulée (l'API réelle doit toujours mesurer le vrai réseau) ; toujours faux en Release.
+    static var forceOffline: Bool {
+        #if DEBUG
+        return mockAPI && defaults.bool(forKey: "WeydaForceOffline")
+        #else
+        return false
         #endif
     }
 

@@ -181,35 +181,75 @@ struct BlockedUsersScreen: View {
 }
 
 /// Une personne bloquée : avatar (initiale, ou silhouette pour un compte supprimé), nom, date du blocage, bouton
-/// « Débloquer » (remplacé par l'indicateur pendant SON déblocage ; désactivé pendant celui d'un autre).
+/// « Débloquer » (remplacé par l'indicateur pendant SON déblocage ; désactivé pendant celui d'un autre). Très grand
+/// texte : le bouton passe SOUS le nom et la date, qui s'écrivent en entier (« Débloquer » et la date étaient coupés).
 private struct BlockedUserRow: View {
-    let user: BlockedUser
-    let isBusy: Bool
-    let isLocked: Bool
-    let onUnblock: () -> Void
+    private let user: BlockedUser
+    private let isBusy: Bool
+    private let isLocked: Bool
+    private let onUnblock: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(user: BlockedUser, isBusy: Bool, isLocked: Bool, onUnblock: @escaping () -> Void) {
+        self.user = user
+        self.isBusy = isBusy
+        self.isLocked = isLocked
+        self.onUnblock = onUnblock
+    }
 
     var body: some View {
-        HStack(spacing: WeydaSpace.md) {
-            InboxAvatar(name: user.name, url: user.avatarUrl, size: WeydaSize.avatarSmall)
-            VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
-                Text(BlockedUsersText.name(of: user))
-                    .weydaText(.bodyLarge)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(user.name == nil ? WeydaColor.onSurfaceVariant : WeydaColor.onSurface)
-                    .lineLimit(2)
-                if let since = BlockedUsersText.blockedSince(user) {
-                    Text(since)
-                        .weydaText(.bodySmall)
-                        .foregroundStyle(WeydaColor.onSurfaceVariant)
-                        .lineLimit(1)
+        if dynamicTypeSize.isAccessibilitySize {
+            HStack(alignment: .top, spacing: WeydaSpace.md) {
+                avatar
+                VStack(alignment: .leading, spacing: WeydaSpace.sm) {
+                    identity
+                        .accessibilityElement(children: .combine)
+                    unblockControl
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .combine)
-            unblockControl
+            .frame(minHeight: WeydaSize.touchTarget)
+            .padding(.vertical, WeydaSpace.xs)
+        } else {
+            HStack(spacing: WeydaSpace.md) {
+                avatar
+                identity
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityElement(children: .combine)
+                unblockControl
+            }
+            .frame(minHeight: WeydaSize.touchTarget)
+            .padding(.vertical, WeydaSpace.xxs)
         }
-        .frame(minHeight: WeydaSize.touchTarget)
-        .padding(.vertical, WeydaSpace.xxs)
+    }
+
+    private var avatar: some View {
+        InboxAvatar(name: user.name, url: user.avatarUrl, size: WeydaSize.avatarSmall)
+    }
+
+    private var identity: some View {
+        VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+            Text(BlockedUsersText.name(of: user))
+                .weydaText(.bodyLarge)
+                .fontWeight(.semibold)
+                .foregroundStyle(user.name == nil ? WeydaColor.onSurfaceVariant : WeydaColor.onSurface)
+                .lineLimit(nameLineLimit)
+            if let since = BlockedUsersText.blockedSince(user) {
+                Text(since)
+                    .weydaText(.bodySmall)
+                    .foregroundStyle(WeydaColor.onSurfaceVariant)
+                    .lineLimit(dateLineLimit)
+            }
+        }
+    }
+
+    /// Tailles normales : nom sur 2 lignes, date sur 1 ; très grand texte : autant de lignes qu'il faut (nil).
+    private var nameLineLimit: Int? {
+        dynamicTypeSize.isAccessibilitySize ? nil : 2
+    }
+
+    private var dateLineLimit: Int? {
+        dynamicTypeSize.isAccessibilitySize ? nil : 1
     }
 
     @ViewBuilder
@@ -223,7 +263,7 @@ private struct BlockedUserRow: View {
             Button(action: onUnblock) {
                 Text(L10n.inboxUnblock)
                     .weydaText(.labelLarge)
-                    .lineLimit(1)
+                    .lineLimit(unblockLineLimit)
             }
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
@@ -232,6 +272,12 @@ private struct BlockedUserRow: View {
             .accessibilityLabel(L10n.inboxUnblockNamed(BlockedUsersText.name(of: user)))
             .accessibilityIdentifier("blocked.unblock.\(user.id)")
         }
+    }
+
+    /// Sous le nom, le bouton a toute la largeur : une ligne par mot au plus (« إلغاء الحظر »), jamais tronqué.
+    private var unblockLineLimit: Int {
+        guard dynamicTypeSize.isAccessibilitySize else { return 1 }
+        return LabelLines.limit(for: L10n.inboxUnblock, maxLines: 2)
     }
 }
 

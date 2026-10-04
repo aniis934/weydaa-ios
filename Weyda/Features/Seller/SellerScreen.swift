@@ -62,9 +62,7 @@ struct SellerScreen: View {
             .toolbar {
                 toolbarContent
             }
-            .safeAreaInset(edge: .top, spacing: 0) {
-                OfflineBanner()
-            }
+            .weydaOfflineBanner()
             .sheet(isPresented: $isReportPresented) {
                 ReportSheet(
                     targetsUser: true,

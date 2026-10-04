@@ -18,6 +18,10 @@ nonisolated enum ChatMetrics {
     static let chipHeight: CGFloat = 34
     /// Le compteur de caractères apparaît à 200 caractères de la limite.
     static let counterThreshold: Int = ChatState.messageMax - 200
+    /// iOS 26 : capsule de verre du composeur (rayon = demi-hauteur d'une ligne : capsule parfaite sur une ligne, coins
+    /// gardés quand le texte s'allonge) et rond d'envoi dessiné dedans (44 pt touchables).
+    static let glassFieldRadius: CGFloat = WeydaSize.touchTarget / 2
+    static let glassSendSide: CGFloat = 34
 }
 
 // MARK: - Liste des messages
@@ -944,10 +948,7 @@ struct ChatComposer: View {
             if canMakeOffer {
                 offerShortcut
             }
-            HStack(alignment: .bottom, spacing: WeydaSpace.sm) {
-                field
-                sendButton
-            }
+            inputRow
             if text.utf16.count >= ChatMetrics.counterThreshold {
                 Text(L10n.postCharCount(text.utf16.count, ChatState.messageMax))
                     .weydaText(.labelSmall)
@@ -981,13 +982,44 @@ struct ChatComposer: View {
         !TextCheck.isBlank(text) && !isSending
     }
 
-    private var field: some View {
-        let shape = RoundedRectangle(cornerRadius: WeydaRadius.panel, style: .continuous)
-        return TextField(L10n.chatMessagePlaceholder, text: $text, axis: .vertical)
+    /// Champ et bouton d'envoi. iOS 26 : une seule capsule de verre (Liquid Glass) qui porte le texte et, au bout, le
+    /// bouton d'envoi — comme Messages ; avant iOS 26 : champ blanc cerné et bouton rond à côté (inchangé).
+    @ViewBuilder
+    private var inputRow: some View {
+        if #available(iOS 26.0, *) {
+            glassInputRow
+        } else {
+            HStack(alignment: .bottom, spacing: WeydaSpace.sm) {
+                field
+                sendButton(circleSide: WeydaSize.touchTarget)
+            }
+        }
+    }
+
+    @available(iOS 26.0, *)
+    private var glassInputRow: some View {
+        let shape = RoundedRectangle(cornerRadius: ChatMetrics.glassFieldRadius, style: .continuous)
+        return HStack(alignment: .bottom, spacing: WeydaSpace.xxs) {
+            textInput
+                .padding(.leading, WeydaSpace.md + WeydaSpace.xxs)
+                .padding(.vertical, WeydaSpace.sm + WeydaSpace.xxs)
+                .frame(minHeight: WeydaSize.touchTarget)
+            sendButton(circleSide: ChatMetrics.glassSendSide)
+        }
+        .glassEffect(Glass.regular, in: shape)
+    }
+
+    private var textInput: some View {
+        TextField(L10n.chatMessagePlaceholder, text: $text, axis: .vertical)
             .lineLimit(1...5)
             .weydaText(.bodyLarge)
             .focused($isFocused)
             .accessibilityIdentifier("chat.composer")
+    }
+
+    private var field: some View {
+        let shape = RoundedRectangle(cornerRadius: WeydaRadius.panel, style: .continuous)
+        return textInput
             .padding(.horizontal, WeydaSpace.md + WeydaSpace.xxs)
             .padding(.vertical, WeydaSpace.sm + WeydaSpace.xxs)
             .frame(minHeight: WeydaSize.touchTarget)
@@ -997,12 +1029,14 @@ struct ChatComposer: View {
             }
     }
 
-    private var sendButton: some View {
+    /// Rond dessiné de `circleSide` (44 pt hors verre, plus petit dans la capsule de verre), toujours 44 pt touchables.
+    private func sendButton(circleSide: CGFloat) -> some View {
         let active = canSend || isSending
         return Button(action: send) {
             ZStack {
                 Circle()
                     .fill(active ? WeydaColor.primary : WeydaColor.surfaceContainerHigh)
+                    .frame(width: circleSide, height: circleSide)
                 if isSending {
                     ProgressView()
                         .tint(WeydaColor.onPrimary)

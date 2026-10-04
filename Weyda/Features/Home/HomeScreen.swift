@@ -38,9 +38,7 @@ struct HomeScreen: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(WeydaColor.background)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                OfflineBanner()
-            }
+            .weydaOfflineBanner()
             .navigationTitle(AppTab.home.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -93,6 +91,8 @@ private nonisolated enum HomeLayout {
     static let markSide: CGFloat = 24
     /// Tuile de l'icône de l'app dans l'invitation à déposer.
     static let promptTile: CGFloat = 56
+    /// Très grand texte : réduction permise aux libellés courts (pastilles de catégorie), plutôt qu'un « … ».
+    static let labelMinScale: CGFloat = 0.7
 }
 
 /// Textes de l'invitation à déposer (chaînes propres à iOS, reprises du site).
@@ -112,7 +112,7 @@ private struct HomeSections: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if !state.categories.isEmpty {
-                SectionHeader(title: L10n.sectionCategories, actionTitle: L10n.seeAll, action: actions.showAllCategories)
+                HomeSectionHeader(title: L10n.sectionCategories, actionTitle: L10n.seeAll, action: actions.showAllCategories)
                 HomeCategoryRow(
                     categories: state.categories,
                     onOpen: actions.openCategory,
@@ -120,24 +120,24 @@ private struct HomeSections: View {
                 )
             }
             if !state.featured.isEmpty {
-                SectionHeader(title: L10n.sectionFeatured, actionTitle: L10n.seeAll, action: actions.seeAllFeatured)
+                HomeSectionHeader(title: L10n.sectionFeatured, actionTitle: L10n.seeAll, action: actions.seeAllFeatured)
                 HomeCarousel(listings: state.featured, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
             }
             if !state.trending.isEmpty {
-                SectionHeader(title: L10n.homeTrending)
+                HomeSectionHeader(title: L10n.homeTrending)
                 HomeCarousel(listings: state.trending, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
             }
             if !state.forYou.isEmpty {
-                SectionHeader(title: L10n.homeForYou)
+                HomeSectionHeader(title: L10n.homeForYou)
                 HomeCarousel(listings: state.forYou, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
             }
             if !state.recent.isEmpty {
-                SectionHeader(title: L10n.sectionRecent, actionTitle: L10n.seeAll, action: actions.seeAllRecent)
+                HomeSectionHeader(title: L10n.sectionRecent, actionTitle: L10n.seeAll, action: actions.seeAllRecent)
                 HomeRecentGrid(listings: state.recent, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
             }
             HomeBrowseAllButton(action: actions.seeAllRecent)
             if !state.popularWilayas.isEmpty {
-                SectionHeader(title: L10n.sectionPopularCities)
+                HomeSectionHeader(title: L10n.sectionPopularCities)
                 HomeCityRow(wilayas: state.popularWilayas, onOpen: actions.openWilaya)
             }
             HomePostPrompt(action: actions.post)
@@ -145,28 +145,104 @@ private struct HomeSections: View {
     }
 }
 
-/// Toutes les catégories racines en pastilles rondes qui défilent, puis « Toutes » (la feuille complète).
+/// Toutes les catégories racines en pastilles rondes qui défilent, puis « Toutes » (la feuille complète). Très grand
+/// texte : `HomeCategoryBubble` (cellule élargie, libellé jamais tronqué ni coupé au milieu d'un mot).
 private struct HomeCategoryRow: View {
-    let categories: [Category]
-    let onOpen: (Category) -> Void
-    let onShowAll: () -> Void
+    private let categories: [Category]
+    private let onOpen: (Category) -> Void
+    private let onShowAll: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(categories: [Category], onOpen: @escaping (Category) -> Void, onShowAll: @escaping () -> Void) {
+        self.categories = categories
+        self.onOpen = onOpen
+        self.onShowAll = onShowAll
+    }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .top, spacing: WeydaSpace.xs) {
-                ForEach(categories) { category in
-                    CategoryCircle(
-                        title: category.name.resolve(),
-                        iconAsset: CategoryIcon.assetName(forSlug: category.slug),
-                        action: { onOpen(category) }
-                    )
-                    .accessibilityIdentifier("home.category.\(category.slug)")
-                }
-                CategoryCircle(title: L10n.categoryAllTile, iconAsset: CategoryIcon.all, action: onShowAll)
-                    .accessibilityIdentifier("home.categories.all")
+            if dynamicTypeSize.isAccessibilitySize {
+                largeCells
+            } else {
+                regularCells
             }
-            .padding(.horizontal, HomeLayout.categoryInset)
         }
+    }
+
+    /// Tailles normales : la rangée validée, inchangée.
+    private var regularCells: some View {
+        HStack(alignment: .top, spacing: WeydaSpace.xs) {
+            ForEach(categories) { category in
+                CategoryCircle(
+                    title: category.name.resolve(),
+                    iconAsset: CategoryIcon.assetName(forSlug: category.slug),
+                    action: { onOpen(category) }
+                )
+                .accessibilityIdentifier("home.category.\(category.slug)")
+            }
+            CategoryCircle(title: L10n.categoryAllTile, iconAsset: CategoryIcon.all, action: onShowAll)
+                .accessibilityIdentifier("home.categories.all")
+        }
+        .padding(.horizontal, HomeLayout.categoryInset)
+    }
+
+    /// Très grand texte : mêmes identifiants, cellules élargies, un peu plus d'air entre elles.
+    private var largeCells: some View {
+        HStack(alignment: .top, spacing: WeydaSpace.sm) {
+            ForEach(categories) { category in
+                HomeCategoryBubble(
+                    title: category.name.resolve(),
+                    iconAsset: CategoryIcon.assetName(forSlug: category.slug),
+                    action: { onOpen(category) }
+                )
+                .accessibilityIdentifier("home.category.\(category.slug)")
+            }
+            HomeCategoryBubble(title: L10n.categoryAllTile, iconAsset: CategoryIcon.all, action: onShowAll)
+                .accessibilityIdentifier("home.categories.all")
+        }
+        .padding(.horizontal, HomeLayout.categoryInset)
+    }
+}
+
+/// Pastille de catégorie en très grand texte — celle de `CategoryCircle` (cercle teinté, icône, appui), dans une
+/// cellule dont la largeur suit la taille du texte (76 pt à la taille par défaut, comme la cellule normale) : dans
+/// 76 pt fixes, « Véhicules » / « المركبات » finissaient en « Véhic… » / « …المركبا ». Libellé : une ligne par mot
+/// au plus (deux lignes), réduit jusqu'à 70 % plutôt que tronqué — jamais un mot coupé en deux.
+private struct HomeCategoryBubble: View {
+    private let title: String
+    private let iconAsset: String
+    private let action: () -> Void
+    @ScaledMetric(relativeTo: .caption) private var cellWidth: CGFloat = WeydaSize.categoryCell
+
+    init(title: String, iconAsset: String, action: @escaping () -> Void) {
+        self.title = title
+        self.iconAsset = iconAsset
+        self.action = action
+    }
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: WeydaSpace.sm) {
+                Circle()
+                    .fill(WeydaPalette.categoryTile)
+                    .frame(width: WeydaSize.categoryCircle, height: WeydaSize.categoryCircle)
+                    .overlay {
+                        CategoryIconImage(assetName: iconAsset, size: WeydaSize.iconLarge)
+                            .foregroundStyle(WeydaColor.primary)
+                    }
+                Text(title)
+                    .weydaText(.labelMedium)
+                    .foregroundStyle(WeydaColor.onSurface)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(LabelLines.limit(for: title, maxLines: 2))
+                    .minimumScaleFactor(HomeLayout.labelMinScale)
+            }
+            .padding(.vertical, WeydaSpace.sm)
+            .frame(width: max(cellWidth, WeydaSize.categoryCell))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(WeydaPressStyle(pressedScale: 0.94))
+        .accessibilityLabel(title)
     }
 }
 
@@ -222,19 +298,34 @@ private struct HomeSnappingRow<Content: View>: View {
     }
 }
 
-/// « Annonces récentes » : grille de deux colonnes, cartes de hauteur égale.
+/// « Annonces récentes » : grille de deux colonnes, cartes de hauteur égale. Très grand texte : une seule colonne
+/// (dans une demi-largeur, le prix ne tenait plus, même sur deux lignes).
 private struct HomeRecentGrid: View {
-    let listings: [Listing]
-    let favoriteIds: Set<String>
-    let onFavorite: (Listing) -> Void
+    private let listings: [Listing]
+    private let favoriteIds: Set<String>
+    private let onFavorite: (Listing) -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let columns: [GridItem] = [
         GridItem(.flexible(), spacing: WeydaSpace.gutter, alignment: .top),
         GridItem(.flexible(), spacing: WeydaSpace.gutter, alignment: .top),
     ]
+    private static let singleColumn: [GridItem] = [
+        GridItem(.flexible(), spacing: WeydaSpace.gutter, alignment: .top),
+    ]
+
+    init(listings: [Listing], favoriteIds: Set<String>, onFavorite: @escaping (Listing) -> Void) {
+        self.listings = listings
+        self.favoriteIds = favoriteIds
+        self.onFavorite = onFavorite
+    }
+
+    private var gridColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize ? Self.singleColumn : Self.columns
+    }
 
     var body: some View {
-        LazyVGrid(columns: Self.columns, alignment: .leading, spacing: WeydaSpace.gutter) {
+        LazyVGrid(columns: gridColumns, alignment: .leading, spacing: WeydaSpace.gutter) {
             ForEach(listings) { listing in
                 NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
                     ListingCard(
@@ -247,6 +338,55 @@ private struct HomeRecentGrid: View {
             }
         }
         .padding(.horizontal, WeydaSpace.screen)
+    }
+}
+
+/// En-tête de section de l'accueil : `SectionHeader` aux tailles normales (inchangé) ; en très grand texte, « Voir
+/// tout » passe SOUS le titre — à côté, le titre se coupait d'un trait d'union (« Catégo-ries »).
+private struct HomeSectionHeader: View {
+    private let title: String
+    private let actionTitle: String?
+    private let action: (() -> Void)?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(title: String, actionTitle: String? = nil, action: (() -> Void)? = nil) {
+        self.title = title
+        self.actionTitle = actionTitle
+        self.action = action
+    }
+
+    var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            stacked
+        } else {
+            SectionHeader(title: title, actionTitle: actionTitle, action: action)
+        }
+    }
+
+    /// Mêmes styles et marges que `SectionHeader`, le titre sur toute la largeur, l'action dessous.
+    private var stacked: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(title)
+                .weydaText(.titleLarge)
+                .foregroundStyle(WeydaColor.onBackground)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, minHeight: WeydaSize.touchTarget, alignment: .leading)
+                .accessibilityAddTraits(.isHeader)
+            if let action {
+                Button(action: action) {
+                    Text(actionTitle ?? L10n.seeAll)
+                        .weydaText(.labelLarge)
+                        .foregroundStyle(WeydaColor.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(minHeight: WeydaSize.touchTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, WeydaSpace.screen)
+        .padding(.top, WeydaSpace.section - WeydaSpace.sm)
+        .padding(.bottom, WeydaSpace.xs)
     }
 }
 

@@ -65,13 +65,15 @@ struct AccountMemberGate<Content: View>: View {
 
 /// Ligne d'une liste groupée (Profil) : pictogramme de la marque, libellé, valeur facultative au bout (la langue
 /// courante, comme les Réglages d'iOS), puis un pictogramme de fin facultatif (sortie vers les Réglages). Le chevron
-/// des liens est celui de `NavigationLink` ; `destructive` = déconnexion.
+/// des liens est celui de `NavigationLink` ; `destructive` = déconnexion. Très grand texte : la valeur passe SOUS le
+/// libellé (à côté, « Langue » se coupait en « Langu / e » et « Français » en « Franç… »).
 struct AccountMenuRow: View {
     private let title: String
     private let systemImage: String
     private let value: String?
     private let trailingSymbol: String?
     private let destructive: Bool
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(title: String, systemImage: String, value: String? = nil, trailingSymbol: String? = nil, destructive: Bool = false) {
         self.title = title
@@ -88,16 +90,20 @@ struct AccountMenuRow: View {
                 .foregroundStyle(iconColor)
                 .frame(width: WeydaSize.iconLarge)
                 .accessibilityHidden(true)
-            Text(title)
-                .weydaText(.bodyLarge)
-                .foregroundStyle(titleColor)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            if let value {
-                Text(value)
-                    .weydaText(.bodyMedium)
-                    .foregroundStyle(WeydaColor.onSurfaceVariant)
-                    .lineLimit(1)
+            if dynamicTypeSize.isAccessibilitySize {
+                stackedTexts
+            } else {
+                Text(title)
+                    .weydaText(.bodyLarge)
+                    .foregroundStyle(titleColor)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let value {
+                    Text(value)
+                        .weydaText(.bodyMedium)
+                        .foregroundStyle(WeydaColor.onSurfaceVariant)
+                        .lineLimit(1)
+                }
             }
             if let trailingSymbol {
                 Image(systemName: trailingSymbol)
@@ -108,6 +114,24 @@ struct AccountMenuRow: View {
         }
         .frame(minHeight: WeydaSize.touchTarget)
         .contentShape(Rectangle())
+    }
+
+    /// Très grand texte : libellé puis valeur, l'un sous l'autre, sur toute la largeur.
+    private var stackedTexts: some View {
+        VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+            Text(title)
+                .weydaText(.bodyLarge)
+                .foregroundStyle(titleColor)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            if let value {
+                Text(value)
+                    .weydaText(.bodyMedium)
+                    .foregroundStyle(WeydaColor.onSurfaceVariant)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var iconColor: Color {

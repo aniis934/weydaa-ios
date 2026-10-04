@@ -79,7 +79,13 @@ private struct HomeHost: View {
             seeAllFeatured: { navigation.openListings(ListingsLaunch(featured: true)) },
             seeAllRecent: { navigation.openListings(ListingsLaunch()) },
             openWilaya: { wilaya in navigation.openListings(ListingsLaunch(wilaya: wilaya.id)) },
-            toggleFavorite: { listing in viewModel.toggleFavorite(listing) },
+            toggleFavorite: { listing in
+                // Favori optimiste : petit choc avec le cœur qui se remplit (membre, ajout seulement).
+                if viewModel.isLoggedIn && !viewModel.favoriteIds.contains(listing.id) {
+                    Haptics.impact()
+                }
+                viewModel.toggleFavorite(listing)
+            },
             openNotifications: { navigation.push(.notifications) },
             post: { navigation.select(.post) }
         )

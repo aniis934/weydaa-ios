@@ -13,6 +13,7 @@ struct FiltersSheet: View {
     private let onWilayaChange: (Int?) -> Void
     private let onDraftAttributesChange: (String?, [String: String]) -> Void
     @State private var draft: ListingFilters
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(
         state: ListingsState,
@@ -171,25 +172,51 @@ struct FiltersSheet: View {
                     }
                 }
             } label: {
-                HStack(spacing: WeydaSpace.sm) {
-                    Text(L10n.filtersSort)
-                        .foregroundStyle(WeydaColor.onSurface)
-                    Spacer(minLength: WeydaSpace.sm)
-                    Text(current.title)
-                        .foregroundStyle(WeydaColor.primary)
-                        .lineLimit(1)
-                    Image(systemName: "chevron.up.chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(WeydaColor.onSurfaceVariant)
-                        .accessibilityHidden(true)
-                }
-                .weydaText(.bodyLarge)
-                .frame(minHeight: WeydaSize.touchTarget)
-                .contentShape(Rectangle())
+                sortLabel(value: current.title)
+                    .weydaText(.bodyLarge)
+                    .frame(minHeight: WeydaSize.touchTarget)
+                    .contentShape(Rectangle())
             }
             .accessibilityIdentifier("filters.sort")
         }
         .listRowBackground(WeydaColor.surface)
+    }
+
+    /// « Trier par » et le tri choisi : sur une ligne aux tailles normales (inchangé) ; en très grand texte, la valeur
+    /// passe SOUS le libellé, entière (« Plus réce… » se tronquait à côté de « Trier par »).
+    @ViewBuilder
+    private func sortLabel(value: String) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            HStack(spacing: WeydaSpace.sm) {
+                VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
+                    Text(L10n.filtersSort)
+                        .foregroundStyle(WeydaColor.onSurface)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(value)
+                        .foregroundStyle(WeydaColor.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                sortChevron
+            }
+        } else {
+            HStack(spacing: WeydaSpace.sm) {
+                Text(L10n.filtersSort)
+                    .foregroundStyle(WeydaColor.onSurface)
+                Spacer(minLength: WeydaSpace.sm)
+                Text(value)
+                    .foregroundStyle(WeydaColor.primary)
+                    .lineLimit(1)
+                sortChevron
+            }
+        }
+    }
+
+    private var sortChevron: some View {
+        Image(systemName: "chevron.up.chevron.down")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(WeydaColor.onSurfaceVariant)
+            .accessibilityHidden(true)
     }
 
     /// Wilaya puis commune : listes poussées (58 wilayas, des dizaines de communes), « Toutes » en tête.
