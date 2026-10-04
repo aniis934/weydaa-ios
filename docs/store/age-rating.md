@@ -9,11 +9,16 @@
 
 ## Ce qu'est l'app pour Apple
 
-Une place de marché de petites annonces : contenu **publié par les utilisateurs** (annonces, photos, avis),
-**messagerie** entre acheteurs et vendeurs, **modération** (vérification avant mise en ligne, dont une
-analyse automatique, signalement d'une annonce ou d'un utilisateur, blocage), aucune publicité, aucun
-achat, aucun navigateur. Les CGU réservent l'inscription aux personnes majeures et interdisent armes,
-drogues, médicaments sans ordonnance, animaux protégés, contrefaçons, contenus sexuels ou haineux.
+Une place de marché de petites annonces : contenu **publié par les utilisateurs** (annonces, photos, avis,
+bio du profil), **messagerie** privée entre acheteurs et vendeurs avec offres de prix et notifications push,
+**modération** (vérification avant mise en ligne, dont une analyse automatique ; signalement d'une annonce ou
+d'un utilisateur ; blocage, transmis à la modération, avec la liste Profil → « Utilisateurs bloqués » ;
+signalements traités sous 24 heures, §5 des CGU du lot B), aucune publicité, aucun achat, aucun navigateur.
+Les CGU réservent l'inscription aux personnes majeures et interdisent armes, drogues, médicaments sans
+ordonnance, animaux protégés, contrefaçons, contenus sexuels ou haineux.
+
+Relu en phase 7 d'après l'app réelle (phases 5 et 6) : aucune réponse ne change, les fonctions sociales
+ajoutées (offres, avis, blocage, push) relèvent des deux capacités déjà cochées ci-dessous.
 
 ## Réponses
 
@@ -21,9 +26,9 @@ drogues, médicaments sans ordonnance, animaux protégés, contrefaçons, conten
 |---|---|---|---|
 | Contrôles intégrés | Contrôle parental | Non | aucun réglage parental dans l'app |
 | Contrôles intégrés | Vérification de l'âge (age assurance) | Non | âge déclaré par les CGU, non vérifié techniquement |
-| Capacités | Accès non restreint au Web | **Non** | pas de navigateur : seules les pages légales de weydaa.com s'ouvrent (Safari ou vue Safari intégrée), sans barre d'adresse libre |
-| Capacités | Contenu généré par les utilisateurs | **Oui** | annonces, photos, avis, profils publics |
-| Capacités | Messagerie et discussion | **Oui** | messagerie privée acheteur / vendeur, offres de prix |
+| Capacités | Accès non restreint au Web | **Non** | pas de navigateur : seules les pages légales de weydaa.com s'ouvrent, dans une vue Safari intégrée (`SFSafariViewController`), sans barre d'adresse libre ; la connexion Google passe par la feuille d'authentification du système |
+| Capacités | Contenu généré par les utilisateurs | **Oui** | annonces, photos, avis, profils publics (bio) |
+| Capacités | Messagerie et discussion | **Oui** | messagerie privée acheteur / vendeur, offres de prix, notifications push |
 | Capacités | Publicité | Non | aucune publicité ni SDK publicitaire |
 | Thèmes pour adultes | Grossièretés ou humour cru | Aucun | interdit par les CGU, annonces vérifiées avant publication, signalement |
 | Thèmes pour adultes | Horreur, peur | Aucun | |

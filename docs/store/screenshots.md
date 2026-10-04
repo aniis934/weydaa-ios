@@ -24,31 +24,63 @@ portent l'essentiel (chercher, voir une annonce, discuter).
 
 Chaque langue a ses propres captures : l'interface arabe (de droite à gauche) pour la fiche arabe, etc.
 
-## Production : le tour automatique, sans Mac
+## Production : le tour automatique, sans Mac (en place depuis la phase 7)
 
-1. **Données fictives** dans l'API simulée (`Weyda/Mock/MockFixtures`, jamais la prod) : une dizaine
-   d'annonces crédibles (voiture, F3 à Oran, électroménager, meubles…), vendeurs aux prénoms inventés,
-   une conversation avec offre, un profil avec avis. Prix en dinars, wilayas réelles. Photos : dessinées
-   par script par défaut ; pour la fiche, photos libres de droits ou prises par le propriétaire (décision
-   en attente, `docs/EN-ATTENTE.md`) — jamais de photo d'un vrai utilisateur. Éviter toute annonce
-   montrant une autre plateforme mobile (règle 2.3.10 : pas de « Samsung Galaxy » en vitrine).
-2. **Tour dédié** (phase 7) : un test d'interface `StoreShotsTests` (à côté de `TourTests`) ouvre les 8
-   écrans dans l'état voulu (filtres posés, galerie ouverte, offre visible) et nomme les captures
-   `store-01-accueil` … `store-08-sombre` ; l'écran 8 se prend lors d'un second passage en apparence sombre.
-3. **Lancement** : le workflow `ios-screens` existant, réglé sur `devices = iPhone 17 Pro Max`,
-   `languages = fr ar en`, `appearances = light` (puis `dark` pour l'écran 8). Barre d'état 9:41, batterie
-   pleine, Wi-Fi (déjà forcée par `screens.sh`).
-4. **Format** : la capture du simulateur iPhone 17 Pro Max fait exactement 1320 × 2868. Vérifier l'absence
-   de canal alpha (`sips -g hasAlpha`) ; si besoin, convertir en JPEG qualité 95 avec `sips` sur le Mac de
-   la CI. Nommage final : `fr/01-accueil.jpg`, `ar/01-accueil.jpg`, `en/01-accueil.jpg`…
-5. **Légendes** : deux options.
-   - **Sans légende** (le plus simple, accepté par Apple) : les captures brutes.
-   - **Avec légende** : un mode « vitrine » réservé au Debug (`-WeydaStoreCaption <n>`) affiche la
-     légende du tableau en haut, sur fond de marque, et l'écran réduit en dessous ; les légendes vont dans
-     `scripts/ios-strings.json` (fr, ar, en) comme toute chaîne. Aucune dépendance, même tour.
+Captures **avec légende**, produites par la CI sur un simulateur iPhone 17 Pro Max, en API simulée (jamais la
+prod), sans compte Apple ni Mac. C'est aussi la seule façon d'avoir des légendes arabes composées par le
+système (de droite à gauche, SF Arabic).
+
+1. **Mode vitrine** (Debug + API simulée seulement, jamais en Release) : l'argument `-WeydaStoreCaption <n>`
+   (1 à 8) enveloppe la racine de l'app dans `StoreFrame` (`Weyda/DesignSystem/Showcase/StoreFrame.swift`,
+   branché par une ligne `.storeFrame()` dans `RootView`). Rendu : fond vert de la marque (Emerald 700, celui
+   de l'écran de lancement), en haut le W de la marque et la légende n en blanc, grand et gras, centrée, deux
+   lignes au plus ; dessous, l'app réduite à 80 % dans un cadre aux coins continus, ombre douce. L'app est mise
+   en page à la taille de la zone utile du téléphone (même cadrage que le tour de captures) puis réduite au
+   rendu seulement. Barre d'état masquée en vitrine (l'heure noire du mode clair jurait sur le vert). Les
+   légendes sont les clés `store_caption_1` … `store_caption_8` du catalogue (`scripts/ios-strings.json`,
+   textes du tableau ci-dessus).
+2. **Tour dédié** `WeydaUITests/StoreShotsTests.swift` : une méthode par écran ; chacune ouvre l'app
+   DIRECTEMENT sur l'état voulu par les arguments de lancement (aucun appui à travers le cadre réduit), attend
+   le contenu et les photos simulées, puis capture :
+
+   | # | Capture | Arguments de lancement (en plus de `-WeydaStoreCaption n`) |
+   |---|---|---|
+   | 1 | `store-01-accueil` | `-WeydaRoute tab:home` (visiteur) |
+   | 2 | `store-02-annonces` | `-WeydaRoute listings:category=vehicules&subcategory=voitures` (6 voitures, puces et « Filtres » actifs) |
+   | 3 | `store-03-fiche` | `-WeydaRoute detail:mock-a2` (Clio « à la une », galerie 1 / 8, visiteur) |
+   | 4 | `store-04-messagerie` | `-WeydaRoute chat:mock-c1 -WeydaLoggedIn YES` (contre-offre : Accepter / Contrer / Refuser) |
+   | 5 | `store-05-depot` | `-WeydaRoute tab:post -WeydaPostDraft step-attributes -WeydaLoggedIn YES` |
+   | 6 | `store-06-vendeur` | `-WeydaRoute seller:mock-u1` (Karim B., 4,8, avis) |
+   | 7 | `store-07-favoris` | `-WeydaRoute favorites -WeydaLoggedIn YES` (5 favoris) |
+   | 8 | `store-08-sombre` | `-WeydaRoute tab:home`, passage sombre |
+
+   Écrans 1 à 7 au passage clair seulement, écran 8 au passage sombre seulement (les autres méthodes sont
+   « ignorées ») : `screens.sh` transmet l'apparence au test (`TEST_RUNNER_WEYDA_APPEARANCE`). Écran 2 : avec
+   la wilaya en plus, l'API simulée n'a que 2 voitures (écran à moitié vide) et le prix n'est pas porté par
+   `-WeydaRoute` ; catégorie + sous-catégorie donnent une liste pleine.
+3. **Marques** (règle 2.3.10) : cadrages relus sur les captures de la phase 6, aucune autre plateforme mobile
+   visible. Les annonces simulées « Samsung Galaxy S23 Ultra » (mock-a6) et « Xiaomi Redmi Note 13 Pro »
+   (mock-a21) existent mais restent hors champ (3e carte « À la une », 6e carte « Tendances », bas des
+   « Récentes ») ; un iPhone serait toléré. Tout changement de cadrage → revérifier.
+4. **Lancement** (les deux passages dans la même exécution) :
+
+   ```
+   gh workflow run ios-screens.yml --ref <branche> -f tests="StoreShotsTests" \
+     -f devices="iPhone 17 Pro Max" -f languages="fr ar en" -f appearances="light dark"
+   gh run download <id> -D <dossier>
+   ```
+
+   Un artefact par langue, `ios-screens-iPhone-17-Pro-Max-<langue>` : `<langue>-light/store-01…07.png` et
+   `<langue>-dark/store-08-sombre.png` (PNG du simulateur, 1320 × 2868).
+5. **Format final** : l'orchestrateur vérifie 1320 × 2868, convertit en **JPEG qualité 95 sans canal alpha**
+   et range les fichiers sous `docs/store/captures/<langue>/0N-<nom>.jpg` (`fr`, `ar`, `en`) :
+   `01-accueil`, `02-annonces`, `03-fiche`, `04-messagerie`, `05-depot`, `06-vendeur`, `07-favoris`,
+   `08-sombre`.
 6. **Relecture** : les 24 captures (8 × 3 langues) relues comme à chaque phase (RTL, débordements, texte
-   tronqué), puis déposées à la main dans App Store Connect, langue par langue (glisser-déposer, dans
-   l'ordre).
+   tronqué, légende sur deux lignes au plus), puis déposées à la main dans App Store Connect, langue par
+   langue (glisser-déposer, dans l'ordre). Photos des annonces : dessinées par script ; des photos libres de
+   droits ou du propriétaire restent possibles (décision en attente, `docs/EN-ATTENTE.md`) — jamais la photo
+   d'un vrai utilisateur.
 
 ## Vérifications avant l'envoi
 

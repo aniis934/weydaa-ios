@@ -24,6 +24,8 @@ import Foundation
 ///   -WeydaReviewDemo open     (Debug, API simulée, membre) profil vendeur : feuille « Laisser un avis » ouverte une
 ///                    filled   fois le profil chargé ; `filled` la remplit (4 étoiles + commentaire fictif), sans clavier
 ///   -WeydaForceOffline YES    (Debug, API simulée) `ConnectivityMonitor` annonce « hors ligne » : captures du bandeau
+///   -WeydaStoreCaption 3      (Debug, API simulée) vitrine de la fiche App Store : légende n° 3 (1…8) au-dessus de l'app
+///                             réduite (`StoreFrame`, captures `StoreShotsTests`)
 nonisolated enum LaunchOptions {
     /// Session simulée demandée par `-WeydaLoggedIn` (captures des écrans de membre).
     nonisolated enum MockSession: Sendable {
@@ -108,6 +110,17 @@ nonisolated enum LaunchOptions {
         return mockAPI && defaults.bool(forKey: "WeydaForceOffline")
         #else
         return false
+        #endif
+    }
+
+    /// Légende de la vitrine App Store (`-WeydaStoreCaption <1…8>`, rang dans `docs/store/screenshots.md`), lue par
+    /// `View.storeFrame()` ; seulement avec l'API simulée (jamais de vitrine sur des données réelles) ; toujours nil en Release.
+    static var storeCaption: Int? {
+        #if DEBUG
+        let number = defaults.integer(forKey: "WeydaStoreCaption")
+        return mockAPI && (1...8).contains(number) ? number : nil
+        #else
+        return nil
         #endif
     }
 

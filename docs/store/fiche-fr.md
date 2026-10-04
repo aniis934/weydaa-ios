@@ -11,7 +11,7 @@
 | Nom | 30 | Informations sur l'app | 25 |
 | Sous-titre | 30 | Informations sur l'app | 28 |
 | Texte promotionnel | 170 | Page de la version (modifiable sans nouvelle version) | 161 |
-| Description | 4 000 | Page de la version | 2 655 |
+| Description | 4 000 | Page de la version | 2 819 |
 | Mots-clés | 100 | Page de la version | 95 caractères / 97 octets |
 | Nouveautés | 4 000 | Page de la version (absent pour la toute première version) | 183 |
 
@@ -52,14 +52,14 @@ TROUVER EXACTEMENT CE QUE VOUS CHERCHEZ
 • Recherche instantanée avec suggestions et historique.
 • Filtres par sous-catégorie, wilaya, commune, prix, type de prix et caractéristiques (marque, carburant, année…).
 • Tri par date, par prix ou par pertinence.
-• Favoris : gardez vos annonces sous la main.
-• Alertes : enregistrez une recherche et retrouvez-la en un geste.
+• Favoris : gardez vos annonces sous la main et soyez prévenu d'une baisse de prix ou d'une vente.
+• Alertes : enregistrez jusqu'à 5 recherches et soyez prévenu des nouvelles annonces.
 
 DISCUTER ET NÉGOCIER
 • Messagerie intégrée avec le vendeur, messages en temps réel.
 • Faites une offre de prix : le vendeur accepte, refuse ou propose un contre-prix, tout reste dans la conversation.
 • Accusés de lecture et archivage des conversations.
-• Notifications pour les nouveaux messages, les offres et l'état de vos annonces.
+• Notifications, même application fermée : messages, offres, alertes, favoris, avis reçus et état de vos annonces.
 • Après avoir contacté un vendeur, laissez-lui un avis : toute la communauté s'y fie.
 • Signalez une annonce ou un utilisateur, bloquez qui vous importune : notre équipe de modération examine chaque signalement.
 
@@ -79,15 +79,22 @@ VOS DONNÉES VOUS APPARTIENNENT
 • Supprimez votre compte depuis l'application : effacement réel, pas une simple désactivation.
 • Aucune publicité, aucun traceur publicitaire, aucune localisation GPS.
 
-Weydaa, c'est aussi weydaa.com : vos annonces y sont visibles, et votre compte e-mail ou Google fonctionne sur le site comme dans l'application.
+Weydaa, c'est aussi weydaa.com : vos annonces y sont visibles, votre compte e-mail ou Google fonctionne sur le site comme dans l'application, et un lien weydaa.com s'ouvre directement dans l'application.
 ```
-2 655 caractères.
+2 819 caractères (compté par script en phase 7).
 
 Différences avec la fiche Play : « photothèque » (terme iOS) ; connexion avec Apple ; avis sur les
 vendeurs ; thème qui suit l'iPhone, VoiceOver et textes agrandis (phase 6) ; la dernière phrase ne promet
 plus « le même compte partout » (un compte créé avec Apple et une adresse masquée ne se connecte pas
-encore sur le site, voir le plan) ; plus de « notifications même application fermée » (vrai sur iOS aussi,
-mais seulement une fois Firebase et la clé APNs en place, phase 5).
+encore sur le site, voir le plan) et ajoute les liens universels (phase 5).
+
+Relu en phase 7 d'après l'app réelle : messagerie et offres (phase 5), notifications push même application
+fermée (Firebase et APNs, phase 5 : exige le secret `GOOGLE_SERVICE_INFO_PLIST` et le lot B), favoris avec
+alerte de baisse de prix ou de vente, alertes limitées à 5 avec notification des nouvelles annonces (phase 6 ;
+notifications envoyées par le serveur du site). Conditions du build à vérifier avant de coller : « en temps
+réel » suppose les secrets Supabase ; « avec Google » suppose l'identifiant client Google iOS dans le build
+(sinon retirer « ou avec Google » et « ou Google ») ; « un lien weydaa.com s'ouvre directement » suppose le
+lot A en ligne (fichier des liens universels).
 
 ## Mots-clés (100 max, virgules sans espace)
 

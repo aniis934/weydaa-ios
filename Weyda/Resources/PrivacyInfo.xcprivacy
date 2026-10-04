@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-    BROUILLON du manifeste de confidentialité de l'app (phase 7 : à déplacer tel quel dans
-    Weyda/Resources/PrivacyInfo.xcprivacy, que XcodeGen embarque à la racine de l'app).
-    Source unique des réponses : docs/store/app-privacy.md (toute modification des deux côtés).
-    - Aucun suivi (NSPrivacyTracking = false, aucun domaine de suivi).
-    - Types collectés : ceux du questionnaire App Privacy. Crashlytics et Messaging (Firebase, phase 5)
-      apportent aussi leur propre manifeste ; les types de diagnostic sont repris ici par cohérence.
-    - API à raison obligatoire : UserDefaults (CA92.1) est déjà utilisé (LaunchOptions, réglages) ;
-      horodatage de fichiers (C617.1) SEULEMENT si le cache disque d'images lit des dates de fichiers :
-      vérifier selon app-privacy.md (« API à raison obligatoire ») et retirer l'entrée sinon.
+    Manifeste de confidentialité de l'app (phase 7). XcodeGen le range dans les ressources de la cible Weyda
+    (extension inconnue = ressource ; project.yml ne l'exclut pas) : il arrive à la racine de Weyda.app.
+    Contrôles : WeydaTests/PrivacyManifestTests.swift (paquet de l'app) et scripts/ci/release.sh (archive).
+
+    Source unique des réponses : docs/store/app-privacy.md. Toute modification se fait des deux côtés.
+    - Aucun suivi : NSPrivacyTracking = false, aucun domaine de suivi.
+    - NSPrivacyCollectedDataTypes : les 15 types du questionnaire App Privacy, mêmes « lié », mêmes finalités.
+      Les types déclarés par les manifestes de Firebase 12.19.2 (Crashlytics, Messaging, Installations,
+      GoogleDataTransport : diagnostic, identifiant d'appareil, autres types de données, non liés) y sont repris.
+    - NSPrivacyAccessedAPITypes : API « à raison requise » appelées par le code de l'APP (Weyda/), relevées par grep.
+      Firebase et GoogleUtilities déclarent les leurs dans leurs propres manifestes : rien de recopié ici.
+      UserDefaults, CA92.1 (données lues et écrites par l'app seule) :
+        LaunchOptions (arguments des tests), SearchHistoryStore (historique de recherche local),
+        PushRegistrar (demande d'autorisation déjà faite), KeychainSessionStorage (drapeau de première installation),
+        HomeView et DetailView (feuilles ouvertes par les tests, Debug).
+      Horodatage de fichiers, C617.1 (fichiers du conteneur de l'app) :
+        ImageDiskCache.trim et .data(for:) (Caches/WeydaImages : date de modification lue et réécrite, le moins
+        récemment lu part d'abord) ; AccountDataRepository.purgeStaleCaptures (photos de l'appareil photo laissées
+        dans tmp depuis plus de 24 h).
+      Non utilisées (grep sans résultat) : heure de démarrage, espace disque, claviers actifs.
 -->
 <plist version="1.0">
 <dict>
@@ -188,6 +199,19 @@
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
 				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeOtherDataTypes</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
 			</array>
 		</dict>
 	</array>
