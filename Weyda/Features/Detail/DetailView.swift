@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import UIKit
 
 /// Fiche d'une annonce (`AppRoute.detail`) — point d'entrée fixé par le contrat de la phase 2. Crée le ViewModel
 /// avec les repositories du conteneur ; `DetailHost` le garde en vie et branche les actions.
@@ -21,7 +22,8 @@ struct DetailView: View {
                 attributes: container.attributes,
                 conversations: container.conversations,
                 reports: container.reports,
-                sessionUser: container.sessionManager.$user.eraseToAnyPublisher()
+                sessionUser: container.sessionManager.$user.eraseToAnyPublisher(),
+                images: container.images
             ),
             connectivity: container.connectivity
         )
@@ -54,29 +56,37 @@ private struct DetailHost: View {
     }
 
     var body: some View {
-        DetailScreen(state: model.state, isReportPresented: $model.isReportPresented, actions: actions)
-            // La fiche porte sa propre barre d'actions (offre, numéro, contact) : la barre d'onglets s'efface,
-            // comme sur Android et chez Leboncoin, sinon trois rangées de boutons s'empilent en bas d'écran.
-            .toolbar(.hidden, for: .tabBar)
-            .task {
-                await model.loadIfNeeded()
-                #if DEBUG
-                openSheetForTour()
-                #endif
+        DetailScreen(
+            state: model.state,
+            sharePreview: model.sharePreview,
+            isReportPresented: $model.isReportPresented,
+            actions: actions
+        )
+        // La fiche porte sa propre barre d'actions (offre, numéro, contact) : la barre d'onglets s'efface,
+        // comme sur Android et chez Leboncoin, sinon trois rangées de boutons s'empilent en bas d'écran.
+        .toolbar(.hidden, for: .tabBar)
+        .onAppear {
+            connectHaptics()
+        }
+        .task {
+            await model.loadIfNeeded()
+            #if DEBUG
+            openSheetForTour()
+            #endif
+        }
+        .onReceive(connectivity.$isOnline.dropFirst()) { online in
+            retryIfBackOnline(online)
+        }
+        // Le fil s'ouvre une fois la feuille refermée (pousser un écran sous une feuille qui se ferme saccade).
+        .sheet(
+            item: messagingSheetBinding,
+            onDismiss: {
+                openPendingConversation()
+            },
+            content: { sheet in
+                messagingSheet(sheet)
             }
-            .onReceive(connectivity.$isOnline.dropFirst()) { online in
-                retryIfBackOnline(online)
-            }
-            // Le fil s'ouvre une fois la feuille refermée (pousser un écran sous une feuille qui se ferme saccade).
-            .sheet(
-                item: messagingSheetBinding,
-                onDismiss: {
-                    openPendingConversation()
-                },
-                content: { sheet in
-                    messagingSheet(sheet)
-                }
-            )
+        )
     }
 
     private var actions: DetailActions {
@@ -104,6 +114,16 @@ private struct DetailHost: View {
                     Haptics.impact()
                 }
                 Task { await model.toggleFavorite() }
+            },
+            toggleSimilarFavorite: { listing in
+                guard model.state.isLoggedIn else {
+                    router.requestLogin()
+                    return
+                }
+                if !model.state.favoriteIds.contains(listing.id) {
+                    Haptics.impact()
+                }
+                Task { await model.toggleFavorite(listingId: listing.id) }
             },
             report: {
                 guard model.state.isLoggedIn else {
@@ -142,7 +162,7 @@ private struct DetailHost: View {
                     return
                 }
                 if let phone = model.state.revealedPhone {
-                    // Numéro déjà révélé : le toucher appelle (l'app est sur iPhone : il y a toujours un composeur).
+                    // Numéro déjà révélé (le menu remplace d'ordinaire ce bouton) : le toucher appelle.
                     if let url = DetailLinks.callURL(for: phone) {
                         openURL(url)
                     }
@@ -150,10 +170,32 @@ private struct DetailHost: View {
                     Task { await model.revealPhone() }
                 }
             },
+            callPhone: {
+                // L'app est sur iPhone : il y a toujours un composeur.
+                guard let phone = model.state.revealedPhone, let url = DetailLinks.callURL(for: phone) else { return }
+                openURL(url)
+            },
+            copyPhone: {
+                // Le numéro tel que le vendeur l'a saisi, sans les marques d'isolement de l'affichage.
+                guard let phone = model.state.revealedPhone else { return }
+                UIPasteboard.general.string = phone
+                model.phoneCopied()
+            },
             noticeShown: {
                 model.noticeShown()
             }
         )
+    }
+
+    /// Retours haptiques quand l'envoi ABOUTIT (réponse du serveur), pas à l'appui : réussite pour le premier message
+    /// comme pour l'offre (ChatView fait de même pour une offre). Les tests n'en branchent pas.
+    private func connectHaptics() {
+        model.onMessageSent = {
+            Haptics.success()
+        }
+        model.onOfferSent = {
+            Haptics.success()
+        }
     }
 
     /// Retour du réseau alors que la fiche est en erreur : nouvel essai, sans attendre « Réessayer ».

@@ -12,6 +12,18 @@ nonisolated enum Haptics {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 
+    /// Échec d'une action (bannière d'erreur) : le motif « erreur » du système.
+    @MainActor
+    static func error() {
+        UINotificationFeedbackGenerator().notificationOccurred(.error)
+    }
+
+    /// Avertissement (action à confirmer, limite atteinte).
+    @MainActor
+    static func warning() {
+        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+    }
+
     /// Changement de sélection (valeur choisie dans une série).
     @MainActor
     static func selection() {

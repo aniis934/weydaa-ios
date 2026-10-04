@@ -23,7 +23,8 @@ struct ChatView: View {
                     conversations: container.conversations,
                     notifications: container.notifications,
                     reports: container.reports,
-                    realtime: ChatRealtime.live(container.realtime)
+                    realtime: ChatRealtime.live(container.realtime),
+                    reviewPrompter: container.reviewPrompter
                 ),
                 emailVerified: user.emailVerified
             )
@@ -50,14 +51,16 @@ nonisolated enum ChatSheet: String, Identifiable, Sendable {
     var id: String { rawValue }
 }
 
-/// Confirmation en attente (une seule boîte d'alerte pour l'écran).
+/// Confirmation en attente (une seule feuille d'actions pour l'écran).
 nonisolated enum ChatConfirmation: String, Sendable {
     case block
     case delete
 }
 
 /// Possède le ViewModel (`@StateObject`, créé une fois) et branche l'écran : navigation, feuilles (offre, signalement),
-/// confirmations (bloquer, supprimer), apparition / disparition (temps réel, fil « visible » pour les push).
+/// confirmations (bloquer, supprimer : feuilles d'actions iOS, phase 8 ; débloquer reste sans confirmation), bannière
+/// (« Annuler » un archivage), demande de note (offre acceptée par le vendeur), apparition / disparition (temps réel,
+/// fil « visible » pour les push).
 private struct ChatHost: View {
     @EnvironmentObject private var router: AppRouter
     @StateObject private var model: ChatViewModel
@@ -81,15 +84,18 @@ private struct ChatHost: View {
             .sheet(item: sheetBinding) { sheet in
                 sheetContent(sheet)
             }
-            .alert(
+            .confirmationDialog(
                 confirmationTitle,
                 isPresented: confirmationBinding,
+                titleVisibility: .visible,
                 presenting: confirmation
             ) { item in
                 confirmationButtons(item)
             } message: { item in
                 Text(ChatHost.confirmationMessage(item))
             }
+            // Offre acceptée par le vendeur : demande de note quand c'est le bon moment (`ReviewPrompter`).
+            .requestsReview(when: model.asksForReview)
     }
 
     // MARK: - Actions
@@ -142,8 +148,11 @@ private struct ChatHost: View {
             report: {
                 model.openReport()
             },
-            noticeShown: {
-                model.noticeShown()
+            bannerAction: { (action: BannerAction) in
+                _ = model.bannerAction(action)
+            },
+            bannerDismissed: {
+                model.bannerDismissed()
             }
         )
     }
@@ -269,9 +278,9 @@ private struct ChatHost: View {
         }
     }
 
-    /// Ouverte tant qu'une confirmation attend. Un appui sur l'un de ses boutons la referme et SwiftUI repasse la
-    /// liaison à « faux » — peut-être AVANT d'exécuter l'action du bouton, qui lit encore l'élément en attente :
-    /// l'effacement est donc reporté au tour suivant (sans effet si le bouton l'a déjà fait).
+    /// Ouverte tant qu'une confirmation attend. Un appui sur l'un de ses boutons (ou à côté de la feuille) la referme
+    /// et SwiftUI repasse la liaison à « faux » — peut-être AVANT d'exécuter l'action du bouton, qui lit encore
+    /// l'élément en attente : l'effacement est donc reporté au tour suivant (sans effet si le bouton l'a déjà fait).
     private var confirmationBinding: Binding<Bool> {
         let model = self.model
         return Binding(
@@ -289,6 +298,7 @@ private struct ChatHost: View {
         model.state.pendingDelete != nil || model.state.isBlockConfirmPending
     }
 
+    /// Le bouton destructif (rouge), puis « Annuler » (à part, en bas de la feuille d'actions).
     @ViewBuilder
     private func confirmationButtons(_ item: ChatConfirmation) -> some View {
         switch item {
@@ -296,10 +306,12 @@ private struct ChatHost: View {
             Button(L10n.chatDelete, role: .destructive) {
                 _ = model.confirmDelete()
             }
+            .accessibilityIdentifier("chat.confirm.delete")
         case .block:
             Button(L10n.chatBlockUser, role: .destructive) {
                 _ = model.confirmBlock()
             }
+            .accessibilityIdentifier("chat.confirm.block")
         }
         Button(L10n.cancel, role: .cancel) {
             model.dismissConfirmations()

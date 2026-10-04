@@ -50,7 +50,11 @@ private final class PostFixture {
         }
     }
 
-    func vm(store: (any PostDraftStore)? = nil, editingId: String? = nil) -> PostListingViewModel {
+    func vm(
+        store: (any PostDraftStore)? = nil,
+        editingId: String? = nil,
+        reviewPrompter: ReviewPrompter = ReviewPrompter(isEnabled: false)
+    ) -> PostListingViewModel {
         PostListingViewModel(
             editingId: editingId,
             drafts: store ?? drafts,
@@ -63,7 +67,8 @@ private final class PostFixture {
             users: users,
             uploads: UploadRepository(api: api, prepare: { data in try await PostFixture.prepare(data) }),
             userUpdates: session.$user.eraseToAnyPublisher(),
-            locale: { "fr" }
+            locale: { "fr" },
+            reviewPrompter: reviewPrompter
         )
     }
 
@@ -127,8 +132,11 @@ final class PostListingViewModelTests: XCTestCase {
 
     /// Parcours complet Véhicules › Voitures jusqu'au récapitulatif (Android : `filledVm`).
     @MainActor
-    private func filledVm(_ fixture: PostFixture) async -> PostListingViewModel {
-        let vm = fixture.vm()
+    private func filledVm(
+        _ fixture: PostFixture,
+        reviewPrompter: ReviewPrompter = ReviewPrompter(isEnabled: false)
+    ) async -> PostListingViewModel {
+        let vm = fixture.vm(reviewPrompter: reviewPrompter)
         await vm.waitForIdle()
         vm.onSelectParent("cat_veh")
         vm.onSelectSubcategory("cat_voit")
@@ -372,6 +380,7 @@ final class PostListingViewModelTests: XCTestCase {
         await vm.onPhotosPicked((0..<6).map { Self.photo("\($0)") })?.value
         XCTAssertEqual(vm.state.photos.count, 5)
         XCTAssertEqual(vm.state.photosNotice, L10n.postPhotosLimit(5))
+        XCTAssertEqual(vm.state.photosBanner?.kind, .info)
         await vm.waitForIdle()
         XCTAssertEqual(duringFirstUpload.value, [true, false])
         XCTAssertTrue(vm.state.photos.allSatisfy { $0.status == .done })
@@ -455,6 +464,7 @@ final class PostListingViewModelTests: XCTestCase {
         XCTAssertEqual(vm.state.result?.id, "a1")
         XCTAssertEqual(vm.state.result?.status, "ACTIVE")
         XCTAssertNil(fixture.drafts.read())
+        XCTAssertFalse(vm.asksForReview, "demande de note inerte par défaut")
 
         let body = try XCTUnwrap(received.value)
         XCTAssertEqual(body.title, "Renault Clio 4 2018")
@@ -475,6 +485,24 @@ final class PostListingViewModelTests: XCTestCase {
         vm.clearDraft()
         XCTAssertNil(vm.state.result)
         XCTAssertEqual(vm.state.step, .category)
+    }
+
+    /// Publication = moment positif (2e moment : la note est demandée) ; le compteur part d'un moment déjà vécu.
+    @MainActor
+    func testPublicationDemandeLaNoteAuDeuxiemeMomentPositif() async throws {
+        let suiteName = "PostReview-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(1, forKey: ReviewPrompter.momentsKey)
+        let fixture = PostFixture()
+        defer { fixture.cleanUp() }
+        let vm = await filledVm(fixture, reviewPrompter: ReviewPrompter(defaults: defaults, version: "1.0", isEnabled: true))
+        XCTAssertEqual(vm.state.step, .review)
+        fixture.api.onCreateAnnonce = { body in AnnonceDTO(id: "a1", title: body.title, status: "PENDING") }
+        vm.next()
+        await vm.waitForIdle()
+        XCTAssertEqual(vm.state.result?.id, "a1")
+        XCTAssertTrue(vm.asksForReview)
     }
 
     @MainActor
@@ -969,6 +997,7 @@ final class PostListingViewModelTests: XCTestCase {
         await vm.waitForIdle()
         vm.onCameraUnavailable()
         XCTAssertEqual(vm.state.photosNotice, L10n.postWizCameraUnavailable)
+        XCTAssertEqual(vm.state.photosBanner?.kind, .error)
         XCTAssertFalse(vm.state.isDirty, "un avis n'est pas une saisie")
         vm.photosNoticeShown()
         XCTAssertNil(vm.state.photosNotice)

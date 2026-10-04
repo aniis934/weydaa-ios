@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 // Vues partagées par la fiche d'une annonce et le profil public d'un vendeur : feuille « Signaler », portrait,
-// badges de confiance, avis, titre de section et message bref.
+// badges de confiance, avis, titre de section et bannières.
 
 // MARK: - Signalement
 
@@ -361,57 +361,16 @@ struct DetailSectionTitle: View {
     }
 }
 
-// MARK: - Message bref
+// MARK: - Bannières
 
-extension View {
-    /// Message bref posé en bas de l'écran (au-dessus d'une barre d'actions ajoutée APRÈS ce modificateur),
-    /// effacé seul au bout de 4 s et lu par VoiceOver — le Snackbar d'Android. `onShown` le retire de l'état.
-    func floatingNotice(_ text: String?, onShown: @escaping () -> Void) -> some View {
-        modifier(FloatingNoticeModifier(text: text, onShown: onShown))
+/// Bannières de la fiche et du profil vendeur, créées par les ViewModels (logique pure) : un refus ou une panne en
+/// `.error`, une confirmation en `.success` — la nature pilote l'haptique à l'apparition (`WeydaBanner`).
+nonisolated enum DetailBanner {
+    static func error(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "exclamationmark.circle.fill", kind: .error)
     }
-}
 
-private struct FloatingNoticeModifier: ViewModifier {
-    let text: String?
-    let onShown: () -> Void
-
-    func body(content: Content) -> some View {
-        content
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                if let text {
-                    FloatingNotice(text: text)
-                        .padding(.bottom, WeydaSpace.sm)
-                        .transition(.opacity)
-                }
-            }
-            .weydaAnimation(.easeOut(duration: WeydaDuration.medium), value: text)
-            .task(id: text) {
-                guard let text else { return }
-                UIAccessibility.post(notification: .announcement, argument: text)
-                // Visible 4 s, comme un Snackbar court d'Android.
-                try? await Task.sleep(nanoseconds: 4_000_000_000)
-                if !Task.isCancelled {
-                    onShown()
-                }
-            }
-    }
-}
-
-/// La bulle du message : couleurs inversées du thème (lisible sur une photo comme sur le fond).
-private struct FloatingNotice: View {
-    let text: String
-
-    var body: some View {
-        Text(text)
-            .weydaText(.bodyMedium)
-            .foregroundStyle(WeydaColor.surface)
-            .multilineTextAlignment(.leading)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, WeydaSpace.lg)
-            .padding(.vertical, WeydaSpace.md)
-            .background(WeydaColor.onSurface, in: RoundedRectangle(cornerRadius: WeydaRadius.field, style: .continuous))
-            .padding(.horizontal, WeydaSpace.screen)
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("notice")
+    static func success(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "checkmark.circle.fill", kind: .success)
     }
 }

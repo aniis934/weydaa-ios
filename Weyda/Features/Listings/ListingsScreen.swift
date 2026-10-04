@@ -25,6 +25,8 @@ struct ListingsActions {
     var onRetryLoadMore: () -> Void
     var onDidYouMean: (String) -> Void
     var onToggleFavorite: (Listing) -> Void
+    /// « Voir le vendeur » du menu d'appui long d'une ligne.
+    var onOpenSeller: (String) -> Void
 }
 
 /// Onglet Annonces, sans état — portage de `ListingsScreen.kt` : champ de recherche (historique, suggestions),
@@ -42,7 +44,11 @@ struct ListingsScreen: View {
     private let actions: ListingsActions
     private let onRefresh: @MainActor @Sendable () async -> Void
     private let onNoticeShown: @MainActor @Sendable () -> Void
+    private let currentUserId: String?
+    /// Onglet Annonces touché alors qu'il est déjà à sa racine : retour en haut des résultats.
+    @Environment(\.scrollToTopSignal) private var scrollToTopSignal
 
+    /// - Parameter currentUserId: compte connecté (menu d'appui long : pas de « Voir le vendeur » sur ses annonces).
     init(
         state: ListingsState,
         suggestions: [Suggestion],
@@ -52,7 +58,8 @@ struct ListingsScreen: View {
         filtersPresented: Binding<Bool>,
         actions: ListingsActions,
         onRefresh: @escaping @MainActor @Sendable () async -> Void,
-        onNoticeShown: @escaping @MainActor @Sendable () -> Void
+        onNoticeShown: @escaping @MainActor @Sendable () -> Void,
+        currentUserId: String? = nil
     ) {
         self.state = state
         self.suggestions = suggestions
@@ -63,11 +70,14 @@ struct ListingsScreen: View {
         self.actions = actions
         self.onRefresh = onRefresh
         self.onNoticeShown = onNoticeShown
+        self.currentUserId = currentUserId
     }
 
     /// Pagination : la page suivante est demandée quand l'une des 4 dernières lignes apparaît.
     private static let loadMoreDistance = 4
     private static let allCategoriesID = "listings.category.all"
+    /// Compteur de résultats, en tête de la liste : cible du retour en haut.
+    private static let topID = "listings.top"
 
     var body: some View {
         VStack(spacing: 0) {
@@ -89,9 +99,11 @@ struct ListingsScreen: View {
         }
         .background(WeydaColor.background)
         .weydaOfflineBanner()
-        .overlay(alignment: .bottom) {
-            noticeOverlay
-        }
+        .weydaBanner(
+            state.notice?.banner,
+            onAction: { _ in },
+            onDismiss: { onNoticeShown() }
+        )
         .sheet(isPresented: filtersPresented) {
             FiltersSheet(
                 state: state,
@@ -313,41 +325,54 @@ struct ListingsScreen: View {
     private var results: some View {
         let refresh = onRefresh
         let threshold = max(state.items.count - Self.loadMoreDistance, 0)
-        return ScrollView {
-            LazyVStack(alignment: .leading, spacing: WeydaSpace.gutter) {
-                Text(L10n.resultsCount(state.total))
-                    .weydaText(.labelLarge)
-                    .foregroundStyle(WeydaColor.onSurfaceVariant)
-                    .accessibilityAddTraits(.isHeader)
-                ForEach(Array(state.items.enumerated()), id: \.element.id) { entry in
-                    row(entry.element)
-                        .onAppear {
-                            if entry.offset >= threshold {
-                                actions.onLoadMore()
+        let signal = scrollToTopSignal
+        return ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: WeydaSpace.gutter) {
+                    Text(L10n.resultsCount(state.total))
+                        .weydaText(.labelLarge)
+                        .foregroundStyle(WeydaColor.onSurfaceVariant)
+                        .accessibilityAddTraits(.isHeader)
+                        .id(Self.topID)
+                    ForEach(Array(state.items.enumerated()), id: \.element.id) { entry in
+                        row(entry.element)
+                            .onAppear {
+                                if entry.offset >= threshold {
+                                    actions.onLoadMore()
+                                }
                             }
-                        }
+                    }
+                    footer
                 }
-                footer
+                .padding(.horizontal, WeydaSpace.screen)
+                .padding(.vertical, WeydaSpace.sm)
             }
-            .padding(.horizontal, WeydaSpace.screen)
-            .padding(.vertical, WeydaSpace.sm)
-        }
-        .scrollDismissesKeyboard(.immediately)
-        .refreshable {
-            await refresh()
+            .scrollDismissesKeyboard(.immediately)
+            .refreshable {
+                await refresh()
+            }
+            .scrollsToTop(on: signal, proxy: proxy, to: Self.topID)
         }
     }
 
+    /// Une ligne : la fiche (zoom depuis la ligne, clé `listings.<id>`), le cœur, le menu d'appui long.
     private func row(_ listing: Listing) -> some View {
-        NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
-            ListingRow(
-                listing: listing,
-                isFavorite: favoriteIds.contains(listing.id),
-                onFavorite: { actions.onToggleFavorite(listing) }
-            )
+        let key: String = "listings.\(listing.id)"
+        let isFavorite: Bool = favoriteIds.contains(listing.id)
+        let toggle: () -> Void = { actions.onToggleFavorite(listing) }
+        return NavigationLink(value: AppRoute.detail(idOrSlug: listing.id, zoomSource: key)) {
+            ListingRow(listing: listing, isFavorite: isFavorite, onFavorite: toggle)
+                .listingZoomSource(id: key)
         }
         .buttonStyle(.weydaCard)
         .accessibilityIdentifier("listings.row.\(listing.id)")
+        .listingContextMenu(
+            listing,
+            menu: ListingCardMenu(listing: listing, currentUserId: currentUserId),
+            isFavorite: isFavorite,
+            onFavorite: toggle,
+            onSeller: actions.onOpenSeller
+        )
     }
 
     /// Bas de liste : chargement de la page suivante, ou « Réessayer » après son échec.
@@ -365,18 +390,6 @@ struct ListingsScreen: View {
             }
             .buttonStyle(.plain)
         }
-    }
-
-    /// Conteneur toujours présent : l'arrivée et le départ du message s'animent (rien ne bouge si « Réduire les
-    /// animations »).
-    private var noticeOverlay: some View {
-        ZStack(alignment: .bottom) {
-            if let notice = state.notice {
-                ListingsNoticeToast(notice: notice, onDismiss: onNoticeShown)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
-        .weydaAnimation(.easeOut(duration: WeydaDuration.medium), value: state.notice)
     }
 }
 
@@ -497,37 +510,5 @@ private struct ChipCapsule: ViewModifier {
                     .padding(.vertical, WeydaSpace.xs)
             }
             .contentShape(Rectangle())
-    }
-}
-
-// MARK: - Message éphémère
-
-/// Message éphémère en bas de l'écran (le Snackbar d'Android) : lu par VoiceOver, effacé après 3 s.
-private struct ListingsNoticeToast: View {
-    let notice: ListingsNotice
-    let onDismiss: @MainActor @Sendable () -> Void
-
-    var body: some View {
-        Text(notice.text)
-            .weydaText(.labelLarge)
-            .foregroundStyle(WeydaColor.surface)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, WeydaSpace.lg)
-            .padding(.vertical, WeydaSpace.md)
-            .background(WeydaColor.onSurface, in: RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous))
-            .padding(.horizontal, WeydaSpace.screen)
-            .padding(.bottom, WeydaSpace.lg)
-            .accessibilityIdentifier("listings.notice")
-            .task(id: notice) {
-                await announceThenDismiss()
-            }
-    }
-
-    /// Lu tout de suite par VoiceOver, effacé 3 s plus tard (un nouveau message relance le délai).
-    private func announceThenDismiss() async {
-        UIAccessibility.post(notification: .announcement, argument: notice.text)
-        try? await Task.sleep(nanoseconds: 3_000_000_000)
-        guard !Task.isCancelled else { return }
-        onDismiss()
     }
 }

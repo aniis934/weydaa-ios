@@ -49,6 +49,8 @@ private struct RegisterHost: View {
             isAppleSimulated: model.social.isAppleSimulated,
             actions: actions
         )
+        // Saisie en cours : la feuille ne se ferme plus d'un glissement (« Fermer » reste là).
+        .interactiveDismissDisabled(model.state.keepsSheetOpen)
         .onAppear {
             // Captures (Debug) : `-WeydaAuthDemo invalid` montre le formulaire en erreur.
             model.applyCaptureDemo(LaunchOptions.authDemo)

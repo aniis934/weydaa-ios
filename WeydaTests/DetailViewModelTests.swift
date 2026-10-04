@@ -190,16 +190,18 @@ final class DetailViewModelTests: XCTestCase {
         XCTAssertEqual(sent.value?.reason, "FRAUD")
         XCTAssertEqual(sent.value?.details, "Le vendeur demande un acompte.")
         XCTAssertFalse(model.isReportPresented)
-        XCTAssertEqual(model.state.notice, L10n.reportSent)
+        XCTAssertEqual(model.state.banner?.message, L10n.reportSent)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.success)
         model.noticeShown()
-        XCTAssertNil(model.state.notice)
+        XCTAssertNil(model.state.banner?.message)
 
         // Déjà signalé (409) : verdict du serveur, la feuille se ferme avec le message.
         api.onReport = { _ in throw FakeWeydaAPI.apiError(409, #"{"error":"alreadyReported"}"#) }
         model.openReport()
         await model.confirmReport(reason: .spam, details: "")
         XCTAssertFalse(model.isReportPresented)
-        XCTAssertEqual(model.state.notice, L10n.errorAlreadyReported)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorAlreadyReported)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.error)
         model.noticeShown()
 
         // Panne réseau : la feuille reste ouverte (précisions gardées), l'erreur s'affiche dedans.
@@ -208,7 +210,7 @@ final class DetailViewModelTests: XCTestCase {
         await model.confirmReport(reason: .other, details: "Précisions")
         XCTAssertTrue(model.isReportPresented)
         XCTAssertEqual(model.state.reportError, L10n.errorOffline)
-        XCTAssertNil(model.state.notice)
+        XCTAssertNil(model.state.banner?.message)
         XCTAssertFalse(model.state.isReportBusy)
     }
 
@@ -238,13 +240,22 @@ final class DetailViewModelTests: XCTestCase {
         // Déjà révélé : aucun nouvel appel (5 révélations par heure côté serveur).
         await model.revealPhone()
         XCTAssertEqual(api.count("getContactPhone"), 1)
+        // Copié depuis le menu du numéro : confirmation brève, de réussite.
+        model.phoneCopied()
+        XCTAssertEqual(model.state.banner?.message, L10n.detailNumberCopied)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.success)
 
         let other = makeModel("cm_real_id", api: api, user: Self.member())
         await other.load()
         api.onGetContactPhone = { _ in throw FakeWeydaAPI.apiError(404, #"{"error":"noPhoneNumber"}"#) }
         await other.revealPhone()
         XCTAssertNil(other.state.revealedPhone)
-        XCTAssertEqual(other.state.notice, L10n.errorNoPhone)
+        XCTAssertEqual(other.state.banner?.message, L10n.errorNoPhone)
+        XCTAssertEqual(other.state.banner?.kind, WeydaBanner.Kind.error)
+        // Rien à copier sans numéro révélé.
+        other.noticeShown()
+        other.phoneCopied()
+        XCTAssertNil(other.state.banner)
     }
 
     func testTheCallAddressKeepsOnlyTheDialableNumber() {

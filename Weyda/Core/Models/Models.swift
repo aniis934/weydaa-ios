@@ -156,6 +156,9 @@ nonisolated struct Listing: Hashable, Sendable, Identifiable {
     var communeId: Int? = nil
     /// Le vendeur affiche un numéro (révélé à la demande, connexion requise).
     var hasPhone: Bool = false
+    /// Identifiant du vendeur (`userId` de l'API, présent même quand `user` n'est pas inclus) : « Voir le vendeur » du
+    /// menu d'appui long.
+    var sellerId: String? = nil
 
     static let maxRenewals = 3
 

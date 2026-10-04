@@ -22,8 +22,9 @@ struct SavedSearchesView: View {
     }
 }
 
-/// Possède le ViewModel ; branche les actions sur le ViewModel et le routeur, et la confirmation de suppression sur
-/// l'état. Relit la liste en silence à chaque retour sur l'écran (une alerte créée depuis l'onglet Annonces y paraît).
+/// Possède le ViewModel ; branche les actions sur le ViewModel et le routeur. Relit la liste en silence à chaque
+/// retour sur l'écran (une alerte créée depuis l'onglet Annonces y paraît) ; en le quittant, envoie la suppression
+/// encore en attente d'« Annuler ».
 private struct SavedSearchesHost: View {
     @StateObject private var model: SavedSearchesViewModel
     @EnvironmentObject private var router: AppRouter
@@ -36,7 +37,6 @@ private struct SavedSearchesHost: View {
         SavedSearchesScreen(
             state: model.state,
             limit: model.limit,
-            isConfirmationPresented: confirmationBinding,
             actions: actions
         )
         // `@MainActor` explicite : juste, que le SDK fasse hériter cette fermeture de l'acteur de la vue ou non.
@@ -45,6 +45,9 @@ private struct SavedSearchesHost: View {
         }
         .onAppear {
             _ = model.appear()
+        }
+        .onDisappear {
+            _ = model.disappear()
         }
     }
 
@@ -60,13 +63,7 @@ private struct SavedSearchesHost: View {
                 router.select(.listings)
             },
             onDelete: { (alert: SavedSearch) in
-                model.askDelete(alert)
-            },
-            onConfirmDelete: {
-                _ = model.confirmDelete()
-            },
-            onCancelDelete: {
-                model.dismissDelete()
+                _ = model.delete(alert)
             },
             onRetry: {
                 _ = model.load()
@@ -75,24 +72,11 @@ private struct SavedSearchesHost: View {
                 router.popToRoot(.listings)
                 router.select(.listings)
             },
-            onNoticeShown: {
-                model.noticeShown()
-            }
-        )
-    }
-
-    /// Boîte de confirmation, ouverte tant qu'une suppression attend (`pendingDelete`). Un appui sur l'un de ses boutons
-    /// la referme et SwiftUI repasse la liaison à « faux » — peut-être AVANT d'exécuter l'action du bouton, qui lit
-    /// encore la demande : l'effacement est donc reporté au tour suivant (sans effet si le bouton l'a fait).
-    private var confirmationBinding: Binding<Bool> {
-        let model = self.model
-        return Binding(
-            get: { MainActor.assumeIsolated { model.state.pendingDelete != nil } },
-            set: { presented in
-                guard !presented else { return }
-                Task { @MainActor in
-                    model.dismissDelete()
-                }
+            onBannerAction: { (action: BannerAction) in
+                model.bannerAction(action)
+            },
+            onBannerDismiss: {
+                _ = model.bannerDismissed()
             }
         )
     }
@@ -101,11 +85,13 @@ private struct SavedSearchesHost: View {
 /// Actions de « Mes alertes » (branchées par l'hôte sur le ViewModel et le routeur).
 struct SavedSearchesActions {
     var onOpen: (SavedSearch) -> Void
+    /// Suppression différée (bannière « Alerte supprimée » + « Annuler »), sans boîte de confirmation.
     var onDelete: (SavedSearch) -> Void
-    var onConfirmDelete: () -> Void
-    var onCancelDelete: () -> Void
     var onRetry: () -> Void
     /// Vers l'onglet Annonces (une alerte se crée depuis une recherche).
     var onSearch: () -> Void
-    var onNoticeShown: () -> Void
+    /// « Annuler » de la bannière.
+    var onBannerAction: (BannerAction) -> Void
+    /// Bannière fermée : la suppression en attente part.
+    var onBannerDismiss: () -> Void
 }

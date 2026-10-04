@@ -177,7 +177,7 @@ final class ChatViewModelTests: XCTestCase {
 
         model.askDelete(model.state.messages[0])
         XCTAssertNil(model.state.pendingDelete)
-        XCTAssertEqual(model.state.notice, L10n.chatDeletionWindowExpired)
+        XCTAssertEqual(model.state.banner?.message, L10n.chatDeletionWindowExpired)
         XCTAssertEqual(api.count("deleteMessage"), 0)
     }
 
@@ -381,7 +381,8 @@ final class ChatViewModelTests: XCTestCase {
         await model.setBlocked(false)?.value
         XCTAssertEqual(unblocked.value, [Self.other])
         XCTAssertFalse(model.state.isBlocked)
-        XCTAssertEqual(model.state.notice, L10n.chatUnblockedDone)
+        XCTAssertEqual(model.state.banner?.message, L10n.chatUnblockedDone)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.success)
 
         // Bloquer passe par une confirmation ; l'annuler n'appelle rien.
         model.askBlock()
@@ -395,7 +396,7 @@ final class ChatViewModelTests: XCTestCase {
         XCTAssertEqual(blocked.value, [Self.other])
         XCTAssertTrue(model.state.isBlocked)
         XCTAssertFalse(model.state.isBlockConfirmPending)
-        XCTAssertEqual(model.state.notice, L10n.chatBlockedDone)
+        XCTAssertEqual(model.state.banner?.message, L10n.chatBlockedDone)
     }
 
     @MainActor
@@ -410,14 +411,38 @@ final class ChatViewModelTests: XCTestCase {
         await model.load()?.value
         await model.toggleArchive()?.value
         XCTAssertTrue(model.state.isArchived)
-        XCTAssertEqual(model.state.notice, L10n.chatArchived)
+        XCTAssertEqual(model.state.banner?.message, L10n.chatArchived)
+        XCTAssertEqual(model.state.banner?.action?.id, ChatViewModel.archiveUndoId("c1"))
 
         let archived = makeModel(api, archived: true)
         await archived.toggleArchive()?.value
         XCTAssertFalse(archived.state.isArchived)
-        XCTAssertEqual(archived.state.notice, L10n.chatUnarchived)
+        XCTAssertEqual(archived.state.banner?.message, L10n.chatUnarchived)
         XCTAssertEqual(api.count("archiveConversation"), 1)
         XCTAssertEqual(api.count("unarchiveConversation"), 1)
+    }
+
+    /// « Annuler » dans la bannière : la requête inverse part, le fil retrouve son segment, sans nouvelle bannière.
+    @MainActor
+    func testUndoingAnArchiveFromTheThreadUnarchivesIt() async throws {
+        let api = FakeWeydaAPI()
+        api.onGetConversation = { _, _, _ in
+            ChatViewModelTests.thread([ChatViewModelTests.message("m1", sender: ChatViewModelTests.other, content: "bonjour", minutesAgo: 5)])
+        }
+        api.onArchiveConversation = { _ in SimpleResponseDTO() }
+        api.onUnarchiveConversation = { _ in SimpleResponseDTO() }
+        let model = makeModel(api)
+        await model.load()?.value
+        await model.toggleArchive()?.value
+        let action = try XCTUnwrap(model.state.banner?.action)
+
+        await model.bannerAction(action)?.value
+        XCTAssertFalse(model.state.isArchived)
+        XCTAssertNil(model.state.banner)
+        XCTAssertEqual(api.count("unarchiveConversation"), 1)
+        // Une autre action (inconnue) ne fait que fermer la bannière.
+        XCTAssertNil(model.bannerAction(BannerAction.undo("autre")))
+        XCTAssertEqual(api.count("archiveConversation"), 1)
     }
 
     // MARK: - Signaler l'interlocuteur
@@ -445,7 +470,11 @@ final class ChatViewModelTests: XCTestCase {
         XCTAssertEqual(body.value?.reason, "FRAUD")
         XCTAssertEqual(body.value?.details, "Demande un virement avant de venir.")
         XCTAssertFalse(model.isReportPresented)
-        XCTAssertEqual(model.state.notice, L10n.reportSent)
+        XCTAssertEqual(model.state.banner?.message, L10n.reportSent)
+        // Bannière de réussite : elle porte seule la vibration « succès » (phase 8).
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.success)
+        model.bannerDismissed()
+        XCTAssertNil(model.state.banner)
     }
 
     @MainActor
@@ -466,7 +495,8 @@ final class ChatViewModelTests: XCTestCase {
         api.onReport = { _ in throw FakeWeydaAPI.apiError(409, #"{"error":"alreadyReported"}"#) }
         await model.confirmReport(reason: .spam, details: "")?.value
         XCTAssertFalse(model.isReportPresented)
-        XCTAssertEqual(model.state.notice, L10n.errorAlreadyReported)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorAlreadyReported)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.error)
     }
 
     // MARK: - Offres : refus et pannes
@@ -493,7 +523,68 @@ final class ChatViewModelTests: XCTestCase {
         await model.confirmOfferDialog()?.value
         XCTAssertNil(model.state.offerDialog)
         XCTAssertNil(model.state.offerError)
-        XCTAssertEqual(model.state.notice, L10n.errorOfferAlreadyOpen)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorOfferAlreadyOpen)
+    }
+
+    /// Note App Store (phase 8) : l'offre acceptée par le VENDEUR est un moment positif ; l'acheteur qui accepte une
+    /// contre-offre, non.
+    @MainActor
+    func testAnOfferAcceptedByTheSellerIsAPositiveMoment() async throws {
+        let suiteName = "ChatReview-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        // Un moment positif déjà vécu : le suivant demande la note.
+        defaults.set(1, forKey: ReviewPrompter.momentsKey)
+        let prompter = ReviewPrompter(defaults: defaults, version: "1.0", isEnabled: true)
+
+        let api = FakeWeydaAPI()
+        // Offre de l'acheteur (`user_1`) ; le vendeur (`user_2`) l'accepte.
+        api.onGetConversation = { _, _, _ in
+            ChatViewModelTests.thread([
+                ChatViewModelTests.message("m1", sender: ChatViewModelTests.me, content: "offre", minutesAgo: 3, offerKind: "NEW"),
+            ])
+        }
+        api.onPostOfferAction = { _, _ in
+            ChatViewModelTests.message("m2", sender: ChatViewModelTests.other, content: "accepte", minutesAgo: 0, offerKind: "ACCEPTED")
+        }
+        let time = FakeWeydaAPI.Box(Self.reference)
+
+        // L'acheteur qui accepte (ici : fil vu par `user_1`, offre ouverte du vendeur) ne compte pas.
+        let buyerApi = FakeWeydaAPI()
+        buyerApi.onGetConversation = { _, _, _ in
+            ChatViewModelTests.thread([
+                ChatViewModelTests.message("m1", sender: ChatViewModelTests.other, content: "contre", minutesAgo: 3, offerKind: "COUNTER"),
+            ])
+        }
+        buyerApi.onPostOfferAction = { _, _ in
+            ChatViewModelTests.message("m2", sender: ChatViewModelTests.me, content: "accepte", minutesAgo: 0, offerKind: "ACCEPTED")
+        }
+        let buyer = ChatViewModel(
+            conversationId: "c1",
+            archived: false,
+            userId: Self.me,
+            conversations: ConversationsRepository(api: buyerApi),
+            reviewPrompter: prompter,
+            now: { time.value }
+        )
+        await buyer.load()?.value
+        await buyer.respondToOffer(.accept)?.value
+        XCTAssertEqual(buyer.state.messages.last?.offer?.kind, .accepted)
+        XCTAssertFalse(buyer.asksForReview)
+
+        let seller = ChatViewModel(
+            conversationId: "c1",
+            archived: false,
+            userId: Self.other,
+            conversations: ConversationsRepository(api: api),
+            reviewPrompter: prompter,
+            now: { time.value }
+        )
+        await seller.load()?.value
+        XCTAssertTrue(seller.state.offerActions.contains(.accept))
+        await seller.respondToOffer(.accept)?.value
+        XCTAssertEqual(seller.state.messages.last?.offer?.kind, .accepted)
+        XCTAssertTrue(seller.asksForReview)
     }
 
     @MainActor

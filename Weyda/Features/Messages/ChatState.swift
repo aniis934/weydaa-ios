@@ -77,8 +77,9 @@ nonisolated struct ChatState: Equatable, Sendable {
     var offerError: String? = nil
     /// Échec du premier chargement (écran d'erreur avec « Réessayer »).
     var errorMessage: String? = nil
-    /// Message bref à montrer une fois (archivée, bloqué, refus du serveur…), effacé par `noticeShown()`.
-    var notice: String? = nil
+    /// Bannière à montrer une fois (archivée + « Annuler », bloqué, signalement envoyé, refus du serveur…), effacée par
+    /// `bannerDismissed()`.
+    var banner: WeydaBanner? = nil
 
     /// L'autre partie du fil.
     var partner: ConversationPartner? { conversation?.partner(userId) }

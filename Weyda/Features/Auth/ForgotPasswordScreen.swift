@@ -31,6 +31,8 @@ private struct ForgotPasswordHost: View {
             onSubmit: submitAction,
             onLogin: onLogin
         )
+        // Adresse saisie ou envoi en cours : la feuille ne se ferme plus d'un glissement (« Fermer » reste là).
+        .interactiveDismissDisabled(model.state.keepsSheetOpen)
     }
 
     private var submitAction: () -> Void {

@@ -58,6 +58,8 @@ private struct LoginHost: View {
             isAppleSimulated: model.social.isAppleSimulated,
             actions: actions
         )
+        // Saisie en cours : la feuille ne se ferme plus d'un glissement (« Fermer » reste là).
+        .interactiveDismissDisabled(model.state.keepsSheetOpen)
     }
 
     private var actions: LoginActions {

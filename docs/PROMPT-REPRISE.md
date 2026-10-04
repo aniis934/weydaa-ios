@@ -26,13 +26,18 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-04 (soir)** — **Phase 8 close** (finition « à la Apple », lots 1 et 2 ; PR #11) : fiche (barre au défilement, actions
+  sur une rangée, partage avec photo), zoom carte → fiche, onglet touché deux fois, grands titres, bannières + « Annuler », feuilles
+  d'actions, haptique, appuis longs, raccourcis de l'icône, notifications à actions, note App Store. 647 tests verts, captures relues,
+  iOS 16.4, galerie https://claude.ai/artifact/7LVhnEtgq5WriMZzTUZ5wm. `aps.category` ajouté à la PR serveur B (#6), NON fusionnée. **ARRÊT demandé** à la fin de la
+  phase 8 : la suite est au propriétaire, dans l'ordre de `docs/EN-ATTENTE.md` (« Ordre de traitement », inchangé) ; prochaine
+  session iOS = accompagner ces étapes (compte Apple, TestFlight, test final guidé, soumission).
 - **2026-10-04 (soir)** — Après la phase 7 : icônes de catégorie = illustrations 3D du site (PR #9, 613 tests, 24 captures App Store
   refaites, galerie https://claude.ai/artifact/QWV68gKW4YJLK9B5M7mA2i). Audit « app parfaite à la Apple » → **phase 8 (lots 1 et 2)
   PRÉPARÉE, feu vert du propriétaire donné, à exécuter à la prochaine session** : tout est dans `docs/equipe/CONTRACTS-P8.md`
   (prétravail de l'orchestrateur, puis 2 vagues d'agents, règles par point, chaînes, captures). Une seule phase : s'arrêter à sa fin
   avec la galerie. Message de lancement à coller :
-  > /go weyda — phase 8 de l'app iOS (lots 1 et 2 de finition « à la Apple », feu vert du 04/10). Lis docs/equipe/CONTRACTS-P8.md. Autorisations pour la session : git push vers weydaa-ios (branche phase-8, PR, fusion dans main) ; mise à jour de la PR serveur B (weyda2026 #6) pour ajouter `aps.category`, SANS la fusionner. Arrête-toi à la fin de la phase 8 avec la galerie.
-  Si le propriétaire lance la session sans ces autorisations : les lui demander d'abord (push iOS + mise à jour de la PR B).
+  (Exécuté le 2026-10-04 : voir l'entrée « Phase 8 close » ci-dessus.)
 - **2026-10-04 (fin de journée)** — **Phase 7 préparée** (PR #8) : captures de la fiche (24, fr/ar/en), manifeste de confidentialité,
   App Privacy, fiches, notes de revue, check-list, `ios-release` complet. **Toutes les phases de code sont faites (0 à 7, 612 tests).**
   ARRÊT demandé par le propriétaire à la fin de la phase 7 : la suite est à lui, dans l'ordre de `docs/EN-ATTENTE.md` (section « Ordre de

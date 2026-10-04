@@ -293,6 +293,86 @@
       "fr": "Clair ou sombre, en 3 langues",
       "ar": "فاتح أو داكن، بثلاث لغات",
       "en": "Light or dark, in 3 languages"
+    },
+    "undo": {
+      "fr": "Annuler",
+      "ar": "تراجع",
+      "en": "Undo"
+    },
+    "detail_contact_short": {
+      "fr": "Contacter",
+      "ar": "تواصل",
+      "en": "Contact"
+    },
+    "detail_call": {
+      "fr": "Appeler",
+      "ar": "اتصال",
+      "en": "Call"
+    },
+    "detail_copy_number": {
+      "fr": "Copier le numéro",
+      "ar": "نسخ الرقم",
+      "en": "Copy number"
+    },
+    "detail_number_copied": {
+      "fr": "Numéro copié",
+      "ar": "تم نسخ الرقم",
+      "en": "Number copied"
+    },
+    "menu_see_seller": {
+      "fr": "Voir le vendeur",
+      "ar": "عرض البائع",
+      "en": "View seller"
+    },
+    "menu_open_listing": {
+      "fr": "Voir l'annonce",
+      "ar": "عرض الإعلان",
+      "en": "View listing"
+    },
+    "favorite_removed": {
+      "fr": "Retiré des favoris",
+      "ar": "أُزيل من المفضلة",
+      "en": "Removed from favorites"
+    },
+    "notification_deleted": {
+      "fr": "Notification supprimée",
+      "ar": "تم حذف الإشعار",
+      "en": "Notification deleted"
+    },
+    "filters_discard_title": {
+      "fr": "Abandonner les modifications ?",
+      "ar": "تجاهل التعديلات؟",
+      "en": "Discard your changes?"
+    },
+    "discard": {
+      "fr": "Abandonner",
+      "ar": "تجاهل",
+      "en": "Discard"
+    },
+    "keep_editing": {
+      "fr": "Continuer",
+      "ar": "متابعة التعديل",
+      "en": "Keep editing"
+    },
+    "shortcut_search": {
+      "fr": "Rechercher",
+      "ar": "بحث",
+      "en": "Search"
+    },
+    "push_action_reply": {
+      "fr": "Répondre",
+      "ar": "رد",
+      "en": "Reply"
+    },
+    "push_action_failed": {
+      "fr": "Action impossible depuis la notification. Ouvrez Weydaa pour réessayer.",
+      "ar": "تعذّر تنفيذ الإجراء من الإشعار. افتح Weydaa وأعد المحاولة.",
+      "en": "Couldn't do that from the notification. Open Weydaa to try again."
+    },
+    "seller_share": {
+      "fr": "Partager le profil",
+      "ar": "مشاركة الملف الشخصي",
+      "en": "Share profile"
     }
   },
   "override": {

@@ -138,7 +138,7 @@ final class SellerReviewTests: XCTestCase {
         XCTAssertFalse(model.isReviewPresented)
         XCTAssertFalse(model.state.isReviewBusy)
         XCTAssertTrue(model.state.hasMyReview)
-        XCTAssertEqual(model.state.notice, L10n.reviewSent)
+        XCTAssertEqual(model.state.banner?.message, L10n.reviewSent)
         // Note du vendeur et avis recalculés par le serveur : fiche et avis relus.
         XCTAssertEqual(api.count("publicProfile"), 2)
         XCTAssertEqual(api.count("getReviews"), 2)
@@ -163,9 +163,9 @@ final class SellerReviewTests: XCTestCase {
 
         XCTAssertFalse(model.isReviewPresented)
         XCTAssertNil(model.state.reviewError)
-        XCTAssertEqual(model.state.notice, L10n.errorReviewNotEligible)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorReviewNotEligible)
         model.noticeShown()
-        XCTAssertNil(model.state.notice)
+        XCTAssertNil(model.state.banner?.message)
     }
 
     // MARK: - En plus d'Android
@@ -192,7 +192,7 @@ final class SellerReviewTests: XCTestCase {
             await model.confirmReview()
             XCTAssertFalse(model.isReviewPresented, verdict.code)
             XCTAssertFalse(model.state.isReviewBusy, verdict.code)
-            XCTAssertEqual(model.state.notice, verdict.message, verdict.code)
+            XCTAssertEqual(model.state.banner?.message, verdict.message, verdict.code)
         }
     }
 
@@ -212,7 +212,7 @@ final class SellerReviewTests: XCTestCase {
         XCTAssertTrue(model.isReviewPresented)
         XCTAssertFalse(model.state.isReviewBusy)
         XCTAssertEqual(model.state.reviewError, L10n.errorOffline)
-        XCTAssertNil(model.state.notice)
+        XCTAssertNil(model.state.banner?.message)
         XCTAssertEqual(model.reviewRating, 2)
         XCTAssertEqual(model.reviewComment, "Annonce conforme, mais vendeur difficile à joindre.")
 
@@ -221,7 +221,7 @@ final class SellerReviewTests: XCTestCase {
         await model.confirmReview()
         XCTAssertFalse(model.isReviewPresented)
         XCTAssertNil(model.state.reviewError)
-        XCTAssertEqual(model.state.notice, L10n.reviewSent)
+        XCTAssertEqual(model.state.banner?.message, L10n.reviewSent)
     }
 
     @MainActor
@@ -271,7 +271,7 @@ final class SellerReviewTests: XCTestCase {
         XCTAssertEqual(model.state.seller?.name, "Yacine B.")
         XCTAssertFalse(model.state.canReview)
         XCTAssertNil(model.state.errorMessage)
-        XCTAssertNil(model.state.notice)
+        XCTAssertNil(model.state.banner?.message)
     }
 
     @MainActor
@@ -293,7 +293,7 @@ final class SellerReviewTests: XCTestCase {
         await model.openReview()
         XCTAssertFalse(model.isReviewPresented)
         XCTAssertFalse(model.state.isReviewOpening)
-        XCTAssertEqual(model.state.notice, L10n.errorOffline)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorOffline)
     }
 
     @MainActor
@@ -309,7 +309,7 @@ final class SellerReviewTests: XCTestCase {
         await model.openReview()
         XCTAssertFalse(model.isReviewPresented)
         XCTAssertFalse(model.state.canReview)
-        XCTAssertEqual(model.state.notice, L10n.errorReviewNotEligible)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorReviewNotEligible)
     }
 
     @MainActor
@@ -346,6 +346,56 @@ final class SellerReviewTests: XCTestCase {
         await waitUntil { !model.state.canReview }
         XCTAssertFalse(model.state.canReview)
         XCTAssertEqual(api.count("reviewEligibility"), 1)
+    }
+
+    // MARK: - Phase 8 : bannière et note sur l'App Store
+
+    /// Avis publié au 2e moment positif : bannière de réussite tout de suite, demande de note seulement une fois la
+    /// feuille refermée (jamais par-dessus elle).
+    @MainActor
+    func testTheStoreReviewIsAskedOnlyOnceTheSheetIsClosed() async throws {
+        let api = makeAPI()
+        api.onReviewEligibility = { _ in ReviewEligibilityDTO(canReview: true) }
+        api.onSubmitReview = { body in ReviewDTO(id: "r4", rating: body.rating) }
+        let suite = "weyda.tests.sellerReview"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defaults.removePersistentDomain(forName: suite)
+        defaults.set(1, forKey: ReviewPrompter.momentsKey)
+        let model = SellerViewModel(
+            id: "u9",
+            sellers: SellerRepository(api: api),
+            favorites: FavoritesRepository(api: api),
+            reviews: ReviewsRepository(api: api),
+            reports: ReportsRepository(api: api),
+            conversations: ConversationsRepository(api: api),
+            sessionUser: Just(Self.member()).eraseToAnyPublisher(),
+            reviewPrompter: ReviewPrompter(defaults: defaults, version: "1.0", isEnabled: true)
+        )
+        await model.load()
+        await model.openReview()
+        await model.confirmReview()
+
+        XCTAssertFalse(model.isReviewPresented)
+        XCTAssertEqual(model.state.banner?.message, L10n.reviewSent)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.success)
+        XCTAssertFalse(model.asksForReview)
+        model.reviewSheetDismissed()
+        XCTAssertTrue(model.asksForReview)
+        defaults.removePersistentDomain(forName: suite)
+    }
+
+    /// Prompteur par défaut (tests, API simulée) : jamais de demande, la feuille refermée ou non.
+    @MainActor
+    func testTheDefaultPrompterNeverAsks() async {
+        let api = makeAPI()
+        api.onReviewEligibility = { _ in ReviewEligibilityDTO(canReview: true) }
+        api.onSubmitReview = { body in ReviewDTO(id: "r5", rating: body.rating) }
+        let model = makeModel(api: api, user: Self.member())
+        await model.load()
+        await model.openReview()
+        await model.confirmReview()
+        model.reviewSheetDismissed()
+        XCTAssertFalse(model.asksForReview)
     }
 }
 

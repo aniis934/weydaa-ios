@@ -55,6 +55,8 @@ final class AppContainer: ObservableObject {
     let postDrafts: FilePostDraftStore
     /// Photos choisies pour le nouveau dépôt, pas encore publiées (`PostDrafts/new/`).
     let postPhotos: PostPhotoStore
+    /// Demande de note App Store : au 2e moment positif, une fois par version (inerte en API simulée et en test).
+    let reviewPrompter: ReviewPrompter
 
     /// Historique de recherche : UNE instance pour toute l'app (accueil + Annonces), vidée à la déconnexion.
     private let searchHistory: SearchHistoryStore
@@ -136,6 +138,7 @@ final class AppContainer: ObservableObject {
         let postStores = Self.makePostDraftStores(mockAPI: mockAPI)
         postDrafts = postStores.drafts
         postPhotos = postStores.photos
+        reviewPrompter = ReviewPrompter(isEnabled: ReviewPrompter.isAllowed && !mockAPI)
 
         observeSession()
         observeBadge()

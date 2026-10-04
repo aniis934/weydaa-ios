@@ -75,7 +75,9 @@ final class ConversationsViewModelTests: XCTestCase {
         XCTAssertEqual(model.state.items.map { $0.id }, ["c2"])
         await task?.value
         XCTAssertEqual(model.state.items.map { $0.id }, ["c1", "c2"])
-        XCTAssertEqual(model.state.notice, L10n.errorServer)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorServer)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.error)
+        XCTAssertNil(model.state.banner?.action)
     }
 
     @MainActor
@@ -96,7 +98,9 @@ final class ConversationsViewModelTests: XCTestCase {
         let first = try XCTUnwrap(model.state.items.first)
         await model.toggleArchive(first)?.value
         XCTAssertTrue(model.state.items.isEmpty)
-        XCTAssertEqual(model.state.notice, L10n.chatArchived)
+        XCTAssertEqual(model.state.banner?.message, L10n.chatArchived)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.info)
+        XCTAssertEqual(model.state.banner?.action?.id, ConversationsViewModel.undoPrefix + "c1")
         XCTAssertEqual(archived.value, ["c1"])
         // En plus d'Android : la conversation non lue a quitté la boîte de réception, la pastille suit.
         XCTAssertEqual(context.repository.unreadCount, 0)
@@ -259,12 +263,112 @@ final class ConversationsViewModelTests: XCTestCase {
         XCTAssertEqual(model.state.items.map { $0.id }, ["c1"])
         XCTAssertFalse(model.state.isRefreshing)
         XCTAssertNil(model.state.errorMessage)
-        XCTAssertEqual(model.state.notice, L10n.errorServer)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorServer)
 
         // Relecture silencieuse (retour sur l'écran) : aucun message.
-        model.noticeShown()
+        model.bannerDismissed()
         await model.appear()?.value
-        XCTAssertNil(model.state.notice)
+        XCTAssertNil(model.state.banner)
+    }
+
+    // MARK: - « Annuler » un archivage (phase 8)
+
+    @MainActor
+    func testUndoingAnArchivePutsTheRowBackInPlaceUnarchivesAndRestoresTheBadge() async throws {
+        let context = makeContext()
+        context.api.onGetConversations = { _, _, _ in
+            ConversationsPageDTO(conversations: [
+                ConversationsViewModelTests.conversation("c1"),
+                ConversationsViewModelTests.conversation("c2", readAt: "2026-09-07T12:11:00.000Z"),
+                ConversationsViewModelTests.conversation("c3", readAt: "2026-09-07T12:11:00.000Z"),
+            ])
+        }
+        context.api.onArchiveConversation = { _ in SimpleResponseDTO() }
+        let unarchived = FakeWeydaAPI.Box<[String]>([])
+        context.api.onUnarchiveConversation = { id in
+            unarchived.value.append(id)
+            return SimpleResponseDTO()
+        }
+        let model = makeModel(context)
+        await model.appear()?.value
+        XCTAssertEqual(context.repository.unreadCount, 1)
+
+        let first = try XCTUnwrap(model.state.items.first)
+        await model.toggleArchive(first)?.value
+        XCTAssertEqual(model.state.items.map { $0.id }, ["c2", "c3"])
+        XCTAssertEqual(context.repository.unreadCount, 0)
+
+        let action = try XCTUnwrap(model.state.banner?.action)
+        let undo = model.bannerAction(action)
+        // La ligne revient tout de suite à SA place, la bannière se ferme.
+        XCTAssertEqual(model.state.items.map { $0.id }, ["c1", "c2", "c3"])
+        XCTAssertNil(model.state.banner)
+        await undo?.value
+        XCTAssertEqual(unarchived.value, ["c1"])
+        XCTAssertEqual(context.repository.unreadCount, 1)
+        // Plus rien à annuler.
+        XCTAssertNil(model.bannerAction(action))
+        XCTAssertEqual(context.api.count("unarchiveConversation"), 1)
+    }
+
+    @MainActor
+    func testUndoingWhileTheArchiveIsInFlightWaitsForItAndLeavesTheBadgeUnchanged() async throws {
+        let context = makeContext()
+        context.api.onGetConversations = { _, _, _ in
+            ConversationsPageDTO(conversations: [
+                ConversationsViewModelTests.conversation("c1"),
+                ConversationsViewModelTests.conversation("c2"),
+            ])
+        }
+        context.api.onArchiveConversation = { _ in SimpleResponseDTO() }
+        context.api.onUnarchiveConversation = { _ in SimpleResponseDTO() }
+        let model = makeModel(context)
+        await model.appear()?.value
+        XCTAssertEqual(context.repository.unreadCount, 2)
+
+        let first = try XCTUnwrap(model.state.items.first)
+        let archive = model.toggleArchive(first)
+        // « Annuler » avant toute réponse du serveur.
+        let action = try XCTUnwrap(model.state.banner?.action)
+        let undo = model.bannerAction(action)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["c1", "c2"])
+        await undo?.value
+        await archive?.value
+        XCTAssertEqual(context.api.count("archiveConversation"), 1)
+        XCTAssertEqual(context.api.count("unarchiveConversation"), 1)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["c1", "c2"])
+        XCTAssertEqual(context.repository.unreadCount, 2)
+        XCTAssertNil(model.state.banner)
+    }
+
+    @MainActor
+    func testAFailedUndoTakesTheRowAwayAgainWithTheError() async throws {
+        let context = makeContext()
+        context.api.onGetConversations = { _, _, archived in
+            if archived == true {
+                return ConversationsPageDTO(conversations: [ConversationsViewModelTests.conversation("a1")])
+            }
+            return ConversationsPageDTO(conversations: [ConversationsViewModelTests.conversation("c1")])
+        }
+        context.api.onUnarchiveConversation = { _ in SimpleResponseDTO() }
+        context.api.onArchiveConversation = { _ in throw FakeWeydaAPI.apiError(500) }
+        let model = makeModel(context)
+        await model.appear()?.value
+        await model.setArchived(true)?.value
+        XCTAssertEqual(model.state.items.map { $0.id }, ["a1"])
+        XCTAssertEqual(context.repository.unreadCount, 1)
+
+        // Désarchiver depuis les archives (la conversation non lue rejoint la boîte de réception), puis « Annuler ».
+        let archivedRow = try XCTUnwrap(model.state.items.first)
+        await model.toggleArchive(archivedRow)?.value
+        XCTAssertEqual(model.state.banner?.message, L10n.chatUnarchived)
+        XCTAssertEqual(context.repository.unreadCount, 2)
+        let action = try XCTUnwrap(model.state.banner?.action)
+        await model.bannerAction(action)?.value
+        // Le serveur refuse de réarchiver : la ligne repart des archives, la pastille garde la conversation.
+        XCTAssertTrue(model.state.items.isEmpty)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorServer)
+        XCTAssertEqual(context.repository.unreadCount, 2)
     }
 
     @MainActor

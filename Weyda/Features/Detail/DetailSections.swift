@@ -233,12 +233,27 @@ struct DetailSafetyTips: View {
 
 // MARK: - Annonces similaires
 
-/// Carrousel « Annonces similaires » (même catégorie) ; chaque carte ouvre sa fiche sur la même pile.
+/// Carrousel « Annonces similaires » (même catégorie) ; chaque carte ouvre sa fiche sur la même pile (zoom depuis la
+/// carte, iOS 18) ; appui long = favori, Partager, Voir le vendeur.
 struct DetailSimilarSection: View {
     private let listings: [Listing]
+    private let favoriteIds: Set<String>
+    private let currentUserId: String?
+    private let onFavorite: (Listing) -> Void
+    private let onSeller: (String) -> Void
 
-    init(listings: [Listing]) {
+    init(
+        listings: [Listing],
+        favoriteIds: Set<String>,
+        currentUserId: String?,
+        onFavorite: @escaping (Listing) -> Void,
+        onSeller: @escaping (String) -> Void
+    ) {
         self.listings = listings
+        self.favoriteIds = favoriteIds
+        self.currentUserId = currentUserId
+        self.onFavorite = onFavorite
+        self.onSeller = onSeller
     }
 
     var body: some View {
@@ -247,10 +262,7 @@ struct DetailSimilarSection: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: WeydaSpace.gutter) {
                     ForEach(listings) { listing in
-                        NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
-                            ListingCarouselCard(listing: listing)
-                        }
-                        .buttonStyle(.weydaCard)
+                        card(listing)
                     }
                 }
                 .padding(.horizontal, WeydaSpace.screen)
@@ -260,72 +272,107 @@ struct DetailSimilarSection: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("detail.similar")
     }
+
+    /// Clé de la transition zoom : `similar.<id>` (la même dans la route et sur la carte).
+    private func card(_ listing: Listing) -> some View {
+        let zoomKey: String = "similar.\(listing.id)"
+        return NavigationLink(value: AppRoute.detail(idOrSlug: listing.id, zoomSource: zoomKey)) {
+            ListingCarouselCard(listing: listing)
+                .listingZoomSource(id: zoomKey)
+        }
+        .buttonStyle(.weydaCard)
+        .accessibilityIdentifier("detail.similar.\(listing.id)")
+        .listingContextMenu(
+            listing,
+            menu: ListingCardMenu(listing: listing, currentUserId: currentUserId),
+            isFavorite: favoriteIds.contains(listing.id),
+            onFavorite: { onFavorite(listing) },
+            onSeller: onSeller
+        )
+    }
 }
 
 // MARK: - Barre d'actions
 
-/// Barre du bas — celle d'Android : « Faire une offre » sur toute la largeur, puis le numéro et « Contacter le
-/// vendeur » (ou « Modifier » pour le propriétaire). Rien du tout pour une annonce vendue ou expirée. Très grand
-/// texte (tailles d'accessibilité) : un bouton par ligne — côte à côte, « Contacter le vendeur » était coupé.
+/// Barre du bas, sur UNE rangée : `[numéro (rond)] [Faire une offre] [Contacter]` ; le propriétaire n'y voit que
+/// « Modifier ». Rien du tout pour une annonce vendue ou expirée ; pas d'offre sur une annonce gratuite. Très grand
+/// texte (tailles d'accessibilité) : un bouton par ligne, pleine largeur, libellés longs (le numéro écrit en clair).
+/// Numéro : le premier appui le révèle (indicateur dans le rond), puis le rond ouvre un menu dont l'en-tête est le
+/// numéro : Appeler, Copier le numéro. Les deux formes gardent l'identifiant `detail.phone`.
 struct DetailActionBar: View {
     private let state: DetailState
     private let onOffer: () -> Void
     private let onPhone: () -> Void
+    private let onCall: () -> Void
+    private let onCopyPhone: () -> Void
     private let onEdit: () -> Void
     private let onContact: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .body) private var phoneGlyphSide: CGFloat = 22
 
     init(
         state: DetailState,
         onOffer: @escaping () -> Void,
         onPhone: @escaping () -> Void,
+        onCall: @escaping () -> Void,
+        onCopyPhone: @escaping () -> Void,
         onEdit: @escaping () -> Void,
         onContact: @escaping () -> Void
     ) {
         self.state = state
         self.onOffer = onOffer
         self.onPhone = onPhone
+        self.onCall = onCall
+        self.onCopyPhone = onCopyPhone
         self.onEdit = onEdit
         self.onContact = onContact
     }
 
     var body: some View {
-        VStack(spacing: WeydaSpace.sm) {
-            if state.canMakeOffer {
-                Button(action: onOffer) {
-                    DetailBarLabel(title: L10n.offerMake, systemImage: "tag")
-                }
-                .buttonStyle(.bordered)
-                .accessibilityIdentifier("detail.offer")
+        bar
+            .controlSize(.large)
+            .buttonBorderShape(.capsule)
+            .tint(WeydaColor.primary)
+            .padding(.horizontal, WeydaSpace.screen)
+            .padding(.top, WeydaSpace.md)
+            .padding(.bottom, WeydaSpace.sm)
+            .frame(maxWidth: .infinity)
+            .background(.bar)
+            .overlay(alignment: .top) {
+                Divider()
             }
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(spacing: WeydaSpace.sm) {
-                    secondaryButtons
-                }
-            } else {
-                HStack(spacing: WeydaSpace.md) {
-                    secondaryButtons
-                }
+    }
+
+    /// Une rangée aux tailles normales ; une colonne aux tailles d'accessibilité.
+    @ViewBuilder
+    private var bar: some View {
+        if isStacked {
+            VStack(spacing: WeydaSpace.sm) {
+                buttons
             }
-        }
-        .controlSize(.large)
-        .buttonBorderShape(.capsule)
-        .tint(WeydaColor.primary)
-        .padding(.horizontal, WeydaSpace.screen)
-        .padding(.top, WeydaSpace.md)
-        .padding(.bottom, WeydaSpace.sm)
-        .frame(maxWidth: .infinity)
-        .background(.bar)
-        .overlay(alignment: .top) {
-            Divider()
+        } else {
+            HStack(alignment: .center, spacing: WeydaSpace.sm) {
+                buttons
+            }
         }
     }
 
-    /// Numéro, Modifier, Contacter : côte à côte aux tailles normales, empilés en très grand texte.
+    private var isStacked: Bool {
+        dynamicTypeSize.isAccessibilitySize
+    }
+
+    /// Numéro, offre, Modifier, Contacter : les règles de `DetailState` font le tri (le propriétaire n'a que Modifier).
     @ViewBuilder
-    private var secondaryButtons: some View {
+    private var buttons: some View {
         if state.canShowPhone {
-            phoneButton
+            phoneControl
+        }
+        if state.canMakeOffer {
+            Button(action: onOffer) {
+                DetailBarLabel(title: L10n.offerMake, systemImage: "tag")
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("detail.offer")
         }
         if state.canEdit {
             Button(action: onEdit) {
@@ -335,32 +382,97 @@ struct DetailActionBar: View {
             .accessibilityIdentifier("detail.edit")
         }
         if state.canContact {
+            // Un Button (les tours le cherchent dans `app.buttons`) ; libellé court sur la rangée, long en colonne.
             Button(action: onContact) {
-                DetailBarLabel(title: L10n.detailContact, systemImage: "envelope")
+                DetailBarLabel(title: isStacked ? L10n.detailContact : L10n.detailContactShort, systemImage: "envelope")
             }
             .buttonStyle(.borderedProminent)
+            .accessibilityLabel(L10n.detailContact)
             .accessibilityIdentifier("detail.contact")
         }
     }
 
-    /// « Afficher le numéro », puis le numéro lui-même : le toucher appelle.
-    private var phoneButton: some View {
-        Button(action: onPhone) {
+    // MARK: - Numéro
+
+    /// Avant révélation : un bouton (connexion demandée au visiteur, puis révélation). Révélé : un menu.
+    @ViewBuilder
+    private var phoneControl: some View {
+        if let phone = state.revealedPhone {
+            Menu {
+                Section {
+                    Button(action: onCall) {
+                        Label(L10n.detailCall, systemImage: "phone")
+                    }
+                    .accessibilityIdentifier("detail.phone.call")
+                    Button(action: onCopyPhone) {
+                        Label(L10n.detailCopyNumber, systemImage: "doc.on.doc")
+                    }
+                    .accessibilityIdentifier("detail.phone.copy")
+                } header: {
+                    Text(Format.ltrIsolate(phone))
+                }
+            } label: {
+                phoneLabel(revealed: phone)
+            }
+            .buttonStyle(.bordered)
+            .modifier(DetailPhoneShape(isRound: !isStacked))
+            .accessibilityLabel(Format.ltrIsolate(phone))
+            .accessibilityIdentifier("detail.phone")
+        } else {
+            Button(action: onPhone) {
+                phoneLabel(revealed: nil)
+            }
+            .buttonStyle(.bordered)
+            .modifier(DetailPhoneShape(isRound: !isStacked))
+            .disabled(state.isRevealingPhone)
+            .accessibilityLabel(state.isRevealingPhone ? L10n.loading : L10n.detailShowPhone)
+            .accessibilityIdentifier("detail.phone")
+        }
+    }
+
+    /// Rangée : le pictogramme seul, dans un carré (le bouton devient rond) ; colonne : pictogramme et texte.
+    @ViewBuilder
+    private func phoneLabel(revealed phone: String?) -> some View {
+        if isStacked {
+            if state.isRevealingPhone {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+            } else if let phone {
+                // Un numéro ne passe jamais à la ligne : il se réduit au besoin.
+                DetailBarLabel(title: Format.ltrIsolate(phone), systemImage: "phone.fill", wraps: false)
+            } else {
+                DetailBarLabel(title: L10n.detailShowPhone, systemImage: "phone")
+            }
+        } else {
             ZStack {
                 if state.isRevealingPhone {
                     ProgressView()
-                        .frame(maxWidth: .infinity)
-                } else if let phone = state.revealedPhone {
-                    // Un numéro ne passe jamais à la ligne : il se réduit au besoin.
-                    DetailBarLabel(title: Format.ltrIsolate(phone), systemImage: "phone.fill", wraps: false)
                 } else {
-                    DetailBarLabel(title: L10n.detailShowPhone, systemImage: "phone")
+                    Image(systemName: phone == nil ? "phone" : "phone.fill")
+                        .font(.body.weight(.semibold))
                 }
             }
+            .frame(width: phoneGlyphSide, height: phoneGlyphSide)
         }
-        .buttonStyle(.bordered)
-        .disabled(state.isRevealingPhone)
-        .accessibilityIdentifier("detail.phone")
+    }
+}
+
+/// Bouton du numéro rond sur la rangée (iOS 17+ : `.circle`) ; iOS 16 garde la capsule de la barre (pas de forme
+/// ronde native), comme la colonne des tailles d'accessibilité.
+private struct DetailPhoneShape: ViewModifier {
+    let isRound: Bool
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if isRound {
+            if #available(iOS 17.0, *) {
+                content.buttonBorderShape(.circle)
+            } else {
+                content
+            }
+        } else {
+            content
+        }
     }
 }
 
@@ -420,6 +532,11 @@ nonisolated enum DetailText {
         }
         parts.append(L10n.detailReference(reference(of: listing.id)))
         return parts.joined(separator: " · ")
+    }
+
+    /// Texte joint au lien partagé : « Clio 4 · 1 850 000 DA » (le prix comme sur la fiche : gratuit, sur demande…).
+    static func shareMessage(_ listing: Listing) -> String {
+        "\(listing.title) · \(Format.price(listing.price, type: listing.priceType))"
     }
 
     /// Référence lue de gauche à droite même en arabe.

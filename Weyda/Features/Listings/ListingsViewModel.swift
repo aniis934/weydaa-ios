@@ -192,8 +192,19 @@ final class ListingsViewModel: ObservableObject {
         }
     }
 
+    /// Cœur d'une ligne (ou menu d'appui long), membre connecté (la vue envoie un visiteur vers la connexion) :
+    /// bascule optimiste ; un refus du serveur, déjà annulé par le repository, devient une bannière d'erreur.
     func toggleFavorite(_ listing: Listing) {
-        favorites.toggleDetached(listing.id)
+        let repository = favorites
+        let id = listing.id
+        run { [weak self] in
+            do {
+                _ = try await repository.toggle(id)
+            } catch {
+                guard let self, let message = ErrorMapper.message(for: error) else { return }
+                self.update { $0.notice = .message(message) }
+            }
+        }
     }
 
     // MARK: - Filtres

@@ -50,12 +50,17 @@ private struct ProfileHost: View {
 }
 
 /// Profil d'un membre, sans état propre (hors confirmation de la déconnexion) : liste groupée comme les Réglages
-/// d'iOS — en-tête, bandeau « vérifiez votre e-mail », activité, puis le menu du compte.
+/// d'iOS — en-tête, bandeau « vérifiez votre e-mail », activité, puis le menu du compte. Racine de l'onglet : l'onglet
+/// touché de nouveau remonte la liste jusqu'à l'en-tête.
 struct ProfileScreen: View {
     private let state: ProfileState
     private let onVerifyEmail: () -> Void
     private let onLogout: () -> Void
     @State private var confirmsLogout: Bool = false
+    @Environment(\.scrollToTopSignal) private var scrollToTopSignal
+
+    /// Ancre du retour en haut (l'en-tête).
+    static let topAnchor = "profile.top"
 
     init(state: ProfileState, onVerifyEmail: @escaping () -> Void, onLogout: @escaping () -> Void) {
         self.state = state
@@ -64,10 +69,32 @@ struct ProfileScreen: View {
     }
 
     var body: some View {
+        ScrollViewReader { proxy in
+            list
+                .scrollsToTop(on: scrollToTopSignal, proxy: proxy, to: Self.topAnchor)
+        }
+        .weydaOfflineBanner()
+        .navigationTitle(L10n.profileTitle)
+        .navigationBarTitleDisplayMode(.large)
+        // Feuille d'actions iOS (et non une alerte) : « Se déconnecter » en rouge, « Annuler » à part.
+        .confirmationDialog(L10n.profileLogoutConfirmTitle, isPresented: $confirmsLogout, titleVisibility: .visible) {
+            Button(L10n.profileLogout, role: .destructive) {
+                onLogout()
+            }
+            Button(L10n.cancel, role: .cancel) {}
+        } message: {
+            Text(L10n.profileLogoutConfirmBody)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("screen.profile")
+    }
+
+    private var list: some View {
         List {
             if let user = state.user {
                 Section {
                     ProfileHeader(user: user)
+                        .id(Self.topAnchor)
                         .listRowBackground(WeydaColor.surface)
                 }
                 if !user.emailVerified {
@@ -95,19 +122,6 @@ struct ProfileScreen: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(WeydaColor.background)
-        .weydaOfflineBanner()
-        .navigationTitle(L10n.profileTitle)
-        .navigationBarTitleDisplayMode(.large)
-        .alert(L10n.profileLogoutConfirmTitle, isPresented: $confirmsLogout) {
-            Button(L10n.profileLogout, role: .destructive) {
-                onLogout()
-            }
-            Button(L10n.cancel, role: .cancel) {}
-        } message: {
-            Text(L10n.profileLogoutConfirmBody)
-        }
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("screen.profile")
     }
 
     // MARK: - Sections
@@ -510,19 +524,33 @@ private struct ProfileStatsSkeleton: View {
 // MARK: - Visiteur
 
 /// Onglet Profil d'un visiteur — `GuestProfile` (Android) : connexion ou inscription (feuille de connexion,
-/// agent AUTH), puis la langue, « Nous contacter » et les informations légales, consultables sans compte.
+/// agent AUTH), puis la langue, « Nous contacter » et les informations légales, consultables sans compte. Grand titre ;
+/// l'onglet touché de nouveau remonte en haut.
 private struct GuestProfileScreen: View {
     @EnvironmentObject private var router: AppRouter
+    @Environment(\.scrollToTopSignal) private var scrollToTopSignal
 
     init() {}
 
     var body: some View {
+        ScrollViewReader { proxy in
+            list
+                .scrollsToTop(on: scrollToTopSignal, proxy: proxy, to: ProfileScreen.topAnchor)
+        }
+        .navigationTitle(AppTab.account.title)
+        .navigationBarTitleDisplayMode(.large)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("screen.\(AppTab.account.rawValue)")
+    }
+
+    private var list: some View {
         List {
             Section {
                 GuestWelcome(
                     onLogin: { router.requestLogin() },
                     onRegister: { router.authFlow = .register }
                 )
+                .id(ProfileScreen.topAnchor)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
@@ -543,10 +571,6 @@ private struct GuestProfileScreen: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(WeydaColor.background)
-        .navigationTitle(AppTab.account.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("screen.\(AppTab.account.rawValue)")
     }
 }
 

@@ -41,7 +41,7 @@ struct PostListingActions {
 /// barre Retour / Suivant fixée en bas, au-dessus du clavier.
 ///
 /// Édition : le retour de la barre de navigation suit le `BackHandler` d'Android — d'une étape, retour au
-/// récapitulatif (point d'entrée) ; du récapitulatif, confirmation avant d'abandonner des modifications. Le geste
+/// récapitulatif (point d'entrée) ; du récapitulatif, feuille d'actions avant d'abandonner des modifications. Le geste
 /// de retour est coupé quand il ferait perdre quelque chose (bouton système masqué).
 struct PostListingScreen: View {
     private let state: PostListingState
@@ -82,7 +82,8 @@ struct PostListingScreen: View {
                     .accessibilityLabel(L10n.close)
                 }
             }
-            .alert(L10n.postDiscardTitle, isPresented: $confirmsDiscard) {
+            // Feuille d'actions iOS (et non une alerte) : « Abandonner » en rouge, « Continuer » à part.
+            .confirmationDialog(L10n.postDiscardTitle, isPresented: $confirmsDiscard, titleVisibility: .visible) {
                 Button(L10n.postDiscardConfirm, role: .destructive) {
                     actions.leave?()
                 }
@@ -126,8 +127,8 @@ struct PostListingScreen: View {
             PostStepProgress(step: state.step, index: state.stepIndex, total: state.steps.count)
             PostStepScroll(state: state, actions: actions, cameraAvailable: cameraAvailable)
         }
-        // Avant la barre : le message bref (limite de photos atteinte…) s'affiche au-dessus d'elle.
-        .floatingNotice(state.photosNotice, onShown: actions.photosNoticeShown)
+        // Avant la barre : la bannière (limite de photos atteinte…) s'affiche au-dessus d'elle.
+        .weydaBanner(state.photosBanner, onAction: { _ in }, onDismiss: actions.photosNoticeShown)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PostStepBar(state: state, onBack: actions.back, onNext: actions.next)
         }
@@ -160,14 +161,27 @@ struct PostListingScreen: View {
 // MARK: - Contenu défilant
 
 /// La vue défilante de l'étape : repart du haut à chaque étape (Android : `scrollTo(0)`), descend jusqu'au bandeau
-/// d'erreur quand il apparaît, rabat le clavier en défilant.
+/// d'erreur quand il apparaît, rabat le clavier en défilant. Racine de l'onglet Déposer : l'onglet touché de nouveau
+/// remonte en haut (pas en modification, poussée sur une autre pile).
 private struct PostStepScroll: View {
-    let state: PostListingState
-    let actions: PostListingActions
-    let cameraAvailable: Bool
+    private let state: PostListingState
+    private let actions: PostListingActions
+    private let cameraAvailable: Bool
+    @Environment(\.scrollToTopSignal) private var scrollToTopSignal
 
     private static let topAnchor = "post.scroll.top"
     private static let errorAnchor = "post.scroll.error"
+
+    init(state: PostListingState, actions: PostListingActions, cameraAvailable: Bool) {
+        self.state = state
+        self.actions = actions
+        self.cameraAvailable = cameraAvailable
+    }
+
+    /// Signal « onglet touché deux fois » : seulement à la racine de l'onglet (fixe en modification).
+    private var topSignal: Int {
+        state.isEditing ? 0 : scrollToTopSignal
+    }
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -190,6 +204,7 @@ private struct PostStepScroll: View {
                 .frame(maxWidth: .infinity)
             }
             .scrollDismissesKeyboard(.interactively)
+            .scrollsToTop(on: topSignal, proxy: proxy, to: Self.topAnchor)
             .onChange(of: state.step) { _ in
                 proxy.scrollTo(Self.topAnchor, anchor: .top)
                 // VoiceOver repart du haut : la nouvelle étape s'annonce par son titre.

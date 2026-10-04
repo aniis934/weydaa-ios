@@ -2,18 +2,27 @@ import SwiftUI
 
 /// « Mes favoris », sans état propre — portage de `FavoritesScreen` (Android) : squelettes, erreur avec « Réessayer »,
 /// e-mail à vérifier (bandeau « Vérifier » fixé en haut + explication), vide (« Parcourir les annonces »), ou la liste
-/// native (`List`) des annonces : appui = la fiche, cœur plein ou glissement vers le bord de fin = retirer (action
-/// aussi proposée à VoiceOver par la liste), tirer pour rafraîchir (posé par l'hôte).
+/// native (`List`) des annonces : appui = la fiche (zoom depuis la carte), cœur plein, glissement vers le bord de fin
+/// ou menu d'appui long = retirer (bannière « Retiré des favoris » + « Annuler »), tirer pour rafraîchir (posé par
+/// l'hôte). Grand titre, comme les listes du Profil.
 struct FavoritesScreen: View {
     private let state: FavoritesState
+    private let currentUserId: String?
     private let actions: FavoritesActions
 
     /// Demi-gouttière au-dessus et au-dessous de chaque carte : `WeydaSpace.gutter` entre deux cartes.
     private static let rowGap: CGFloat = WeydaSpace.gutter / 2
 
-    init(state: FavoritesState, actions: FavoritesActions) {
+    /// - Parameter currentUserId: compte connecté (menu d'appui long : pas de « Voir le vendeur » sur ses annonces).
+    init(state: FavoritesState, currentUserId: String? = nil, actions: FavoritesActions) {
         self.state = state
+        self.currentUserId = currentUserId
         self.actions = actions
+    }
+
+    /// Clé de la transition zoom d'une carte (source sur la carte, destination sur la fiche) : `favorites.<id>`.
+    nonisolated static func zoomKey(for listing: Listing) -> String {
+        "favorites.\(listing.id)"
     }
 
     /// Bandeau dans une pile, AU-DESSUS de la vue défilante, et non dans un `safeAreaInset` : sur iOS 26, l'effet de
@@ -31,8 +40,8 @@ struct FavoritesScreen: View {
         }
         .background(WeydaColor.background)
         .navigationTitle(L10n.favoritesTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .floatingNotice(state.notice, onShown: actions.onNoticeShown)
+        .navigationBarTitleDisplayMode(.large)
+        .weydaBanner(state.banner, onAction: actions.onBannerAction, onDismiss: actions.onBannerDismiss)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.favorites")
     }
@@ -90,16 +99,25 @@ struct FavoritesScreen: View {
         .weydaAnimation(.easeInOut(duration: WeydaDuration.medium), value: ids)
     }
 
-    /// Une annonce : la carte de résultat (`ListingRow`, cœur plein) ; appui = la fiche ; glisser vers le bord de fin =
-    /// retirer des favoris.
+    /// Une annonce : la carte de résultat (`ListingRow`, cœur plein, source du zoom) ; appui = la fiche ; glisser vers
+    /// le bord de fin ou menu d'appui long = retirer des favoris.
     private func row(for listing: Listing) -> some View {
         let onRemove: () -> Void = { actions.onRemove(listing) }
+        let key: String = Self.zoomKey(for: listing)
         return Button {
             actions.onOpen(listing)
         } label: {
             ListingRow(listing: listing, isFavorite: true, onFavorite: onRemove)
+                .listingZoomSource(id: key)
         }
         .buttonStyle(.weydaCard)
+        .listingContextMenu(
+            listing,
+            menu: ListingCardMenu(listing: listing, currentUserId: currentUserId),
+            isFavorite: true,
+            onFavorite: onRemove,
+            onSeller: actions.onSeller
+        )
         .listRowInsets(EdgeInsets(top: Self.rowGap, leading: WeydaSpace.screen, bottom: Self.rowGap, trailing: WeydaSpace.screen))
         .listRowSeparator(.hidden)
         .listRowBackground(Color.clear)

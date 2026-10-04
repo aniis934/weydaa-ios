@@ -18,8 +18,9 @@ nonisolated struct ConversationsState: Equatable, Sendable {
     var blockedIds: Set<String> = []
     /// Erreur du chargement complet (écran d'erreur avec « Réessayer »).
     var errorMessage: String? = nil
-    /// Message bref (archivage, échec d'une page suivante…), effacé par `noticeShown()`.
-    var notice: String? = nil
+    /// Bannière du bas : « Conversation archivée » + « Annuler », échec d'une action, d'une page suivante ou d'un
+    /// rafraîchissement ; effacée par `bannerDismissed()`.
+    var banner: WeydaBanner? = nil
 
     /// L'interlocuteur de cette conversation est bloqué : son dernier message n'est pas montré.
     func isBlocked(_ conversation: Conversation) -> Bool {
@@ -35,13 +36,26 @@ nonisolated struct ConversationsState: Equatable, Sendable {
     }
 }
 
+/// Dernier archivage (ou désarchivage) que la bannière propose d'annuler : la conversation, sa place, le segment qu'elle
+/// a quitté et son état « non lu » (pastille de l'onglet).
+private nonisolated struct MovedConversation: Sendable {
+    let conversation: Conversation
+    let index: Int
+    /// Segment quitté : archives (vrai) ou boîte de réception (faux).
+    let fromArchived: Bool
+    let wasUnread: Bool
+}
+
 /// Onglet Messages — portage de `ConversationsViewModel` : liste paginée par curseur (`GET /api/conversations`),
-/// segment Conversations / Archives, archivage optimiste (`POST` / `DELETE …/archive`), relecture silencieuse au
-/// retour sur l'écran et à chaque `conversations.touched` (canal personnel), relance au retour du réseau. Chaque
-/// action renvoie sa tâche (`@discardableResult`) : l'écran l'ignore, les tests l'attendent.
+/// segment Conversations / Archives, archivage optimiste (`POST` / `DELETE …/archive`) avec « Annuler » dans la bannière
+/// (requête inverse, rangée remise à sa place, pastille rétablie), relecture silencieuse au retour sur l'écran et à
+/// chaque `conversations.touched` (canal personnel), relance au retour du réseau. Chaque action renvoie sa tâche
+/// (`@discardableResult`) : l'écran l'ignore, les tests l'attendent.
 final class ConversationsViewModel: ObservableObject {
     /// Taille de la liste des bloqués lue avec la liste (une seule page : au-delà, rien n'est masqué de plus).
     static let blockedLimit = 100
+    /// Préfixe de l'action « Annuler » d'un archivage : `archive:<id>`.
+    static let undoPrefix = "archive:"
 
     @Published private(set) var state = ConversationsState()
 
@@ -58,6 +72,19 @@ final class ConversationsViewModel: ObservableObject {
     private var sessionKnown = false
     private var wasOffline = false
     private var subscriptions: Set<AnyCancellable> = []
+    /// Archivages envoyés et pas encore confirmés : une relecture ne doit pas rendre leur rangée.
+    private var pendingMoves: Set<String> = []
+    /// Jeton de l'archivage en cours de chaque conversation : l'issue d'un archivage annulé (« Annuler ») est ignorée.
+    private var moveTokens: [String: Int] = [:]
+    private var moveCounter = 0
+    /// Requête de l'archivage en cours de chaque conversation (nil = réussi, sinon l'erreur) : « Annuler » attend son
+    /// issue avant de défaire.
+    private var moveRequests: [String: Task<(any Error)?, Never>] = [:]
+    /// Conversations en cours de remise (« Annuler ») : les relectures attendent (la réponse du serveur ne les
+    /// contiendrait peut-être pas encore).
+    private var restoring: Set<String> = []
+    /// Archivage que la bannière propose d'annuler (le dernier).
+    private var lastMove: MovedConversation?
 
     /// - Parameters:
     ///   - session: utilisateur de la session (`sessionManager.$user`) : un autre compte jette la liste du précédent.
@@ -126,7 +153,7 @@ final class ConversationsViewModel: ObservableObject {
                 self.nextCursor = page.nextCursor
                 self.hasLoadedOnce = true
                 self.state.isLoading = false
-                self.state.items = page.items
+                self.state.items = self.shown(page.items)
                 self.state.hasMore = page.nextCursor != nil
                 self.publishUnread(archived: archived, items: page.items)
             } catch {
@@ -180,12 +207,12 @@ final class ConversationsViewModel: ObservableObject {
                 self.nextCursor = page.nextCursor
                 let known: Set<String> = Set(self.state.items.map { $0.id })
                 self.state.isLoadingMore = false
-                self.state.items += page.items.filter { !known.contains($0.id) }
+                self.state.items += self.shown(page.items).filter { !known.contains($0.id) }
                 self.state.hasMore = page.nextCursor != nil
             } catch {
                 guard !Task.isCancelled else { return }
                 self.state.isLoadingMore = false
-                self.state.notice = ErrorMapper.message(for: error)
+                self.showError(error)
             }
         }
         listTask = task
@@ -205,47 +232,100 @@ final class ConversationsViewModel: ObservableObject {
 
     // MARK: - Actions
 
-    /// Archiver / désarchiver : la ligne quitte la liste courante tout de suite et y revient, à sa place, si le
-    /// serveur refuse (la conversation change simplement de segment). Seule CETTE ligne revient : restaurer un
-    /// instantané ferait réapparaître une autre conversation archivée entre-temps, elle avec succès.
+    /// Archiver / désarchiver (glissement, appui long) : la ligne quitte la liste courante tout de suite, la bannière
+    /// « Conversation archivée » propose « Annuler » ; si le serveur refuse, la ligne revient à SA place (message
+    /// d'erreur). Seule CETTE ligne revient : restaurer un instantané ferait réapparaître une autre conversation
+    /// archivée entre-temps, elle avec succès.
     @discardableResult
     func toggleArchive(_ conversation: Conversation) -> Task<Void, Never>? {
-        let wasArchived = state.archived
-        guard let position = state.items.firstIndex(where: { $0.id == conversation.id }) else { return nil }
-        let wasUnread = conversation.isUnreadFor(state.userId)
+        let id = conversation.id
+        // Remise en cours (« Annuler » touché à l'instant) : la ligne reste, le geste pourra être refait ensuite.
+        guard !restoring.contains(id) else { return nil }
+        guard let position = state.items.firstIndex(where: { $0.id == id }) else { return nil }
+        let current = state.items[position]
+        let fromArchived = state.archived
+        let move = MovedConversation(
+            conversation: current,
+            index: position,
+            fromArchived: fromArchived,
+            wasUnread: current.isUnreadFor(state.userId)
+        )
         state.items.remove(at: position)
-        return Task { [weak self] in
-            guard let self else { return }
+        moveCounter += 1
+        let token = moveCounter
+        moveTokens[id] = token
+        pendingMoves.insert(id)
+        lastMove = move
+        // Pas de vibration ici : le glissement plein en donne déjà une (UIKit).
+        state.banner = InboxBanner.archived(!fromArchived, undoId: Self.undoPrefix + id)
+        let repository = conversations
+        let target = !fromArchived
+        let request: Task<(any Error)?, Never> = Task { () async -> (any Error)? in
             do {
-                try await self.conversations.setArchived(conversationId: conversation.id, archived: !wasArchived)
-                self.state.notice = wasArchived ? L10n.chatUnarchived : L10n.chatArchived
-                // La pastille de l'onglet ne compte que la boîte de réception : une conversation non lue qui la
-                // quitte (ou y revient) la fait baisser (ou monter) tout de suite.
-                if wasUnread {
-                    let delta = wasArchived ? 1 : -1
-                    self.conversations.publishUnread(self.conversations.unreadCount + delta)
-                }
+                try await repository.setArchived(conversationId: id, archived: target)
+                return nil
             } catch {
-                let current = self.state
-                if current.archived == wasArchived && !current.items.contains(where: { $0.id == conversation.id }) {
-                    self.state.items.insert(conversation, at: min(position, current.items.count))
-                }
-                if let message = ErrorMapper.message(for: error) {
-                    self.state.notice = message
-                }
+                return error
+            }
+        }
+        moveRequests[id] = request
+        return Task { [weak self] in
+            let failure: (any Error)? = await request.value
+            self?.moveFinished(move, token: token, error: failure)
+        }
+    }
+
+    /// Action de la bannière. « Annuler » un archivage : la ligne revient tout de suite à SA place, puis la requête
+    /// inverse part une fois l'archivage abouti (rien à défaire si le serveur l'a refusé) ; la pastille de l'onglet
+    /// retrouve sa valeur. Échec de la remise : la ligne repart, avec le message d'erreur.
+    @discardableResult
+    func bannerAction(_ action: BannerAction) -> Task<Void, Never>? {
+        state.banner = nil
+        guard let move = lastMove, action.id == Self.undoPrefix + move.conversation.id else { return nil }
+        lastMove = nil
+        let id = move.conversation.id
+        // L'issue de l'archivage encore en vol ne compte plus (`moveFinished` l'ignore) ; la remise l'attend.
+        moveTokens[id] = nil
+        pendingMoves.remove(id)
+        let inFlight: Task<(any Error)?, Never>? = moveRequests.removeValue(forKey: id)
+        // Archivage déjà confirmé : la pastille l'a suivi, la remise la rétablira.
+        let badgeFollowed: Bool = inFlight == nil
+        restoring.insert(id)
+        putBack(move)
+        let repository = conversations
+        let target = move.fromArchived
+        return Task { [weak self] in
+            var moveFailed = false
+            if let inFlight {
+                let failure: (any Error)? = await inFlight.value
+                moveFailed = failure != nil
+            }
+            // Le serveur avait refusé l'archivage : la conversation n'a pas changé de segment, rien à défaire.
+            if moveFailed {
+                self?.restoreFinished(id)
+                return
+            }
+            do {
+                try await repository.setArchived(conversationId: id, archived: target)
+                self?.restoreSucceeded(move, badgeFollowed: badgeFollowed)
+            } catch {
+                self?.restoreFailed(move, badgeFollowed: badgeFollowed, error: error)
             }
         }
     }
 
-    func noticeShown() {
-        state.notice = nil
+    /// La bannière s'est fermée (délai écoulé, glissée) : « Annuler » n'est plus proposé.
+    func bannerDismissed() {
+        state.banner = nil
+        lastMove = nil
     }
 
     // MARK: - Interne
 
     private func refresh(force: Bool) -> Task<Void, Never>? {
         let current = state
-        guard hasLoadedOnce, !current.isLoading, !current.isLoadingMore, force || !current.isRefreshing else {
+        guard hasLoadedOnce, !current.isLoading, !current.isLoadingMore, force || !current.isRefreshing,
+              restoring.isEmpty else {
             return nil
         }
         listTask?.cancel()
@@ -264,12 +344,13 @@ final class ConversationsViewModel: ObservableObject {
                     self.state.blockedIds = blockedIds
                 }
                 // Pages suivantes déjà chargées : gardées, avec leur curseur (`Paging.mergeFirstPage`).
-                let keepTail = self.state.items.count > page.items.count
+                let fresh: [Conversation] = self.shown(page.items)
+                let keepTail = self.state.items.count > fresh.count
                 if !keepTail {
                     self.nextCursor = page.nextCursor
                     self.state.hasMore = page.nextCursor != nil
                 }
-                self.state.items = Paging.mergeFirstPage(current: self.state.items, fresh: page.items, id: { $0.id })
+                self.state.items = Paging.mergeFirstPage(current: self.state.items, fresh: fresh, id: { $0.id })
                 self.state.errorMessage = nil
                 self.state.isRefreshing = false
                 self.publishUnread(archived: archived, items: page.items)
@@ -280,8 +361,8 @@ final class ConversationsViewModel: ObservableObject {
                     return
                 }
                 self.state.isRefreshing = false
-                if force, let message = ErrorMapper.message(for: error) {
-                    self.state.notice = message
+                if force {
+                    self.showError(error)
                 }
             }
         }
@@ -311,6 +392,88 @@ final class ConversationsViewModel: ObservableObject {
         conversations.publishUnread(items.filter { $0.isUnreadFor(userId) }.count)
     }
 
+    /// Issue d'un archivage. Ignorée s'il a été annulé (« Annuler ») : la remise s'occupe de la suite. Succès : la
+    /// pastille suit. Refus : la ligne revient à sa place, la bannière d'erreur remplace « Annuler ».
+    private func moveFinished(_ move: MovedConversation, token: Int, error: (any Error)?) {
+        let id = move.conversation.id
+        guard moveTokens[id] == token else { return }
+        moveTokens[id] = nil
+        moveRequests[id] = nil
+        pendingMoves.remove(id)
+        guard let error else {
+            applyUnreadDelta(of: move, reversed: false)
+            return
+        }
+        if lastMove?.conversation.id == id {
+            lastMove = nil
+        }
+        putBack(move)
+        if ErrorMapper.message(for: error) != nil {
+            showError(error)
+        } else if state.banner?.action?.id == Self.undoPrefix + id {
+            // Annulation (aucun message) : « Annuler » n'a plus d'objet, la ligne est revenue.
+            state.banner = nil
+        }
+    }
+
+    /// Remise aboutie (« Annuler ») : la pastille retrouve sa valeur si elle avait suivi l'archivage.
+    private func restoreSucceeded(_ move: MovedConversation, badgeFollowed: Bool) {
+        guard restoring.remove(move.conversation.id) != nil else { return }
+        if badgeFollowed {
+            applyUnreadDelta(of: move, reversed: true)
+        }
+    }
+
+    /// Remise refusée : la conversation reste dans l'autre segment, sa ligne repart ; la pastille suit l'archivage si
+    /// elle ne l'avait pas encore fait. Le message dit pourquoi.
+    private func restoreFailed(_ move: MovedConversation, badgeFollowed: Bool, error: any Error) {
+        let id = move.conversation.id
+        guard restoring.remove(id) != nil else { return }
+        if state.archived == move.fromArchived {
+            state.items.removeAll { $0.id == id }
+        }
+        if !badgeFollowed {
+            applyUnreadDelta(of: move, reversed: false)
+        }
+        showError(error)
+    }
+
+    /// Rien à défaire (archivage refusé) : la ligne, déjà revenue, suit de nouveau les relectures.
+    private func restoreFinished(_ id: String) {
+        restoring.remove(id)
+    }
+
+    /// La ligne revient à SA place, si l'écran montre encore le segment qu'elle a quitté. Un rechargement a pu la
+    /// remettre entre-temps : deux fois le même identifiant ferait planter la liste.
+    private func putBack(_ move: MovedConversation) {
+        let current = state
+        let id = move.conversation.id
+        guard current.archived == move.fromArchived, !current.items.contains(where: { $0.id == id }) else { return }
+        state.items.insert(move.conversation, at: min(move.index, current.items.count))
+    }
+
+    /// La pastille de l'onglet ne compte que la boîte de réception : une conversation non lue qui la quitte la fait
+    /// baisser, une qui y revient la fait monter. `reversed` = l'archivage est défait (« Annuler »).
+    private func applyUnreadDelta(of move: MovedConversation, reversed: Bool) {
+        guard move.wasUnread else { return }
+        let joinsInbox: Bool = move.fromArchived != reversed
+        let delta: Int = joinsInbox ? 1 : -1
+        conversations.publishUnread(conversations.unreadCount + delta)
+    }
+
+    /// Bannière d'erreur (rien pour une annulation).
+    private func showError(_ error: any Error) {
+        guard let message = ErrorMapper.message(for: error) else { return }
+        state.banner = InboxBanner.error(message)
+    }
+
+    /// Les conversations dont l'archivage est en vol ne reviennent pas avec une relecture.
+    private func shown(_ items: [Conversation]) -> [Conversation] {
+        let hidden = pendingMoves
+        guard !hidden.isEmpty else { return items }
+        return items.filter { !hidden.contains($0.id) }
+    }
+
     /// Autre compte (le ViewModel survit à la session) : la liste et l'identité du précédent sont jetées.
     private func sessionChanged(to userId: String) {
         guard sessionKnown else {
@@ -322,6 +485,12 @@ final class ConversationsViewModel: ObservableObject {
         listTask = nil
         nextCursor = nil
         hasLoadedOnce = false
+        // Archivages du compte précédent : leurs issues sont ignorées (jetons et remises oubliés).
+        pendingMoves = []
+        moveTokens = [:]
+        moveRequests = [:]
+        restoring = []
+        lastMove = nil
         var fresh = ConversationsState()
         fresh.userId = userId
         fresh.isLoading = !userId.isEmpty

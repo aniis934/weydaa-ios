@@ -13,6 +13,8 @@ import Foundation
 /// sont des octets copiés dans `photoStore` (Android : URI `content://` relisible).
 final class PostListingViewModel: ObservableObject {
     @Published private(set) var state: PostListingState
+    /// Note App Store : passe à vrai quand une PUBLICATION (pas une modification) est le bon moment (`ReviewPrompter`).
+    @Published private(set) var asksForReview: Bool = false
 
     /// Fichiers des photos choisies (aperçu local : `photoStore.fileURL(for: item.localRef)`).
     let photoStore: PostPhotoStore
@@ -49,6 +51,7 @@ final class PostListingViewModel: ObservableObject {
     private let uploads: UploadRepository
     /// Langue des libellés d'attributs (fixée par les tests ; sinon celle de l'app).
     private let locale: () -> String
+    private let reviewPrompter: ReviewPrompter
 
     /// Annonce lue avant les catégories (édition) : appliquée dès que celles-ci arrivent.
     private var editing: Listing?
@@ -82,7 +85,8 @@ final class PostListingViewModel: ObservableObject {
         users: UserRepository,
         uploads: UploadRepository,
         userUpdates: AnyPublisher<User?, Never>,
-        locale: @escaping () -> String = { WeydaLocale.language }
+        locale: @escaping () -> String = { WeydaLocale.language },
+        reviewPrompter: ReviewPrompter = ReviewPrompter(isEnabled: false)
     ) {
         self.editingId = editingId
         self.drafts = drafts
@@ -95,6 +99,7 @@ final class PostListingViewModel: ObservableObject {
         self.users = users
         self.uploads = uploads
         self.locale = locale
+        self.reviewPrompter = reviewPrompter
         let user = auth.user
         var initial = PostListingState()
         initial.userPhone = TextCheck.nonBlank(user?.phone)
@@ -146,7 +151,8 @@ final class PostListingViewModel: ObservableObject {
             auth: container.auth,
             users: container.users,
             uploads: container.uploads,
-            userUpdates: container.sessionManager.$user.eraseToAnyPublisher()
+            userUpdates: container.sessionManager.$user.eraseToAnyPublisher(),
+            reviewPrompter: container.reviewPrompter
         )
     }
 
@@ -289,7 +295,7 @@ final class PostListingViewModel: ObservableObject {
     // MARK: - Photos
 
     /// Octets des photos choisies (galerie ou appareil) : écrits dans `photoStore` (SHA-256 = nom : une même photo
-    /// choisie deux fois n'est ajoutée qu'une fois), places restantes respectées (excédent → `photosNotice`), file
+    /// choisie deux fois n'est ajoutée qu'une fois), places restantes respectées (excédent → `photosBanner`), file
     /// d'envoi lancée. Android : `onPhotosPicked(uris)`.
     @discardableResult
     func onPhotosPicked(_ images: [Data]) -> Task<Void, Never>? {
@@ -302,7 +308,7 @@ final class PostListingViewModel: ObservableObject {
 
     /// Pas d'appareil photo utilisable : avis sur l'étape, la galerie reste disponible (Android : `error_no_app`).
     func onCameraUnavailable() {
-        state.photosNotice = L10n.postWizCameraUnavailable
+        state.photosBanner = AccountBanner.failure(L10n.postWizCameraUnavailable)
     }
 
     func onRemovePhoto(at index: Int) {
@@ -310,7 +316,7 @@ final class PostListingViewModel: ObservableObject {
         let removed = state.photos[index]
         update { s in
             s.photos.remove(at: index)
-            s.photosNotice = nil
+            s.photosBanner = nil
             s.errorMessage = nil
         }
         // Le fichier local ne sert plus (une photo en ligne d'une édition n'a pas de fichier : sans effet).
@@ -341,7 +347,7 @@ final class PostListingViewModel: ObservableObject {
     }
 
     func photosNoticeShown() {
-        state.photosNotice = nil
+        state.photosBanner = nil
     }
 
     // MARK: - Localisation
@@ -765,11 +771,11 @@ final class PostListingViewModel: ObservableObject {
         update { s in
             s.photos += added.map { PhotoItem(localRef: $0) }
             if limited {
-                s.photosNotice = L10n.postPhotosLimit(s.maxPhotos)
+                s.photosBanner = WeydaBanner(L10n.postPhotosLimit(s.maxPhotos), symbol: "photo.on.rectangle", kind: .info)
             } else if saveFailed {
-                s.photosNotice = L10n.errorPhotoRead
+                s.photosBanner = AccountBanner.failure(L10n.errorPhotoRead)
             } else {
-                s.photosNotice = nil
+                s.photosBanner = nil
             }
             s.errorMessage = nil
         }
@@ -847,6 +853,12 @@ final class PostListingViewModel: ObservableObject {
             done.isSubmitting = false
             done.result = listing
             state = done
+            // L'écran de résultat paraît : une vibration de réussite, une seule (pas de bannière ici).
+            Haptics.success()
+            // Note App Store : une publication compte, une modification non.
+            if editingId == nil {
+                asksForReview = reviewPrompter.record(.listingPublished)
+            }
         } catch {
             submitFailed(error)
         }

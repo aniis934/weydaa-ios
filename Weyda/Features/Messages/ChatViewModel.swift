@@ -19,6 +19,9 @@ final class ChatViewModel: ObservableObject {
     @Published private(set) var state: ChatState
     /// Feuille « Signaler » (liée à la présentation : un glissement vers le bas la ferme aussi).
     @Published var isReportPresented: Bool = false
+    /// Vrai au bon moment pour demander une note sur l'App Store (offre acceptée par le vendeur, `ReviewPrompter`) :
+    /// lu par `.requestsReview(when:)`.
+    @Published private(set) var asksForReview: Bool = false
     /// Message parti (réponse du serveur reçue) : retour haptique branché par `ChatView` ; nil dans les tests.
     var onMessageSent: (() -> Void)?
     /// Offre envoyée, contre-offre, acceptation ou refus aboutis (action en paramètre) : retour haptique de `ChatView`.
@@ -30,6 +33,7 @@ final class ChatViewModel: ObservableObject {
     private let notifications: NotificationsRepository?
     private let reports: ReportsRepository?
     private let realtime: ChatRealtime
+    private let reviewPrompter: ReviewPrompter
     private let now: () -> Date
 
     /// Curseur de la page précédente (id du plus ancien message reçu) ; nil = début du fil atteint.
@@ -48,6 +52,7 @@ final class ChatViewModel: ObservableObject {
     private var stoppedTypingTask: Task<Void, Never>?
     private var typingResetTask: Task<Void, Never>?
 
+    /// - Parameter reviewPrompter: celui du conteneur dans l'app ; inerte par défaut (tests).
     init(
         conversationId: String,
         archived: Bool,
@@ -56,6 +61,7 @@ final class ChatViewModel: ObservableObject {
         notifications: NotificationsRepository? = nil,
         reports: ReportsRepository? = nil,
         realtime: ChatRealtime = .inert,
+        reviewPrompter: ReviewPrompter = ReviewPrompter(isEnabled: false),
         now: @escaping () -> Date = { Date() }
     ) {
         self.conversationId = conversationId
@@ -63,6 +69,7 @@ final class ChatViewModel: ObservableObject {
         self.notifications = notifications
         self.reports = reports
         self.realtime = realtime
+        self.reviewPrompter = reviewPrompter
         self.now = now
         var initial = ChatState()
         initial.userId = userId
@@ -197,7 +204,7 @@ final class ChatViewModel: ObservableObject {
                 self.mutate { s in
                     s.isLoadingOlder = false
                     if let message {
-                        s.notice = message
+                        s.banner = InboxBanner.error(message)
                     }
                 }
             }
@@ -271,7 +278,7 @@ final class ChatViewModel: ObservableObject {
                 self.mutate { s in
                     s.isSending = false
                     if let message {
-                        s.notice = message
+                        s.banner = InboxBanner.error(message)
                     }
                 }
             }
@@ -281,10 +288,10 @@ final class ChatViewModel: ObservableObject {
 
     // MARK: - Suppression
 
-    /// Appui long « Supprimer » : hors de la fenêtre de 5 minutes, un message local suffit (aucun appel réseau).
+    /// Appui long « Supprimer » : hors de la fenêtre de 5 minutes, un refus local suffit (aucun appel réseau).
     func askDelete(_ message: ChatMessage) {
         guard message.isDeletableBy(state.userId, now: now()) else {
-            mutate { $0.notice = L10n.chatDeletionWindowExpired }
+            mutate { $0.banner = InboxBanner.error(L10n.chatDeletionWindowExpired) }
             return
         }
         mutate { $0.pendingDelete = message }
@@ -311,7 +318,7 @@ final class ChatViewModel: ObservableObject {
                 }
             } catch {
                 if let text = ErrorMapper.message(for: error) {
-                    self.mutate { $0.notice = text }
+                    self.mutate { $0.banner = InboxBanner.error(text) }
                 }
             }
         }
@@ -388,11 +395,20 @@ final class ChatViewModel: ObservableObject {
                     }
                 }
                 self.onOfferSent?(action)
+                self.recordAcceptedOffer(action)
             } catch {
                 self.offerFailed(error, fromDialog: fromDialog)
             }
         }
         return task
+    }
+
+    /// Offre acceptée par le VENDEUR : un moment positif (`ReviewPrompter`) — la note est demandée s'il le faut.
+    private func recordAcceptedOffer(_ action: OfferAction) {
+        guard action == .accept else { return }
+        let userId = state.userId
+        guard !TextCheck.isBlank(userId), state.conversation?.isSeller(userId) == true else { return }
+        asksForReview = reviewPrompter.record(.offerAccepted)
     }
 
     /// Panne réseau : la feuille reste ouverte, rien n'est perdu. Verdict du serveur (offre déjà ouverte, annonce
@@ -411,7 +427,7 @@ final class ChatViewModel: ObservableObject {
                 if fromDialog {
                     s.offerDialog = nil
                 }
-                s.notice = message
+                s.banner = InboxBanner.error(message)
             }
         }
         if isVerdict {
@@ -421,22 +437,45 @@ final class ChatViewModel: ObservableObject {
 
     // MARK: - Archivage et blocage
 
+    /// Identifiant de l'action « Annuler » d'un archivage du fil : `archive:<id>`.
+    static func archiveUndoId(_ conversationId: String) -> String {
+        ConversationsViewModel.undoPrefix + conversationId
+    }
+
+    /// Archiver / désarchiver depuis le menu : la bannière « Conversation archivée » propose « Annuler ».
     @discardableResult
     func toggleArchive() -> Task<Void, Never>? {
-        let target = !state.isArchived
+        setArchive(!state.isArchived, offersUndo: true)
+    }
+
+    /// Action de la bannière. « Annuler » un archivage : la requête inverse part (le fil retrouve son segment) ; sans
+    /// nouvelle bannière si elle aboutit, avec le message d'erreur sinon.
+    @discardableResult
+    func bannerAction(_ action: BannerAction) -> Task<Void, Never>? {
+        if state.banner != nil {
+            mutate { $0.banner = nil }
+        }
+        guard action.id == ChatViewModel.archiveUndoId(conversationId) else { return nil }
+        return setArchive(!state.isArchived, offersUndo: false)
+    }
+
+    private func setArchive(_ target: Bool, offersUndo: Bool) -> Task<Void, Never> {
+        let undoId = ChatViewModel.archiveUndoId(conversationId)
         let task: Task<Void, Never> = Task { [weak self] in
             guard let self else { return }
             do {
                 try await self.conversations.setArchived(conversationId: self.conversationId, archived: target)
                 self.mutate { s in
                     s.isArchived = target
-                    s.notice = target ? L10n.chatArchived : L10n.chatUnarchived
+                    if offersUndo {
+                        s.banner = InboxBanner.archived(target, undoId: undoId)
+                    }
                 }
                 // La liste (Conversations / Archives) se relit.
                 self.conversations.notifyTouched()
             } catch {
                 if let text = ErrorMapper.message(for: error) {
-                    self.mutate { $0.notice = text }
+                    self.mutate { $0.banner = InboxBanner.error(text) }
                 }
             }
         }
@@ -473,10 +512,11 @@ final class ChatViewModel: ObservableObject {
             guard let self else { return }
             do {
                 try await self.conversations.setBlocked(userId: partnerId, blocked: blocked)
+                let done: String = blocked ? L10n.chatBlockedDone : L10n.chatUnblockedDone
                 self.mutate { s in
                     s.isBlockBusy = false
                     s.isBlocked = blocked
-                    s.notice = blocked ? L10n.chatBlockedDone : L10n.chatUnblockedDone
+                    s.banner = InboxBanner.success(done)
                 }
                 self.conversations.notifyTouched()
             } catch {
@@ -484,7 +524,7 @@ final class ChatViewModel: ObservableObject {
                 self.mutate { s in
                     s.isBlockBusy = false
                     if let message {
-                        s.notice = message
+                        s.banner = InboxBanner.error(message)
                     }
                 }
             }
@@ -518,9 +558,10 @@ final class ChatViewModel: ObservableObject {
                     reason: reason,
                     details: details
                 )
+                // Bannière `.success` : elle vibre d'elle-même (pas de `Haptics.success()` en plus).
                 self.mutate { s in
                     s.isReportBusy = false
-                    s.notice = L10n.reportSent
+                    s.banner = InboxBanner.success(L10n.reportSent)
                 }
                 self.isReportPresented = false
             } catch {
@@ -538,7 +579,7 @@ final class ChatViewModel: ObservableObject {
         if error is APIError {
             mutate { s in
                 s.isReportBusy = false
-                s.notice = message
+                s.banner = InboxBanner.error(message)
             }
             isReportPresented = false
         } else {
@@ -549,11 +590,12 @@ final class ChatViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Messages brefs
+    // MARK: - Bannière
 
-    func noticeShown() {
-        guard state.notice != nil else { return }
-        mutate { $0.notice = nil }
+    /// La bannière s'est fermée (délai écoulé, glissée) : « Annuler » n'est plus proposé.
+    func bannerDismissed() {
+        guard state.banner != nil else { return }
+        mutate { $0.banner = nil }
     }
 
     // MARK: - Temps réel

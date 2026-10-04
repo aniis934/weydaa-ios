@@ -103,9 +103,11 @@ private struct MainTabBar: View {
     }
 }
 
-/// La pile d'un onglet : sa racine, puis les écrans poussés (`AppRoute`).
+/// La pile d'un onglet : sa racine, puis les écrans poussés (`AppRoute`). Pose sur la pile l'espace de noms de la
+/// transition zoom des cartes (un par onglet) et le compteur « onglet touché deux fois » de sa racine.
 private struct TabStack: View {
     @EnvironmentObject private var router: AppRouter
+    @Namespace private var zoomNamespace
     private let tab: AppTab
 
     init(tab: AppTab) {
@@ -117,6 +119,8 @@ private struct TabStack: View {
             TabRoot(tab: tab)
                 .appRouteDestinations()
         }
+        .environment(\.listingZoomNamespace, zoomNamespace)
+        .environment(\.scrollToTopSignal, router.scrollToTopRequests[tab] ?? 0)
     }
 }
 

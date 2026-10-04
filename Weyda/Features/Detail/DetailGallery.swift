@@ -3,17 +3,21 @@ import SwiftUI
 /// Galerie de la fiche — portage d'`ImageGallery` (Gallery.kt), comme `ImageGallery.tsx` du site : photo au format
 /// 4:3 SANS rognage (le défaut, l'accessoire ou la plaque que l'acheteur cherche peut être au bord), glissement
 /// d'une photo à l'autre, compteur « 2 / 8 », miniatures dessous, appui = plein écran avec zoom.
+/// `topInset` : hauteur de la barre d'état et de la barre de navigation quand la photo passe dessous (fiche) — voile
+/// sombre en haut de la photo, pastille « À la une » décalée sous le bouton retour.
 struct DetailGallery: View {
     private let images: [String]
     private let isFeatured: Bool
+    private let topInset: CGFloat
     @State private var page: Int = 0
     @State private var fullscreenPage: Int = 0
     @State private var isFullscreen: Bool = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(images: [String], isFeatured: Bool) {
+    init(images: [String], isFeatured: Bool, topInset: CGFloat = 0) {
         self.images = images
         self.isFeatured = isFeatured
+        self.topInset = topInset
     }
 
     var body: some View {
@@ -35,6 +39,7 @@ struct DetailGallery: View {
     private var pager: some View {
         if images.isEmpty {
             ListingCoverImage(url: nil)
+                .overlay(alignment: .top) { DetailTopScrim(topInset: topInset) }
                 .overlay(alignment: .topLeading) { featuredBadge }
         } else {
             Color.clear
@@ -45,6 +50,7 @@ struct DetailGallery: View {
                 }
                 .background(WeydaPalette.imagePlaceholder)
                 .clipped()
+                .overlay(alignment: .top) { DetailTopScrim(topInset: topInset) }
                 .overlay(alignment: .bottomTrailing) { counter }
                 // Un seul élément VoiceOver : « Photo 2 sur 8 », balayer vers le haut / le bas change de photo,
                 // toucher deux fois ouvre le plein écran.
@@ -65,10 +71,13 @@ struct DetailGallery: View {
         }
     }
 
+    /// Sur la fiche, la galerie passe sous la barre d'état : chaque page occupe TOUT le cadre 4:3 (une page ne doit pas
+    /// se décaler de la hauteur des barres du haut) — le cadre lui-même est rogné par `pager`.
     private var photos: some View {
         TabView(selection: $page) {
             ForEach(images.indices, id: \.self) { index in
                 RemoteImage(urlString: images[index], contentMode: .fit)
+                    .ignoresSafeArea(edges: .top)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         openFullscreen(at: index)
@@ -77,13 +86,16 @@ struct DetailGallery: View {
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
+        .ignoresSafeArea(edges: .top)
     }
 
+    /// Sous la barre de navigation (la photo passe dessous) : jamais sous le bouton retour.
     @ViewBuilder
     private var featuredBadge: some View {
         if isFeatured {
             FeaturedBadge()
                 .padding(WeydaSpace.md)
+                .padding(.top, topInset)
         }
     }
 
@@ -191,6 +203,31 @@ struct DetailPhotoCounter: View {
             .padding(.vertical, WeydaSpace.xxs)
             .background(DetailGalleryColor.scrim, in: Capsule())
             .accessibilityLabel(L10n.detailPhotoCounter(current, total))
+    }
+}
+
+/// Voile dégradé sombre en haut de la photo, sous la barre d'état et la barre de navigation transparente : la barre
+/// d'état et les boutons restent lisibles sur une photo claire. Décoratif (ni appui, ni VoiceOver) ; rien quand la
+/// photo ne passe pas sous les barres (`topInset` nul, hors ligne).
+struct DetailTopScrim: View {
+    private let topInset: CGFloat
+
+    init(topInset: CGFloat) {
+        self.topInset = topInset
+    }
+
+    var body: some View {
+        if topInset > 0 {
+            LinearGradient(
+                colors: [DetailGalleryColor.scrim, Color.clear],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(maxWidth: .infinity)
+            .frame(height: topInset + WeydaSpace.xxxl)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+        }
     }
 }
 

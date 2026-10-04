@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import UIKit
 
 /// État de la fiche d'une annonce — `DetailUiState` (DetailViewModel.kt). Données pures (`nonisolated`) : l'écran
 /// les reçoit telles quelles, les tests les lisent.
@@ -28,8 +29,9 @@ nonisolated struct DetailState: Equatable, Sendable {
     var isReportBusy: Bool = false
     /// Panne réseau pendant l'envoi d'un signalement : affichée DANS la feuille, restée ouverte.
     var reportError: String? = nil
-    /// Message bref à montrer une fois (signalement envoyé, refus du serveur…), effacé par `noticeShown()`.
-    var notice: String? = nil
+    /// Bannière à montrer une fois (signalement envoyé, numéro copié, refus du serveur…), effacée par `noticeShown()` ;
+    /// créée ici, jamais dans un `body` (identifiant unique : le minuteur repart pour chaque nouvelle bannière).
+    var banner: WeydaBanner? = nil
     /// Premier message au vendeur (`POST /api/conversations`) ; nil = feuille « Contacter » fermée.
     var contactMessage: String? = nil
     var isContacting: Bool = false
@@ -41,6 +43,8 @@ nonisolated struct DetailState: Equatable, Sendable {
     var offerError: String? = nil
     /// Conversation à ouvrir : consommée par l'écran (`conversationOpened()`) une fois la feuille refermée.
     var openConversationId: String? = nil
+    /// Cœurs des annonces similaires (menu d'appui long) : source de vérité partagée des favoris.
+    var favoriteIds: Set<String> = []
 
     var isLoggedIn: Bool { !TextCheck.isBlank(userId) }
 
@@ -96,6 +100,13 @@ final class DetailViewModel: ObservableObject {
     @Published private(set) var state = DetailState()
     /// Feuille « Signaler » ouverte : liée à la présentation (un glissement vers le bas la ferme aussi).
     @Published var isReportPresented: Bool = false
+    /// Couverture réduite (120 × 120) pour l'aperçu du partage, lue au cache des images après le chargement ; À PART de
+    /// l'état (une image n'est ni `Equatable` ni `Sendable`). nil = aperçu texte seul.
+    @Published private(set) var sharePreview: UIImage? = nil
+    /// Premier message parti (réponse du serveur reçue) : retour haptique branché par `DetailView` ; nil dans les tests.
+    var onMessageSent: (() -> Void)?
+    /// Offre envoyée (créée par le serveur, pas une offre déjà ouverte) : retour haptique de `DetailView`.
+    var onOfferSent: (() -> Void)?
 
     /// Identifiant OU slug reçu (lien profond, notification) ; l'id réel arrive avec la fiche.
     let idOrSlug: String
@@ -109,6 +120,8 @@ final class DetailViewModel: ObservableObject {
     /// Langue des libellés d'attributs (fixée par les tests). Changer de langue relance l'app sur iOS : pas de
     /// rechargement à chaud comme `onLocaleChanged` d'Android.
     private let locale: () -> String
+    /// Chargeur d'images (aperçu du partage) ; nil = pas d'aperçu photo (tests).
+    private let images: ImagePipeline?
     private var favoriteIds: Set<String> = []
     private var subscriptions: Set<AnyCancellable> = []
     private var loadTask: Task<Void, Never>?
@@ -124,7 +137,8 @@ final class DetailViewModel: ObservableObject {
         conversations: ConversationsRepository,
         reports: ReportsRepository,
         sessionUser: AnyPublisher<User?, Never>,
-        locale: @escaping () -> String = { WeydaLocale.language }
+        locale: @escaping () -> String = { WeydaLocale.language },
+        images: ImagePipeline? = nil
     ) {
         self.idOrSlug = idOrSlug
         self.annonces = annonces
@@ -134,6 +148,7 @@ final class DetailViewModel: ObservableObject {
         self.conversations = conversations
         self.reports = reports
         self.locale = locale
+        self.images = images
         // Connexion faite DEPUIS la fiche : sans ce suivi, le propriétaire verrait « Contacter » sur sa propre annonce.
         sessionUser
             .map { $0?.id ?? "" }
@@ -145,8 +160,12 @@ final class DetailViewModel: ObservableObject {
         // Source de vérité partagée des cœurs : la fiche suit les autres écrans (et inversement).
         favorites.$ids
             .sink { [weak self] ids in
-                self?.favoriteIds = ids
-                self?.syncFavorite()
+                guard let self else { return }
+                self.favoriteIds = ids
+                if self.state.favoriteIds != ids {
+                    self.state.favoriteIds = ids
+                }
+                self.syncFavorite()
             }
             .store(in: &subscriptions)
     }
@@ -188,7 +207,7 @@ final class DetailViewModel: ObservableObject {
             _ = await (labels, sellerReviews, similarListings)
         } catch {
             if let message = ErrorMapper.message(for: error) {
-                state.notice = message
+                state.banner = DetailBanner.error(message)
             }
         }
     }
@@ -228,7 +247,8 @@ final class DetailViewModel: ObservableObject {
         async let labels: Void = loadAttributeLabels(for: listing)
         async let sellerReviews: Void = loadReviews(for: listing)
         async let similarListings: Void = loadSimilar(to: listing)
-        _ = await (favorite, view, labels, sellerReviews, similarListings)
+        async let preview: Void = loadSharePreview(for: listing)
+        _ = await (favorite, view, labels, sellerReviews, similarListings, preview)
     }
 
     /// Le lien peut porter un slug : l'état serveur du cœur est relu sur l'id réel.
@@ -272,16 +292,32 @@ final class DetailViewModel: ObservableObject {
         state.similar = items
     }
 
+    /// Couverture de l'annonce pour l'aperçu du partage, à la taille d'une vignette : la galerie vient de la charger,
+    /// elle sort en général du cache disque (pas de réseau). Échec silencieux : aperçu texte seul.
+    private func loadSharePreview(for listing: Listing) async {
+        guard sharePreview == nil, let images else { return }
+        guard let cover = listing.coverImage, let url = URL(string: cover) else { return }
+        let size = CGSize(width: DetailShareMetrics.previewSide, height: DetailShareMetrics.previewSide)
+        guard let image = try? await images.image(for: url, targetSize: size, scale: DetailShareMetrics.previewScale) else {
+            return
+        }
+        sharePreview = image
+    }
+
     // MARK: - Favori
 
     /// Bascule optimiste sur l'id RÉEL (un slug donnait 404). Le dépôt annule un refus ; il est annoncé ici.
     func toggleFavorite() async {
-        let id = state.listing?.id ?? idOrSlug
+        await toggleFavorite(listingId: state.listing?.id ?? idOrSlug)
+    }
+
+    /// Cœur d'une annonce similaire (menu d'appui long) ou de la fiche : refus annoncé par une bannière d'erreur.
+    func toggleFavorite(listingId: String) async {
         do {
-            _ = try await favorites.toggle(id)
+            _ = try await favorites.toggle(listingId)
         } catch {
             if let message = ErrorMapper.message(for: error) {
-                state.notice = message
+                state.banner = DetailBanner.error(message)
             }
         }
     }
@@ -308,15 +344,23 @@ final class DetailViewModel: ObservableObject {
             if let number = TextCheck.nonBlank(phone) {
                 next.revealedPhone = number
             } else {
-                next.notice = L10n.errorNoPhone
+                next.banner = DetailBanner.error(L10n.errorNoPhone)
             }
             state = next
         } catch {
             var next = state
             next.isRevealingPhone = false
-            next.notice = ErrorMapper.message(for: error) ?? next.notice
+            if let message = ErrorMapper.message(for: error) {
+                next.banner = DetailBanner.error(message)
+            }
             state = next
         }
+    }
+
+    /// Numéro copié par l'écran (menu du numéro) : confirmation brève, qui vibre d'elle-même (`.success`).
+    func phoneCopied() {
+        guard state.revealedPhone != nil else { return }
+        state.banner = DetailBanner.success(L10n.detailNumberCopied)
     }
 
     // MARK: - Signalement
@@ -337,13 +381,14 @@ final class DetailViewModel: ObservableObject {
             try await reports.report(annonceId: listing.id, reason: reason, details: details)
             state.isReportBusy = false
             isReportPresented = false
-            state.notice = L10n.reportSent
+            // Bannière de réussite : elle porte l'haptique (pas de `Haptics.success()` en plus).
+            state.banner = DetailBanner.success(L10n.reportSent)
         } catch {
             state.isReportBusy = false
             guard let message = ErrorMapper.message(for: error) else { return }
             if error is APIError {
                 isReportPresented = false
-                state.notice = message
+                state.banner = DetailBanner.error(message)
             } else {
                 state.reportError = message
             }
@@ -400,6 +445,7 @@ final class DetailViewModel: ObservableObject {
                 next.contactMessage = nil
                 next.openConversationId = entry.conversationId
                 self.state = next
+                self.onMessageSent?()
             } catch {
                 guard let self else { return }
                 var next = self.state
@@ -462,6 +508,10 @@ final class DetailViewModel: ObservableObject {
                 next.offerDialog = nil
                 next.openConversationId = entry.conversationId
                 self.state = next
+                // Offre déjà ouverte (409 avec l'id du fil) : rien n'a été envoyé, pas de vibration de réussite.
+                if entry.created {
+                    self.onOfferSent?()
+                }
             } catch {
                 guard let self else { return }
                 var next = self.state
@@ -485,11 +535,19 @@ final class DetailViewModel: ObservableObject {
         dismissOfferDialog()
     }
 
-    // MARK: - Messages brefs
+    // MARK: - Bannières
 
+    /// Bannière fermée (délai écoulé ou glissée vers le bas).
     func noticeShown() {
-        state.notice = nil
+        guard state.banner != nil else { return }
+        state.banner = nil
     }
+}
+
+/// Aperçu du partage de la fiche : la couverture à la taille d'une vignette de la feuille de partage.
+nonisolated enum DetailShareMetrics {
+    static let previewSide: CGFloat = 120
+    static let previewScale: CGFloat = 2
 }
 
 /// Une ligne « Caractéristiques » : libellé traduit et valeur lisible (logique pure, testée).

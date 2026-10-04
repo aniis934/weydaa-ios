@@ -55,17 +55,29 @@ final class AppRouter: ObservableObject {
     @Published var authFlow: AuthEntry? = nil
     /// Pile de chaque onglet (vide = la racine de l'onglet).
     @Published private(set) var stacks: [AppTab: [AppRoute]] = [:]
+    /// Demandes de retour en haut de la racine de chaque onglet (onglet actif touché, pile déjà vide) : un compteur
+    /// par onglet, lu par sa racine via `\.scrollToTopSignal`.
+    @Published private(set) var scrollToTopRequests: [AppTab: Int] = [:]
 
     /// `launchRoute` : `-WeydaRoute` (tour de captures), appliqué avant le premier écran. Une route de connexion
     /// (`login`, `register`, `forgot`, `verify`, `reset:<jeton>`) ouvre la feuille au-dessus de l'onglet Profil.
-    init(initialTab: AppTab = LaunchOptions.initialTab ?? .home, launchRoute: String? = LaunchOptions.route) {
+    /// `shortcut` : `-WeydaShortcut` (raccourci de l'icône simulé), appliqué ensuite.
+    init(
+        initialTab: AppTab = LaunchOptions.initialTab ?? .home,
+        launchRoute: String? = LaunchOptions.route,
+        shortcut: ShortcutAction? = LaunchOptions.shortcut
+    ) {
         selectedTab = initialTab
-        guard let launchRoute else { return }
-        if let entry = AuthEntry.launchEntry(launchRoute) {
-            selectedTab = .account
-            authFlow = entry
-        } else if let parsed = LaunchRoute.parse(launchRoute) {
-            apply(parsed)
+        if let launchRoute {
+            if let entry = AuthEntry.launchEntry(launchRoute) {
+                selectedTab = .account
+                authFlow = entry
+            } else if let parsed = LaunchRoute.parse(launchRoute) {
+                apply(parsed)
+            }
+        }
+        if let shortcut {
+            open(shortcut.target())
         }
     }
 
@@ -125,7 +137,7 @@ final class AppRouter: ObservableObject {
     // MARK: - Onglets
 
     /// Sélection de la barre d'onglets : toucher l'onglet déjà actif remonte sa pile à la racine (convention iOS,
-    /// et `navigateToTab` d'Android).
+    /// et `navigateToTab` d'Android) ; déjà à la racine, il remonte la racine en haut (`scrollToTopRequests`).
     var tabSelection: Binding<AppTab> {
         Binding(
             get: { MainActor.assumeIsolated { self.selectedTab } },
@@ -135,7 +147,11 @@ final class AppRouter: ObservableObject {
 
     func select(_ tab: AppTab) {
         if tab == selectedTab {
-            popToRoot(tab)
+            if stack(for: tab).isEmpty {
+                scrollToTopRequests[tab, default: 0] += 1
+            } else {
+                popToRoot(tab)
+            }
         } else {
             selectedTab = tab
         }

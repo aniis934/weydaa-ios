@@ -79,6 +79,7 @@ final class BlockedUsersViewModelTests: XCTestCase {
         XCTAssertEqual(model.state.items.map { $0.id }, ["u9"])
         XCTAssertNil(model.state.busyId)
         XCTAssertEqual(model.state.notice, L10n.chatUnblockedDone)
+        XCTAssertEqual(model.state.banner?.kind, .success)
         XCTAssertEqual(api.calls.filter { $0 == "blockUser" }.count, 0)
     }
 
@@ -98,6 +99,7 @@ final class BlockedUsersViewModelTests: XCTestCase {
         XCTAssertEqual(model.state.items.map { $0.id }, ["u6"])
         XCTAssertNil(model.state.busyId)
         XCTAssertEqual(model.state.notice, L10n.errorServer)
+        XCTAssertEqual(model.state.banner?.kind, .error)
         model.noticeShown()
         XCTAssertNil(model.state.notice)
     }

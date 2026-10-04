@@ -2,23 +2,22 @@ import SwiftUI
 
 @main
 struct WeydaApp: App {
-    /// Firebase, notifications système, jeton APNs et liens entrants (créé avant les `@StateObject` ci-dessous).
+    /// Conteneur de l'app, Firebase, notifications système, jeton APNs, raccourcis et liens entrants (créé avant les
+    /// `@StateObject` ci-dessous). Le conteneur lui appartient : une action de notification peut lancer l'app sans scène.
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @StateObject private var container = AppContainer()
     @StateObject private var router = AppRouter()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(container)
-                .environmentObject(container.sessionManager)
-                .environmentObject(container.connectivity)
+                .environmentObject(appDelegate.container)
+                .environmentObject(appDelegate.container.sessionManager)
+                .environmentObject(appDelegate.container.connectivity)
                 .environmentObject(router)
                 .onAppear {
-                    // Interface prête : l'appui sur une notification reçu au lancement est rejoué, le fil visible est
-                    // suivi pour les bannières.
-                    appDelegate.attach(container: container, router: router)
+                    // Interface prête : l'écran demandé au lancement (notification, raccourci, lien) s'ouvre.
+                    appDelegate.attach(router: router)
                 }
                 .onOpenURL { url in
                     // Schéma `weydaa://` (et lien universel si SwiftUI le livre ici) : l'écran visé s'empile sur
@@ -33,7 +32,7 @@ struct WeydaApp: App {
         }
         // Premier plan / arrière-plan : socket temps réel ouverte ou fermée, pastilles relues au retour.
         .onChange(of: scenePhase) { phase in
-            container.scenePhaseChanged(phase)
+            appDelegate.container.scenePhaseChanged(phase)
         }
     }
 }

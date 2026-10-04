@@ -207,6 +207,25 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(api.count("addFavorite"), 1)
         XCTAssertTrue(model.favoriteIds.contains("a1"))
         XCTAssertEqual(logins.value, 1)
+        XCTAssertNil(model.banner)
+    }
+
+    /// Cœur refusé par le serveur : le cœur revient à son état (repository) et une bannière d'erreur le dit (les
+    /// échecs étaient muets avant la phase 8) ; fermée, elle disparaît.
+    @MainActor
+    func testARefusedHeartShowsAnErrorBanner() async {
+        let api = FakeWeydaAPI()
+        let session = CurrentValueSubject<User?, Never>(HomeTestData.member)
+        let model = makeModel(api, session: session.eraseToAnyPublisher())
+        let listing = HomeTestData.annonce("a1").toDomain()
+        api.onAddFavorite = { _ in throw FakeWeydaAPI.apiError(500) }
+
+        await model.toggleFavorite(listing)?.value
+        XCTAssertFalse(model.favoriteIds.contains("a1"))
+        XCTAssertEqual(model.banner?.kind, WeydaBanner.Kind.error)
+        XCTAssertNil(model.banner?.action)
+        model.bannerDismissed()
+        XCTAssertNil(model.banner)
     }
 
     /// « Pour vous » : chargé pour un membre, vidé à la déconnexion (sans requête), relu à la connexion suivante.

@@ -2,9 +2,9 @@ import XCTest
 
 /// Tour du fil de discussion (9c) en API simulée (`MockFixtures/routes-chat.json` + `chat/`), session simulée
 /// `-WeydaLoggedIn YES` (utilisateur fictif `mock-me`) : offre ouverte à laquelle répondre, feuille de contre-offre,
-/// offre acceptée, annonce gratuite, interlocuteur bloqué, fil archivé (annonce vendue), menu, confirmation de blocage,
-/// signalement, « écrit… », e-mail à vérifier, contact et offre depuis la fiche, visiteur. Socle commun (lancement,
-/// attente, captures) : `TourSupport.swift`.
+/// offre acceptée, annonce gratuite, interlocuteur bloqué, fil archivé (annonce vendue), menu, confirmation de blocage
+/// (feuille d'actions depuis la phase 8), signalement, « écrit… », e-mail à vérifier, contact et offre depuis la fiche,
+/// visiteur. Socle commun (lancement, attente, captures) : `TourSupport.swift`.
 final class TourChatTests: TourTestCase {
     /// Session simulée ouverte, e-mail vérifié.
     private static let member = ["-WeydaLoggedIn", "YES"]
@@ -91,14 +91,14 @@ final class TourChatTests: TourTestCase {
         app.terminate()
     }
 
-    /// « Bloquer cet utilisateur » : confirmation.
+    /// « Bloquer cet utilisateur » : confirmation (feuille d'actions depuis la phase 8 : `app.sheets`).
     @MainActor
     func test9c08BlockConfirmation() {
         let app = launchChat("mock-c2")
         tap("chat.menu", in: app)
         settle(0.8)
         tapMenuItem("chat.menu.block", labels: Self.blockLabels, in: app)
-        XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 10), "confirmation de blocage absente")
+        XCTAssertNotNil(actionSheet(in: app), "confirmation de blocage absente")
         settle(0.8)
         pause()
         capture("9c-chat-blockConfirm-1")
@@ -238,5 +238,13 @@ final class TourChatTests: TourTestCase {
             }
         }
         XCTFail("entrée de menu \(identifier) introuvable")
+    }
+
+    /// La feuille d'actions (`confirmationDialog`) : `app.sheets` sur iPhone ; repli sur un popover (iOS 26 peut ancrer
+    /// la feuille) puis sur une alerte. Nil au bout du délai.
+    @MainActor
+    private func actionSheet(in app: XCUIApplication, timeout: TimeInterval = 10) -> XCUIElement? {
+        // Aide commune (TourSupport) : repli iOS 16, où XCUITest ne range pas la feuille dans `sheets`.
+        confirmationDialog(in: app, timeout: timeout)
     }
 }

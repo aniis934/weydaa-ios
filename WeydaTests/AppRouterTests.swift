@@ -94,6 +94,30 @@ final class AppRouterTests: XCTestCase {
     }
 
     @MainActor
+    func testTappingTheActiveTabAtItsRootAsksItToScrollToTop() {
+        let router = makeRouter()
+        router.push(.detail(idOrSlug: "a1"))
+        router.tabSelection.wrappedValue = .home
+        XCTAssertEqual(router.scrollToTopRequests[.home] ?? 0, 0, "pile non vide : retour à la racine seul")
+        router.tabSelection.wrappedValue = .home
+        XCTAssertEqual(router.scrollToTopRequests[.home], 1, "déjà à la racine : retour en haut")
+        router.tabSelection.wrappedValue = .home
+        XCTAssertEqual(router.scrollToTopRequests[.home], 2)
+        router.tabSelection.wrappedValue = .listings
+        XCTAssertEqual(router.scrollToTopRequests[.listings] ?? 0, 0, "changer d'onglet ne remonte rien")
+        XCTAssertEqual(router.scrollToTopRequests[.home], 2)
+    }
+
+    @MainActor
+    func testShortcutAtLaunchOpensItsScreen() {
+        XCTAssertEqual(AppRouter(initialTab: .home, launchRoute: nil, shortcut: .messages).selectedTab, .messages)
+        XCTAssertEqual(AppRouter(initialTab: .home, launchRoute: nil, shortcut: .post).selectedTab, .post)
+        let search = AppRouter(initialTab: .home, launchRoute: nil, shortcut: .search)
+        XCTAssertEqual(search.selectedTab, .listings)
+        XCTAssertEqual(search.listingsLaunch, ListingsLaunch(focusSearch: true))
+    }
+
+    @MainActor
     func testOpenListingsSelectsTheTabAtItsRootWithCriteria() {
         let router = makeRouter(tab: .listings)
         router.push(.detail(idOrSlug: "old"))

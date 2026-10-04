@@ -10,12 +10,13 @@ struct FavoritesView: View {
     init() {}
 
     var body: some View {
-        AccountMemberGate(title: L10n.favoritesTitle) { _ in
+        AccountMemberGate(title: L10n.favoritesTitle) { user in
             FavoritesHost(
                 model: FavoritesViewModel(
                     favorites: container.favorites,
                     session: container.sessionManager.$user.eraseToAnyPublisher()
-                )
+                ),
+                currentUserId: user.id
             )
         }
     }
@@ -26,13 +27,15 @@ struct FavoritesView: View {
 private struct FavoritesHost: View {
     @StateObject private var model: FavoritesViewModel
     @EnvironmentObject private var router: AppRouter
+    private let currentUserId: String?
 
-    init(model: @autoclosure @escaping () -> FavoritesViewModel) {
+    init(model: @autoclosure @escaping () -> FavoritesViewModel, currentUserId: String?) {
         _model = StateObject(wrappedValue: model())
+        self.currentUserId = currentUserId
     }
 
     var body: some View {
-        FavoritesScreen(state: model.state, actions: actions)
+        FavoritesScreen(state: model.state, currentUserId: currentUserId, actions: actions)
             // `@MainActor` explicite : juste, que le SDK fasse hériter cette fermeture de l'acteur de la vue ou non.
             .refreshable { @MainActor [model] in
                 await model.pullToRefresh()
@@ -47,10 +50,14 @@ private struct FavoritesHost: View {
         let router = self.router
         return FavoritesActions(
             onOpen: { (listing: Listing) in
-                router.push(.detail(idOrSlug: listing.id))
+                // Même clé que la source posée sur la carte : la fiche zoome depuis elle (iOS 18).
+                router.push(.detail(idOrSlug: listing.id, zoomSource: FavoritesScreen.zoomKey(for: listing)))
             },
             onRemove: { (listing: Listing) in
                 _ = model.remove(listing)
+            },
+            onSeller: { (sellerId: String) in
+                router.push(.seller(id: sellerId))
             },
             onRetry: {
                 _ = model.load()
@@ -60,8 +67,11 @@ private struct FavoritesHost: View {
                 router.popToRoot(.listings)
                 router.select(.listings)
             },
-            onNoticeShown: {
-                model.noticeShown()
+            onBannerAction: { (action: BannerAction) in
+                _ = model.bannerAction(action)
+            },
+            onBannerDismiss: {
+                model.bannerDismissed()
             }
         )
     }
@@ -71,7 +81,11 @@ private struct FavoritesHost: View {
 struct FavoritesActions {
     var onOpen: (Listing) -> Void
     var onRemove: (Listing) -> Void
+    /// « Voir le vendeur » du menu d'appui long.
+    var onSeller: (String) -> Void
     var onRetry: () -> Void
     var onBrowse: () -> Void
-    var onNoticeShown: () -> Void
+    /// « Annuler » de la bannière « Retiré des favoris ».
+    var onBannerAction: (BannerAction) -> Void
+    var onBannerDismiss: () -> Void
 }

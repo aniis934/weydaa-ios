@@ -147,6 +147,8 @@ final class ProfileViewModelsTests: XCTestCase {
         XCTAssertNil(model.state.busyId)
         XCTAssertEqual(model.state.items[0].listingStatus, .sold)
         XCTAssertEqual(model.state.notice, L10n.myListingSoldDone)
+        XCTAssertEqual(model.state.banner?.kind, .success)
+        XCTAssertFalse(model.asksForReview, "demande de note inerte par défaut")
         model.noticeShown()
         XCTAssertNil(model.state.notice)
 
@@ -167,6 +169,7 @@ final class ProfileViewModelsTests: XCTestCase {
         api.onPatchAnnonce = { _, _ in throw FakeWeydaAPI.apiError(400, #"{"error":"renewalLimitReached","remaining":0}"#) }
         await model.renew(renewed)?.value
         XCTAssertEqual(model.state.notice, L10n.errorRenewalLimit)
+        XCTAssertEqual(model.state.banner?.kind, .error)
         XCTAssertEqual(model.state.items.count, 2)
 
         // Suppression : DELETE puis retrait de la liste.
@@ -179,6 +182,30 @@ final class ProfileViewModelsTests: XCTestCase {
         XCTAssertEqual(model.state.items.map { $0.id }, ["a2"])
         XCTAssertEqual(model.state.total, 1)
         XCTAssertEqual(model.state.notice, L10n.myListingDeleted)
+    }
+
+    /// Annonce vendue = moment positif : au 2e moment, la note est demandée (une fois par version).
+    @MainActor
+    func testMyListingsSoldAsksForAReviewAtTheSecondPositiveMoment() async throws {
+        let suiteName = "MyListingsReview-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(1, forKey: ReviewPrompter.momentsKey)
+        let prompter = ReviewPrompter(defaults: defaults, version: "1.0", isEnabled: true)
+        let context = try await signedIn()
+        context.api.onMyAnnonces = { _, _, _ in
+            AnnoncesPageDTO(annonces: [AnnonceDTO(id: "a1", title: "Active", status: "ACTIVE")], total: 1, page: 1, totalPages: 1)
+        }
+        context.api.onUpdateAnnonce = { id, _ in AnnonceDTO(id: id, title: "Active", status: "SOLD") }
+        let model = MyListingsViewModel(
+            users: context.users,
+            annonces: AnnonceRepository(api: context.api),
+            reviewPrompter: prompter
+        )
+        await model.appear()?.value
+        model.askMarkSold(model.state.items[0])
+        await model.confirmAction()?.value
+        XCTAssertTrue(model.asksForReview)
     }
 
     @MainActor

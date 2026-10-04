@@ -3,7 +3,7 @@ import UIKit
 
 // Briques propres aux écrans du compte (Profil, Mes annonces, Mes données, Nous contacter). Les champs, le bandeau
 // d'erreur et le bouton principal des formulaires sont ceux de la connexion (`Weyda/Features/Auth/AuthComponents.swift`,
-// comme sur Android) ; le message bref en bas d'écran est celui de la fiche (`floatingNotice`, DetailShared.swift).
+// comme sur Android) ; le message bref en bas d'écran est la bannière commune (`weydaBanner`, Banner.swift).
 // Les noms d'ici sont préfixés « Account » pour ne jamais en croiser un autre dans le module.
 
 // MARK: - Garde des écrans de membre
@@ -41,7 +41,7 @@ struct AccountMemberGate<Content: View>: View {
                     onLogin: { router.requestLogin() }
                 )
                 .navigationTitle(title)
-                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitleDisplayMode(.large)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("screen.loginRequired")
             }
@@ -58,6 +58,20 @@ struct AccountMemberGate<Content: View>: View {
                 dismiss()
             }
         }
+    }
+}
+
+// MARK: - Bannières
+
+/// Bannières des écrans du compte et du dépôt (`weydaBanner`) : succès (pictogramme coché ; elle vibre d'elle-même) ou
+/// échec (pictogramme d'alerte, vibration d'erreur). Créées UNE fois, dans le ViewModel.
+nonisolated enum AccountBanner {
+    static func success(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "checkmark.circle.fill", kind: .success)
+    }
+
+    static func failure(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "exclamationmark.circle.fill", kind: .error)
     }
 }
 

@@ -138,6 +138,10 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var favoriteIds: Set<String> = []
     /// Un compte est connecté : cloche des notifications, « Pour vous », bascule des favoris.
     @Published private(set) var isLoggedIn = false
+    /// Compte connecté (nil = visiteur) : le menu d'appui long ne propose pas « Voir le vendeur » sur ses annonces.
+    @Published private(set) var userId: String? = nil
+    /// Bannière en bas de l'écran : bascule d'un favori refusée par le serveur (déjà annulée par le repository).
+    @Published private(set) var banner: WeydaBanner? = nil
 
     private let annonces: AnnonceRepository
     private let categories: CategoryRepository
@@ -146,7 +150,6 @@ final class HomeViewModel: ObservableObject {
     /// Visiteur qui touche un cœur : `router.requestLogin()`.
     private let onLoginRequired: () -> Void
 
-    private var userId: String?
     /// La première valeur de session est l'état de départ (lu par le premier chargement), pas un changement.
     private var sessionKnown = false
     private var wasOffline = false
@@ -315,14 +318,35 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Favoris
 
-    /// Cœur touché : un membre bascule le favori (optimiste ; un refus du serveur est annulé et publié par le
-    /// repository) ; un visiteur est invité à se connecter — comme `HomeRoute` (Android).
-    func toggleFavorite(_ listing: Listing) {
+    /// Cœur touché (ou menu d'appui long) : un membre bascule le favori (optimiste ; un refus du serveur est annulé
+    /// par le repository et dit par une bannière d'erreur) ; un visiteur est invité à se connecter — comme `HomeRoute`
+    /// (Android). Renvoie la tâche de la bascule (les tests l'attendent).
+    @discardableResult
+    func toggleFavorite(_ listing: Listing) -> Task<Void, Never>? {
         guard isLoggedIn else {
             onLoginRequired()
-            return
+            return nil
         }
-        favorites.toggleDetached(listing.id)
+        let repository = favorites
+        let id = listing.id
+        return Task { [weak self] in
+            do {
+                _ = try await repository.toggle(id)
+            } catch {
+                self?.favoriteFailed(error)
+            }
+        }
+    }
+
+    /// La bannière s'est fermée (délai écoulé, glissée vers le bas).
+    func bannerDismissed() {
+        banner = nil
+    }
+
+    /// Refus du serveur : le cœur est déjà revenu à son état ; le message dit pourquoi (rien pour une annulation).
+    private func favoriteFailed(_ error: any Error) {
+        guard let message = ErrorMapper.message(for: error) else { return }
+        banner = WeydaBanner(message, symbol: "exclamationmark.circle", kind: .error)
     }
 
     // MARK: - Session et réseau

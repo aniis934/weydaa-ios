@@ -11,8 +11,9 @@ struct RouteDestination: View {
 
     var body: some View {
         switch route {
-        case .detail(let idOrSlug):
+        case .detail(let idOrSlug, let zoomSource):
             DetailView(idOrSlug: idOrSlug)
+                .listingZoomDestination(id: zoomSource)
         case .seller(let id):
             SellerView(id: id)
         case .webPage(let page):

@@ -214,7 +214,8 @@ final class SellerViewModelTests: XCTestCase {
         XCTAssertEqual(sent.value?.reason, "FRAUD")
         XCTAssertEqual(sent.value?.details, "Demande un acompte par virement.")
         XCTAssertFalse(model.isReportPresented)
-        XCTAssertEqual(model.state.notice, L10n.reportSent)
+        XCTAssertEqual(model.state.banner?.message, L10n.reportSent)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.success)
 
         // Refus du serveur (soi-même, déjà signalé…) : la feuille se ferme avec le message.
         model.noticeShown()
@@ -222,7 +223,7 @@ final class SellerViewModelTests: XCTestCase {
         model.openReport()
         await model.confirmReport(reason: .spam, details: "")
         XCTAssertFalse(model.isReportPresented)
-        XCTAssertEqual(model.state.notice, L10n.errorAlreadyReported)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorAlreadyReported)
     }
 
     @MainActor
@@ -246,11 +247,12 @@ final class SellerViewModelTests: XCTestCase {
         XCTAssertTrue(model.isBlockConfirmPresented)
         await model.setBlocked(true)
         XCTAssertTrue(model.state.isBlocked)
-        XCTAssertEqual(model.state.notice, L10n.chatBlockedDone)
+        XCTAssertEqual(model.state.banner?.message, L10n.chatBlockedDone)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.success)
 
         await model.setBlocked(false)
         XCTAssertFalse(model.state.isBlocked)
-        XCTAssertEqual(model.state.notice, L10n.chatUnblockedDone)
+        XCTAssertEqual(model.state.banner?.message, L10n.chatUnblockedDone)
         XCTAssertEqual(blocked.value, ["block u9", "unblock u9"])
 
         // Échec : l'état ne change pas, le message s'affiche.
@@ -258,7 +260,7 @@ final class SellerViewModelTests: XCTestCase {
         await model.setBlocked(true)
         XCTAssertFalse(model.state.isBlocked)
         XCTAssertFalse(model.state.isBlockBusy)
-        XCTAssertNotNil(model.state.notice)
+        XCTAssertNotNil(model.state.banner?.message)
     }
 
     @MainActor
