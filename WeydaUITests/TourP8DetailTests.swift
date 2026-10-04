@@ -116,7 +116,7 @@ final class TourP8DetailTests: TourTestCase {
         tap("seller.menu", in: app)
         settle(0.8)
         tapMenuItem("seller.block", labels: Self.blockLabels, in: app)
-        XCTAssertTrue(app.sheets.firstMatch.waitForExistence(timeout: 10), "feuille d'actions « Bloquer » absente")
+        XCTAssertNotNil(confirmationDialog(in: app), "feuille d'actions « Bloquer » absente")
         settle(0.8)
         pause()
         capture("11d-08-seller-blockSheet-1")

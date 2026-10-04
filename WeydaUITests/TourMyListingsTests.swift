@@ -151,21 +151,21 @@ final class TourMyListingsTests: TourTestCase {
     /// Le bouton de la confirmation qui n'est pas « Annuler ».
     @MainActor
     private func confirmButton(in dialog: XCUIElement) -> XCUIElement? {
-        dialog.buttons.allElementsBoundByIndex.first { !Self.cancelLabels.contains($0.label) }
+        let byLabel = dialog.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [Self.soldConfirmLabels])).firstMatch
+        if byLabel.exists {
+            return byLabel
+        }
+        return dialog.buttons.allElementsBoundByIndex.first { !Self.cancelLabels.contains($0.label) }
     }
+
+    /// « Confirmer la vente », dans les 3 langues.
+    private static let soldConfirmLabels: [String] = ["Confirmer la vente", "تأكيد البيع", "Confirm sale"]
 
     /// La feuille d'actions (`confirmationDialog`) : `app.sheets` sur iPhone ; repli sur un popover (iOS 26 peut ancrer
     /// la feuille) puis sur une alerte. Nil au bout du délai.
     @MainActor
     private func actionSheet(in app: XCUIApplication, timeout: TimeInterval = 10) -> XCUIElement? {
-        let deadline = Date().addingTimeInterval(timeout)
-        repeat {
-            let candidates: [XCUIElement] = [app.sheets.firstMatch, app.popovers.firstMatch, app.alerts.firstMatch]
-            if let found = candidates.first(where: { $0.exists }) {
-                return found
-            }
-            Thread.sleep(forTimeInterval: 0.25)
-        } while Date() < deadline
-        return nil
+        // Aide commune (TourSupport) : repli iOS 16, où XCUITest ne range pas la feuille dans `sheets`.
+        confirmationDialog(in: app, timeout: timeout)
     }
 }

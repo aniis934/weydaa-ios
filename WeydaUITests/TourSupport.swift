@@ -89,6 +89,29 @@ class TourTestCase: XCTestCase {
         app.terminate()
     }
 
+    /// Bouton qui referme une feuille d'actions sans rien faire (« Annuler », « Continuer » des abandons), 3 langues.
+    static let dialogCancelLabels: [String] = ["Annuler", "إلغاء", "Cancel", "Continuer", "متابعة التعديل", "Keep editing"]
+
+    /// La feuille d'actions (`confirmationDialog`) à l'écran : `app.sheets` (iPhone), un popover (iOS 26 l'ancre à son
+    /// bouton) ou une alerte. Sur iOS 16, XCUITest ne la range dans aucun de ces types : elle est reconnue à son bouton
+    /// d'annulation, et c'est l'app entière qui est rendue (ses boutons s'y cherchent par libellé). Nil au bout du délai.
+    @MainActor
+    func confirmationDialog(in app: XCUIApplication, timeout: TimeInterval = 10) -> XCUIElement? {
+        let cancel = app.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [Self.dialogCancelLabels])).firstMatch
+        let deadline = Date().addingTimeInterval(timeout)
+        repeat {
+            let candidates: [XCUIElement] = [app.sheets.firstMatch, app.popovers.firstMatch, app.alerts.firstMatch]
+            if let found = candidates.first(where: { $0.exists }) {
+                return found
+            }
+            if cancel.exists {
+                return app
+            }
+            Thread.sleep(forTimeInterval: 0.25)
+        } while Date() < deadline
+        return nil
+    }
+
     /// « 30-detail-sold » → « detail » : le segment qui suit le numéro de la capture.
     static func screenName(in name: String) -> String {
         let parts = name.split(separator: "-").map { String($0) }

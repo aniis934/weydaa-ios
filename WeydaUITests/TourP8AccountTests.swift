@@ -202,14 +202,7 @@ final class TourP8AccountTests: TourTestCase {
     /// la feuille) puis sur une alerte. Nil au bout du délai.
     @MainActor
     private func actionSheet(in app: XCUIApplication, timeout: TimeInterval = 10) -> XCUIElement? {
-        let deadline = Date().addingTimeInterval(timeout)
-        repeat {
-            let candidates: [XCUIElement] = [app.sheets.firstMatch, app.popovers.firstMatch, app.alerts.firstMatch]
-            if let found = candidates.first(where: { $0.exists }) {
-                return found
-            }
-            Thread.sleep(forTimeInterval: 0.25)
-        } while Date() < deadline
-        return nil
+        // Aide commune (TourSupport) : repli iOS 16, où XCUITest ne range pas la feuille dans `sheets`.
+        confirmationDialog(in: app, timeout: timeout)
     }
 }

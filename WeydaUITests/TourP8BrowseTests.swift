@@ -13,6 +13,8 @@ final class TourP8BrowseTests: TourTestCase {
     private static let removeLabels: [String] = ["Retirer des favoris", "إزالة من المفضلة", "Remove from favorites"]
     /// Bouton du glissement d'une alerte (« Supprimer l'alerte »), dans les 3 langues.
     private static let deleteLabels: [String] = ["Supprimer l'alerte", "حذف التنبيه", "Delete alert"]
+    /// « Abandonner » de la feuille des filtres, dans les 3 langues.
+    private static let discardLabels: [String] = ["Abandonner", "تجاهل", "Discard"]
 
     // MARK: - Appui long
 
@@ -136,20 +138,21 @@ final class TourP8BrowseTests: TourTestCase {
         XCTAssertTrue(close.waitForExistence(timeout: 5), "« Fermer » introuvable")
         close.tap()
 
-        let dialog = app.sheets.firstMatch
-        XCTAssertTrue(dialog.waitForExistence(timeout: 10), "feuille d'actions « Abandonner » absente")
+        let found = confirmationDialog(in: app)
+        XCTAssertNotNil(found, "feuille d'actions « Abandonner » absente")
         settle(0.8)
         pause()
         capture("11b-06-filters-discard-1")
 
-        // « Abandonner » : le bouton destructif (identifiant, sinon le premier de la feuille d'actions).
-        if dialog.exists {
+        // « Abandonner » : par identifiant (iOS 26), sinon par libellé (iOS 16 : `dialog` est l'app entière).
+        if let dialog = found {
             // Le bouton peut apparaître deux fois dans l'arbre d'accessibilité de la feuille d'actions : le premier.
             let discard = dialog.buttons.matching(identifier: "filters.discard").firstMatch
+            let byLabel = dialog.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [Self.discardLabels])).firstMatch
             if discard.exists {
                 discard.tap()
-            } else if dialog.buttons.count > 0 {
-                dialog.buttons.element(boundBy: 0).tap()
+            } else if byLabel.exists {
+                byLabel.tap()
             }
             XCTAssertTrue(waitForScreen("listings", in: app, timeout: 10), "screen.listings introuvable après « Abandonner »")
         }
