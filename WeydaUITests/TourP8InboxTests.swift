@@ -60,6 +60,12 @@ final class TourP8InboxTests: TourTestCase {
         }
         row.press(forDuration: 1.0)
         settle(1.0)
+        // Le menu d'appui long peut ne pas s'ouvrir du premier coup (vu une fois dans le tour filmé) : second appui long.
+        let item = app.buttons.matching(identifier: "conversation.menu.archive.\(Self.conversation)").firstMatch
+        if !item.waitForExistence(timeout: 3) && row.exists {
+            row.press(forDuration: 1.5)
+            settle(1.0)
+        }
         tapMenuItem("conversation.menu.archive.\(Self.conversation)", labels: Self.archiveLabels, in: app)
         waitUntilGone(row)
         let notice = app.descendants(matching: .any)["notice"]
