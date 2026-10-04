@@ -73,6 +73,14 @@
       adresses relais Apple ne partent pas ; 7) feux verts ci-dessous, puis vérifier l'AASA sur les deux domaines.
 
 ## Feux verts
+- [ ] **Phase 8 — PR serveur B (weyda2026 #6) : ajouter `aps.category`** aux notifications iOS (`src/lib/fcm.ts`,
+      `buildFcmMessage` : `MESSAGE` → « MESSAGE », `OFFER_RECEIVED` / `OFFER_COUNTER` → « OFFER »). Sans ça, les boutons
+      « Répondre », « Accepter », « Refuser » des notifications n'apparaissent pas (l'app marche quand même). Petit ajout, PR toujours
+      NON fusionnée. Autorisation incluse dans le message de lancement de la phase 8 (`PROMPT-REPRISE.md`).
+- [ ] (Plus tard, facultatif) **Marquer une conversation comme non lue** : demande une route serveur qui n'existe pas
+      (`PATCH /api/conversations/[id]`). Écarté de la phase 8.
+- [ ] (Après le premier TestFlight) **Photo de l'annonce dans les notifications** : extension Notification Service = nouvel
+      App ID (`com.weydaa.app.NotificationService`) + `mutable-content` côté serveur.
 - [ ] **Les 3 PR serveur ont été rebasées sur `master` (e74bc6a) le 2026-10-04** (pages sous `(site)/`, textes légaux réécrits
       par l'audit) : tsc, vitest, lint et CI verts, sans conflit, NON fusionnées. Textes à relire avant de fusionner :
       §5 des CGU (lot B), section iOS n° 14 + ligne Apple des prestataires de la confidentialité (lot C), e-mail « connexion
@@ -126,6 +134,8 @@
 - [ ] Fin de phase 5 : messagerie (envoyer, offre, contre-offre, supprimer, bloquer) avec un second compte (toi sur le site) ;
       push app fermée / au premier plan / appui → le bon fil ; lien weydaa.com ouvert depuis Notes → l'app s'ouvre sur l'annonce
       (attend : compte Apple, clé APNs dans Firebase, app iOS Firebase + secret `GOOGLE_SERVICE_INFO_PLIST`, lots A et B déployés).
+- [ ] Phase 8 : depuis une notification, répondre à un message, accepter / refuser une offre (app fermée, écran verrouillé) ;
+      raccourcis de l'icône (appui long) ; demande de note (ne s'affiche pas dans TestFlight : normal).
 - [ ] Test final guidé (~30 min) puis soumission.
 
 ## Problèmes rencontrés en autonomie
