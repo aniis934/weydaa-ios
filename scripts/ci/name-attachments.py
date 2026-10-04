@@ -36,6 +36,9 @@ for item in attachments(manifest):
     suggested = item.get("suggestedHumanReadableName") or item["exportedFileName"]
     match = pattern.match(suggested)
     name = f"{match.group(1)}{match.group(2)}" if match else suggested
+    # Pièces jointes d'un échec (« Debug description for `"chat.offer.counter" Any`.txt ») : les guillemets et
+    # autres caractères interdits par actions/upload-artifact feraient échouer la publication de TOUTES les captures.
+    name = re.sub(r'[\\/:*?"<>|`\s]+', "_", name).strip("_.") or item["exportedFileName"]
     target = os.path.join(folder, name)
     if os.path.exists(exported) and not os.path.exists(target):
         os.rename(exported, target)
