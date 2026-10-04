@@ -57,8 +57,9 @@ final class TourP8BrowseTests: TourTestCase {
         pause()
         capture("11b-03-favorites-undo-1")
 
-        let undo = app.buttons["notice.action"]
-        if undo.waitForExistence(timeout: 3) {
+        // La bannière à « Annuler » vit ~7 s : l'appui n'est tenté que si elle est encore là (jamais une assertion).
+        let undo = app.buttons.matching(identifier: "notice.action").firstMatch
+        if undo.exists && undo.isHittable {
             undo.tap()
             _ = row.waitForExistence(timeout: 10)
             settle(0.8)
@@ -90,8 +91,9 @@ final class TourP8BrowseTests: TourTestCase {
         pause()
         capture("11b-05-alerts-undo-1")
 
-        let undo = app.buttons["notice.action"]
-        if undo.waitForExistence(timeout: 3) {
+        // La bannière à « Annuler » vit ~7 s : l'appui n'est tenté que si elle est encore là (jamais une assertion).
+        let undo = app.buttons.matching(identifier: "notice.action").firstMatch
+        if undo.exists && undo.isHittable {
             undo.tap()
             _ = row.waitForExistence(timeout: 10)
             settle(0.8)
@@ -136,7 +138,8 @@ final class TourP8BrowseTests: TourTestCase {
 
         // « Abandonner » : le bouton destructif (identifiant, sinon le premier de la feuille d'actions).
         if dialog.exists {
-            let discard = dialog.buttons["filters.discard"]
+            // Le bouton peut apparaître deux fois dans l'arbre d'accessibilité de la feuille d'actions : le premier.
+            let discard = dialog.buttons.matching(identifier: "filters.discard").firstMatch
             if discard.exists {
                 discard.tap()
             } else if dialog.buttons.count > 0 {

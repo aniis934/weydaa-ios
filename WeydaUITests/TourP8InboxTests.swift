@@ -68,8 +68,9 @@ final class TourP8InboxTests: TourTestCase {
         pause()
         capture("11i-03-conversations-archived-1")
 
-        let undo = app.buttons["notice.action"]
-        if undo.waitForExistence(timeout: 3) {
+        // La bannière à « Annuler » vit ~7 s : l'appui n'est tenté que si elle est encore là (jamais une assertion).
+        let undo = app.buttons.matching(identifier: "notice.action").firstMatch
+        if undo.exists && undo.isHittable {
             undo.tap()
             _ = row.waitForExistence(timeout: 10)
             settle(0.8)
@@ -98,8 +99,9 @@ final class TourP8InboxTests: TourTestCase {
         pause()
         capture("11i-04-notifications-deleted-1")
 
-        let undo = app.buttons["notice.action"]
-        if undo.waitForExistence(timeout: 3) {
+        // La bannière à « Annuler » vit ~7 s : l'appui n'est tenté que si elle est encore là (jamais une assertion).
+        let undo = app.buttons.matching(identifier: "notice.action").firstMatch
+        if undo.exists && undo.isHittable {
             undo.tap()
             _ = row.waitForExistence(timeout: 10)
             settle(0.8)
