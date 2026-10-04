@@ -1,5 +1,8 @@
 # Phase 8 (finition « à la Apple », lots 1 et 2) — contrats d'interface (complète CONTRACTS.md, CONTRACTS-P2…P7.md, SCREEN-BRIEF.md)
 
+> ✅ EXÉCUTÉ le 2026-10-05 (PR #11, galerie https://claude.ai/artifact/7LVhnEtgq5WriMZzTUZ5wm) — archive, ne pas exécuter. Ce qui a été
+> fait et les écarts : `docs/PLAN.md` § Phase 8.
+
 **Feu vert du propriétaire : 2026-10-04** (« GO lot un et deux »), à exécuter à la session suivante. Préparé le 2026-10-04 à partir
 de trois repérages du code (lignes citées = état de `main` à 7816f38 ; les revérifier, elles bougent). Dépôt de travail :
 `../weydaa-ios-p8` (worktree, branche `phase-8`, partie de `main`). Les agents : AUCUNE commande git. Pas de Mac : chaque erreur de
