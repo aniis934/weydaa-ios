@@ -4,19 +4,27 @@ import SwiftUI
 struct ConversationsActions {
     var onOpen: (Conversation) -> Void
     var onToggleArchive: (Conversation) -> Void
+    /// « Voir l'annonce » de l'appui long (identifiant de l'annonce).
+    var onOpenListing: (String) -> Void
     var onRetry: () -> Void
     var onLoadMore: () -> Void
-    var onNoticeShown: () -> Void
+    /// « Annuler » de la bannière.
+    var onBannerAction: (BannerAction) -> Void
+    var onBannerDismissed: () -> Void
 }
 
-/// Onglet Messages d'un membre, sans état propre — portage de `ConversationsScreen` : sélecteur Conversations /
-/// Archives (segmenté natif), recherche locale (`.searchable`), rangées dans une `List` native (glisser pour archiver
-/// ou désarchiver), page suivante en approchant du bas, états (squelettes, erreur, vide, aucun résultat), message bref.
+/// Onglet Messages d'un membre, sans état propre — portage de `ConversationsScreen` : grand titre, sélecteur
+/// Conversations / Archives (segmenté natif), recherche locale (`.searchable`), rangées dans une `List` native (glisser
+/// pour archiver ou désarchiver ; appui long : archiver, voir l'annonce), page suivante en approchant du bas, états
+/// (squelettes, erreur, vide, aucun résultat), bannière (« Annuler » après un archivage). L'onglet touché de nouveau
+/// remonte la liste en haut.
 struct ConversationsScreen: View {
     private let state: ConversationsState
     private let query: Binding<String>
     private let archived: Binding<Bool>
     private let actions: ConversationsActions
+    /// Onglet Messages touché alors qu'il est déjà à sa racine : retour à la première conversation.
+    @Environment(\.scrollToTopSignal) private var scrollToTopSignal
 
     /// La page suivante se demande quand l'une des 3 dernières rangées paraît (Android : même seuil).
     private static let prefetchDistance = 3
@@ -39,9 +47,9 @@ struct ConversationsScreen: View {
         }
         .background(WeydaColor.surface)
         .navigationTitle(L10n.navMessages)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
         .searchable(text: query, placement: .navigationBarDrawer(displayMode: .always), prompt: L10n.chatSearchPlaceholder)
-        .floatingNotice(state.notice, onShown: actions.onNoticeShown)
+        .weydaBanner(state.banner, onAction: actions.onBannerAction, onDismiss: actions.onBannerDismissed)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.conversations")
     }
@@ -71,32 +79,41 @@ struct ConversationsScreen: View {
         state.visibleItems(matching: query.wrappedValue)
     }
 
+    /// La liste dans un `ScrollViewReader` : l'onglet touché de nouveau (pile vide) remonte à la première rangée
+    /// affichée (identité de son `ForEach` = l'id de la conversation).
     private var list: some View {
         let items: [Conversation] = shownItems
         let trailing: Set<String> = Set(items.suffix(Self.prefetchDistance).map { $0.id })
-        return List {
-            ForEach(items) { conversation in
-                row(for: conversation, isTrailing: trailing.contains(conversation.id))
+        let topId: String = items.first?.id ?? ""
+        let signal: Int = scrollToTopSignal
+        return ScrollViewReader { proxy in
+            List {
+                ForEach(items) { conversation in
+                    row(for: conversation, isTrailing: trailing.contains(conversation.id))
+                }
+                if state.isLoadingMore {
+                    InlineLoader()
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(WeydaColor.surface)
+                }
             }
-            if state.isLoadingMore {
-                InlineLoader()
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(WeydaColor.surface)
-            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .scrollsToTop(on: signal, proxy: proxy, to: topId)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
     }
 
     /// Une rangée : appui = le fil ; glisser vers le bord de fin = archiver (désarchiver dans les archives), action
-    /// aussi proposée à VoiceOver par la liste.
+    /// aussi proposée à VoiceOver par la liste ; appui long = menu (voir l'annonce, archiver) avec l'aperçu de la
+    /// rangée.
     private func row(for conversation: Conversation, isTrailing: Bool) -> some View {
         let isBlocked: Bool = state.isBlocked(conversation)
         let label: String = ConversationsText.accessibilityLabel(for: conversation, userId: state.userId, isBlocked: isBlocked)
+        let userId: String = state.userId
         return Button {
             actions.onOpen(conversation)
         } label: {
-            ConversationRow(conversation: conversation, userId: state.userId, isBlocked: isBlocked)
+            ConversationRow(conversation: conversation, userId: userId, isBlocked: isBlocked)
         }
         .listRowInsets(EdgeInsets(top: WeydaSpace.sm, leading: WeydaSpace.screen, bottom: WeydaSpace.sm, trailing: WeydaSpace.screen))
         .listRowBackground(WeydaColor.surface)
@@ -110,6 +127,16 @@ struct ConversationsScreen: View {
         }
         .accessibilityLabel(label)
         .accessibilityIdentifier("conversation.row.\(conversation.id)")
+        .contextMenu {
+            ConversationMenuItems(
+                conversation: conversation,
+                archived: state.archived,
+                onToggleArchive: actions.onToggleArchive,
+                onOpenListing: actions.onOpenListing
+            )
+        } preview: {
+            ConversationMenuPreview(conversation: conversation, userId: userId, isBlocked: isBlocked)
+        }
         .onAppear {
             if isTrailing {
                 actions.onLoadMore()
@@ -138,6 +165,76 @@ struct ConversationsScreen: View {
                 message: L10n.chatNoConversationsDesc
             )
         }
+    }
+}
+
+/// Entrées de l'appui long sur une conversation : voir l'annonce (si elle est connue), puis archiver (désarchiver dans
+/// les archives) — les mêmes règles que le glissement, qui reste.
+private struct ConversationMenuItems: View {
+    private let conversation: Conversation
+    private let archived: Bool
+    private let onToggleArchive: (Conversation) -> Void
+    private let onOpenListing: (String) -> Void
+
+    init(
+        conversation: Conversation,
+        archived: Bool,
+        onToggleArchive: @escaping (Conversation) -> Void,
+        onOpenListing: @escaping (String) -> Void
+    ) {
+        self.conversation = conversation
+        self.archived = archived
+        self.onToggleArchive = onToggleArchive
+        self.onOpenListing = onOpenListing
+    }
+
+    var body: some View {
+        if let listingId = ConversationsText.listingId(of: conversation) {
+            Button {
+                onOpenListing(listingId)
+            } label: {
+                Label(L10n.menuOpenListing, systemImage: "tag")
+            }
+            .accessibilityIdentifier("conversation.menu.listing.\(conversation.id)")
+        }
+        Button {
+            onToggleArchive(conversation)
+        } label: {
+            Label(archiveTitle, systemImage: archiveSymbol)
+        }
+        .accessibilityIdentifier("conversation.menu.archive.\(conversation.id)")
+    }
+
+    private var archiveTitle: String {
+        archived ? L10n.chatUnarchive : L10n.chatArchive
+    }
+
+    private var archiveSymbol: String {
+        archived ? "tray.and.arrow.up" : "archivebox"
+    }
+}
+
+/// Aperçu de l'appui long : la rangée elle-même, à largeur fixe, sur le fond de la liste.
+private struct ConversationMenuPreview: View {
+    private let conversation: Conversation
+    private let userId: String
+    private let isBlocked: Bool
+
+    /// Tient sur le plus petit iPhone (375 pt) avec les marges du menu.
+    private static let width: CGFloat = 340
+
+    init(conversation: Conversation, userId: String, isBlocked: Bool) {
+        self.conversation = conversation
+        self.userId = userId
+        self.isBlocked = isBlocked
+    }
+
+    var body: some View {
+        ConversationRow(conversation: conversation, userId: userId, isBlocked: isBlocked)
+            .padding(.horizontal, WeydaSpace.screen)
+            .padding(.vertical, WeydaSpace.md)
+            .frame(width: Self.width)
+            .background(WeydaColor.surface)
     }
 }
 

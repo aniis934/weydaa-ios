@@ -29,7 +29,7 @@ struct ConversationsView: View {
                 onLogin: { router.requestLogin() }
             )
             .navigationTitle(L10n.navMessages)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.conversationsGuest")
         }
@@ -79,14 +79,20 @@ private struct ConversationsHost: View {
             onToggleArchive: { (conversation: Conversation) in
                 _ = model.toggleArchive(conversation)
             },
+            onOpenListing: { (listingId: String) in
+                router.push(.detail(idOrSlug: listingId))
+            },
             onRetry: {
                 _ = model.load()
             },
             onLoadMore: {
                 _ = model.loadMore()
             },
-            onNoticeShown: {
-                model.noticeShown()
+            onBannerAction: { (action: BannerAction) in
+                _ = model.bannerAction(action)
+            },
+            onBannerDismissed: {
+                model.bannerDismissed()
             }
         )
     }

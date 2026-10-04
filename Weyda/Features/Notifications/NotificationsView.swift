@@ -22,7 +22,8 @@ struct NotificationsView: View {
 }
 
 /// Possède le ViewModel ; une notification touchée est marquée lue puis ouvre sa cible (fiche, fil, profil,
-/// Mes annonces) sur la pile courante. Relit la liste en silence au retour sur l'écran.
+/// Mes annonces) sur la pile courante. Relit la liste en silence au retour sur l'écran ; en le quittant, envoie la
+/// suppression encore annulable (jamais perdue).
 private struct NotificationsHost: View {
     @StateObject private var model: NotificationsViewModel
     @EnvironmentObject private var router: AppRouter
@@ -39,6 +40,9 @@ private struct NotificationsHost: View {
             }
             .onAppear {
                 _ = model.appear()
+            }
+            .onDisappear {
+                _ = model.disappear()
             }
     }
 
@@ -64,8 +68,11 @@ private struct NotificationsHost: View {
             onLoadMore: {
                 _ = model.loadMore()
             },
-            onNoticeShown: {
-                model.noticeShown()
+            onBannerAction: { (action: BannerAction) in
+                model.bannerAction(action)
+            },
+            onBannerDismissed: {
+                _ = model.bannerDismissed()
             }
         )
     }

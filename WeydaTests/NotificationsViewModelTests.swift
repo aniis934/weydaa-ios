@@ -48,7 +48,8 @@ final class NotificationsViewModelTests: XCTestCase {
         await task?.value
         XCTAssertEqual(model.state.unreadCount, 2)
         XCTAssertTrue(model.state.items.allSatisfy { !$0.read })
-        XCTAssertEqual(model.state.notice, L10n.errorServer)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorServer)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.error)
     }
 
     @MainActor
@@ -108,10 +109,22 @@ final class NotificationsViewModelTests: XCTestCase {
         await model.appear()?.value
 
         let first = try XCTUnwrap(model.state.items.first(where: { $0.id == "n1" }))
-        await model.delete(first)?.value
+        // Suppression différée (phase 8) : la ligne part et le compteur baisse tout de suite, rien n'est envoyé.
+        XCTAssertNil(model.delete(first))
+        XCTAssertEqual(model.state.items.map { $0.id }, ["n2"])
+        XCTAssertEqual(model.state.unreadCount, 0)
+        XCTAssertEqual(api.count("deleteNotification"), 0)
+        XCTAssertEqual(repository.unreadCount, 1)
+        XCTAssertEqual(model.state.banner?.message, L10n.notificationDeleted)
+        XCTAssertEqual(model.state.banner?.action?.id, NotificationsViewModel.undoPrefix + "n1")
+
+        // La bannière se ferme : la suppression part, la pastille de l'app baisse une seule fois.
+        await model.bannerDismissed()?.value
+        XCTAssertEqual(api.count("deleteNotification"), 1)
         XCTAssertEqual(model.state.items.map { $0.id }, ["n2"])
         XCTAssertEqual(model.state.unreadCount, 0)
         XCTAssertEqual(repository.unreadCount, 0)
+        XCTAssertNil(model.state.banner)
     }
 
     @MainActor
@@ -186,14 +199,88 @@ final class NotificationsViewModelTests: XCTestCase {
         await model.appear()?.value
 
         let second = try XCTUnwrap(model.state.items.first(where: { $0.id == "n2" }))
-        let task = model.delete(second)
+        model.delete(second)
         XCTAssertEqual(model.state.items.map { $0.id }, ["n1", "n3"])
         XCTAssertEqual(model.state.unreadCount, 1)
-        await task?.value
+        await model.bannerDismissed()?.value
         XCTAssertEqual(model.state.items.map { $0.id }, ["n1", "n2", "n3"])
         XCTAssertEqual(model.state.unreadCount, 2)
-        XCTAssertEqual(model.state.notice, L10n.errorNotFound)
+        XCTAssertEqual(model.state.banner?.message, L10n.errorNotFound)
         XCTAssertEqual(repository.unreadCount, 2)
+    }
+
+    // MARK: - « Annuler » une suppression (phase 8)
+
+    @MainActor
+    func testUndoingADeletionPutsTheRowBackInPlaceWithoutCallingTheServer() async throws {
+        let api = FakeWeydaAPI()
+        api.onGetNotifications = { _, _ in
+            NotificationsViewModelTests.page(
+                [NotificationsViewModelTests.dto("n1", read: true), NotificationsViewModelTests.dto("n2"), NotificationsViewModelTests.dto("n3")],
+                unread: 2
+            )
+        }
+        api.onDeleteNotification = { _ in SimpleResponseDTO() }
+        let (model, repository) = makeModel(api)
+        await model.appear()?.value
+
+        let second = try XCTUnwrap(model.state.items.first(where: { $0.id == "n2" }))
+        model.delete(second)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["n1", "n3"])
+        XCTAssertEqual(model.state.unreadCount, 1)
+
+        let action = try XCTUnwrap(model.state.banner?.action)
+        model.bannerAction(action)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["n1", "n2", "n3"])
+        XCTAssertEqual(model.state.items.first(where: { $0.id == "n2" })?.read, false)
+        XCTAssertEqual(model.state.unreadCount, 2)
+        XCTAssertNil(model.state.banner)
+
+        // Rien n'est envoyé ensuite : ni à la fermeture d'une bannière, ni en quittant l'écran.
+        XCTAssertNil(model.bannerDismissed())
+        XCTAssertNil(model.disappear())
+        XCTAssertEqual(api.count("deleteNotification"), 0)
+        XCTAssertEqual(repository.unreadCount, 2)
+    }
+
+    @MainActor
+    func testThePendingDeletionIsSentByTheNextOneAndWhenLeavingAndHiddenFromRefreshes() async throws {
+        let api = FakeWeydaAPI()
+        api.onGetNotifications = { _, _ in
+            NotificationsViewModelTests.page(
+                [NotificationsViewModelTests.dto("n1"), NotificationsViewModelTests.dto("n2"), NotificationsViewModelTests.dto("n3", read: true)],
+                unread: 2
+            )
+        }
+        let deleted = FakeWeydaAPI.Box<[String]>([])
+        api.onDeleteNotification = { id in
+            deleted.value.append(id)
+            return SimpleResponseDTO()
+        }
+        let (model, repository) = makeModel(api)
+        await model.appear()?.value
+
+        let first = try XCTUnwrap(model.state.items.first(where: { $0.id == "n1" }))
+        model.delete(first)
+        // Retour sur l'écran : la relecture ne rend pas la ligne en attente, ni sa pastille.
+        await model.appear()?.value
+        XCTAssertEqual(model.state.items.map { $0.id }, ["n2", "n3"])
+        XCTAssertEqual(model.state.unreadCount, 1)
+        // Le temps réel non plus.
+        repository.onRealtime(first)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["n2", "n3"])
+
+        // Suppression suivante : la précédente part maintenant (tâche renvoyée).
+        let second = try XCTUnwrap(model.state.items.first(where: { $0.id == "n2" }))
+        await model.delete(second)?.value
+        XCTAssertEqual(deleted.value, ["n1"])
+        XCTAssertEqual(model.state.items.map { $0.id }, ["n3"])
+        XCTAssertEqual(model.state.unreadCount, 0)
+
+        // L'écran disparaît : la dernière part aussi, « Annuler » n'est plus proposé.
+        await model.disappear()?.value
+        XCTAssertEqual(deleted.value, ["n1", "n2"])
+        XCTAssertNil(model.state.banner)
     }
 
     @MainActor

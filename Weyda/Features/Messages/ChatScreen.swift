@@ -16,7 +16,9 @@ struct ChatActions {
     var block: () -> Void
     var unblock: () -> Void
     var report: () -> Void
-    var noticeShown: () -> Void
+    /// « Annuler » de la bannière (archivage).
+    var bannerAction: (BannerAction) -> Void
+    var bannerDismissed: () -> Void
 }
 
 /// Fil d'une conversation, sans état — portage de `ChatScreen` (Android) : en-tête (interlocuteur, « En ligne » /
@@ -99,8 +101,8 @@ struct ChatScreen: View {
 
 // MARK: - Fil chargé
 
-/// Annonce du fil en haut, messages, puis le composeur (ou l'encart « bloqué ») en bas ; le message bref se pose
-/// juste au-dessus du composeur.
+/// Annonce du fil en haut, messages, puis le composeur (ou l'encart « bloqué ») en bas ; la bannière se pose juste
+/// au-dessus du composeur.
 private struct ChatThreadContent: View {
     private let state: ChatState
     private let conversation: Conversation
@@ -124,8 +126,8 @@ private struct ChatThreadContent: View {
                     ChatListingBanner(annonce: annonce, onOpen: actions.openListing)
                 }
             }
-            // Message bref AVANT le composeur : il se pose juste au-dessus de lui.
-            .floatingNotice(state.notice, onShown: actions.noticeShown)
+            // Bannière AVANT le composeur : elle se pose juste au-dessus de lui.
+            .weydaBanner(state.banner, onAction: actions.bannerAction, onDismiss: actions.bannerDismissed)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 bottomBar
             }

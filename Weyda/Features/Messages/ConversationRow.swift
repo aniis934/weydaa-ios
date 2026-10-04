@@ -46,6 +46,11 @@ nonisolated enum ConversationsText {
         conversation.updatedAt ?? conversation.lastMessage?.createdAt
     }
 
+    /// Annonce de la conversation à ouvrir (« Voir l'annonce » de l'appui long) ; nil si elle est inconnue.
+    static func listingId(of conversation: Conversation) -> String? {
+        TextCheck.nonBlank(conversation.annonce?.id) ?? TextCheck.nonBlank(conversation.annonceId)
+    }
+
     /// Recherche locale : celle du modèle (nom, annonce, dernier message), sans le message d'un interlocuteur bloqué.
     static func matches(_ conversation: Conversation, query: String, userId: String, isBlocked: Bool) -> Bool {
         guard isBlocked else { return conversation.matches(query: query, userId: userId) }
@@ -85,6 +90,31 @@ nonisolated enum InboxText {
         guard let trimmed = TextCheck.nonBlank(name)?.trimmingCharacters(in: .whitespacesAndNewlines),
               let first = trimmed.first else { return nil }
         return String(first).uppercased()
+    }
+}
+
+/// Bannières de la boîte de réception (conversations, fil, notifications), créées UNE fois par les ViewModels (logique
+/// pure) : un refus ou une panne en `.error`, une confirmation en `.success` (elle vibre d'elle-même), une action
+/// annulable en `.info` avec « Annuler » (pas de vibration : le glissement plein en donne déjà une).
+nonisolated enum InboxBanner {
+    static func error(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "exclamationmark.circle.fill", kind: .error)
+    }
+
+    static func success(_ message: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: "checkmark.circle.fill", kind: .success)
+    }
+
+    /// Message suivi d'« Annuler » ; `undoId` dit à l'écran quoi annuler (`archive:<id>`, `notification:<id>`).
+    static func undoable(_ message: String, symbol: String, undoId: String) -> WeydaBanner {
+        WeydaBanner(message, symbol: symbol, kind: .info, action: .undo(undoId))
+    }
+
+    /// « Conversation archivée » / « désarchivée », avec « Annuler ».
+    static func archived(_ archived: Bool, undoId: String) -> WeydaBanner {
+        let message: String = archived ? L10n.chatArchived : L10n.chatUnarchived
+        let symbol: String = archived ? "archivebox" : "tray.and.arrow.up"
+        return undoable(message, symbol: symbol, undoId: undoId)
     }
 }
 

@@ -7,12 +7,15 @@ struct NotificationsActions {
     var onMarkAllRead: () -> Void
     var onRetry: () -> Void
     var onLoadMore: () -> Void
-    var onNoticeShown: () -> Void
+    /// « Annuler » de la bannière.
+    var onBannerAction: (BannerAction) -> Void
+    var onBannerDismissed: () -> Void
 }
 
 /// Cloche d'un membre, sans état propre — portage de `NotificationsScreen` : rangées dans une `List` native (appui =
-/// marquer lue puis ouvrir la cible, glisser = supprimer), « Tout marquer comme lu » (icône de la barre) tant qu'il
-/// reste des non lues, page suivante en approchant du bas, états (squelettes, erreur, vide), message bref.
+/// marquer lue puis ouvrir la cible, glisser = supprimer, « Annuler » dans la bannière), « Tout marquer comme lu »
+/// (icône de la barre) tant qu'il reste des non lues, page suivante en approchant du bas, états (squelettes, erreur,
+/// vide), bannière.
 struct NotificationsScreen: View {
     private let state: NotificationsState
     private let actions: NotificationsActions
@@ -46,7 +49,7 @@ struct NotificationsScreen: View {
                     }
                 }
             }
-            .floatingNotice(state.notice, onShown: actions.onNoticeShown)
+            .weydaBanner(state.banner, onAction: actions.onBannerAction, onDismiss: actions.onBannerDismissed)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.notifications")
     }
