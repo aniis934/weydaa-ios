@@ -10,7 +10,7 @@ nonisolated struct AlertCatalog: Equatable, Sendable {
 }
 
 /// État de « Mes alertes » — portage de `SavedSearchesUiState` (SavedSearchesScreen.kt), plus le catalogue des
-/// libellés, la suppression à confirmer et un message bref.
+/// libellés et la bannière du bas.
 nonisolated struct SavedSearchesState: Equatable, Sendable {
     var items: [SavedSearch] = []
     var isLoading: Bool = true
@@ -19,21 +19,31 @@ nonisolated struct SavedSearchesState: Equatable, Sendable {
     /// Erreur du chargement complet (écran d'erreur avec « Réessayer »).
     var errorMessage: String? = nil
     var catalog: AlertCatalog = AlertCatalog()
-    /// Alerte dont la suppression attend confirmation (nil = aucune boîte de dialogue).
-    var pendingDelete: SavedSearch? = nil
-    /// Message bref (alerte supprimée, refus du serveur), effacé par `noticeShown()`.
-    var notice: String? = nil
+    /// Bannière du bas : « Alerte supprimée » + « Annuler », refus du serveur, rafraîchissement impossible ; effacée
+    /// par `bannerDismissed()`.
+    var banner: WeydaBanner? = nil
+}
+
+/// Suppression d'alerte en attente (« Annuler » encore possible) : l'alerte et sa place dans la liste.
+private nonisolated struct DeferredAlertDeletion: Sendable {
+    let alert: SavedSearch
+    let index: Int
 }
 
 /// « Mes alertes » (recherches sauvegardées) — portage de `SavedSearchesViewModel` (Android) : liste, suppression
-/// optimiste APRÈS confirmation (l'alerte revient à sa place si le serveur refuse), ouverture (les paramètres sont
-/// déposés dans `SearchRepository.pendingParams`, que l'onglet Annonces applique de lui-même — y compris s'il n'a
-/// encore jamais été affiché : il les lit à sa création). Les critères se lisent avec le catalogue (catégories,
-/// wilayas, communes), chargé en silence. Chaque action renvoie sa tâche (`@discardableResult`).
+/// DIFFÉRÉE sans boîte de confirmation (la ligne part tout de suite, « Annuler » la remet ; la requête part à la
+/// fermeture de la bannière, à la suppression suivante ou en quittant l'écran ; l'alerte revient à sa place si le
+/// serveur refuse), ouverture (les paramètres sont déposés dans `SearchRepository.pendingParams`, que l'onglet Annonces
+/// applique de lui-même — y compris s'il n'a encore jamais été affiché : il les lit à sa création). Les critères se
+/// lisent avec le catalogue (catégories, wilayas, communes), chargé en silence. Chaque action renvoie sa tâche
+/// (`@discardableResult`).
 final class SavedSearchesViewModel: ObservableObject {
     @Published private(set) var state = SavedSearchesState()
     /// Alertes au plus par compte (compteur « n / 5 »).
     let limit: Int
+
+    /// Préfixe de l'action « Annuler » d'une suppression : `alert:<id>`.
+    static let undoPrefix = "alert:"
 
     private let savedSearches: SavedSearchesRepository
     private let search: SearchRepository
@@ -43,8 +53,10 @@ final class SavedSearchesViewModel: ObservableObject {
     /// Dernier remplissage du catalogue : le suivant l'attend (les caches des repositories rendent la suite immédiate).
     private var catalogTask: Task<Void, Never>?
     private var hasAppeared = false
-    /// Suppressions envoyées et pas encore confirmées : une relecture ne doit pas les rendre.
+    /// Suppressions en attente ou envoyées et pas encore confirmées : une relecture ne doit pas les rendre.
     private var pendingDeletions: Set<String> = []
+    /// Suppression que la bannière propose encore d'annuler (pas encore envoyée).
+    private var deferred: DeferredAlertDeletion?
 
     init(savedSearches: SavedSearchesRepository, search: SearchRepository, categories: CategoryRepository, geo: GeoRepository) {
         self.savedSearches = savedSearches
@@ -106,9 +118,7 @@ final class SavedSearchesViewModel: ObservableObject {
             let list = try await savedSearches.list()
             state.items = shown(list)
         } catch {
-            if let message = ErrorMapper.message(for: error) {
-                state.notice = message
-            }
+            showError(error)
         }
         state.isRefreshing = false
         await loadCatalog().value
@@ -124,37 +134,55 @@ final class SavedSearchesViewModel: ObservableObject {
 
     // MARK: - Suppression
 
-    func askDelete(_ alert: SavedSearch) {
-        state.pendingDelete = alert
-    }
-
-    func dismissDelete() {
-        state.pendingDelete = nil
-    }
-
-    /// Suppression confirmée : la ligne part tout de suite (« Alerte supprimée ») ; refus du serveur : elle revient à
-    /// sa place avec le message d'erreur. 404 = déjà supprimée (sur le site, par exemple) : c'est fait.
+    /// Glisser → « Supprimer l'alerte » : la ligne part tout de suite et la bannière « Alerte supprimée » propose
+    /// « Annuler ». La requête n'est PAS encore envoyée : elle part à la fermeture de la bannière, à la suppression
+    /// suivante (renvoyée ici : la suppression précédente, envoyée maintenant) ou en quittant l'écran.
     @discardableResult
-    func confirmDelete() -> Task<Void, Never>? {
-        guard let alert = state.pendingDelete else { return nil }
-        state.pendingDelete = nil
-        guard let index = state.items.firstIndex(where: { $0.id == alert.id }) else { return nil }
+    func delete(_ alert: SavedSearch) -> Task<Void, Never>? {
+        let previous = commitPendingDeletion()
+        guard let index = state.items.firstIndex(where: { $0.id == alert.id }) else { return previous }
         state.items.remove(at: index)
-        state.notice = nil
         pendingDeletions.insert(alert.id)
-        let repository = savedSearches
-        return Task { [weak self] in
-            do {
-                try await repository.delete(id: alert.id)
-                self?.deletionFinished(alert, at: index, error: nil)
-            } catch {
-                self?.deletionFinished(alert, at: index, error: error)
-            }
+        deferred = DeferredAlertDeletion(alert: alert, index: index)
+        // Pas de vibration ici : le glissement plein en donne déjà une (UIKit).
+        state.banner = WeydaBanner(
+            L10n.listsAlertDeleted,
+            symbol: "trash",
+            kind: .info,
+            action: .undo(Self.undoPrefix + alert.id)
+        )
+        return previous
+    }
+
+    /// Action de la bannière. « Annuler » : la suppression en attente est abandonnée, l'alerte revient à SA place
+    /// (rien n'a été envoyé).
+    func bannerAction(_ action: BannerAction) {
+        state.banner = nil
+        guard let pending = deferred, action.id == Self.undoPrefix + pending.alert.id else { return }
+        deferred = nil
+        let alert = pending.alert
+        pendingDeletions.remove(alert.id)
+        if !state.items.contains(where: { $0.id == alert.id }) {
+            state.items.insert(alert, at: min(pending.index, state.items.count))
         }
     }
 
-    func noticeShown() {
-        state.notice = nil
+    /// La bannière s'est fermée (délai écoulé, glissée) : la suppression en attente part au serveur.
+    @discardableResult
+    func bannerDismissed() -> Task<Void, Never>? {
+        state.banner = nil
+        return commitPendingDeletion()
+    }
+
+    /// L'écran disparaît (retour, autre onglet, alerte ouverte) : la suppression en attente part — jamais perdue — et
+    /// « Annuler » n'est plus proposé.
+    @discardableResult
+    func disappear() -> Task<Void, Never>? {
+        guard deferred != nil else { return nil }
+        if state.banner?.action != nil {
+            state.banner = nil
+        }
+        return commitPendingDeletion()
     }
 
     // MARK: - Interne
@@ -174,19 +202,40 @@ final class SavedSearchesViewModel: ObservableObject {
         return task
     }
 
+    /// Envoie la suppression en attente (s'il y en a une). La tâche tient le repository, pas l'écran : elle aboutit
+    /// même si l'écran a disparu entre-temps.
+    private func commitPendingDeletion() -> Task<Void, Never>? {
+        guard let pending = deferred else { return nil }
+        deferred = nil
+        let alert = pending.alert
+        let index = pending.index
+        let repository = savedSearches
+        return Task { [weak self] in
+            do {
+                try await repository.delete(id: alert.id)
+                self?.deletionFinished(alert, at: index, error: nil)
+            } catch {
+                self?.deletionFinished(alert, at: index, error: error)
+            }
+        }
+    }
+
+    /// Réponse du serveur : succès (ou 404 = déjà supprimée, sur le site par exemple) → rien de plus, « Alerte
+    /// supprimée » a déjà été dit ; refus → l'alerte revient à sa place avec le message d'erreur.
     private func deletionFinished(_ alert: SavedSearch, at index: Int, error: (any Error)?) {
         pendingDeletions.remove(alert.id)
-        guard let error, !Self.isAlreadyDeleted(error) else {
-            state.notice = L10n.listsAlertDeleted
-            return
-        }
+        guard let error, !Self.isAlreadyDeleted(error) else { return }
         // Un rechargement a pu la remettre entre-temps : deux fois le même identifiant ferait planter la liste.
         if !state.items.contains(where: { $0.id == alert.id }) {
             state.items.insert(alert, at: min(index, state.items.count))
         }
-        if let message = ErrorMapper.message(for: error) {
-            state.notice = message
-        }
+        showError(error)
+    }
+
+    /// Bannière d'erreur (rien pour une annulation).
+    private func showError(_ error: any Error) {
+        guard let message = ErrorMapper.message(for: error) else { return }
+        state.banner = WeydaBanner(message, symbol: "exclamationmark.circle", kind: .error)
     }
 
     private static func isAlreadyDeleted(_ error: any Error) -> Bool {

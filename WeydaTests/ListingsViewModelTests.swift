@@ -475,6 +475,27 @@ final class ListingsViewModelTests: XCTestCase {
         XCTAssertFalse(vm.state.isRefreshing)
         XCTAssertFalse(vm.state.isError)
         XCTAssertEqual(vm.state.notice, .message(L10n.errorOffline))
+        XCTAssertEqual(vm.state.notice?.banner.kind, WeydaBanner.Kind.error)
+    }
+
+    /// Cœur d'une ligne refusé par le serveur : le cœur revient (repository) et la bannière d'erreur le dit (muet avant
+    /// la phase 8) ; alerte créée = bannière de réussite.
+    @MainActor
+    func testARefusedHeartBecomesAnErrorNotice() async throws {
+        let env = ListingsTestEnvironment()
+        defer { env.tearDown() }
+        env.api.onAddFavorite = { _ in throw FakeWeydaAPI.apiError(500) }
+        let vm = env.makeViewModel()
+        vm.start(with: nil)
+        await vm.waitUntilIdle()
+        let listing = try XCTUnwrap(vm.state.items.first)
+
+        vm.toggleFavorite(listing)
+        await vm.waitUntilIdle()
+        XCTAssertFalse(vm.favoriteIds.contains(listing.id))
+        XCTAssertEqual(vm.state.notice, .message(L10n.errorServer))
+        XCTAssertEqual(ListingsNotice.alertCreated.banner.kind, WeydaBanner.Kind.success)
+        XCTAssertEqual(ListingsNotice.alertDuplicate.banner.kind, WeydaBanner.Kind.info)
     }
 
     @MainActor

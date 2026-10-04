@@ -6,6 +6,8 @@ import UIKit
 /// (plages, oui / non) et facettes (valeurs comptées par le serveur ; un select dépendant, comme le modèle, n'apparaît
 /// qu'une fois la marque choisie). Travaille sur un brouillon : « Voir les résultats » l'applique et relance la
 /// recherche ; « Réinitialiser » vide le brouillon. Formulaire iOS natif (sections, sélecteurs poussés).
+/// Brouillon modifié (différent des filtres appliqués) : la feuille ne se ferme plus en la glissant, et « Fermer »
+/// demande d'abord « Abandonner les modifications ? » (feuille d'actions).
 struct FiltersSheet: View {
     private let state: ListingsState
     private let onDismiss: () -> Void
@@ -13,6 +15,8 @@ struct FiltersSheet: View {
     private let onWilayaChange: (Int?) -> Void
     private let onDraftAttributesChange: (String?, [String: String]) -> Void
     @State private var draft: ListingFilters
+    /// « Fermer » avec un brouillon modifié : la feuille d'actions « Abandonner / Continuer ».
+    @State private var confirmsDiscard = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(
@@ -59,11 +63,21 @@ struct FiltersSheet: View {
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 applyBar
             }
+            .confirmationDialog(L10n.filtersDiscardTitle, isPresented: $confirmsDiscard, titleVisibility: .visible) {
+                Button(L10n.discard, role: .destructive) {
+                    onDismiss()
+                }
+                .accessibilityIdentifier("filters.discard")
+                Button(L10n.keepEditing, role: .cancel) {}
+                    .accessibilityIdentifier("filters.keepEditing")
+            }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.filters")
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+        // Saisie en cours : glisser vers le bas ne ferme plus la feuille (« Fermer » demande confirmation).
+        .interactiveDismissDisabled(isDirty)
         .onAppear {
             onDraftAttributesChange(draft.subcategory, draft.attributes)
         }
@@ -79,10 +93,28 @@ struct FiltersSheet: View {
 
     // MARK: - Barre d'outils, bouton d'application
 
+    /// Le brouillon diffère des filtres appliqués (« Réinitialiser » compris, tant qu'il n'est pas appliqué). Revenir
+    /// à la valeur de départ n'est pas une modification.
+    private var isDirty: Bool {
+        draft != state.filters
+    }
+
+    /// « Fermer » : tout de suite si rien n'a changé, sinon après « Abandonner ».
+    private func close() {
+        if isDirty {
+            confirmsDiscard = true
+        } else {
+            onDismiss()
+        }
+    }
+
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
-            Button(L10n.close, action: onDismiss)
+            Button(L10n.close) {
+                close()
+            }
+            .accessibilityIdentifier("filters.close")
         }
         ToolbarItem(placement: .primaryAction) {
             Button(L10n.filtersReset) {

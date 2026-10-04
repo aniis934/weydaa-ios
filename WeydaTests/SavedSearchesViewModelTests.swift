@@ -98,7 +98,7 @@ final class SavedSearchesViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func testDeletionWaitsForConfirmationAndARefusalPutsTheAlertBack() async throws {
+    func testDeletionIsDeferredUntilTheBannerClosesAndARefusalPutsTheAlertBack() async throws {
         let env = AlertsTestEnvironment()
         defer { env.tearDown() }
         env.api.onGetSavedSearches = {
@@ -113,42 +113,94 @@ final class SavedSearchesViewModelTests: XCTestCase {
         await model.appear()?.value
         let second = try XCTUnwrap(model.state.items.first(where: { $0.id == "s2" }))
 
-        // Annuler : rien ne part.
-        model.askDelete(second)
-        XCTAssertEqual(model.state.pendingDelete, second)
-        model.dismissDelete()
-        XCTAssertNil(model.state.pendingDelete)
-        XCTAssertNil(model.confirmDelete())
+        // Supprimer : la ligne part tout de suite, « Alerte supprimée » + « Annuler » ; rien n'est encore envoyé.
+        XCTAssertNil(model.delete(second))
+        XCTAssertEqual(model.state.items.map { $0.id }, ["s1", "s3"])
+        XCTAssertEqual(model.state.banner?.message, L10n.listsAlertDeleted)
+        let action = try XCTUnwrap(model.state.banner?.action)
+        XCTAssertEqual(action, BannerAction.undo(SavedSearchesViewModel.undoPrefix + "s2"))
         XCTAssertTrue(deleted.value.isEmpty)
 
-        // Confirmer : la ligne part tout de suite, « Alerte supprimée » après la réponse.
-        model.askDelete(second)
-        let task = model.confirmDelete()
-        XCTAssertNil(model.state.pendingDelete)
-        XCTAssertEqual(model.state.items.map { $0.id }, ["s1", "s3"])
+        // Annuler : l'alerte revient à SA place, rien ne part, même quand la bannière se ferme ensuite.
+        model.bannerAction(action)
+        XCTAssertNil(model.state.banner)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["s1", "s2", "s3"])
+        XCTAssertNil(model.bannerDismissed())
+        XCTAssertTrue(deleted.value.isEmpty)
+
+        // Supprimer puis laisser la bannière se fermer : la requête part à ce moment-là.
+        model.delete(second)
+        let task = model.bannerDismissed()
+        XCTAssertNil(model.state.banner)
         await task?.value
         XCTAssertEqual(deleted.value, ["s2"])
-        XCTAssertEqual(model.state.notice, L10n.listsAlertDeleted)
-        model.noticeShown()
-        XCTAssertNil(model.state.notice)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["s1", "s3"])
+        XCTAssertNil(model.state.banner)
 
         // Refus du serveur : l'alerte revient à SA place, avec le message d'erreur.
         env.api.onDeleteSavedSearch = { _ in throw FakeWeydaAPI.apiError(500) }
         let first = try XCTUnwrap(model.state.items.first)
-        model.askDelete(first)
-        let refused = model.confirmDelete()
+        model.delete(first)
         XCTAssertEqual(model.state.items.map { $0.id }, ["s3"])
-        await refused?.value
+        await model.bannerDismissed()?.value
         XCTAssertEqual(model.state.items.map { $0.id }, ["s1", "s3"])
-        XCTAssertNotNil(model.state.notice)
-        XCTAssertNotEqual(model.state.notice, L10n.listsAlertDeleted)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.error)
+        XCTAssertNil(model.state.banner?.action)
+        model.bannerDismissed()
 
-        // 404 : déjà supprimée (sur le site) — c'est fait, elle ne revient pas.
+        // 404 : déjà supprimée (sur le site) — c'est fait, elle ne revient pas, aucun message d'erreur.
         env.api.onDeleteSavedSearch = { _ in throw FakeWeydaAPI.apiError(404, #"{"error":"notFound"}"#) }
-        model.askDelete(first)
-        await model.confirmDelete()?.value
+        model.delete(first)
+        await model.bannerDismissed()?.value
         XCTAssertEqual(model.state.items.map { $0.id }, ["s3"])
-        XCTAssertEqual(model.state.notice, L10n.listsAlertDeleted)
+        XCTAssertNil(model.state.banner)
+    }
+
+    /// Une suppression en attente n'est jamais perdue : la suivante l'envoie (et la remplace dans la bannière), quitter
+    /// l'écran aussi ; une relecture ne rend pas une alerte en attente.
+    @MainActor
+    func testAPendingDeletionIsSentByTheNextOneAndWhenLeavingTheScreen() async throws {
+        let env = AlertsTestEnvironment()
+        defer { env.tearDown() }
+        env.api.onGetSavedSearches = {
+            SavedSearchesDTO(searches: ["s1", "s2", "s3"].map { SavedSearchesViewModelTests.alert($0) })
+        }
+        let deleted = FakeWeydaAPI.Box<[String]>([])
+        env.api.onDeleteSavedSearch = { id in
+            deleted.value.append(id)
+            return SimpleResponseDTO()
+        }
+        let model = env.makeModel()
+        await model.appear()?.value
+        let first = try XCTUnwrap(model.state.items.first(where: { $0.id == "s1" }))
+        let second = try XCTUnwrap(model.state.items.first(where: { $0.id == "s2" }))
+
+        model.delete(first)
+        // Retour sur l'écran pendant l'attente : la relecture ne rend pas l'alerte.
+        await model.appear()?.value
+        XCTAssertEqual(model.state.items.map { $0.id }, ["s2", "s3"])
+        XCTAssertTrue(deleted.value.isEmpty)
+
+        // Suppression suivante : la précédente part, « Annuler » vise désormais la nouvelle.
+        let previous = model.delete(second)
+        XCTAssertNotNil(previous)
+        await previous?.value
+        XCTAssertEqual(deleted.value, ["s1"])
+        XCTAssertEqual(model.state.items.map { $0.id }, ["s3"])
+        XCTAssertEqual(model.state.banner?.action, BannerAction.undo(SavedSearchesViewModel.undoPrefix + "s2"))
+
+        // L'ancienne action « Annuler » n'a plus d'effet.
+        model.bannerAction(BannerAction.undo(SavedSearchesViewModel.undoPrefix + "s1"))
+        XCTAssertEqual(model.state.items.map { $0.id }, ["s3"])
+        XCTAssertEqual(deleted.value, ["s1"])
+
+        // Quitter l'écran : la suppression en attente (s2) part.
+        let leaving = model.disappear()
+        XCTAssertNotNil(leaving)
+        await leaving?.value
+        XCTAssertEqual(deleted.value, ["s1", "s2"])
+        XCTAssertNil(model.state.banner)
+        XCTAssertNil(model.disappear())
     }
 
     @MainActor

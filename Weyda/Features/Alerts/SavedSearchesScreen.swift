@@ -3,18 +3,17 @@ import SwiftUI
 /// « Mes alertes », sans état propre — portage de `SavedSearchesScreen` (Android) : squelettes, erreur avec
 /// « Réessayer », vide (comment créer une alerte + « Lancer une recherche »), ou la liste groupée façon Réglages : par
 /// alerte son nom, ses critères en clair (puces), sa date de création ; appui = les annonces de l'alerte dans l'onglet
-/// Annonces ; glisser vers le bord de fin = supprimer, après confirmation. Compteur « n / 5 » en tête de section, note
-/// en pied, « Lancer une recherche » tant que la limite n'est pas atteinte. Tirer pour rafraîchir : posé par l'hôte.
+/// Annonces ; glisser vers le bord de fin = supprimer tout de suite, « Annuler » dans la bannière (comme Mail).
+/// Compteur « n / 5 » en tête de section, note en pied, « Lancer une recherche » tant que la limite n'est pas atteinte.
+/// Tirer pour rafraîchir : posé par l'hôte. Grand titre, comme les listes du Profil.
 struct SavedSearchesScreen: View {
     private let state: SavedSearchesState
     private let limit: Int
-    private let isConfirmationPresented: Binding<Bool>
     private let actions: SavedSearchesActions
 
-    init(state: SavedSearchesState, limit: Int, isConfirmationPresented: Binding<Bool>, actions: SavedSearchesActions) {
+    init(state: SavedSearchesState, limit: Int, actions: SavedSearchesActions) {
         self.state = state
         self.limit = limit
-        self.isConfirmationPresented = isConfirmationPresented
         self.actions = actions
     }
 
@@ -26,14 +25,8 @@ struct SavedSearchesScreen: View {
         }
         .background(WeydaColor.background)
         .navigationTitle(L10n.alertsTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .floatingNotice(state.notice, onShown: actions.onNoticeShown)
-        .alert(L10n.listsAlertDeleteConfirmTitle, isPresented: isConfirmationPresented, presenting: state.pendingDelete) { _ in
-            Button(L10n.alertDelete, role: .destructive, action: actions.onConfirmDelete)
-            Button(L10n.cancel, role: .cancel, action: actions.onCancelDelete)
-        } message: { alert in
-            Text(L10n.listsAlertDeleteConfirmBody(alert.name))
-        }
+        .navigationBarTitleDisplayMode(.large)
+        .weydaBanner(state.banner, onAction: actions.onBannerAction, onDismiss: actions.onBannerDismiss)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.savedSearches")
     }
@@ -95,9 +88,9 @@ struct SavedSearchesScreen: View {
         .weydaAnimation(.easeInOut(duration: WeydaDuration.medium), value: ids)
     }
 
-    /// Une alerte : appui = ses annonces ; glisser vers le bord de fin = supprimer (confirmation), action aussi
-    /// proposée à VoiceOver par la liste. Pas de rôle « destructif » sur le bouton du glissement : la liste ferait
-    /// partir la ligne AVANT la confirmation.
+    /// Une alerte : appui = ses annonces ; glisser vers le bord de fin = supprimer (sans confirmation : « Annuler » dans
+    /// la bannière), action aussi proposée à VoiceOver par la liste. Rôle « destructif » : la liste fait partir la
+    /// ligne d'elle-même, comme l'état.
     private func row(for alert: SavedSearch, catalog: AlertCatalog) -> some View {
         let criteria: [AlertCriterion] = SavedSearchCriteria.criteria(for: alert.params, catalog: catalog)
         return Button {
@@ -107,7 +100,7 @@ struct SavedSearchesScreen: View {
         }
         .listRowBackground(WeydaColor.surface)
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-            Button {
+            Button(role: .destructive) {
                 actions.onDelete(alert)
             } label: {
                 Label(L10n.alertDelete, systemImage: "trash")

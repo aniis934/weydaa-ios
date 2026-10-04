@@ -28,8 +28,17 @@ struct ListingsView: View {
 private struct ListingsHost: View {
     @EnvironmentObject private var container: AppContainer
     @EnvironmentObject private var router: AppRouter
+    @EnvironmentObject private var session: SessionManager
     @StateObject private var model: ListingsViewModel
     @FocusState private var searchFocused: Bool
+    /// Raccourci « Rechercher » de l'icône : chaque demande focalise le champ, après un court délai (au démarrage à
+    /// froid, un focus posé avant que l'écran soit en place serait perdu).
+    @State private var focusRequests = 0
+    /// Onglet touché alors qu'il est déjà à sa racine : la liste remonte (écran) et le clavier se range (ici).
+    @Environment(\.scrollToTopSignal) private var scrollToTopSignal
+
+    /// Délai avant de focaliser le champ demandé par le raccourci (0,35 s).
+    private static let focusDelay: UInt64 = 350_000_000
 
     init(model: @autoclosure @escaping () -> ListingsViewModel) {
         _model = StateObject(wrappedValue: model())
@@ -45,21 +54,42 @@ private struct ListingsHost: View {
             filtersPresented: filtersPresented,
             actions: actions,
             onRefresh: refreshAction,
-            onNoticeShown: noticeShownAction
+            onNoticeShown: noticeShownAction,
+            currentUserId: session.user?.id
         )
         .task(id: router.listingsLaunch) {
             await consumeLaunch()
+        }
+        .task(id: focusRequests) {
+            await focusSearchIfRequested()
+        }
+        .onChange(of: scrollToTopSignal) { _ in
+            searchFocused = false
         }
     }
 
     /// Premier affichage, puis chaque ouverture de l'onglet avec des critères (accueil, lien `/annonces?…`).
     /// `ListingsLaunch(q: "")` — mot-clé présent mais vide — ouvre la recherche clavier sorti (faux champ de l'accueil).
+    /// Raccourci « Rechercher » (`focusSearch`, aucun critère) : la recherche en cours est gardée, le champ focalisé.
     private func consumeLaunch() async {
         let launch = router.consumeListingsLaunch()
         model.start(with: launch)
-        if let launch, let keyword = launch.q, TextCheck.isBlank(keyword) {
+        guard let launch else { return }
+        if let keyword = launch.q, TextCheck.isBlank(keyword) {
             searchFocused = true
         }
+        if launch.focusSearch {
+            searchFocused = true
+            focusRequests += 1
+        }
+    }
+
+    /// Demande du raccourci : focus reposé après le délai (sans effet s'il a déjà pris).
+    private func focusSearchIfRequested() async {
+        guard focusRequests > 0 else { return }
+        try? await Task.sleep(nanoseconds: Self.focusDelay)
+        guard !Task.isCancelled else { return }
+        searchFocused = true
     }
 
     /// Feuille de filtres : présentée d'après l'état ; la fermer (glisser, « Fermer ») le dit au ViewModel.
@@ -129,6 +159,9 @@ private struct ListingsHost: View {
                 } else {
                     router.requestLogin()
                 }
+            },
+            onOpenSeller: { sellerId in
+                router.push(.seller(id: sellerId))
             }
         )
     }

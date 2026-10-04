@@ -125,13 +125,17 @@ final class FavoritesViewModelTests: XCTestCase {
 
         let task = model.remove(second)
         XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a3"])
+        // « Retiré des favoris » + « Annuler », tout de suite (sans attendre le serveur).
+        XCTAssertEqual(model.state.banner?.message, L10n.favoriteRemoved)
+        XCTAssertEqual(model.state.banner?.action, BannerAction.undo(FavoritesViewModel.undoPrefix + "a2"))
         await task?.value
         XCTAssertEqual(removed.value, ["a2"])
         XCTAssertFalse(made.repository.isFavorite("a2"))
         XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a3"])
-        XCTAssertNil(model.state.notice)
+        model.bannerDismissed()
+        XCTAssertNil(model.state.banner)
 
-        // Refus du serveur : la ligne revient à SA place (pas en fin de liste), avec le message.
+        // Refus du serveur : la ligne revient à SA place (pas en fin de liste), la bannière d'erreur remplace « Annuler ».
         api.onRemoveFavorite = { _ in throw FakeWeydaAPI.apiError(500) }
         let first = try XCTUnwrap(model.state.items.first)
         let refused = model.remove(first)
@@ -139,9 +143,63 @@ final class FavoritesViewModelTests: XCTestCase {
         await refused?.value
         XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a3"])
         XCTAssertTrue(made.repository.isFavorite("a1"))
-        XCTAssertNotNil(model.state.notice)
-        model.noticeShown()
-        XCTAssertNil(model.state.notice)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.error)
+        XCTAssertNil(model.state.banner?.action)
+        model.bannerDismissed()
+        XCTAssertNil(model.state.banner)
+    }
+
+    /// « Annuler » (bannière) : le favori est remis et la ligne revient à SA place — retrait déjà fait, ou encore en vol
+    /// (la remise attend son issue ; 409 `alreadyFavorited` = succès). Bannière fermée : « Annuler » n'a plus d'effet.
+    @MainActor
+    func testUndoPutsTheFavoriteBackInItsPlace() async throws {
+        let api = FakeWeydaAPI()
+        api.onGetFavorites = { ["a1", "a2", "a3"].map { FavoritesViewModelTests.listing($0) } }
+        api.onRemoveFavorite = { _ in SimpleResponseDTO() }
+        let added = FakeWeydaAPI.Box<[String]>([])
+        api.onAddFavorite = { body in
+            added.value.append(body.annonceId)
+            return FavoriteDTO(id: "fav-\(body.annonceId)", annonceId: body.annonceId)
+        }
+        let made = makeModel(api)
+        let model = made.model
+        await model.appear()?.value
+        let second = try XCTUnwrap(model.state.items.first(where: { $0.id == "a2" }))
+
+        // Retrait confirmé par le serveur, puis « Annuler ».
+        await model.remove(second)?.value
+        let action = try XCTUnwrap(model.state.banner?.action)
+        XCTAssertEqual(action.id, FavoritesViewModel.undoPrefix + "a2")
+        let undo = model.bannerAction(action)
+        XCTAssertNil(model.state.banner)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a2", "a3"])
+        await undo?.value
+        XCTAssertEqual(added.value, ["a2"])
+        XCTAssertTrue(made.repository.isFavorite("a2"))
+        XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a2", "a3"])
+
+        // « Annuler » pendant que le retrait est en vol : la ligne ne repart pas, le favori est remis (409 = succès).
+        api.onAddFavorite = { _ in throw FakeWeydaAPI.apiError(409, #"{"error":"alreadyFavorited"}"#) }
+        let first = try XCTUnwrap(model.state.items.first)
+        let removal = model.remove(first)
+        let inFlight = try XCTUnwrap(model.state.banner?.action)
+        let undoInFlight = model.bannerAction(inFlight)
+        XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a2", "a3"])
+        await removal?.value
+        await undoInFlight?.value
+        XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a2", "a3"])
+        XCTAssertTrue(made.repository.isFavorite("a1"))
+        XCTAssertNil(model.state.banner)
+        XCTAssertEqual(api.count("removeFavorite"), 2)
+
+        // Bannière fermée (délai écoulé) : « Annuler » n'a plus d'effet.
+        let third = try XCTUnwrap(model.state.items.last)
+        await model.remove(third)?.value
+        let late = try XCTUnwrap(model.state.banner?.action)
+        model.bannerDismissed()
+        XCTAssertNil(model.bannerAction(late))
+        XCTAssertEqual(model.state.items.map { $0.id }, ["a1", "a2"])
+        XCTAssertFalse(made.repository.isFavorite("a3"))
     }
 
     @MainActor
@@ -180,7 +238,7 @@ final class FavoritesViewModelTests: XCTestCase {
         await model.pullToRefresh()
         XCTAssertEqual(model.state.items.map { $0.id }, ["a2", "a1"])
         XCTAssertNil(model.state.errorMessage)
-        XCTAssertNotNil(model.state.notice)
+        XCTAssertEqual(model.state.banner?.kind, WeydaBanner.Kind.error)
         XCTAssertFalse(model.state.isRefreshing)
     }
 }

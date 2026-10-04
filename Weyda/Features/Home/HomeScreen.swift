@@ -11,6 +11,8 @@ struct HomeActions {
     var seeAllRecent: () -> Void
     var openWilaya: (Wilaya) -> Void
     var toggleFavorite: (Listing) -> Void
+    /// « Voir le vendeur » du menu d'appui long d'une carte.
+    var openSeller: (String) -> Void
     var openNotifications: () -> Void
     var post: () -> Void
 }
@@ -24,13 +26,22 @@ struct HomeScreen: View {
     private let state: HomeState
     private let favoriteIds: Set<String>
     private let notificationsUnread: Int?
+    private let currentUserId: String?
     private let actions: HomeActions
+    /// Onglet Accueil touché alors qu'il est déjà à sa racine : retour en haut (`AppRouter.scrollToTopRequests`).
+    @Environment(\.scrollToTopSignal) private var scrollToTopSignal
 
-    /// - Parameter notificationsUnread: pastille de la cloche ; nil = visiteur, pas de cloche.
-    init(state: HomeState, favoriteIds: Set<String>, notificationsUnread: Int?, actions: HomeActions) {
+    /// Premier élément de la page (le bouton de recherche) : cible du retour en haut.
+    static let topID = "home.top"
+
+    /// - Parameters:
+    ///   - notificationsUnread: pastille de la cloche ; nil = visiteur, pas de cloche.
+    ///   - currentUserId: compte connecté (menu d'appui long : pas de « Voir le vendeur » sur ses propres annonces).
+    init(state: HomeState, favoriteIds: Set<String>, notificationsUnread: Int?, currentUserId: String? = nil, actions: HomeActions) {
         self.state = state
         self.favoriteIds = favoriteIds
         self.notificationsUnread = notificationsUnread
+        self.currentUserId = currentUserId
         self.actions = actions
     }
 
@@ -60,26 +71,62 @@ struct HomeScreen: View {
         if state.isError {
             ErrorState(message: state.errorMessage ?? L10n.errorGeneric, onRetry: actions.retry)
         } else {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    SearchEntryButton(placeholder: L10n.searchHint, action: actions.openSearch)
-                        .accessibilityIdentifier("home.search")
-                        .padding(.horizontal, WeydaSpace.screen)
-                        .padding(.top, WeydaSpace.sm)
-                    if state.isLoading {
-                        HomeSkeleton()
-                            .transition(.opacity)
-                    } else {
-                        HomeSections(state: state, favoriteIds: favoriteIds, actions: actions)
-                            .transition(.opacity)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        SearchEntryButton(placeholder: L10n.searchHint, action: actions.openSearch)
+                            .accessibilityIdentifier("home.search")
+                            .padding(.horizontal, WeydaSpace.screen)
+                            .padding(.top, WeydaSpace.sm)
+                            .id(Self.topID)
+                        if state.isLoading {
+                            HomeSkeleton()
+                                .transition(.opacity)
+                        } else {
+                            HomeSections(state: state, cards: cards, actions: actions)
+                                .transition(.opacity)
+                        }
                     }
+                    .padding(.bottom, WeydaSpace.xxl)
+                    // Les sections se posent en fondu à l'arrivée des données, une seule fois (rien ne bouge si
+                    // « Réduire les animations » est actif).
+                    .weydaAnimation(.easeOut(duration: WeydaDuration.medium), value: state.isLoading)
                 }
-                .padding(.bottom, WeydaSpace.xxl)
-                // Les sections se posent en fondu à l'arrivée des données, une seule fois (rien ne bouge si
-                // « Réduire les animations » est actif).
-                .weydaAnimation(.easeOut(duration: WeydaDuration.medium), value: state.isLoading)
+                .scrollsToTop(on: scrollToTopSignal, proxy: proxy, to: Self.topID)
             }
         }
+    }
+
+    /// Ce qu'il faut aux cartes : cœurs, appui long (favori, vendeur).
+    private var cards: HomeCards {
+        HomeCards(
+            favoriteIds: favoriteIds,
+            currentUserId: currentUserId,
+            onFavorite: actions.toggleFavorite,
+            onSeller: actions.openSeller
+        )
+    }
+}
+
+/// Cœurs et menu d'appui long des cartes d'annonce de l'accueil.
+private struct HomeCards {
+    let favoriteIds: Set<String>
+    let currentUserId: String?
+    let onFavorite: (Listing) -> Void
+    let onSeller: (String) -> Void
+
+    func isFavorite(_ listing: Listing) -> Bool {
+        favoriteIds.contains(listing.id)
+    }
+
+    /// Menu de la carte : favori, Partager, Voir le vendeur (pas sur une annonce du compte connecté).
+    func menu(for listing: Listing) -> ListingCardMenu {
+        ListingCardMenu(listing: listing, currentUserId: currentUserId)
+    }
+
+    /// Clé de la transition zoom d'une carte : `home.<rangée>.<id>` (une annonce dans deux rangées = deux clés).
+    static func zoomKey(rail: String, listing: Listing) -> String {
+        "home.\(rail).\(listing.id)"
     }
 }
 
@@ -106,7 +153,7 @@ private nonisolated enum HomeCopy {
 /// Les sections chargées ; une section vide (ou en échec) n'apparaît pas.
 private struct HomeSections: View {
     let state: HomeState
-    let favoriteIds: Set<String>
+    let cards: HomeCards
     let actions: HomeActions
 
     var body: some View {
@@ -121,19 +168,19 @@ private struct HomeSections: View {
             }
             if !state.featured.isEmpty {
                 HomeSectionHeader(title: L10n.sectionFeatured, actionTitle: L10n.seeAll, action: actions.seeAllFeatured)
-                HomeCarousel(listings: state.featured, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
+                HomeCarousel(rail: "featured", listings: state.featured, cards: cards)
             }
             if !state.trending.isEmpty {
                 HomeSectionHeader(title: L10n.homeTrending)
-                HomeCarousel(listings: state.trending, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
+                HomeCarousel(rail: "trending", listings: state.trending, cards: cards)
             }
             if !state.forYou.isEmpty {
                 HomeSectionHeader(title: L10n.homeForYou)
-                HomeCarousel(listings: state.forYou, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
+                HomeCarousel(rail: "forYou", listings: state.forYou, cards: cards)
             }
             if !state.recent.isEmpty {
                 HomeSectionHeader(title: L10n.sectionRecent, actionTitle: L10n.seeAll, action: actions.seeAllRecent)
-                HomeRecentGrid(listings: state.recent, favoriteIds: favoriteIds, onFavorite: actions.toggleFavorite)
+                HomeRecentGrid(listings: state.recent, cards: cards)
             }
             HomeBrowseAllButton(action: actions.seeAllRecent)
             if !state.popularWilayas.isEmpty {
@@ -240,25 +287,38 @@ private struct HomeCategoryBubble: View {
     }
 }
 
-/// Carrousel de cartes (À la une, Tendances, Pour vous) : chaque carte ouvre la fiche, le cœur bascule le favori.
+/// Carrousel de cartes (À la une, Tendances, Pour vous) : chaque carte ouvre la fiche (zoom depuis la carte, iOS 18),
+/// le cœur bascule le favori, l'appui long ouvre le menu (favori, Partager, Voir le vendeur).
 private struct HomeCarousel: View {
+    /// Rangée, dans la clé du zoom : `featured`, `trending`, `forYou`.
+    let rail: String
     let listings: [Listing]
-    let favoriteIds: Set<String>
-    let onFavorite: (Listing) -> Void
+    let cards: HomeCards
 
     var body: some View {
         HomeSnappingRow {
             ForEach(listings) { listing in
-                NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
-                    ListingCarouselCard(
-                        listing: listing,
-                        isFavorite: favoriteIds.contains(listing.id),
-                        onFavorite: { onFavorite(listing) }
-                    )
-                }
-                .buttonStyle(.weydaCard)
+                link(listing)
             }
         }
+    }
+
+    private func link(_ listing: Listing) -> some View {
+        let key: String = HomeCards.zoomKey(rail: rail, listing: listing)
+        let isFavorite: Bool = cards.isFavorite(listing)
+        let toggle: () -> Void = { cards.onFavorite(listing) }
+        return NavigationLink(value: AppRoute.detail(idOrSlug: listing.id, zoomSource: key)) {
+            ListingCarouselCard(listing: listing, isFavorite: isFavorite, onFavorite: toggle)
+                .listingZoomSource(id: key)
+        }
+        .buttonStyle(.weydaCard)
+        .listingContextMenu(
+            listing,
+            menu: cards.menu(for: listing),
+            isFavorite: isFavorite,
+            onFavorite: toggle,
+            onSeller: cards.onSeller
+        )
     }
 }
 
@@ -296,8 +356,7 @@ private struct HomeSnappingRow<Content: View>: View {
 /// (dans une demi-largeur, le prix ne tenait plus, même sur deux lignes).
 private struct HomeRecentGrid: View {
     private let listings: [Listing]
-    private let favoriteIds: Set<String>
-    private let onFavorite: (Listing) -> Void
+    private let cards: HomeCards
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let columns: [GridItem] = [
@@ -308,10 +367,9 @@ private struct HomeRecentGrid: View {
         GridItem(.flexible(), spacing: WeydaSpace.gutter, alignment: .top),
     ]
 
-    init(listings: [Listing], favoriteIds: Set<String>, onFavorite: @escaping (Listing) -> Void) {
+    init(listings: [Listing], cards: HomeCards) {
         self.listings = listings
-        self.favoriteIds = favoriteIds
-        self.onFavorite = onFavorite
+        self.cards = cards
     }
 
     private var gridColumns: [GridItem] {
@@ -321,17 +379,29 @@ private struct HomeRecentGrid: View {
     var body: some View {
         LazyVGrid(columns: gridColumns, alignment: .leading, spacing: WeydaSpace.gutter) {
             ForEach(listings) { listing in
-                NavigationLink(value: AppRoute.detail(idOrSlug: listing.id)) {
-                    ListingCard(
-                        listing: listing,
-                        isFavorite: favoriteIds.contains(listing.id),
-                        onFavorite: { onFavorite(listing) }
-                    )
-                }
-                .buttonStyle(.weydaCard)
+                link(listing)
             }
         }
         .padding(.horizontal, WeydaSpace.screen)
+    }
+
+    /// Une carte : la fiche (zoom depuis la carte, clé `home.recent.<id>`), le cœur, le menu d'appui long.
+    private func link(_ listing: Listing) -> some View {
+        let key: String = HomeCards.zoomKey(rail: "recent", listing: listing)
+        let isFavorite: Bool = cards.isFavorite(listing)
+        let toggle: () -> Void = { cards.onFavorite(listing) }
+        return NavigationLink(value: AppRoute.detail(idOrSlug: listing.id, zoomSource: key)) {
+            ListingCard(listing: listing, isFavorite: isFavorite, onFavorite: toggle)
+                .listingZoomSource(id: key)
+        }
+        .buttonStyle(.weydaCard)
+        .listingContextMenu(
+            listing,
+            menu: cards.menu(for: listing),
+            isFavorite: isFavorite,
+            onFavorite: toggle,
+            onSeller: cards.onSeller
+        )
     }
 }
 

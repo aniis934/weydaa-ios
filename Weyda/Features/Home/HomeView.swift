@@ -49,7 +49,14 @@ private struct HomeHost: View {
             state: viewModel.state,
             favoriteIds: viewModel.favoriteIds,
             notificationsUnread: unreadNotifications,
+            currentUserId: viewModel.userId,
             actions: actions
+        )
+        // Échec d'un cœur (accueil) : bannière d'erreur, sans action.
+        .weydaBanner(
+            viewModel.banner,
+            onAction: { _ in },
+            onDismiss: { viewModel.bannerDismissed() }
         )
         // Posé AVANT la feuille : la liste des catégories ne doit pas hériter du « tirer pour rafraîchir ».
         .refreshable {
@@ -86,6 +93,7 @@ private struct HomeHost: View {
                 }
                 viewModel.toggleFavorite(listing)
             },
+            openSeller: { sellerId in navigation.push(.seller(id: sellerId)) },
             openNotifications: { navigation.push(.notifications) },
             post: { navigation.select(.post) }
         )

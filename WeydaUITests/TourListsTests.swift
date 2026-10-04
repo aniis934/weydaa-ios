@@ -1,14 +1,13 @@
 import XCTest
 
 /// Tour de « Mes favoris » et « Mes alertes » (10l) en API simulée (`MockFixtures/routes-lists.json` + `lists/`) :
-/// favoris (liste, glisser pour retirer, liste vidée, e-mail à vérifier) ; alertes (liste et critères, confirmation de
-/// suppression, suppression jusqu'à la liste vide, ouverture d'une alerte → onglet Annonces filtré). Session simulée
-/// `-WeydaLoggedIn YES` (utilisateur fictif `mock-me`). Socle commun (lancement, attente, captures) : `TourSupport.swift`.
+/// favoris (liste, glisser pour retirer, liste vidée, e-mail à vérifier) ; alertes (liste et critères, suppression sans
+/// confirmation avec « Annuler » dans la bannière — phase 8 —, suppression jusqu'à la liste vide, ouverture d'une alerte
+/// → onglet Annonces filtré). Session simulée `-WeydaLoggedIn YES` (utilisateur fictif `mock-me`). Socle commun
+/// (lancement, attente, captures) : `TourSupport.swift`.
 final class TourListsTests: TourTestCase {
     /// Session simulée ouverte, e-mail vérifié.
     private static let member = ["-WeydaLoggedIn", "YES"]
-    /// « Annuler » dans les 3 langues : l'autre bouton de la confirmation est celui qui confirme.
-    private static let cancelLabels: Set<String> = ["Annuler", "إلغاء", "Cancel"]
     /// Bouton du glissement d'un favori (« Retirer des favoris »), dans les 3 langues.
     private static let removeLabels: [String] = ["Retirer des favoris", "إزالة من المفضلة", "Remove from favorites"]
     /// Bouton du glissement d'une alerte (« Supprimer l'alerte »), dans les 3 langues.
@@ -59,6 +58,8 @@ final class TourListsTests: TourTestCase {
             waitUntilGone(row)
         }
         XCTAssertNil(firstExisting(Self.favoriteIds, prefix: "favorite.row.", in: app), "la liste des favoris n'est pas vide")
+        // La bannière « Retiré des favoris » (≈ 7 s) partie : l'état vide seul.
+        waitForNoticeToClose(in: app)
         settle()
         pause()
         capture("10l-03-favorites-empty-1")
@@ -98,24 +99,28 @@ final class TourListsTests: TourTestCase {
         app.terminate()
     }
 
-    /// Glisser une alerte puis « Supprimer » : la confirmation « Supprimer cette alerte ? ».
+    /// Glisser une alerte puis « Supprimer » : plus de boîte de confirmation (phase 8) — la ligne part tout de suite et
+    /// la bannière « Alerte supprimée » propose « Annuler ».
     @MainActor
-    func test10l06AlertDeleteConfirmation() {
+    func test10l06AlertDeleteUndo() {
         let app = launch(route: "savedSearches", screen: "savedSearches")
         let row = waitFor("alert.row.mock-s2", in: app)
         settle(0.8)
         revealTrailingActions(of: row)
         settle(0.6)
         tapFirstButton(labeled: Self.deleteLabels, in: app)
-        XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 10), "confirmation de suppression absente")
+        XCTAssertFalse(app.alerts.firstMatch.waitForExistence(timeout: 2), "boîte de confirmation encore présente")
+        waitUntilGone(row)
+        // Bannière éphémère : attente seulement, jamais une assertion bloquante.
+        _ = app.descendants(matching: .any)["notice"].waitForExistence(timeout: 10)
         settle(0.8)
         pause()
-        capture("10l-06-alerts-confirm-1")
+        capture("10l-06-alerts-undo-1")
         app.terminate()
     }
 
-    /// Suppression confirmée (ligne retirée, « Alerte supprimée », compteur « 3 / 5 »), puis les autres : la liste vide
-    /// explique comment créer une alerte.
+    /// Suppression (ligne retirée, « Alerte supprimée » + « Annuler », compteur « 3 / 5 »), puis les autres — chacune
+    /// envoie la précédente : la liste vide explique comment créer une alerte.
     @MainActor
     func test10l07AlertsDeleteUntilEmpty() {
         let app = launch(route: "savedSearches", screen: "savedSearches")
@@ -133,6 +138,8 @@ final class TourListsTests: TourTestCase {
             deleteAlert(id, in: app)
         }
         XCTAssertNil(firstExisting(Self.alertIds, prefix: "alert.row.", in: app), "la liste des alertes n'est pas vide")
+        // La bannière de la dernière suppression (≈ 7 s) partie : l'état vide seul (la suppression part à ce moment-là).
+        waitForNoticeToClose(in: app)
         settle()
         pause()
         capture("10l-08-alerts-empty-1")
@@ -211,22 +218,24 @@ final class TourListsTests: TourTestCase {
         start.press(forDuration: 0.05, thenDragTo: end)
     }
 
-    /// Glisser l'alerte, « Supprimer l'alerte », puis le bouton de la confirmation qui n'est pas « Annuler » ; attend
-    /// que la rangée parte.
+    /// Glisser l'alerte puis « Supprimer l'alerte » (sans confirmation depuis la phase 8 : « Annuler » est dans la
+    /// bannière) ; attend que la rangée parte.
     @MainActor
     private func deleteAlert(_ id: String, in app: XCUIApplication) {
         let row = waitFor("alert.row.\(id)", in: app)
         revealTrailingActions(of: row)
         settle(0.6)
         tapFirstButton(labeled: Self.deleteLabels, in: app)
-        let alert = app.alerts.firstMatch
-        XCTAssertTrue(alert.waitForExistence(timeout: 10), "confirmation de suppression absente")
-        settle(0.5)
-        guard let confirm = alert.buttons.allElementsBoundByIndex.first(where: { !Self.cancelLabels.contains($0.label) }) else {
-            XCTFail("bouton de confirmation introuvable")
-            return
-        }
-        confirm.tap()
         waitUntilGone(row)
+    }
+
+    /// Attend la fermeture d'une bannière (≈ 7 s avec « Annuler ») avant une capture d'état vide, 12 s au plus — jamais
+    /// une assertion (bannière éphémère).
+    @MainActor
+    private func waitForNoticeToClose(in app: XCUIApplication) {
+        let notice = app.descendants(matching: .any)["notice"]
+        for _ in 0..<48 where notice.exists {
+            settle(0.25)
+        }
     }
 }

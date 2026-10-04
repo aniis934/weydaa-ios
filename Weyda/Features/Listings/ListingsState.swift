@@ -92,11 +92,11 @@ nonisolated extension ListingsState {
     }
 }
 
-/// Message éphémère de l'écran (bandeau en bas, lu par VoiceOver).
+/// Message éphémère de l'écran (bannière en bas, lue par VoiceOver).
 nonisolated enum ListingsNotice: Hashable, Sendable {
     case alertCreated
     case alertDuplicate
-    /// Message déjà traduit (`ErrorMapper`).
+    /// Message d'erreur déjà traduit (`ErrorMapper`) : rafraîchissement, alerte ou favori refusés.
     case message(String)
 
     var text: String {
@@ -105,6 +105,27 @@ nonisolated enum ListingsNotice: Hashable, Sendable {
         case .alertDuplicate: return L10n.alertDuplicate
         case .message(let text): return text
         }
+    }
+
+    /// Nature de la bannière : alerte créée = réussite (vibre d'elle-même), déjà existante = information, sinon erreur.
+    var kind: WeydaBanner.Kind {
+        switch self {
+        case .alertCreated: return .success
+        case .alertDuplicate: return .info
+        case .message: return .error
+        }
+    }
+
+    /// La bannière de ce message. Identifiant fixe (comme `floatingNotice`) : la valeur ne change pas d'un rendu à
+    /// l'autre, le minuteur n'est pas relancé ; il repart à chaque nouveau message (l'état repasse par nil ou change).
+    var banner: WeydaBanner {
+        let symbol: String
+        switch self {
+        case .alertCreated: symbol = "bell.badge"
+        case .alertDuplicate: symbol = "bell"
+        case .message: symbol = "exclamationmark.circle"
+        }
+        return WeydaBanner(text, symbol: symbol, kind: kind, id: WeydaBanner.legacyId)
     }
 }
 
