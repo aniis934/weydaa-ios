@@ -27,10 +27,12 @@ struct SellerView: View {
 }
 
 /// Possède le ViewModel et traduit les actions : connexion demandée au visiteur pour le favori, le signalement et
-/// le blocage (`router.requestLogin()`).
+/// le blocage (`router.requestLogin()`) ; feuille « Laisser un avis » (membre seulement).
 private struct SellerHost: View {
     @EnvironmentObject private var router: AppRouter
     @StateObject private var model: SellerViewModel
+    /// Feuille d'avis du tour de captures déjà ouverte (Debug) : une seule fois.
+    @State private var reviewDemoShown: Bool = false
     private let connectivity: ConnectivityMonitor
 
     init(model: @autoclosure @escaping () -> SellerViewModel, connectivity: ConnectivityMonitor) {
@@ -43,10 +45,16 @@ private struct SellerHost: View {
             state: model.state,
             isReportPresented: $model.isReportPresented,
             isBlockConfirmPresented: $model.isBlockConfirmPresented,
+            isReviewPresented: $model.isReviewPresented,
+            reviewRating: $model.reviewRating,
+            reviewComment: $model.reviewComment,
             actions: actions
         )
         .task {
             await model.loadIfNeeded()
+            #if DEBUG
+            await showReviewDemoIfRequested()
+            #endif
         }
         .onReceive(connectivity.$isOnline.dropFirst()) { online in
             // Retour du réseau alors que le profil est en erreur : nouvel essai, sans attendre « Réessayer ».
@@ -100,7 +108,31 @@ private struct SellerHost: View {
             },
             noticeShown: {
                 model.noticeShown()
+            },
+            openReview: {
+                // Le bouton n'est montré qu'à un membre éligible ; garde par prudence, comme Android.
+                guard model.state.isLoggedIn else {
+                    router.requestLogin()
+                    return
+                }
+                Task { await model.openReview() }
+            },
+            submitReview: {
+                Task { await model.confirmReview() }
+            },
+            cancelReview: {
+                model.dismissReview()
             }
         )
     }
+
+    #if DEBUG
+    /// Tour de captures (Debug, API simulée) : `-WeydaReviewDemo open` (ou `filled`) ouvre la feuille d'avis une fois
+    /// le profil et le droit de noter chargés — la note et le commentaire se rempliraient sinon au clavier.
+    private func showReviewDemoIfRequested() async {
+        guard !reviewDemoShown, LaunchOptions.mockAPI, let demo = LaunchOptions.reviewDemo else { return }
+        reviewDemoShown = true
+        await model.showReviewDemo(demo)
+    }
+    #endif
 }

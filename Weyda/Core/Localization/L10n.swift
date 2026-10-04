@@ -607,6 +607,28 @@ nonisolated enum L10n {
     static var legalTitle: String { tr("legal_title") }
     /// Version %1$s
     static func legalVersion(_ p1: String) -> String { tr("legal_version", p1) }
+    /// Vous ne serez plus prévenu des nouvelles annonces pour « %1$s ».
+    static func listsAlertDeleteConfirmBody(_ p1: String) -> String { tr("lists_alert_delete_confirm_body", p1) }
+    /// Supprimer cette alerte ?
+    static var listsAlertDeleteConfirmTitle: String { tr("lists_alert_delete_confirm_title") }
+    /// Alerte supprimée.
+    static var listsAlertDeleted: String { tr("lists_alert_deleted") }
+    /// « %1$s »
+    static func listsAlertKeyword(_ p1: String) -> String { tr("lists_alert_keyword", p1) }
+    /// +%d filtres
+    static func listsAlertMoreFilters(_ p1: Int) -> String { tr("lists_alert_more_filters", p1) }
+    /// Affiche les annonces de cette alerte
+    static var listsAlertOpenHint: String { tr("lists_alert_open_hint") }
+    /// Lancer une recherche
+    static var listsAlertsSearch: String { tr("lists_alerts_search") }
+    /// Alertes : %1$s
+    static func listsAlertsUsage(_ p1: String) -> String { tr("lists_alerts_usage", p1) }
+    /// Parcourir les annonces
+    static var listsBrowse: String { tr("lists_browse") }
+    /// Vos favoris s'afficheront ici dès que votre adresse email sera vérifiée.
+    static var listsFavoritesUnverifiedBody: String { tr("lists_favorites_unverified_body") }
+    /// Vérifiez votre email
+    static var listsFavoritesUnverifiedTitle: String { tr("lists_favorites_unverified_title") }
     /// Chargement…
     static var loading: String { tr("loading") }
     /// Connectez-vous pour déposer une annonce, envoyer des messages et gérer votre profil.
@@ -1019,6 +1041,8 @@ nonisolated enum L10n {
     static var reviewSent: String { tr("review_sent") }
     /// %1$d étoiles sur 5
     static func reviewStar(_ p1: Int) -> String { tr("review_star", p1) }
+    /// Votre nouvel avis remplacera le précédent.
+    static var reviewsEditHint: String { tr("reviews_edit_hint") }
     /// Aucun avis pour le moment
     static var reviewsEmpty: String { tr("reviews_empty") }
     /// Avis
@@ -1465,6 +1489,17 @@ nonisolated enum L10n {
         "legal_terms",
         "legal_title",
         "legal_version",
+        "lists_alert_delete_confirm_body",
+        "lists_alert_delete_confirm_title",
+        "lists_alert_deleted",
+        "lists_alert_keyword",
+        "lists_alert_more_filters",
+        "lists_alert_open_hint",
+        "lists_alerts_search",
+        "lists_alerts_usage",
+        "lists_browse",
+        "lists_favorites_unverified_body",
+        "lists_favorites_unverified_title",
         "loading",
         "login_required_body",
         "login_required_title",
@@ -1671,6 +1706,7 @@ nonisolated enum L10n {
         "review_send",
         "review_sent",
         "review_star",
+        "reviews_edit_hint",
         "reviews_empty",
         "reviews_title",
         "search_clear",
@@ -1748,6 +1784,7 @@ nonisolated enum L10n {
     static let pluralKeys: [String] = [
         "auth_verify_attempts_left",
         "detail_views",
+        "lists_alert_more_filters",
         "results_count",
         "review_star",
         "seller_listings",

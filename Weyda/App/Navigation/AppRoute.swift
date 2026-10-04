@@ -11,7 +11,7 @@ nonisolated enum AppRoute: Hashable, Sendable {
     case webPage(WebPage)
     /// « À propos et informations légales ».
     case about
-    // Phases suivantes : écran d'attente (`ComingSoonView`) en phase 2.
+    // Compte, messagerie, favoris et alertes (phases 3 à 6).
     case chat(conversationId: String, archived: Bool)
     case myListings
     case favorites

@@ -41,8 +41,11 @@ struct RouteDestination: View {
             NotificationsView()
         case .blockedUsers:
             BlockedUsersView()
-        case .favorites, .savedSearches:
-            ComingSoonView(route: route)
+        // Favoris et alertes (phase 6) : écrans de membre, gardés par eux-mêmes.
+        case .favorites:
+            FavoritesView()
+        case .savedSearches:
+            SavedSearchesView()
         }
     }
 }

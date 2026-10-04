@@ -77,10 +77,10 @@ final class TourTests: TourTestCase {
         captureLaunch(["-WeydaScreen", "components"], name: "92-components", scrolls: 8, screen: "components")
     }
 
-    /// « À propos et informations légales » (poussé sur l'onglet Profil), puis un écran d'attente (phase 3).
+    /// « À propos et informations légales » (poussé sur l'onglet Profil). Plus d'écran d'attente depuis la phase 6
+    /// (favoris et alertes ont leurs écrans, tour `TourListsTests`).
     @MainActor
     func test80About() {
         captureRoute("about", name: "80-about")
-        captureRoute("favorites", name: "81-comingSoon")
     }
 }

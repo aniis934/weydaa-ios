@@ -1,0 +1,13 @@
+[
+  { "method": "GET", "path": "/api/favorites", "fixture": "lists/favoris.json" },
+  { "method": "POST", "path": "/api/favorites", "status": 201, "fixture": "lists/favori-ajoute.json" },
+  { "method": "DELETE", "path": "/api/favorites/*", "fixture": "lists/succes.json" },
+  { "method": "GET", "path": "/api/favorites/mock-a3", "fixture": "lists/favori-oui.json" },
+  { "method": "GET", "path": "/api/favorites/mock-a25", "fixture": "lists/favori-oui.json" },
+  { "method": "GET", "path": "/api/favorites/mock-a17", "fixture": "lists/favori-oui.json" },
+  { "method": "GET", "path": "/api/favorites/mock-a10", "fixture": "lists/favori-oui.json" },
+  { "method": "GET", "path": "/api/favorites/mock-a14", "fixture": "lists/favori-oui.json" },
+  { "method": "GET", "path": "/api/saved-searches", "fixture": "lists/alertes.json" },
+  { "method": "DELETE", "path": "/api/saved-searches/*", "fixture": "lists/succes.json" },
+  { "method": "GET", "path": "/api/annonces", "query": { "q": "clio", "category": "vehicules", "wilaya": "16" }, "fixture": "lists/annonces-clio-alger.json" }
+]

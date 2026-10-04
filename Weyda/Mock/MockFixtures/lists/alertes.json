@@ -1,0 +1,47 @@
+{
+  "searches": [
+    {
+      "id": "mock-s1",
+      "name": "Clio à Alger",
+      "params": {
+        "q": "clio",
+        "category": "vehicules",
+        "wilaya": "16"
+      },
+      "createdAt": "2026-10-01T09:30:00.000Z"
+    },
+    {
+      "id": "mock-s2",
+      "name": "Appartements F3 à Oran",
+      "params": {
+        "category": "immobilier",
+        "subcategory": "vente-appartement",
+        "wilaya": "31",
+        "priceMax": "25000000",
+        "attr_rooms": "3"
+      },
+      "createdAt": "2026-09-24T18:05:00.000Z"
+    },
+    {
+      "id": "mock-s3",
+      "name": "iPhone moins de 150 000 DA",
+      "params": {
+        "q": "iphone",
+        "category": "electronique",
+        "subcategory": "smartphones",
+        "priceMax": "150000"
+      },
+      "createdAt": "2026-09-15T12:40:00.000Z"
+    },
+    {
+      "id": "mock-s4",
+      "name": "Vélos",
+      "params": {
+        "category": "loisirs",
+        "subcategory": "velos"
+      },
+      "createdAt": "2026-08-30T08:15:00.000Z"
+    }
+  ],
+  "max": 5
+}
