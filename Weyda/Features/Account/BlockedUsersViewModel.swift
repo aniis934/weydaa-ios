@@ -16,10 +16,13 @@ nonisolated struct BlockedUsersState: Equatable, Sendable {
     var busyId: String? = nil
     /// Déblocage à confirmer (nil = aucune boîte de dialogue).
     var pendingUnblock: BlockedUser? = nil
-    /// Message bref (débloqué, échec), effacé par `noticeShown()`.
-    var notice: String? = nil
+    /// Bannière brève (débloqué : succès ; échec : erreur), effacée par `noticeShown()`.
+    var banner: WeydaBanner? = nil
 
     var canLoadMore: Bool { page < totalPages && !isLoading && !isLoadingMore }
+
+    /// Texte de la bannière (nil = aucune).
+    var notice: String? { banner?.message }
 }
 
 /// Utilisateurs que j'ai bloqués (`GET /api/users/me/blocked`, lot serveur B), page par page ; « Débloquer » après
@@ -89,7 +92,7 @@ final class BlockedUsersViewModel: ObservableObject {
             state.totalPages = page.totalPages
         } catch {
             if let message = ErrorMapper.message(for: error) {
-                state.notice = message
+                state.banner = AccountBanner.failure(message)
             }
         }
         state.isRefreshing = false
@@ -116,7 +119,7 @@ final class BlockedUsersViewModel: ObservableObject {
             } catch {
                 guard !Task.isCancelled else { return }
                 self.state.isLoadingMore = false
-                self.state.notice = ErrorMapper.message(for: error)
+                self.state.banner = ErrorMapper.message(for: error).map { AccountBanner.failure($0) }
             }
         }
         loadTask = task
@@ -142,13 +145,13 @@ final class BlockedUsersViewModel: ObservableObject {
         state.pendingUnblock = nil
         guard state.busyId == nil else { return nil }
         state.busyId = user.id
-        state.notice = nil
+        state.banner = nil
         return Task { [weak self] in
             guard let self else { return }
             do {
                 try await self.conversations.setBlocked(userId: user.id, blocked: false)
                 self.state.items.removeAll { $0.id == user.id }
-                self.state.notice = L10n.chatUnblockedDone
+                self.state.banner = AccountBanner.success(L10n.chatUnblockedDone)
                 self.state.busyId = nil
                 if self.state.items.isEmpty && self.state.page < self.state.totalPages {
                     self.load()
@@ -156,13 +159,13 @@ final class BlockedUsersViewModel: ObservableObject {
             } catch {
                 self.state.busyId = nil
                 if let message = ErrorMapper.message(for: error) {
-                    self.state.notice = message
+                    self.state.banner = AccountBanner.failure(message)
                 }
             }
         }
     }
 
     func noticeShown() {
-        state.notice = nil
+        state.banner = nil
     }
 }

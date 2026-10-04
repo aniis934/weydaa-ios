@@ -3,7 +3,8 @@ import SwiftUI
 /// « Mes annonces » — portage de `MyListingsRoute` / `MyListingsScreen` (MyListingsScreen.kt) : onglets par statut,
 /// badges, note de modération IA sous une annonce refusée, ouverture de la fiche, et sous chaque annonce ses actions
 /// (`ListingActionsRow`) : modifier, marquer vendu, renouveler, supprimer — vendu et suppression après confirmation
-/// (`ConfirmActionDialog`), message bref après chaque action (le Snackbar d'Android).
+/// (feuille d'actions iOS ; Android : `ConfirmActionDialog`), bannière après chaque action (le Snackbar d'Android). Les
+/// mêmes actions s'ouvrent aussi par un appui long sur la carte.
 struct MyListingsView: View {
     @EnvironmentObject private var container: AppContainer
 
@@ -11,7 +12,13 @@ struct MyListingsView: View {
 
     var body: some View {
         AccountMemberGate(title: L10n.myListingsTitle) { _ in
-            MyListingsHost(model: MyListingsViewModel(users: container.users, annonces: container.annonces))
+            MyListingsHost(
+                model: MyListingsViewModel(
+                    users: container.users,
+                    annonces: container.annonces,
+                    reviewPrompter: container.reviewPrompter
+                )
+            )
         }
     }
 }
@@ -46,6 +53,8 @@ private struct MyListingsHost: View {
         .onAppear {
             _ = model.appear()
         }
+        // Annonce vendue : demande de note quand c'est le bon moment (`ReviewPrompter`).
+        .requestsReview(when: model.asksForReview)
     }
 
     /// Boutons d'une annonce — `MyListingsActions` (Android) : modifier ouvre l'assistant en édition, vendu et
@@ -63,7 +72,7 @@ private struct MyListingsHost: View {
         }
     }
 
-    /// Boîte de confirmation, ouverte tant qu'une action attend (`pendingAction`). Un appui sur l'un de ses boutons
+    /// Feuille de confirmation, ouverte tant qu'une action attend (`pendingAction`). Un appui sur l'un de ses boutons
     /// la referme et SwiftUI repasse la liaison à « faux » — peut-être AVANT d'exécuter l'action du bouton, qui lit
     /// encore l'action en attente : l'effacement est donc reporté au tour suivant (sans effet si le bouton l'a fait).
     private var confirmationBinding: Binding<Bool> {
@@ -80,8 +89,8 @@ private struct MyListingsHost: View {
     }
 }
 
-/// Écran sans état : puces de statut fixées en haut, puis la liste (squelettes, erreur, vide, annonces et leurs
-/// actions), la confirmation d'une action et le message bref qui la suit.
+/// Écran sans état : grand titre, puis la vue défilante (puces de statut en tête, squelettes, erreur, vide, ou les
+/// annonces et leurs actions), la feuille de confirmation d'une action et la bannière qui la suit.
 struct MyListingsScreen: View {
     private let state: MyListingsState
     private let isConfirmationPresented: Binding<Bool>
@@ -96,6 +105,10 @@ struct MyListingsScreen: View {
 
     /// La page suivante se demande quand l'une des 4 dernières annonces paraît (Android : même seuil).
     private static let prefetchDistance = 4
+    /// Ancre du haut de la liste (la rangée de puces).
+    private static let topAnchor = "myListings.top"
+    /// Hauteur estimée de la rangée de puces (cible tactile et marges) : erreur et liste vide se centrent dessous.
+    private static let filterBarHeight: CGFloat = WeydaSize.touchTarget + WeydaSpace.sm
 
     init(
         state: MyListingsState,
@@ -121,21 +134,25 @@ struct MyListingsScreen: View {
         self.onNoticeShown = onNoticeShown
     }
 
-    /// Puces dans une pile, AU-DESSUS de la vue défilante, et non dans un `safeAreaInset` : sur iOS 26, l'effet de bord
-    /// de défilement de la barre de navigation recouvre l'encart du haut — la place des puces restait vide (captures
-    /// de la phase 3).
+    /// Puces EN TÊTE du contenu défilant (phase 8) : posées au-dessus, leur vue défilante horizontale était la première
+    /// de l'écran et captait le grand titre, qui ne se repliait plus. Jamais dans un `safeAreaInset` : sur iOS 26,
+    /// l'effet de bord de défilement de la barre de navigation recouvre l'encart du haut (captures de la phase 3).
     var body: some View {
         VStack(spacing: 0) {
             OfflineBanner()
-            MyListingsFilterBar(selected: state.filter, onSelect: onFilter)
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .background(WeydaColor.background)
         .navigationTitle(L10n.myListingsTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .floatingNotice(state.notice, onShown: onNoticeShown)
-        .alert(confirmationTitle, isPresented: isConfirmationPresented, presenting: state.pendingAction) { action in
+        .navigationBarTitleDisplayMode(.large)
+        .weydaBanner(state.banner, onAction: { _ in }, onDismiss: onNoticeShown)
+        .confirmationDialog(
+            confirmationTitle,
+            isPresented: isConfirmationPresented,
+            titleVisibility: .visible,
+            presenting: state.pendingAction
+        ) { action in
             confirmationButtons(for: action)
         } message: { action in
             Text(MyListingsText.confirmationMessage(for: action))
@@ -144,12 +161,13 @@ struct MyListingsScreen: View {
         .accessibilityIdentifier("screen.myListings")
     }
 
-    /// Titre de la confirmation (vide le temps que la boîte se referme).
+    /// Titre de la confirmation (vide le temps que la feuille se referme).
     private var confirmationTitle: String {
         state.pendingAction.map { MyListingsText.confirmationTitle(for: $0) } ?? ""
     }
 
-    /// `ConfirmActionDialog` (Android) : « Confirmer la vente », ou « Supprimer » en rouge, puis « Annuler ».
+    /// `ConfirmActionDialog` (Android) : « Confirmer la vente », ou « Supprimer » en rouge, puis « Annuler » (à part,
+    /// en bas de la feuille d'actions).
     @ViewBuilder
     private func confirmationButtons(for action: MyListingAction) -> some View {
         switch action {
@@ -161,19 +179,36 @@ struct MyListingsScreen: View {
         Button(L10n.cancel, role: .cancel, action: onCancelConfirmation)
     }
 
-    /// Chaque état a sa propre vue défilante : un nouveau filtre repart du haut de la liste (Android le
-    /// faisait à la main, `scrollToItem(0)`).
-    @ViewBuilder
+    /// UNE vue défilante pour tous les états, puces en tête : la rangée de puces garde sa position quand le filtre
+    /// change, la liste repart du haut (Android le faisait à la main, `scrollToItem(0)`). Erreur et liste vide restent
+    /// défilantes (« tirer pour rafraîchir ») et se centrent dans la place laissée par les puces.
     private var content: some View {
-        if state.isLoading {
-            ScrollView {
-                ListingRowSkeletons()
+        GeometryReader { geometry in
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        MyListingsFilterBar(selected: state.filter, onSelect: onFilter)
+                            .id(Self.topAnchor)
+                        stateContent(minHeight: max(geometry.size.height - Self.filterBarHeight, 0))
+                    }
+                }
+                .onChange(of: state.filter) { _ in
+                    proxy.scrollTo(Self.topAnchor, anchor: .top)
+                }
             }
-            .scrollDisabled(true)
+        }
+    }
+
+    @ViewBuilder
+    private func stateContent(minHeight: CGFloat) -> some View {
+        if state.isLoading {
+            ListingRowSkeletons()
         } else if let message = state.errorMessage {
             ErrorState(message: message, onRetry: onRetry)
+                .frame(maxWidth: .infinity, minHeight: minHeight)
         } else if state.items.isEmpty {
-            emptyState
+            emptyMessage
+                .frame(maxWidth: .infinity, minHeight: minHeight)
         } else {
             list
         }
@@ -184,41 +219,29 @@ struct MyListingsScreen: View {
     private var list: some View {
         let trailing: Set<String> = Set(state.items.suffix(Self.prefetchDistance).map(\.id))
         let busyId: String? = state.busyId
-        return ScrollView {
-            LazyVStack(spacing: WeydaSpace.gutter) {
-                ForEach(state.items) { listing in
-                    MyListingCard(
-                        listing: listing,
-                        isBusy: busyId == listing.id,
-                        isLocked: busyId != nil,
-                        onAction: { action in onAction(action, listing) }
-                    )
-                    .onAppear {
-                        if trailing.contains(listing.id) {
-                            onLoadMore()
-                        }
+        return LazyVStack(spacing: WeydaSpace.gutter) {
+            ForEach(state.items) { listing in
+                MyListingCard(
+                    listing: listing,
+                    isBusy: busyId == listing.id,
+                    isLocked: busyId != nil,
+                    onAction: { action in onAction(action, listing) }
+                )
+                .onAppear {
+                    if trailing.contains(listing.id) {
+                        onLoadMore()
                     }
                 }
-                if state.isLoadingMore {
-                    InlineLoader()
-                }
             }
-            .padding(.horizontal, WeydaSpace.screen)
-            .padding(.vertical, WeydaSpace.md)
-        }
-    }
-
-    /// Aucune annonce : sans filtre, une invitation à déposer ; avec un filtre, le retour à « Toutes ». Défilant,
-    /// pour que « tirer pour rafraîchir » reste possible.
-    private var emptyState: some View {
-        GeometryReader { proxy in
-            ScrollView {
-                emptyMessage
-                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            if state.isLoadingMore {
+                InlineLoader()
             }
         }
+        .padding(.horizontal, WeydaSpace.screen)
+        .padding(.vertical, WeydaSpace.md)
     }
 
+    /// Aucune annonce : sans filtre, une invitation à déposer ; avec un filtre, le retour à « Toutes ».
     @ViewBuilder
     private var emptyMessage: some View {
         if state.filter == nil {
@@ -423,6 +446,13 @@ private struct MyListingCard: View {
                     }
                 }
             }
+            // Appui long : les mêmes actions que la barre (mêmes règles, désactivées pendant une action), avec
+            // l'aperçu de l'annonce. Pas de glissements : la liste n'est pas une `List` (décision de la phase 8).
+            .contextMenu {
+                MyListingMenuItems(listing: listing, actions: actions, isLocked: isLocked, onAction: onAction)
+            } preview: {
+                MyListingMenuPreview(listing: listing)
+            }
             Rectangle()
                 .fill(WeydaPalette.cardOutline)
                 .frame(height: 1)
@@ -439,6 +469,54 @@ private struct MyListingCard: View {
         .overlay {
             shape.strokeBorder(WeydaPalette.cardOutline, lineWidth: 1)
         }
+    }
+}
+
+/// Entrées du menu d'appui long d'une carte : les actions de la barre, dans le même ordre, « Supprimer » en rouge.
+/// Les identifiants `myListing.<action>.<id>` restent ceux des boutons visibles (ceux du menu ont `myListing.menu.…`).
+private struct MyListingMenuItems: View {
+    private let listing: Listing
+    private let actions: [MyListingRowAction]
+    private let isLocked: Bool
+    private let onAction: (MyListingRowAction) -> Void
+
+    init(listing: Listing, actions: [MyListingRowAction], isLocked: Bool, onAction: @escaping (MyListingRowAction) -> Void) {
+        self.listing = listing
+        self.actions = actions
+        self.isLocked = isLocked
+        self.onAction = onAction
+    }
+
+    var body: some View {
+        ForEach(actions, id: \.self) { action in
+            Button(role: role(for: action)) {
+                onAction(action)
+            } label: {
+                Label(action.title(for: listing), systemImage: action.symbol)
+            }
+            .disabled(isLocked)
+            .accessibilityIdentifier("myListing.menu.\(action.rawValue).\(listing.id)")
+        }
+    }
+
+    private func role(for action: MyListingRowAction) -> ButtonRole? {
+        action.isDestructive ? .destructive : nil
+    }
+}
+
+/// Aperçu de l'appui long : la carte d'annonce à largeur fixe (comme `listingContextMenu`), sans cœur.
+private struct MyListingMenuPreview: View {
+    private let listing: Listing
+
+    init(listing: Listing) {
+        self.listing = listing
+    }
+
+    var body: some View {
+        ListingCard(listing: listing)
+            .frame(width: WeydaSize.carouselCard)
+            .padding(WeydaSpace.sm)
+            .background(WeydaColor.background)
     }
 }
 

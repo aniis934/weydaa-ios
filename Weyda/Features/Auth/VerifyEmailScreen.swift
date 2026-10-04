@@ -33,6 +33,8 @@ private struct VerifyEmailHost: View {
 
     var body: some View {
         VerifyEmailScreen(state: model.state, code: codeBinding, actions: actions)
+            // Code commencé ou appel en cours : la feuille ne se ferme plus d'un glissement (« Fermer » reste là).
+            .interactiveDismissDisabled(model.state.keepsSheetOpen)
     }
 
     private var actions: VerifyEmailActions {

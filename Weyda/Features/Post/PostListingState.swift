@@ -79,8 +79,9 @@ nonisolated struct PostListingState: Equatable, Sendable {
     var photos: [PhotoItem] = []
     /// 5, ou 8 pour un vendeur recommandé (`User.maxImages`, relu sur /users/me).
     var maxPhotos = 5
-    /// Message transitoire de l'étape photos (limite atteinte…), effacé par `photosNoticeShown()`.
-    var photosNotice: String? = nil
+    /// Bannière de l'étape photos (limite atteinte : information ; photo illisible, pas d'appareil : erreur), effacée
+    /// par `photosNoticeShown()`.
+    var photosBanner: WeydaBanner? = nil
 
     /* Localisation + téléphone */
     var wilayas: [Wilaya] = []
@@ -114,6 +115,9 @@ nonisolated struct PostListingState: Equatable, Sendable {
     // MARK: - Règles calculées (identiques à Android)
 
     var isEditing: Bool { editingId != nil }
+
+    /// Texte de la bannière de l'étape photos (nil = aucune).
+    var photosNotice: String? { photosBanner?.message }
 
     var parentCategory: Category? {
         categories.first { $0.id == parentCategoryId }

@@ -54,6 +54,33 @@ final class AuthViewModelsTests: XCTestCase {
     // MARK: - Connexion (AuthViewModelsTest.kt)
 
     @MainActor
+    func testAFilledOrBusySignInSheetIsNotDismissedBySwiping() {
+        var login = LoginState()
+        XCTAssertFalse(login.keepsSheetOpen)
+        login.email = "  "
+        XCTAssertFalse(login.keepsSheetOpen, "des espaces ne sont pas une saisie")
+        login.password = "x"
+        XCTAssertTrue(login.keepsSheetOpen)
+        XCTAssertTrue(LoginState(isGoogleSubmitting: true).keepsSheetOpen)
+
+        XCTAssertFalse(RegisterState().keepsSheetOpen)
+        XCTAssertTrue(RegisterState(phone: "0550").keepsSheetOpen)
+
+        XCTAssertFalse(ForgotPasswordState().keepsSheetOpen)
+        XCTAssertTrue(ForgotPasswordState(email: "amina@example.com").keepsSheetOpen)
+        XCTAssertFalse(ForgotPasswordState(email: "amina@example.com", sentTo: "amina@example.com").keepsSheetOpen,
+                       "la confirmation se ferme librement")
+
+        XCTAssertTrue(ResetPasswordState(confirm: "x").keepsSheetOpen)
+        XCTAssertFalse(ResetPasswordState(password: "x", confirm: "x", isDone: true).keepsSheetOpen)
+
+        XCTAssertFalse(VerifyEmailState(email: "amina@example.com").keepsSheetOpen, "l'adresse n'est pas une saisie")
+        XCTAssertTrue(VerifyEmailState(code: "12").keepsSheetOpen)
+        XCTAssertTrue(VerifyEmailState(isResending: true).keepsSheetOpen)
+        XCTAssertFalse(VerifyEmailState(code: "123456", verified: true).keepsSheetOpen)
+    }
+
+    @MainActor
     func testLoginValidatesLocallyBeforeAnyNetworkCall() {
         let fixture = makeFixture()
         fixture.api.onLogin = { _ in FakeWeydaAPI.tokens() }

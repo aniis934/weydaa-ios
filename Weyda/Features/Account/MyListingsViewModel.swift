@@ -31,10 +31,13 @@ nonisolated struct MyListingsState: Equatable, Sendable {
     var busyId: String? = nil
     /// Confirmation demandée (nil = aucune boîte de dialogue).
     var pendingAction: MyListingAction? = nil
-    /// Message transitoire, effacé par `noticeShown()`.
-    var notice: String? = nil
+    /// Bannière transitoire (succès d'une action, échec), effacée par `noticeShown()`.
+    var banner: WeydaBanner? = nil
 
     var canLoadMore: Bool { page < totalPages && !isLoading && !isLoadingMore }
+
+    /// Texte de la bannière (nil = aucune).
+    var notice: String? { banner?.message }
 }
 
 /// Annonces du membre par statut, pagination, rechargement silencieux au retour sur l'écran — portage de
@@ -42,20 +45,30 @@ nonisolated struct MyListingsState: Equatable, Sendable {
 /// l'attendent.
 final class MyListingsViewModel: ObservableObject {
     @Published private(set) var state = MyListingsState()
+    /// Note App Store : passe à vrai quand une vente est le bon moment pour la demander (`ReviewPrompter`).
+    @Published private(set) var asksForReview: Bool = false
 
     private let users: UserRepository
     private let annonces: AnnonceRepository
     private let now: () -> Date
+    private let reviewPrompter: ReviewPrompter
     private var loadTask: Task<Void, Never>?
     /// Page suivante ou rechargement silencieux en vol : annulés par `load`, ils appartiennent à l'ancien filtre.
     private var secondaryTask: Task<Void, Never>?
     private var hasAppeared = false
     private var hasLoaded = false
 
-    init(users: UserRepository, annonces: AnnonceRepository, now: @escaping () -> Date = { Date() }) {
+    /// `reviewPrompter` : celui du conteneur dans l'app ; inerte par défaut (tests).
+    init(
+        users: UserRepository,
+        annonces: AnnonceRepository,
+        now: @escaping () -> Date = { Date() },
+        reviewPrompter: ReviewPrompter = ReviewPrompter(isEnabled: false)
+    ) {
         self.users = users
         self.annonces = annonces
         self.now = now
+        self.reviewPrompter = reviewPrompter
     }
 
     /// Apparition de l'écran : premier chargement, puis rechargement silencieux à chaque retour (une fiche
@@ -143,7 +156,7 @@ final class MyListingsViewModel: ObservableObject {
             } catch {
                 guard !Task.isCancelled else { return }
                 self.state.isLoadingMore = false
-                self.state.notice = ErrorMapper.message(for: error)
+                self.state.banner = ErrorMapper.message(for: error).map { AccountBanner.failure($0) }
             }
         }
         secondaryTask = task
@@ -165,7 +178,7 @@ final class MyListingsViewModel: ObservableObject {
     }
 
     func noticeShown() {
-        state.notice = nil
+        state.banner = nil
     }
 
     @discardableResult
@@ -193,7 +206,7 @@ final class MyListingsViewModel: ObservableObject {
                 renewed.renewalCount = remaining.map { Listing.maxRenewals - $0 } ?? (listing.renewalCount + 1)
                 renewed.expiresAt = self.now().addingTimeInterval(60 * 24 * 3600)
                 self.replace(listing.id, with: renewed)
-                self.endAction(notice: L10n.myListingRenewed)
+                self.endAction(success: L10n.myListingRenewed)
             } catch {
                 self.endAction(failure: error)
             }
@@ -228,7 +241,7 @@ final class MyListingsViewModel: ObservableObject {
                 guard !Task.isCancelled else { return }
                 self.state.isRefreshing = false
                 if pulled, let message = ErrorMapper.message(for: error) {
-                    self.state.notice = message
+                    self.state.banner = AccountBanner.failure(message)
                 }
             }
         }
@@ -247,7 +260,9 @@ final class MyListingsViewModel: ObservableObject {
                 var sold = self.state.items.first { $0.id == listing.id } ?? listing
                 sold.status = updated.status
                 self.replace(listing.id, with: sold)
-                self.endAction(notice: L10n.myListingSoldDone)
+                self.endAction(success: L10n.myListingSoldDone)
+                // Annonce vendue : un moment positif (la bannière de succès vibre déjà d'elle-même).
+                self.asksForReview = self.reviewPrompter.record(.listingSold)
             } catch {
                 self.endAction(failure: error)
             }
@@ -262,7 +277,7 @@ final class MyListingsViewModel: ObservableObject {
                 try await self.annonces.delete(id: listing.id)
                 self.state.items.removeAll { $0.id == listing.id }
                 self.state.total = max(self.state.total - 1, 0)
-                self.endAction(notice: L10n.myListingDeleted)
+                self.endAction(success: L10n.myListingDeleted)
             } catch {
                 self.endAction(failure: error)
             }
@@ -273,19 +288,20 @@ final class MyListingsViewModel: ObservableObject {
     private func beginAction(on listing: Listing) -> Bool {
         guard state.busyId == nil else { return false }
         state.busyId = listing.id
-        state.notice = nil
+        state.banner = nil
         return true
     }
 
-    private func endAction(notice: String) {
-        state.notice = notice
+    /// Réussite : bannière de succès (elle vibre d'elle-même).
+    private func endAction(success message: String) {
+        state.banner = AccountBanner.success(message)
         state.busyId = nil
     }
 
-    /// L'échec devient un message transitoire, la liste reste affichée.
+    /// L'échec devient une bannière d'erreur, la liste reste affichée.
     private func endAction(failure: any Error) {
         if let message = ErrorMapper.message(for: failure) {
-            state.notice = message
+            state.banner = AccountBanner.failure(message)
         }
         state.busyId = nil
     }

@@ -1,8 +1,8 @@
 import XCTest
 
 /// Tour des actions de « Mes annonces » (8x, après 80-about / 81-comingSoon) en API simulée : boutons sous chaque
-/// annonce, confirmations « vendu » et « supprimer », message après la vente, annonce expirée à renouveler puis
-/// renouvelée. Session simulée `-WeydaLoggedIn YES` (utilisateur fictif `mock-me`), réponses des actions :
+/// annonce, confirmations « vendu » et « supprimer » (feuilles d'actions depuis la phase 8 : `app.sheets`), bannière
+/// après la vente, annonce expirée à renouveler puis renouvelée. Session simulée `-WeydaLoggedIn YES` (utilisateur fictif `mock-me`), réponses des actions :
 /// `MockFixtures/routes-mylistings.json`. Socle commun (lancement, attente, captures) : `TourSupport.swift`.
 final class TourMyListingsTests: TourTestCase {
     /// Session simulée ouverte, e-mail vérifié.
@@ -11,7 +11,7 @@ final class TourMyListingsTests: TourTestCase {
     private static let active = "mock-m1"
     private static let expired = "mock-m5"
     /// « Annuler » dans les 3 langues : l'autre bouton de la confirmation est celui qui confirme, quel que soit l'ordre
-    /// d'affichage (côte à côte, empilés, de droite à gauche).
+    /// d'affichage (empilés, de droite à gauche).
     private static let cancelLabels: Set<String> = ["Annuler", "إلغاء", "Cancel"]
 
     /// Toutes les annonces, avec leurs boutons (modifier, vendu, renouveler, supprimer selon le statut).
@@ -25,7 +25,7 @@ final class TourMyListingsTests: TourTestCase {
     func test83SoldConfirmation() {
         let app = openActiveListings()
         tapButton("myListing.sold.\(Self.active)", in: app)
-        XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 10), "confirmation « vendu » absente")
+        XCTAssertNotNil(actionSheet(in: app), "confirmation « vendu » absente")
         settle(0.8)
         pause()
         capture("83-myListings-soldConfirm-1")
@@ -37,22 +37,25 @@ final class TourMyListingsTests: TourTestCase {
     func test84DeleteConfirmation() {
         let app = openActiveListings()
         tapButton("myListing.delete.\(Self.active)", in: app)
-        XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 10), "confirmation « supprimer » absente")
+        XCTAssertNotNil(actionSheet(in: app), "confirmation « supprimer » absente")
         settle(0.8)
         pause()
         capture("84-myListings-deleteConfirm-1")
         app.terminate()
     }
 
-    /// Vente confirmée : l'annonce passe « Vendue » et le message bref s'affiche (4 s : capture sans attendre).
+    /// Vente confirmée : l'annonce passe « Vendue » et la bannière s'affiche (4 s : capture sans attendre).
     @MainActor
     func test85SoldNotice() {
         let app = openActiveListings()
         tapButton("myListing.sold.\(Self.active)", in: app)
-        let alert = app.alerts.firstMatch
-        XCTAssertTrue(alert.waitForExistence(timeout: 10), "confirmation « vendu » absente")
+        guard let sheet = actionSheet(in: app) else {
+            XCTFail("confirmation « vendu » absente")
+            app.terminate()
+            return
+        }
         settle(0.5)
-        guard let confirm = confirmButton(in: alert) else {
+        guard let confirm = confirmButton(in: sheet) else {
             XCTFail("bouton de confirmation introuvable")
             app.terminate()
             return
@@ -147,7 +150,22 @@ final class TourMyListingsTests: TourTestCase {
 
     /// Le bouton de la confirmation qui n'est pas « Annuler ».
     @MainActor
-    private func confirmButton(in alert: XCUIElement) -> XCUIElement? {
-        alert.buttons.allElementsBoundByIndex.first { !Self.cancelLabels.contains($0.label) }
+    private func confirmButton(in dialog: XCUIElement) -> XCUIElement? {
+        dialog.buttons.allElementsBoundByIndex.first { !Self.cancelLabels.contains($0.label) }
+    }
+
+    /// La feuille d'actions (`confirmationDialog`) : `app.sheets` sur iPhone ; repli sur un popover (iOS 26 peut ancrer
+    /// la feuille) puis sur une alerte. Nil au bout du délai.
+    @MainActor
+    private func actionSheet(in app: XCUIApplication, timeout: TimeInterval = 10) -> XCUIElement? {
+        let deadline = Date().addingTimeInterval(timeout)
+        repeat {
+            let candidates: [XCUIElement] = [app.sheets.firstMatch, app.popovers.firstMatch, app.alerts.firstMatch]
+            if let found = candidates.first(where: { $0.exists }) {
+                return found
+            }
+            Thread.sleep(forTimeInterval: 0.25)
+        } while Date() < deadline
+        return nil
     }
 }

@@ -91,7 +91,7 @@ struct BlockedUsersActions {
 }
 
 /// Écran sans état : squelettes, erreur, vide (comment bloquer), ou la liste et sa note de bas de section ;
-/// confirmation du déblocage et message bref qui le suit.
+/// confirmation du déblocage (une alerte : « Débloquer » n'est pas destructif) et bannière qui le suit.
 struct BlockedUsersScreen: View {
     private let state: BlockedUsersState
     private let isConfirmationPresented: Binding<Bool>
@@ -115,7 +115,7 @@ struct BlockedUsersScreen: View {
         .background(WeydaColor.background)
         .navigationTitle(L10n.blockedUsersTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .floatingNotice(state.notice, onShown: actions.onNoticeShown)
+        .weydaBanner(state.banner, onAction: { _ in }, onDismiss: actions.onNoticeShown)
         .alert(L10n.inboxUnblockConfirmTitle, isPresented: isConfirmationPresented, presenting: state.pendingUnblock) { _ in
             Button(L10n.inboxUnblock, action: actions.onConfirm)
             Button(L10n.cancel, role: .cancel, action: actions.onCancel)

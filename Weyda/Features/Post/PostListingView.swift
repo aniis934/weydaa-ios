@@ -75,6 +75,8 @@ private struct PostListingHost: View {
                     _ = model.onPhotosPicked([image])
                 }
             )
+            // Annonce publiée : demande de note quand c'est le bon moment (`ReviewPrompter`).
+            .requestsReview(when: model.asksForReview)
     }
 
     private func makeActions() -> PostListingActions {

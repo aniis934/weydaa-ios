@@ -31,6 +31,10 @@ nonisolated struct LoginState: Equatable, Sendable {
 
     var isBusy: Bool { isSubmitting || isGoogleSubmitting || isAppleSubmitting }
     var canSubmit: Bool { !isBusy && !TextCheck.isBlank(email) && !password.isEmpty }
+
+    /// Appel en cours ou champ rempli : glisser la feuille vers le bas ne la ferme plus (la saisie serait perdue) ;
+    /// « Fermer » reste possible.
+    var keepsSheetOpen: Bool { isBusy || !TextCheck.isBlank(email) || !password.isEmpty }
 }
 
 /// Connexion par e-mail, Apple ou Google — portage de `LoginViewModel`.
@@ -221,6 +225,11 @@ nonisolated struct RegisterState: Equatable, Sendable {
     var isBusy: Bool { isSubmitting || isGoogleSubmitting || isAppleSubmitting }
     var canSubmit: Bool {
         !isBusy && !TextCheck.isBlank(name) && !TextCheck.isBlank(email) && !password.isEmpty
+    }
+
+    /// Appel en cours ou champ rempli : glisser la feuille vers le bas ne la ferme plus ; « Fermer » reste possible.
+    var keepsSheetOpen: Bool {
+        isBusy || !TextCheck.isBlank(name) || !TextCheck.isBlank(email) || !password.isEmpty || !TextCheck.isBlank(phone)
     }
 }
 
@@ -432,6 +441,10 @@ nonisolated struct ForgotPasswordState: Equatable, Sendable {
     var sentTo: String? = nil
 
     var canSubmit: Bool { !isSubmitting && !TextCheck.isBlank(email) }
+
+    /// Envoi en cours, ou adresse saisie pas encore envoyée : glisser la feuille ne la ferme plus (la confirmation,
+    /// elle, se ferme librement).
+    var keepsSheetOpen: Bool { isSubmitting || (sentTo == nil && !TextCheck.isBlank(email)) }
 }
 
 /// « Mot de passe oublié » — portage de `ForgotPasswordViewModel`. Le serveur répond toujours 200 (il ne dit pas si
@@ -503,6 +516,9 @@ nonisolated struct ResetPasswordState: Equatable, Sendable {
     var canSubmit: Bool {
         !isSubmitting && !TextCheck.isBlank(password) && !TextCheck.isBlank(confirm)
     }
+
+    /// Envoi en cours, ou mot de passe saisi pas encore enregistré : glisser la feuille ne la ferme plus.
+    var keepsSheetOpen: Bool { isSubmitting || (!isDone && (!password.isEmpty || !confirm.isEmpty)) }
 }
 
 /// Nouveau mot de passe depuis le lien « mot de passe oublié » (`/{locale}/auth/reinitialiser-mdp?token=…`), ouvert
@@ -602,6 +618,10 @@ nonisolated struct VerifyEmailState: Equatable, Sendable {
 
     var canSubmit: Bool { !isSubmitting && code.count == 6 }
     var canResend: Bool { !isResending && cooldownSeconds == 0 }
+
+    /// Vérification ou renvoi en cours, ou code commencé : glisser la feuille ne la ferme plus (« Plus tard » et
+    /// « Fermer » restent possibles).
+    var keepsSheetOpen: Bool { isSubmitting || isResending || (!verified && !code.isEmpty) }
 }
 
 /// Vérification de l'e-mail par le code reçu — portage de `VerifyEmailViewModel` : soumission automatique au

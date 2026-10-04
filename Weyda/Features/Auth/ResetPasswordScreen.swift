@@ -35,6 +35,8 @@ private struct ResetPasswordHost: View {
             onSubmit: submitAction,
             onLogin: onLogin
         )
+        // Mot de passe saisi ou envoi en cours : la feuille ne se ferme plus d'un glissement (« Fermer » reste là).
+        .interactiveDismissDisabled(model.state.keepsSheetOpen)
     }
 
     private var submitAction: () -> Void {
