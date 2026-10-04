@@ -21,7 +21,7 @@ propriétaire va dans `docs/EN-ATTENTE.md` et on continue. Règles et garde-fous
 | 4 | Déposer une annonce | assistant 6 étapes, attributs dynamiques, photos (galerie + appareil → JPEG 1600 px), envoi photo par photo, brouillon, modifier / vendu / renouveler / supprimer | non | ✅ close le 2026-10-04 |
 | 5 | Messagerie et notifications + lot serveur B | conversations, fil, offres, archives, « écrit… », blocage + bloqués, signalement, temps réel, cloche et pastilles, push (Firebase), liens universels | push, liens | ✅ close le 2026-10-04 (push et liens : test sur iPhone en attente) |
 | 6 | Favoris, alertes, avis, finition | favoris, alertes (max 5), avis ; VoiceOver, très grand texte, RTL, sombre, Réduire les animations, fluidité, passage iOS 16, touches Liquid Glass | non | ✅ close le 2026-10-04 |
-| 7 | App Store + lot serveur C | TestFlight final, manifeste de confidentialité, étiquettes App Privacy, âge, textes fr/ar/en, captures 6,9", compte de démo, test final, soumission | oui | ⏳ |
+| 7 | App Store + lot serveur C | TestFlight final, manifeste de confidentialité, étiquettes App Privacy, âge, textes fr/ar/en, captures 6,9", compte de démo, test final, soumission | oui | ✅ préparée le 2026-10-04 (TestFlight, test final et soumission : compte Apple) |
 
 Jalons TestFlight sur l'iPhone du propriétaire : fin de phase 2, fin de phase 5, test final.
 
@@ -182,6 +182,24 @@ Branche `prep/release` fusionnée (workflows `ios-release` / `ios-compat`, `docs
 - [x] CI : 608 tests, 0 échec, verts du premier coup (lots 1 et 2)
 - [x] Captures relues : tour complet fr + ar × clair/sombre × 17 Pro Max + 17e, très grand texte fr + ar, iOS 16.4 ; galerie https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo
 - [ ] Sur iPhone : fluidité, haptique, Liquid Glass réel (TestFlight)
+
+## Phase 7 — détail (préparée le 2026-10-04, PR #8)
+Deux agents (`docs/equipe/CONTRACTS-P7.md`) ; tout ce qui demande le compte Apple attend le propriétaire (`docs/EN-ATTENTE.md`, section
+« Ordre de traitement »).
+- [x] Captures de la fiche : mode vitrine Debug (`-WeydaStoreCaption 1…8` : légende de marque composée par l'app, l'app réduite dans un
+      cadre), tour `StoreShotsTests` → 24 captures 1320 × 2868 (8 écrans × fr/ar/en, l'écran 8 en sombre), relues, en JPEG sans alpha dans
+      `docs/store/captures/<langue>/` ; aucune autre plateforme mobile visible (règle 2.3.10)
+- [x] Manifeste `Weyda/Resources/PrivacyInfo.xcprivacy` embarqué (aucun suivi ; UserDefaults `CA92.1`, dates de fichiers `C617.1` ;
+      15 types de données) + `PrivacyManifestTests` ; brouillon de `docs/store/` retiré
+- [x] App Privacy, fiches fr/ar/en (limites d'Apple comptées par script), notes de revue fr/en (chemins exacts, délai de 24 h des CGU du
+      lot B), âge, check-list de soumission, `RELEASE.md` (Firebase, dSYM, entitlements, capacités de l'App ID)
+- [x] `ios-release` : identifiant client Google iOS transmis au build (secret `GOOGLE_IOS_CLIENT_ID` ; sans lui, le bouton Google était
+      masqué dans TestFlight) ; dSYM envoyés à Crashlytics
+- [x] CI : 612 tests, 0 échec, vert du premier coup ; galerie https://claude.ai/artifact/B9meNggA7FGCi6JyV1ee5G
+- [ ] TestFlight, test final guidé (~30 min) sur iPhone, soumission : compte Apple Developer et secrets (EN-ATTENTE, étapes B à D)
+
+## Galeries des phases 5 à 7 (2026-10-04)
+Phase 5 (messagerie, notifications) https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp · phase 6 (favoris, alertes, avis, finition) https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo · phase 7 (fiche App Store) https://claude.ai/artifact/B9meNggA7FGCi6JyV1ee5G.
 
 ## Constats de la CI (phase 6)
 - Firebase + 4 agents : tous les lots compilés verts du premier coup ; `ios-compat` (iOS 16.4) vert sans correction.

@@ -5,7 +5,51 @@
 > récente en haut de sa section. Une fois traité : cocher, dater, ne pas effacer.
 > Aucun secret ici (dépôt public) : on nomme ce qu'il faut saisir, jamais sa valeur.
 
+## ➜ Ordre de traitement (fin de la phase 7, 2026-10-04)
+
+> L'app est terminée côté code (phases 0 à 7, 600+ tests, captures relues) ; tout ce qui reste passe par toi. Suis cet ordre :
+> chaque étape débloque la suivante. Détails pas à pas : `docs/store/checklist-soumission.md` et `docs/RELEASE.md`.
+
+**A. Tout de suite, sans compte Apple (≈ 45 min)**
+1. **Relire puis fusionner les PR serveur B et C** (https://github.com/aniis934/weyda2026/pull/6 et /pull/7) : textes à relire = §5
+   des CGU « tolérance zéro, 24 h » (B), section iOS n° 14 et ligne Apple des prestataires de la confidentialité (C). Sans risque
+   avant la sortie de l'app (Android inchangé). Puis déployer (`master` → Vercel).
+2. **Trancher la révocation Apple quand un admin supprime un compte** (section Décisions), puis relire l'e-mail « Connexion avec Apple
+   ajoutée » (fr/ar/en, `src/lib/mailer.ts`) et **fusionner la PR A** (https://github.com/aniis934/weyda2026/pull/5) — sans
+   `APPLE_TEAM_ID`, l'AASA répond 404 et la connexion Apple refuse proprement : sans risque.
+3. **Décisions de fiche** (section Décisions) : âge 18+, nom « Weydaa – Petites annonces », ligne de copyright (nom légal),
+   pays de diffusion, séparateur des milliers en anglais, photos dessinées des captures (OK ou à remplacer).
+4. **Secrets GitHub du dépôt iOS** `SUPABASE_HOST` + `SUPABASE_ANON_KEY` (mêmes valeurs que le site) : le temps réel des builds.
+
+**B. Dès que le compte Apple Developer est actif (≈ 1 h, pas à pas dans `checklist-soumission.md` §A)**
+5. Team ID ; App ID `com.weydaa.app` avec **Sign in with Apple, Push Notifications, Associated Domains** ; ton iPhone (UDID).
+6. App Store Connect : l'app « Weydaa » (fr, `com.weydaa.app`) ; clé API d'**équipe** (Admin) → secrets `ASC_KEY_ID`,
+   `ASC_ISSUER_ID`, `ASC_KEY_P8`, `APPLE_TEAM_ID`.
+7. Clés `.p8` « Sign in with Apple » et APNs ; Vercel : `APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY`, `APPLE_BUNDLE_ID`.
+8. Google Cloud : client OAuth **iOS** → Vercel `AUTH_GOOGLE_IOS_ID` **et** secret GitHub **`GOOGLE_IOS_CLIENT_ID`** (sinon le
+   bouton Google est masqué dans le build).
+9. Firebase (projet `weydaa-964df`) : app iOS + clé APNs → secret **`GOOGLE_SERVICE_INFO_PLIST`** (push + Crashlytics).
+10. « Sign in with Apple for Email Communication » : weydaa.com + adresse d'envoi (SPF, DKIM) ; vérifier l'AASA sur weydaa.com et
+    www.weydaa.com (réponse 200 en JSON, sans redirection).
+
+**C. TestFlight (≈ 45 min)**
+11. Actions → `ios-release` → Run workflow (branche `main`) → groupe interne TestFlight → installer sur ton iPhone.
+12. Tests sur l'iPhone (section « Tests sur l'iPhone ») puis le **test final guidé (~30 min)** ; feu vert pour les premières
+    écritures réelles avec un compte de test (annonce, message, offre).
+
+**D. Soumission (≈ 1 h, `checklist-soumission.md` §B)**
+13. Comptes de démo A et B (`review-notes.md`), contact de revue (dans App Store Connect seulement), relecture de l'arabe des
+    fiches par un arabophone.
+14. Fiche fr/ar/en (textes `docs/store/fiche-*.md`, captures `docs/store/captures/<langue>/`), App Privacy (`app-privacy.md`),
+    âge, prix et disponibilité → **Soumettre**.
+
+**Hors iOS (quand tu veux)** : textes Play et OpenRouter (section Décisions), clés en double de `messages/ar.json` / `en.json`
+(section Problèmes).
+
 ## Comptes et clés (à saisir par le propriétaire)
+- [ ] **Google Cloud → secret GitHub `GOOGLE_IOS_CLIENT_ID`** (relevé en phase 7) : l'identifiant du client OAuth « iOS »
+      (forme `123…-abc.apps.googleusercontent.com`) ; `ios-release` l'écrit dans le build. Sans lui, « Continuer avec Google »
+      est masqué dans TestFlight et dans l'App Store (le résumé du workflow le signale).
 - [ ] **Clé API d'ÉQUIPE App Store Connect (accès Admin, « Team key », pas une clé individuelle)** → secrets GitHub
       `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (contenu du .p8) + `APPLE_TEAM_ID` — débloque `ios-release`
       (mode d'emploi : `docs/RELEASE.md`, branche `prep/release`).
@@ -70,12 +114,12 @@
 - [ ] Pays de diffusion App Store : Algérie seule, ou aussi la France / l'UE (statut de commerçant exigé par Apple).
 - [ ] Comptes de démo pour l'App Review : A (donné à Apple) et B (vendeur avec une annonce de test, pour tester la
       messagerie) — `docs/store/review-notes.md` ; le contact de la revue se saisit dans App Store Connect seulement.
-- [ ] Photos des annonces fictives (captures, API simulée) : dessinées par script par défaut — à revoir si besoin
-      pour les captures de la fiche App Store (phase 7).
+- [ ] Photos des annonces fictives : les 24 captures de la fiche (phase 7, `docs/store/captures/`) utilisent les photos
+      dessinées par script. Les garder, ou fournir de vraies photos libres de droits (les captures se refont en un tour).
 
 ## Tests sur l'iPhone (TestFlight)
 - [ ] Phase 3 : connexion avec Apple et avec Google, suppression de compte par Apple — quand le compte Apple (capacité
-      « Sign in with Apple »), l'identifiant client Google iOS (`WEYDA_GOOGLE_IOS_CLIENT_ID`) et le lot A seront en place.
+      « Sign in with Apple »), le secret `GOOGLE_IOS_CLIENT_ID` (identifiant client Google iOS) et le lot A seront en place.
 - [ ] Phase 4 : appareil photo (demande d'autorisation, photo prise → envoyée), sélecteur de photos réel (HEIC, plusieurs
       photos), brouillon retrouvé après fermeture de l'app ; première vraie annonce avec un compte de test (feu vert).
 - [ ] Fin de phase 2 : parcourir (fluidité, démarrage : le W fantôme ne doit pas traîner).
