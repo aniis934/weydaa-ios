@@ -110,7 +110,8 @@ nonisolated extension AnnonceDTO {
             imageRefs: refs,
             wilayaId: wilayaId ?? wilaya?.id,
             communeId: communeId ?? commune?.id,
-            hasPhone: showsPhone
+            hasPhone: showsPhone,
+            sellerId: TextCheck.nonBlank(userId) ?? TextCheck.nonBlank(user?.id)
         )
     }
 }

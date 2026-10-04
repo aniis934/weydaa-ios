@@ -15,7 +15,8 @@
       UserDefaults, CA92.1 (données lues et écrites par l'app seule) :
         LaunchOptions (arguments des tests), SearchHistoryStore (historique de recherche local),
         PushRegistrar (demande d'autorisation déjà faite), KeychainSessionStorage (drapeau de première installation),
-        HomeView et DetailView (feuilles ouvertes par les tests, Debug).
+        HomeView et DetailView (feuilles ouvertes par les tests, Debug), ReviewPrompter (nombre de moments positifs et
+        dernière version où la note a été demandée, phase 8).
       Horodatage de fichiers, C617.1 (fichiers du conteneur de l'app) :
         ImageDiskCache.trim et .data(for:) (Caches/WeydaImages : date de modification lue et réécrite, le moins
         récemment lu part d'abord) ; AccountDataRepository.purgeStaleCaptures (photos de l'appareil photo laissées

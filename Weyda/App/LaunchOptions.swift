@@ -7,6 +7,7 @@ import Foundation
 ///   -WeydaTab messages        onglet ouvert au démarrage
 ///   -WeydaRoute detail:x      écran ouvert au démarrage (formats : `LaunchRoute.parse`) ; feuille de connexion :
 ///                login · register · forgot · verify · reset:<jeton>   (`AuthEntry.launchEntry`)
+///   -WeydaShortcut search     raccourci de l'icône simulé au démarrage (`ShortcutAction` : post · search · messages)
 ///   -WeydaFreezeMotion YES    fige les animations décoratives sans fin (scintillement des squelettes) :
 ///                             captures reproductibles, et l'outil de test n'attend pas un « repos » qui ne vient pas
 ///   -WeydaScreen showcase     écran de démonstration du système de design (Debug) ;
@@ -47,6 +48,11 @@ nonisolated enum LaunchOptions {
 
     /// Route de démarrage brute (`detail:mock-a3`, `listings:q=clio`…), analysée par `LaunchRoute.parse`.
     static var route: String? { defaults.string(forKey: "WeydaRoute") }
+
+    /// Raccourci de l'icône simulé au démarrage (`-WeydaShortcut search`), appliqué par `AppRouter` après la route.
+    static var shortcut: ShortcutAction? {
+        defaults.string(forKey: "WeydaShortcut").flatMap { ShortcutAction(rawValue: $0.lowercased()) }
+    }
 
     static var freezeMotion: Bool { defaults.bool(forKey: "WeydaFreezeMotion") }
 

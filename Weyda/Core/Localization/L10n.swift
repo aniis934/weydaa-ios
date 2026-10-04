@@ -279,8 +279,14 @@ nonisolated enum L10n {
     static var deleteAccountPassword: String { tr("delete_account_password") }
     /// Supprimer mon compte
     static var deleteAccountTitle: String { tr("delete_account_title") }
+    /// Appeler
+    static var detailCall: String { tr("detail_call") }
     /// Contacter le vendeur
     static var detailContact: String { tr("detail_contact") }
+    /// Contacter
+    static var detailContactShort: String { tr("detail_contact_short") }
+    /// Copier le numéro
+    static var detailCopyNumber: String { tr("detail_copy_number") }
     /// Description
     static var detailDescription: String { tr("detail_description") }
     /// Expire le %1$s
@@ -289,6 +295,8 @@ nonisolated enum L10n {
     static var detailNotFoundMessage: String { tr("detail_not_found_message") }
     /// Cette annonce n'est plus disponible
     static var detailNotFoundTitle: String { tr("detail_not_found_title") }
+    /// Numéro copié
+    static var detailNumberCopied: String { tr("detail_number_copied") }
     /// Agrandir les photos
     static var detailOpenGallery: String { tr("detail_open_gallery") }
     /// Photo %1$d sur %2$d
@@ -333,6 +341,8 @@ nonisolated enum L10n {
     static var detailStatusSoldDesc: String { tr("detail_status_sold_desc") }
     /// %1$d vues
     static func detailViews(_ p1: Int) -> String { tr("detail_views", p1) }
+    /// Abandonner
+    static var discard: String { tr("discard") }
     /// Bio (optionnel)
     static var editProfileBio: String { tr("edit_profile_bio") }
     /// Un nouveau code de vérification sera envoyé à cette adresse.
@@ -481,6 +491,8 @@ nonisolated enum L10n {
     static var favoriteAdd: String { tr("favorite_add") }
     /// Retirer des favoris
     static var favoriteRemove: String { tr("favorite_remove") }
+    /// Retiré des favoris
+    static var favoriteRemoved: String { tr("favorite_removed") }
     /// Aucun favori pour l'instant
     static var favoritesEmpty: String { tr("favorites_empty") }
     /// Touchez le cœur d'une annonce pour la retrouver ici.
@@ -507,6 +519,8 @@ nonisolated enum L10n {
     static func filtersAttrValue(_ p1: String, _ p2: String) -> String { tr("filters_attr_value", p1, p2) }
     /// Tout effacer
     static var filtersClearAll: String { tr("filters_clear_all") }
+    /// Abandonner les modifications ?
+    static var filtersDiscardTitle: String { tr("filters_discard_title") }
     /// À la une
     static var filtersFeaturedChip: String { tr("filters_featured_chip") }
     /// Annonces à la une seulement
@@ -573,6 +587,8 @@ nonisolated enum L10n {
     static var inboxUnblockConfirmTitle: String { tr("inbox_unblock_confirm_title") }
     /// Débloquer %1$s
     static func inboxUnblockNamed(_ p1: String) -> String { tr("inbox_unblock_named", p1) }
+    /// Continuer
+    static var keepEditing: String { tr("keep_editing") }
     /// العربية
     static var languageAr: String { tr("language_ar") }
     /// English
@@ -637,6 +653,10 @@ nonisolated enum L10n {
     static var loginRequiredTitle: String { tr("login_required_title") }
     /// Membre depuis %1$s
     static func memberSince(_ p1: String) -> String { tr("member_since", p1) }
+    /// Voir l'annonce
+    static var menuOpenListing: String { tr("menu_open_listing") }
+    /// Voir le vendeur
+    static var menuSeeSeller: String { tr("menu_see_seller") }
     /// Motif de la modération
     static var moderationReason: String { tr("moderation_reason") }
     /// Supprimer
@@ -677,6 +697,8 @@ nonisolated enum L10n {
     static var navProfile: String { tr("nav_profile") }
     /// Supprimer la notification
     static var notificationDelete: String { tr("notification_delete") }
+    /// Notification supprimée
+    static var notificationDeleted: String { tr("notification_deleted") }
     /// Annonce approuvée
     static var notificationTypeAnnonceApproved: String { tr("notification_type_annonce_approved") }
     /// Annonce expirée
@@ -955,6 +977,10 @@ nonisolated enum L10n {
     static var profileVerifyAction: String { tr("profile_verify_action") }
     /// Vérifiez votre email pour déposer des annonces et contacter les vendeurs.
     static var profileVerifyBanner: String { tr("profile_verify_banner") }
+    /// Action impossible depuis la notification. Ouvrez Weydaa pour réessayer.
+    static var pushActionFailed: String { tr("push_action_failed") }
+    /// Répondre
+    static var pushActionReply: String { tr("push_action_reply") }
     /// Compte
     static var pushChannelAccount: String { tr("push_channel_account") }
     /// Avis reçus et informations sur votre compte
@@ -1081,8 +1107,12 @@ nonisolated enum L10n {
     static var sellerProfileTitle: String { tr("seller_profile_title") }
     /// ★ %1$.1f (%2$d)
     static func sellerRating(_ p1: Double, _ p2: Int) -> String { tr("seller_rating", p1, p2) }
+    /// Partager le profil
+    static var sellerShare: String { tr("seller_share") }
     /// Partager
     static var share: String { tr("share") }
+    /// Rechercher
+    static var shortcutSearch: String { tr("shortcut_search") }
     /// Plus vus
     static var sortMostViewed: String { tr("sort_most_viewed") }
     /// Plus récent
@@ -1147,6 +1177,8 @@ nonisolated enum L10n {
     static var trustRecommended: String { tr("trust_recommended") }
     /// Email vérifié
     static var trustVerified: String { tr("trust_verified") }
+    /// Annuler
+    static var undo: String { tr("undo") }
     /// Valeur trop élevée.
     static var validationAttrMax: String { tr("validation_attr_max") }
     /// Valeur trop basse.
@@ -1341,11 +1373,15 @@ nonisolated enum L10n {
         "delete_account_confirm_title",
         "delete_account_password",
         "delete_account_title",
+        "detail_call",
         "detail_contact",
+        "detail_contact_short",
+        "detail_copy_number",
         "detail_description",
         "detail_expires_on",
         "detail_not_found_message",
         "detail_not_found_title",
+        "detail_number_copied",
         "detail_open_gallery",
         "detail_photo_counter",
         "detail_posted",
@@ -1368,6 +1404,7 @@ nonisolated enum L10n {
         "detail_status_sold",
         "detail_status_sold_desc",
         "detail_views",
+        "discard",
         "edit_profile_bio",
         "edit_profile_email_change_note",
         "edit_profile_save",
@@ -1442,6 +1479,7 @@ nonisolated enum L10n {
         "export_title",
         "favorite_add",
         "favorite_remove",
+        "favorite_removed",
         "favorites_empty",
         "favorites_empty_hint",
         "favorites_title",
@@ -1455,6 +1493,7 @@ nonisolated enum L10n {
         "filters_attr_min",
         "filters_attr_value",
         "filters_clear_all",
+        "filters_discard_title",
         "filters_featured_chip",
         "filters_featured_only",
         "filters_location",
@@ -1488,6 +1527,7 @@ nonisolated enum L10n {
         "inbox_unblock_confirm_body",
         "inbox_unblock_confirm_title",
         "inbox_unblock_named",
+        "keep_editing",
         "language_ar",
         "language_en",
         "language_fr",
@@ -1520,6 +1560,8 @@ nonisolated enum L10n {
         "login_required_body",
         "login_required_title",
         "member_since",
+        "menu_open_listing",
+        "menu_see_seller",
         "moderation_reason",
         "my_listing_delete",
         "my_listing_delete_confirm_body",
@@ -1540,6 +1582,7 @@ nonisolated enum L10n {
         "nav_post",
         "nav_profile",
         "notification_delete",
+        "notification_deleted",
         "notification_type_annonce_approved",
         "notification_type_annonce_expired",
         "notification_type_annonce_rejected",
@@ -1679,6 +1722,8 @@ nonisolated enum L10n {
         "profile_verified",
         "profile_verify_action",
         "profile_verify_banner",
+        "push_action_failed",
+        "push_action_reply",
         "push_channel_account",
         "push_channel_account_desc",
         "push_channel_listings",
@@ -1742,7 +1787,9 @@ nonisolated enum L10n {
         "seller_no_listings",
         "seller_profile_title",
         "seller_rating",
+        "seller_share",
         "share",
+        "shortcut_search",
         "sort_most_viewed",
         "sort_newest",
         "sort_oldest",
@@ -1775,6 +1822,7 @@ nonisolated enum L10n {
         "trust_fast_responder",
         "trust_recommended",
         "trust_verified",
+        "undo",
         "validation_attr_max",
         "validation_attr_min",
         "validation_attr_number",

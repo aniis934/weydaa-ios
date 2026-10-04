@@ -3,8 +3,9 @@ import Foundation
 /// Écran poussé sur la pile d'un onglet — les routes de `Screen.kt` (Android) hors onglets. Valeur pure
 /// (`nonisolated`) : elle vit dans les piles du routeur, les liens profonds et les arguments de lancement.
 nonisolated enum AppRoute: Hashable, Sendable {
-    /// Fiche d'une annonce (l'API accepte l'identifiant ou le slug).
-    case detail(idOrSlug: String)
+    /// Fiche d'une annonce (l'API accepte l'identifiant ou le slug). `zoomSource` : clé de la carte touchée
+    /// (`home.featured.<id>`…), source de la transition zoom d'iOS 18 (`listingZoomSource`) ; nil = transition standard.
+    case detail(idOrSlug: String, zoomSource: String? = nil)
     /// Profil public d'un vendeur.
     case seller(id: String)
     /// Page légale du site, lue dans SFSafariViewController : `AppRouter.push` la présente en feuille.
@@ -78,6 +79,8 @@ nonisolated struct ListingsLaunch: Hashable, Sendable {
     var subcategory: String? = nil
     var wilaya: Int? = nil
     var featured: Bool = false
+    /// Raccourci « Rechercher » de l'icône : le champ de recherche prend le focus à l'ouverture.
+    var focusSearch: Bool = false
 }
 
 nonisolated extension ListingsLaunch {
@@ -89,9 +92,14 @@ nonisolated extension ListingsLaunch {
             category: TextCheck.nonBlank(params["category"]),
             subcategory: TextCheck.nonBlank(params["subcategory"]),
             wilaya: params["wilaya"].flatMap { Int($0.trimmingCharacters(in: .whitespaces)) },
-            featured: Self.isTrue(params["featured"])
+            featured: Self.isTrue(params["featured"]),
+            focusSearch: params[Self.focusSearchParam] == Self.focusSearchValue
         )
     }
+
+    /// Paramètre interne (raccourci « Rechercher », `ShortcutAction.search`) : jamais produit par une URL du site.
+    static let focusSearchParam = "_focus"
+    static let focusSearchValue = "search"
 
     /// Depuis une requête d'URL (`q=clio&category=vehicules`), pour `-WeydaRoute listings:…`.
     init(query: String) {
