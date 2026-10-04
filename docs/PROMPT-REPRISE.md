@@ -26,6 +26,9 @@ quand plus rien n'avance sans le propriétaire.
   la liste `EN-ATTENTE.md` dans l'ordre où le propriétaire doit la traiter.
 
 ## Où on en est (mis à jour à chaque fin de phase)
+- **2026-10-04** — **Phase 6 close** (PR #7) : favoris, alertes, avis ; finition (très grand texte, hors ligne sur iOS 26, VoiceOver,
+  haptique, Liquid Glass du composeur) ; `prep/release` fusionnée ; iOS 16.4 vert. 608 tests verts, galerie https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo. Suite : phase 7
+  (préparation App Store) enchaînée sans arrêt.
 - **2026-10-04** — **Phase 5 close** (PR #6) : messagerie (fil, offres, contact et offre depuis la fiche), conversations et archives,
   notifications, utilisateurs bloqués, push Firebase (inerte sans `GoogleService-Info.plist`), liens universels. 577 tests verts, galerie
   https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp. Feu vert reçu le 2026-10-04 pour enchaîner les phases 5, 6 et 7 SANS arrêt ; arrêt demandé à la fin de la phase 7 (3 liens de galerie

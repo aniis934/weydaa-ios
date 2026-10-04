@@ -51,9 +51,8 @@
       www.weydaa.com (normal avant le lot A) ; les push de ces branches ont créé des **prévisualisations** Vercel
       automatiques (intégration existante), rien en production.
 - [ ] Déploiement de chaque lot serveur (PR prête → `master` → Vercel) : A (connexion), B (push, modération), C (textes).
-- [ ] Branche `prep/release` (workflows `ios-release` / `ios-compat`, textes App Store, App Privacy, notes de revue) :
-      fusionnée dans `main` par l'orchestrateur en phase 6 (`ios-compat` y sera relancé, ≈ 10 min, iOS 16.4 sur
-      iPhone SE) — rien à faire de ton côté avant.
+- [x] Branche `prep/release` (workflows `ios-release` / `ios-compat`, textes App Store, App Privacy, notes de revue) :
+      fusionnée dans `main` en phase 6 (2026-10-04), adaptée à Firebase ; `ios-compat` vert sur iOS 16.4 (iPhone SE).
 - [ ] Écritures réelles en prod avec un compte de test (publier une annonce, envoyer un message, une offre).
 
 ## Décisions
