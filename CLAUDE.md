@@ -29,6 +29,8 @@ continue ailleurs. Règles complètes : `docs/PROMPT-REPRISE.md`.
    → relire TOUTES les captures (fr/ar/en, clair/sombre, 2 tailles) et la vidéo.
 4. Scripts locaux (Node du poste, sans dépendance) :
    `node scripts/convert-strings.mjs` (catalogue + L10n.swift) · `node scripts/convert-icons.mjs` (icônes Lucide)
+   · `node scripts/convert-category-art.mjs` (illustrations 3D des catégories, depuis `../weydaa-site/public/categories` ;
+   décodage WebP par le `sharp` du dépôt voisin — aucune dépendance ici)
    · `node scripts/render-icon.mjs` (icône 1024 + W de démarrage) · `node scripts/check-strings.mjs` (parité, aussi en CI).
 
 ## Structure
@@ -53,7 +55,7 @@ Weyda/Features/          un dossier par domaine : Home, Listings, Detail, Seller
 Weyda/Mock/              API simulée (Debug) : MockURLProtocol (jokers, `*` de requête), MockPhotos (photos dessinées),
                          MockFixtures/routes-<domaine>.json + dossiers (exclu des builds Release)
 Weyda/Resources/         Assets.xcassets (AppIcon, SplashMark, LaunchBackground, AccentColor, Categories/ Lucide,
-                         GoogleLogo),
+                         CategoryArt/ illustrations 3D du site @2x/@3x, GoogleLogo),
                          Localizable.xcstrings (GÉNÉRÉ), Info.plist (clés non générables), *.lproj/InfoPlist.strings
 WeydaTests/              tests unitaires (logique portée d'Android avec ses cas de test)
 WeydaUITests/            tour de captures : TourSupport (classe de base TourTestCase, `captureRoute`), un fichier
@@ -93,7 +95,9 @@ docs/equipe/             contrats d'interface de l'équipe d'agents (CONTRACTS*.
   `sensoryFeedback`, `glassEffect`…) passe par `if #available` avec repli.
 - **Le W** : `WeydaMarkPath.data` = la source iOS ; identique à `WEYDA_W_PATH_DATA` (Android) et à
   `scripts/render-icon.mjs` — toute retouche des trois côtés, puis `node scripts/render-icon.mjs`.
-- **Icônes de catégorie** : `CategoryIcon.assetName(forSlug:)`, jamais l'emoji `category.icon`.
+- **Visuels de catégorie** : toute vignette (accueil, feuille, dépôt, puces, fiche) = `CategoryArtwork(.category(slug:))`,
+  l'illustration 3D du site ; le pictogramme `CategoryIcon.assetName(forSlug:)` seulement pour un petit repère
+  (≤ 16 pt, critères d'alerte) ; jamais l'emoji `category.icon`.
 - **Accessibilité / tests** : chaque écran racine porte `.accessibilityElement(children: .contain)` +
   `.accessibilityIdentifier("screen.<nom>")` (le tour de captures s'en sert).
 - JAMAIS de dépendance sans accord · JAMAIS changer bundle ID (`com.weydaa.app`) / iOS minimum sans demande ·

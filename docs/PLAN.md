@@ -201,6 +201,17 @@ Deux agents (`docs/equipe/CONTRACTS-P7.md`) ; tout ce qui demande le compte Appl
 ## Galeries des phases 5 à 7 (2026-10-04)
 Phase 5 (messagerie, notifications) https://claude.ai/artifact/CKkeRRCK9gWiXELJUhj2wp · phase 6 (favoris, alertes, avis, finition) https://claude.ai/artifact/V4Z54sFRSCpsBZYqLBrQMo · phase 7 (fiche App Store) https://claude.ai/artifact/B9meNggA7FGCi6JyV1ee5G.
 
+## Après la phase 7 — illustrations des catégories (2026-10-04, PR #9)
+Demande du propriétaire : les icônes de catégorie de l'app = les illustrations 3D en couleur du site.
+- [x] `Assets.xcassets/CategoryArt` : les 14 illustrations de `public/categories` (site) en PNG sans perte @2x/@3x d'une
+      tuile de 64 pt (562 Ko) ; `scripts/convert-category-art.mjs` (efface au passage la jointure d'aplat des images du
+      site : carré visible, sujets coupés net) ; test : chaque slug a son illustration, à 64 pt
+- [x] `CategoryArtwork` (tuile arrondie ou disque, liseré d'un demi-point, tuile « Toutes ») : accueil (64 pt), feuille
+      des catégories (40 pt), dépôt (56 pt, choisie = anneau + coche), puces des annonces (disque 24 → 40 pt avec le
+      texte), pastille de la fiche ; pictogrammes Lucide gardés pour les petits repères (critères d'alerte)
+- [x] 24 captures de la fiche App Store refaites (`docs/store/captures/`) ; CI 613 tests, 0 échec ; captures relues
+      (fr/ar/en, clair/sombre, 2 iPhone, très grand texte) ; galerie https://claude.ai/artifact/QWV68gKW4YJLK9B5M7mA2i
+
 ## Constats de la CI (phase 6)
 - Firebase + 4 agents : tous les lots compilés verts du premier coup ; `ios-compat` (iOS 16.4) vert sans correction.
 - Très grand texte : les dispositions en ligne (prix à côté d'une vignette, 3-4 boutons côte à côte, titre + « Voir tout ») cassent aux

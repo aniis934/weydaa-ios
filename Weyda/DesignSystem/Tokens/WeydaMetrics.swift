@@ -34,9 +34,15 @@ nonisolated enum WeydaSize {
     static let rowThumbHeight: CGFloat = 92
     /// Carte du carrousel « À la une » (≈ 70 % de la largeur d'un iPhone, comme le site).
     static let carouselCard: CGFloat = 232
-    /// Pastille ronde d'une catégorie sur l'accueil, et la cellule (pastille + libellé) qui la porte.
-    static let categoryCircle: CGFloat = 60
+    /// Illustration d'une catégorie sur l'accueil (= taille de référence des images @2x/@3x : 192 px à l'écran,
+    /// pixel pour pixel), et la cellule (illustration + libellé) qui la porte.
+    static let categoryArtwork: CGFloat = 64
     static let categoryCell: CGFloat = 76
+    /// Illustration d'une catégorie dans une ligne de liste (feuille des catégories) et dans une puce.
+    static let categoryArtworkRow: CGFloat = 40
+    static let categoryArtworkChip: CGFloat = 24
+    /// Plafond du disque d'une puce en très grand texte.
+    static let categoryArtworkChipMax: CGFloat = 40
     /// Hauteur du bandeau de marque de l'accueil.
     static let brandHeader: CGFloat = 132
     /// Largeur maximale du contenu (iPad en mode iPhone, paysage) et d'un formulaire.
@@ -65,4 +71,6 @@ nonisolated enum WeydaRadius {
     static let bubbleTail: CGFloat = 4
     /// Tuile-logo : même courbe que l'icône iOS (≈ 22,37 % du côté).
     static let iconRatio: CGFloat = 0.2237
+    /// Illustration de catégorie : rayon = 27 % du côté (site : `rounded-2xl` sur 56 px ≈ 29 %).
+    static let artworkRatio: CGFloat = 0.27
 }

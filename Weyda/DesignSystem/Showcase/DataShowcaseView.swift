@@ -95,10 +95,7 @@ struct DataShowcaseView: View {
 
     private func categoryCell(_ category: Category) -> some View {
         HStack(spacing: WeydaSpace.sm) {
-            CategoryIconImage(assetName: CategoryIcon.assetName(forSlug: category.slug))
-                .foregroundStyle(WeydaColor.onPrimaryContainer)
-                .frame(width: WeydaSize.touchTarget, height: WeydaSize.touchTarget)
-                .background(WeydaColor.primaryContainer, in: RoundedRectangle(cornerRadius: WeydaRadius.field, style: .continuous))
+            CategoryArtwork(.category(slug: category.slug), size: WeydaSize.touchTarget)
             VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
                 Text(category.name.resolve())
                     .weydaText(.titleSmall)

@@ -130,8 +130,9 @@ struct ListingCardSkeletonRow: View {
     }
 }
 
-/// Rangée de fantômes de pastilles rondes — les catégories de l'accueil. Porte la gouttière latérale.
-struct CategoryCircleSkeletonRow: View {
+/// Rangée de fantômes de tuiles — les catégories de l'accueil (même forme que l'illustration). Porte la gouttière
+/// latérale.
+struct CategoryShortcutSkeletonRow: View {
     init() {}
 
     var body: some View {
@@ -139,9 +140,9 @@ struct CategoryCircleSkeletonRow: View {
             ForEach(0..<5, id: \.self) { _ in
                 VStack(spacing: WeydaSpace.sm) {
                     SkeletonBlock(
-                        width: WeydaSize.categoryCircle,
-                        height: WeydaSize.categoryCircle,
-                        radius: WeydaSize.categoryCircle / 2
+                        width: WeydaSize.categoryArtwork,
+                        height: WeydaSize.categoryArtwork,
+                        radius: WeydaSize.categoryArtwork * WeydaRadius.artworkRatio
                     )
                     SkeletonBlock(width: SkeletonLine.label, height: SkeletonLine.labelHeight)
                 }

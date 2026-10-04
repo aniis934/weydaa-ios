@@ -136,7 +136,7 @@ private struct CategoriesSheetList: View {
             Button {
                 onSelect(.all)
             } label: {
-                CategorySheetRow(title: L10n.categoriesAllRow, subtitle: nil, iconAsset: CategoryIcon.all)
+                CategorySheetRow(title: L10n.categoriesAllRow, subtitle: nil, artwork: .all)
             }
             .listRowBackground(WeydaColor.surface)
             .accessibilityIdentifier("categories.row.all")
@@ -155,7 +155,7 @@ private struct CategoriesSheetList: View {
         let row = CategorySheetRow(
             title: root.name.resolve(),
             subtitle: L10n.resultsCount(root.listingsCount),
-            iconAsset: CategoryIcon.assetName(forSlug: root.slug)
+            artwork: .category(slug: root.slug)
         )
         if root.children.isEmpty {
             Button {
@@ -200,16 +200,16 @@ private struct CategoriesSheetList: View {
 
     /// Sous-catégorie trouvée : son nom, puis sa racine et son nombre d'annonces.
     private func hitRow(_ hit: CategorySearchHit) -> CategorySheetRow {
-        let icon = CategoryIcon.assetName(forSlug: hit.root.slug)
+        let artwork = CategoryArtworkContent.category(slug: hit.root.slug)
         guard let subcategory = hit.subcategory else {
             return CategorySheetRow(
                 title: hit.root.name.resolve(),
                 subtitle: L10n.resultsCount(hit.root.listingsCount),
-                iconAsset: icon
+                artwork: artwork
             )
         }
         let place = "\(hit.root.name.resolve()) · \(L10n.resultsCount(subcategory.listingsCount))"
-        return CategorySheetRow(title: subcategory.name.resolve(), subtitle: place, iconAsset: icon)
+        return CategorySheetRow(title: subcategory.name.resolve(), subtitle: place, artwork: artwork)
     }
 }
 
@@ -227,7 +227,7 @@ private struct SubcategoriesList: View {
                     CategorySheetRow(
                         title: L10n.seeAll,
                         subtitle: L10n.resultsCount(root.listingsCount),
-                        iconAsset: CategoryIcon.assetName(forSlug: root.slug)
+                        artwork: .category(slug: root.slug)
                     )
                 }
                 .listRowBackground(WeydaColor.surface)
@@ -241,7 +241,7 @@ private struct SubcategoriesList: View {
                         CategorySheetRow(
                             title: child.name.resolve(),
                             subtitle: L10n.resultsCount(child.listingsCount),
-                            iconAsset: nil
+                            artwork: nil
                         )
                     }
                     .listRowBackground(WeydaColor.surface)
@@ -259,23 +259,17 @@ private struct SubcategoriesList: View {
     }
 }
 
-/// Ligne de la feuille : pastille teintée portant l'icône Lucide (racines), libellé, puis le nombre d'annonces.
-/// VoiceOver la lit d'un trait (« Véhicules, 1 284 annonces »).
+/// Ligne de la feuille : l'illustration de la catégorie en tuile de 40 pt (racines ; comme les icônes des
+/// Réglages), libellé, puis le nombre d'annonces. VoiceOver la lit d'un trait (« Véhicules, 1 284 annonces »).
 private struct CategorySheetRow: View {
     let title: String
     let subtitle: String?
-    let iconAsset: String?
+    let artwork: CategoryArtworkContent?
 
     var body: some View {
         HStack(spacing: WeydaSpace.md) {
-            if let iconAsset {
-                Circle()
-                    .fill(WeydaPalette.categoryTile)
-                    .frame(width: WeydaSize.avatarSmall, height: WeydaSize.avatarSmall)
-                    .overlay {
-                        CategoryIconImage(assetName: iconAsset, size: WeydaSize.icon)
-                            .foregroundStyle(WeydaColor.primary)
-                    }
+            if let artwork {
+                CategoryArtwork(artwork, size: WeydaSize.categoryArtworkRow)
             }
             VStack(alignment: .leading, spacing: WeydaSpace.xxs) {
                 Text(title)

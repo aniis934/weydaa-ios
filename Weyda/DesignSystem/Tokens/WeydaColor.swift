@@ -152,8 +152,10 @@ nonisolated enum WeydaPalette {
     static let onSuccess = Color(light: WeydaRamp.white, dark: WeydaRamp.emerald950)
     static let warning = Color(light: WeydaRamp.amber500, dark: WeydaRamp.amber400)
     static let onWarning = Color(rgb: WeydaRamp.amber900)
-    /// Fond des tuiles de catégorie (l'icône prend `primary`).
+    /// Fond de la tuile « Toutes les catégories » (son pictogramme prend `primary`).
     static let categoryTile = Color(light: WeydaRamp.emerald50, dark: WeydaRamp.emerald950)
+    /// Liseré d'une illustration de catégorie : la détache d'une surface de teinte voisine, sans l'encadrer.
+    static let artworkStroke = Color(light: WeydaRamp.slate900, dark: WeydaRamp.white, lightOpacity: 0.06, darkOpacity: 0.12)
     /// Pastille « À la une ».
     static let featured = Color(light: WeydaRamp.amber500, dark: WeydaRamp.amber400)
     static let onFeatured = Color(rgb: WeydaRamp.amber900)

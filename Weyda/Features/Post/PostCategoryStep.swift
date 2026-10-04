@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// Étape 1 — catégorie (Android : `CategoryStep`, PostSteps.kt) : grille des catégories racines (icône Lucide de la
-/// marque), puis la liste des sous-catégories de la racine choisie, l'erreur « Choisissez une catégorie » et
-/// l'attente des caractéristiques. Chargement et échec (réessayer) des catégories à la place de la grille.
+/// Étape 1 — catégorie (Android : `CategoryStep`, PostSteps.kt) : grille des catégories racines (illustrations 3D,
+/// comme l'étape « Catégorie » du site), puis la liste des sous-catégories de la racine choisie, l'erreur
+/// « Choisissez une catégorie » et l'attente des caractéristiques. Chargement et échec (réessayer) des catégories
+/// à la place de la grille.
 struct PostCategoryStep: View {
     private let state: PostListingState
     private let actions: PostListingActions
@@ -76,8 +77,8 @@ struct PostCategoryStep: View {
     }
 }
 
-/// Tuile d'une catégorie racine : pastille teintée portant l'icône, nom sur deux lignes (place réservée : les
-/// tuiles d'une rangée gardent la même hauteur). Choisie : pastille cerclée de vert, nom en vert.
+/// Tuile d'une catégorie racine : l'illustration, nom sur deux lignes (place réservée : les tuiles d'une rangée
+/// gardent la même hauteur). Choisie : illustration cerclée de vert et cochée, nom en vert.
 private struct PostCategoryTile: View {
     private let category: Category
     private let isSelected: Bool
@@ -85,7 +86,11 @@ private struct PostCategoryTile: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let badgeSide: CGFloat = 56
-    private static let iconSide: CGFloat = 26
+    /// Anneau de sélection : écart à l'illustration, épaisseur ; coche posée sur son coin (sans décalage : le coin
+    /// suit le sens de lecture).
+    private static let ringGap: CGFloat = 3
+    private static let ringWidth: CGFloat = 2
+    private static let checkSide: CGFloat = 18
     /// Très grand texte : réduction permise au nom plutôt qu'un mot coupé en deux.
     private static let largeTitleMinScale: CGFloat = 0.7
 
@@ -143,28 +148,34 @@ private struct PostCategoryTile: View {
         }
     }
 
+    /// L'illustration ; choisie, un anneau vert l'entoure à distance (comme un fond d'écran choisi dans Réglages)
+    /// et une coche s'y pose — le choix ne repose pas sur la seule couleur. L'anneau a toujours sa place réservée :
+    /// rien ne bouge à la sélection.
     private var badge: some View {
-        let shape = RoundedRectangle(cornerRadius: WeydaRadius.card, style: .continuous)
-        return shape
-            .fill(badgeColor)
-            .frame(width: Self.badgeSide, height: Self.badgeSide)
+        let ring = RoundedRectangle(
+            cornerRadius: Self.badgeSide * WeydaRadius.artworkRatio + Self.ringGap,
+            style: .continuous
+        )
+        return CategoryArtwork(.category(slug: category.slug), size: Self.badgeSide)
+            .padding(Self.ringGap)
             .overlay {
-                CategoryIconImage(assetName: CategoryIcon.assetName(forSlug: category.slug), size: Self.iconSide)
-                    .foregroundStyle(WeydaColor.primary)
+                ring.strokeBorder(isSelected ? WeydaColor.primary : Color.clear, lineWidth: Self.ringWidth)
             }
-            .overlay {
+            .overlay(alignment: .topTrailing) {
                 if isSelected {
-                    shape.strokeBorder(WeydaColor.primary, lineWidth: 2)
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: Self.checkSide, weight: .semibold))
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(WeydaColor.onPrimary, WeydaColor.primary)
+                        .background(WeydaColor.surface, in: Circle())
+                        .transition(.scale.combined(with: .opacity))
+                        .accessibilityHidden(true)
                 }
             }
     }
 
     private var tileColor: Color {
         isSelected ? WeydaColor.primaryContainer.opacity(0.35) : WeydaColor.surface
-    }
-
-    private var badgeColor: Color {
-        isSelected ? WeydaColor.primaryContainer : WeydaPalette.categoryTile
     }
 
     private var titleColor: Color {

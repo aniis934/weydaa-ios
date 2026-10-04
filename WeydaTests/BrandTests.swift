@@ -69,6 +69,20 @@ final class BrandTests: XCTestCase {
         XCTAssertNotNil(UIImage(named: CategoryIcon.place))
     }
 
+    func testEveryCategorySlugHasAnArtwork() {
+        let side = WeydaSize.categoryArtwork
+        for slug in CategoryIcon.knownSlugs {
+            let name = CategoryIcon.artworkName(forSlug: slug)
+            let image = UIImage(named: name)
+            XCTAssertNotNil(image, "illustration absente : \(name)")
+            // Rendus @2x/@3x d'une tuile de 64 pt : la tuile de l'accueil est dessinée pixel pour pixel.
+            XCTAssertEqual(image?.size, CGSize(width: side, height: side), name)
+        }
+        XCTAssertEqual(CategoryIcon.artworkName(forSlug: "materiel-pro"), "art_cat_materiel_pro")
+        XCTAssertEqual(CategoryIcon.artworkName(forSlug: "inconnue"), "art_cat_autres")
+        XCTAssertEqual(CategoryIcon.artworkName(forSlug: nil), "art_cat_autres")
+    }
+
     func testLaunchAssetsExist() {
         XCTAssertNotNil(UIImage(named: "SplashMark"))
         XCTAssertNotNil(UIColor(named: "LaunchBackground"))
