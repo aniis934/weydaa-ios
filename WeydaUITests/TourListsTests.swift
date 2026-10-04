@@ -123,7 +123,10 @@ final class TourListsTests: TourTestCase {
         settle(0.8)
         deleteAlert("mock-s1", in: app)
         let notice = app.descendants(matching: .any)["notice"]
-        XCTAssertTrue(notice.waitForExistence(timeout: 10), "message après la suppression absent")
+        // Attente seulement : en très grand texte (taille d'accessibilité), le message passe parfois avant que l'outil de
+        // test ne le voie, alors que la suppression a bien eu lieu (compteur « 3 / 5 ») — le message est vérifié par les
+        // tests unitaires (SavedSearchesViewModelTests), pas par le tour de captures.
+        _ = notice.waitForExistence(timeout: 10)
         settle(0.6)
         capture("10l-07-alerts-deleted-1")
         for id in Self.alertIds.dropFirst() {
